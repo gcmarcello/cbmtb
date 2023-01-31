@@ -112,15 +112,17 @@ const EventPage = ({ userAuthentication, userName }) => {
                   </ul>
 
                   <hr />
-                  <div className="d-flex align-items-center justify-content-around">
+                  <div className="d-flex">
                     {event.event_status === false ? (
                       <button type="button" className="btn btn-danger btn-lg form-control" disabled>
                         Inscrições Fechadas
                       </button>
                     ) : (
-                      <button type="button" className="btn btn-success btn-lg form-control">
-                        Inscreva-se
-                      </button>
+                      <a href={`/inscricao/${event.event_id}`} className="w-100">
+                        <button type="button" className="btn btn-success btn-lg form-control">
+                          Inscreva-se
+                        </button>
+                      </a>
                     )}
                   </div>
                 </div>

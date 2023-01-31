@@ -1,6 +1,3 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-
 export const fetchEvent = async (id) => {
   try {
     const myHeaders = new Headers();
@@ -30,20 +27,18 @@ export const fetchCategories = async (eventId) => {
       method: "GET",
     });
     const parseResponse = await response.json();
-    console.log(parseResponse);
     return parseResponse;
   } catch (err) {
     console.log(err);
   }
 };
 
-export const fetchProfile = async (eventId) => {
+export const fetchProfile = async () => {
   try {
-    const response = await fetch(`/api/categories/${eventId}`, {
+    const response = await fetch(`/api/users/self`, {
       method: "GET",
     });
     const parseResponse = await response.json();
-    console.log(parseResponse);
     return parseResponse;
   } catch (err) {
     console.log(err);
