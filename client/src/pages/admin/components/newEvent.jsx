@@ -2,9 +2,9 @@ import React, { Fragment, useState } from "react";
 import { useEffect } from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
-import { modules, formats } from "../utils/quillSettings";
+import { modules, formats } from "../../../utils/quillSettings";
 import { toast } from "react-toastify";
-import loadingScreen from "../utils/loadingScreen";
+import loadingScreen from "../../../utils/loadingScreen";
 
 const NewEvent = ({ eventChange, setEventChange, saveCurrentPanel }) => {
   const [formInputs, setFormInputs] = useState({
@@ -25,8 +25,9 @@ const NewEvent = ({ eventChange, setEventChange, saveCurrentPanel }) => {
     categoryName: "",
     minAge: "",
     maxAge: "",
+    categoryGender: "",
   });
-  const { categoryName, minAge, maxAge } = category;
+  const { categoryName, minAge, maxAge, categoryGender } = category;
   const [selectedImage, setSelectedImage] = useState();
   const [isImageSelected, setIsImageSelected] = useState(false);
   const [imagePreview, setImagePreview] = useState(null);
@@ -67,6 +68,7 @@ const NewEvent = ({ eventChange, setEventChange, saveCurrentPanel }) => {
           name: category.categoryName,
           minAge: Number(category.minAge),
           maxAge: Number(category.maxAge),
+          gender: category.categoryGender === "unisex" ? "Unissex" : category.categoryGender === "masc" ? "Masculino" : "Feminino",
           index: Number(formInputs.categories.length + 1),
         },
       ],
@@ -323,7 +325,7 @@ const NewEvent = ({ eventChange, setEventChange, saveCurrentPanel }) => {
           <hr className="my-4" />
           <h2 className="mt-3">Categorias</h2>
           <div className="row">
-            <div className="col-12 col-lg-6">
+            <div className="col-12 col-lg-3">
               <label htmlFor="categoryName" className="form-label">
                 Nome da Categoria
               </label>
@@ -362,18 +364,40 @@ const NewEvent = ({ eventChange, setEventChange, saveCurrentPanel }) => {
                 onChange={(e) => handleCategoryChange(e)}
               />
             </div>
-            <div className="col-12 col-lg-2 mt-3 mt-lg-6">
-              <button className="btn btn-secondary form-control my-3" onClick={(e) => handleCategorySubmit(e)}>
-                Criar Categoria
+            <div className="col-12 col-lg-3 mt-2 mt-lg-0">
+              <label htmlFor="categoryGender" className="form-label">
+                Sexo
+              </label>
+              <select
+                className={`form-select`}
+                aria-label="Default select example"
+                id="categoryGender"
+                name="categoryGender"
+                value={categoryGender}
+                onChange={(e) => handleCategoryChange(e)}
+              >
+                <option value="" disabled={true}>
+                  Selecione
+                </option>
+                <option value="masc">Masculino</option>
+                <option value="fem">Feminino</option>
+                <option value="unisex">Unissex</option>
+              </select>
+            </div>
+            <div className="col-12 col-lg-2">
+              <div className="mt-3"></div>
+              <button className="btn btn-secondary form-control mt-3 my-3 mb-lg-0" onClick={(e) => handleCategorySubmit(e)}>
+                Criar
               </button>
             </div>
             <div className="col-12">
               <table className="table table-striped">
                 <thead>
                   <tr>
-                    <th>Nome da Categoria</th>
-                    <th>Idade Mínima</th>
-                    <th>Idade Máxima</th>
+                    <th>Nome</th>
+                    <th>Idade Mín</th>
+                    <th>Idade Máx</th>
+                    <th>Sexo</th>
                     <th>Opções</th>
                   </tr>
                 </thead>
@@ -386,6 +410,7 @@ const NewEvent = ({ eventChange, setEventChange, saveCurrentPanel }) => {
                           <td>{category.name}</td>
                           <td>{category.minAge}</td>
                           <td>{category.maxAge}</td>
+                          <td>{category.gender}</td>
                           <td>
                             <button className="btn btn-danger" onClick={(e) => deleteCategory(e, category.index)}>
                               <i className="bi bi-x-circle"></i>
@@ -395,7 +420,7 @@ const NewEvent = ({ eventChange, setEventChange, saveCurrentPanel }) => {
                       ))
                   ) : (
                     <tr>
-                      <td colSpan={4}>
+                      <td colSpan={5}>
                         <span className="d-flex justify-content-center">Nenhuma categoria criada.</span>
                       </td>
                     </tr>

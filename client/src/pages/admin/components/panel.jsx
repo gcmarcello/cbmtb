@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 
 // React Components
-import ListEvents from "../events/listEvents";
-import NewEvent from "../events/newEvent";
+import ListEvents from "../components/listEvents";
+import NewEvent from "../components/newEvent";
 
 const Panel = ({ screen, setScreen, saveCurrentPanel }) => {
   const [eventChange, setEventChange] = useState(false);

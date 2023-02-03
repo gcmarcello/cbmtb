@@ -1,6 +1,6 @@
 import React, { Fragment, useState } from "react";
 
-import UserNavigation from "../navbars/userNavigation";
+import UserNavigation from "../../utils/userNavigation";
 
 const Login = ({ userAuthentication, setUserAuthentication, setUserAdmin, userAdmin, setUserName, userName }) => {
   const [loginInputs, setLoginInputs] = useState({

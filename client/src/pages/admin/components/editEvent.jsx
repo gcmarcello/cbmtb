@@ -1,10 +1,10 @@
 import React, { Fragment, useState } from "react";
 import { useEffect } from "react";
 import ReactQuill from "react-quill";
-import { modules, formats } from "../utils/quillSettings";
+import { modules, formats } from "../../../utils/quillSettings";
 import { toast } from "react-toastify";
 
-import LoadingScreen from "../utils/loadingScreen";
+import LoadingScreen from "../../../utils/loadingScreen";
 
 const EditEvent = ({ eventChange, setEventChange, event }) => {
   let dateToParse = new Date(event.event_date);
@@ -32,9 +32,10 @@ const EditEvent = ({ eventChange, setEventChange, event }) => {
     categoryName: "",
     categoryMinAge: "",
     categoryMaxAge: "",
+    categoryGender: "",
   });
   const [categoryChange, setCategoryChange] = useState(false);
-  const { categoryName, categoryMinAge, categoryMaxAge } = newCategory;
+  const { categoryName, categoryMinAge, categoryMaxAge, categoryGender } = newCategory;
 
   const [selectedImage, setSelectedImage] = useState();
   const [imagePreview, setImagePreview] = useState(null);
@@ -117,7 +118,7 @@ const EditEvent = ({ eventChange, setEventChange, event }) => {
       myHeaders.append("Content-Type", "application/json");
       myHeaders.append("token", localStorage.token);
 
-      const body = { categoryName, categoryMinAge, categoryMaxAge };
+      const body = { categoryName, categoryMinAge, categoryMaxAge, categoryGender };
 
       const response = await fetch(`/api/categories/${id}`, {
         method: "POST",
@@ -130,6 +131,7 @@ const EditEvent = ({ eventChange, setEventChange, event }) => {
         categoryName: "",
         categoryMinAge: "",
         categoryMaxAge: "",
+        categoryGender: "",
       });
     } catch (error) {
       toast.error(error.message, { theme: "colored" });
@@ -141,8 +143,12 @@ const EditEvent = ({ eventChange, setEventChange, event }) => {
 
   const fetchCategories = async () => {
     try {
+      const myHeaders = new Headers();
+      myHeaders.append("Content-Type", "application/json");
+      myHeaders.append("token", localStorage.token);
       const response = await fetch(`/api/categories/${event.event_id}`, {
         method: "GET",
+        headers: myHeaders,
       });
       const parseResponse = await response.json();
       setCategories(parseResponse);
@@ -224,7 +230,7 @@ const EditEvent = ({ eventChange, setEventChange, event }) => {
         <i className="bi bi-gear"></i>
       </button>
       <div
-        className="modal fade"
+        className="modal modal-lg fade"
         id={`modal-event-${event.event_id}`}
         tabIndex="-1"
         aria-labelledby={`modal-label-event-${event.event_id}`}
@@ -339,7 +345,7 @@ const EditEvent = ({ eventChange, setEventChange, event }) => {
                   ) : (
                     <Fragment>
                       <div className="row">
-                        <div className="col-6">
+                        <div className="col-5">
                           <label htmlFor="name">Nome</label>
                           <input
                             type="text"
@@ -350,7 +356,7 @@ const EditEvent = ({ eventChange, setEventChange, event }) => {
                             onChange={(e) => handleNewCategoryChange(e)}
                           />
                         </div>
-                        <div className="col-3">
+                        <div className="col-2">
                           <label htmlFor="name">Id. Min.</label>
                           <input
                             type="number"
@@ -361,7 +367,7 @@ const EditEvent = ({ eventChange, setEventChange, event }) => {
                             onChange={(e) => handleNewCategoryChange(e)}
                           />
                         </div>
-                        <div className="col-3">
+                        <div className="col-2">
                           <label htmlFor="name">Id. Max.</label>
                           <input
                             type="number"
@@ -371,6 +377,23 @@ const EditEvent = ({ eventChange, setEventChange, event }) => {
                             value={categoryMaxAge}
                             onChange={(e) => handleNewCategoryChange(e)}
                           />
+                        </div>
+                        <div className="col-3">
+                          <label htmlFor="name">Sexo</label>
+                          <select
+                            className="form-select"
+                            id="categoryGender"
+                            name="categoryGender"
+                            value={categoryGender}
+                            onChange={(e) => handleNewCategoryChange(e)}
+                          >
+                            <option value="" disabled={true}>
+                              Selecione
+                            </option>
+                            <option value="masc">Masc.</option>
+                            <option value="fem">Fem.</option>
+                            <option value="unisex">Unissex</option>
+                          </select>
                         </div>
                       </div>
                       <div className="row my-3">
@@ -388,7 +411,8 @@ const EditEvent = ({ eventChange, setEventChange, event }) => {
                                 <td colSpan={2}>Nome</td>
                                 <td>Idade Max.</td>
                                 <td>Idade Min.</td>
-                                <td>Remover</td>
+                                <td>Sexo</td>
+                                <td></td>
                               </tr>
                             </thead>
                             <tbody>
@@ -422,6 +446,20 @@ const EditEvent = ({ eventChange, setEventChange, event }) => {
                                       className="form-control"
                                       onChange={(e) => handleCategoryChange(e, category.category_id)}
                                     />
+                                  </td>
+                                  <td>
+                                    <select
+                                      className={`form-select`}
+                                      aria-label="Default select example"
+                                      id={`${category.category_id}-gender`}
+                                      name="category_gender"
+                                      value={category.category_gender}
+                                      onChange={(e) => handleCategoryChange(e, category.category_id)}
+                                    >
+                                      <option value="masc">Masc.</option>
+                                      <option value="fem">Fem.</option>
+                                      <option value="unisex">Unissex</option>
+                                    </select>
                                   </td>
                                   <td className="text-center">
                                     <button className="btn btn-danger" onClick={(e) => handleDeleteCategory(e, category.category_id)}>

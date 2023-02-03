@@ -1,8 +1,8 @@
 import React, { Fragment, useState, useEffect } from "react";
 
 // React Components
-import Panel from "./panel";
-import AdminNavigation from "../navbars/adminNavigation";
+import Panel from "./components/panel";
+import AdminNavigation from "./components/adminNavigation";
 
 const Dashboard = () => {
   const [screen, setScreen] = useState("ListEvents");

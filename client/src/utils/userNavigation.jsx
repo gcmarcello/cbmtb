@@ -123,8 +123,9 @@ const UserNavigation = ({ userAuthentication, setUserAuthentication, userName, u
             {userAuthentication ? (
               <li className="nav-item dropdown">
                 <a className="nav-link dropdown-toggle" href="/" id="navbarprofile" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                  <i className="bi bi-person-circle"></i> <span className="fw-semibold">{userName}</span>
+                  <i className="bi bi-person-circle"></i> <span className="fw-semibold p-2">{userName}</span>
                 </a>
+
                 <ul className="dropdown-menu user-dropdown" aria-labelledby="navbarDropdown">
                   {userAdmin ? (
                     <li>

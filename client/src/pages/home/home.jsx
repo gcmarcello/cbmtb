@@ -1,8 +1,8 @@
 import React, { Fragment } from "react";
 
-import NextEvents from "./nextEvents";
-import UserNavigation from "./navbars/userNavigation";
-import Footer from "./utils/footer";
+import NextEvents from "./components/nextEvents";
+import UserNavigation from "../../utils/userNavigation";
+import Footer from "../../utils/footer";
 
 const Home = ({ userAuthentication, setUserAuthentication, userName, userAdmin }) => {
   return (

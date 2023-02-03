@@ -5,14 +5,14 @@ import "react-toastify/dist/ReactToastify.css";
 
 // React Components
 // eslint-disable-next-line
-import Register from "./components/authentication/register";
-import Login from "./components/authentication/login";
-import Dashboard from "./components/dashboard/dashboard";
-import LoadingScreen from "./components/utils/loadingScreen";
-import Home from "./components/home";
-import EventPage from "./components/event";
-import Registration from "./components/registration";
-import Page404 from "./components/utils/404";
+import Register from "./pages/register/register";
+import Login from "./pages/login/login";
+import Dashboard from "./pages/admin/dashboard";
+import LoadingScreen from "./utils/loadingScreen";
+import Home from "./pages/home/home";
+import EventPage from "./pages/event/event";
+import Registration from "./pages/registration/registration";
+import Page404 from "./utils/404";
 
 function App() {
   const [userAuthentication, setUserAuthentication] = useState(false);
@@ -148,8 +148,7 @@ function App() {
                   userName={userName}
                 />
               ) : (
-                <Navigate
-                  to="/login"
+                <Login
                   userAuthentication={userAuthentication}
                   setUserAuthentication={setUserAuthentication}
                   setUserAdmin={setUserAdmin}

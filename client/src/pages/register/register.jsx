@@ -2,7 +2,7 @@ import React, { Fragment, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import InputMask from "react-input-mask";
 
-import UserNavigation from "../navbars/userNavigation";
+import UserNavigation from "../../utils/userNavigation";
 
 const Register = ({ userAuthentication, setUserAuthentication, userName, setUserName }) => {
   const cepSearch = require("cep-promise");

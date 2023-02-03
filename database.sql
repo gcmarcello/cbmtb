@@ -49,6 +49,7 @@ CREATE TABLE categories(
     category_name VARCHAR(255) NOT NULL,
     category_minage INTEGER,
     category_maxage INTEGER,
+    category_gender VARCHAR(255) NOT NULL,
     PRIMARY KEY (category_id),
     FOREIGN KEY (event_id) REFERENCES events(event_id)
 );

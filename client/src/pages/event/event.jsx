@@ -1,15 +1,14 @@
 import React, { Fragment, useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import UserNavigation from "./navbars/userNavigation";
+import UserNavigation from "../../utils/userNavigation";
 
-import LoadingScreen from "./utils/loadingScreen";
-import Footer from "./utils/footer";
+import LoadingScreen from "../../utils/loadingScreen";
+import Footer from "../../utils/footer";
 
 const EventPage = ({ userAuthentication, userName }) => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [event, setEvent] = useState({});
-  const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(false);
 
   const fetchEvent = async () => {
@@ -35,22 +34,9 @@ const EventPage = ({ userAuthentication, userName }) => {
       let dateToParseYear = String(dateToParse.getFullYear());
       parseResponse.formattedDate = `${dateToParseDay}/${dateToParseMonth}/${dateToParseYear}`;
       setEvent(parseResponse);
-    } catch (err) {
-      setLoading(false);
-      console.log(err);
-    }
-  };
-
-  const fetchCategories = async () => {
-    try {
-      const response = await fetch(`/api/categories/${event.event_id}`, {
-        method: "GET",
-      });
-      const parseResponse = await response.json();
-
-      setCategories(parseResponse);
       setLoading(false);
     } catch (err) {
+      setLoading(false);
       console.log(err);
     }
   };
@@ -58,12 +44,6 @@ const EventPage = ({ userAuthentication, userName }) => {
   useEffect(() => {
     fetchEvent(); // eslint-disable-next-line
   }, []);
-
-  useEffect(() => {
-    if (event.event_id) {
-      fetchCategories();
-    }
-  }, [event]);
 
   useEffect(() => {
     document.title = `CBMTB ${event.event_name ? `- ${event.event_name}` : ""}`;
@@ -94,17 +74,6 @@ const EventPage = ({ userAuthentication, userName }) => {
                     </li>
                     <li className="list-group-item">
                       <i className="bi bi-geo-alt-fill fs-4"></i> <span className="h6">Local:</span> <span></span> {event.event_location}
-                    </li>
-                    <li className="list-group-item">
-                      <i className="bi bi-person-badge fs-4"></i> <span className="h6">Categorias:</span> <span></span>
-                      <ul className="mt-1">
-                        {" "}
-                        {categories.length ? (
-                          categories.map((category) => <li key={category.category_id}>{category.category_name}</li>)
-                        ) : (
-                          <li>Única</li>
-                        )}
-                      </ul>
                     </li>
                     <li className="list-group-item">
                       <i className="bi bi-globe fs-4"></i> <button className="btn btn-link fst-italic ps-1">Site do Evento</button>
