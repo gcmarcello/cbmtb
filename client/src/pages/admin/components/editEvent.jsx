@@ -62,35 +62,6 @@ const EditEvent = ({ eventChange, setEventChange, event }) => {
     setImagePreview(null);
   };
 
-  const handleSubmit = async (e, id) => {
-    e.preventDefault();
-    if (selectedImage) {
-      try {
-        setIsLoading(true);
-        setEventChange(true);
-
-        const imgurHeaders = new Headers();
-        imgurHeaders.append("Authorization", `Client-ID c9152aece7f0dfe`);
-        let formdata = new FormData();
-        formdata.append("image", selectedImage);
-        let requestOptions = {
-          method: "POST",
-          headers: imgurHeaders,
-          body: formdata,
-          redirect: "follow",
-        };
-
-        const imgurResponse = await fetch("https://api.imgur.com/3/image", requestOptions);
-        const parseImgurResponse = await imgurResponse.json();
-        setFormInputs({ ...formInputs, imageLink: parseImgurResponse.data.link });
-        setIsImageSubmitted(true);
-      } catch (err) {
-        setIsLoading(false);
-        console.log(err);
-      }
-    }
-  };
-
   const handleDelete = async (e, id) => {
     e.preventDefault();
     setEventChange(true);
@@ -192,37 +163,61 @@ const EditEvent = ({ eventChange, setEventChange, event }) => {
     }
   };
 
+  const handleSubmit = async (e, id) => {
+    e.preventDefault();
+    if (selectedImage) {
+      try {
+        setIsLoading(true);
+        setEventChange(true);
+
+        const imgurHeaders = new Headers();
+        imgurHeaders.append("Authorization", `Client-ID c9152aece7f0dfe`);
+        let formdata = new FormData();
+        formdata.append("image", selectedImage);
+        let requestOptions = {
+          method: "POST",
+          headers: imgurHeaders,
+          body: formdata,
+          redirect: "follow",
+        };
+
+        const imgurResponse = await fetch("https://api.imgur.com/3/image", requestOptions);
+        const parseImgurResponse = await imgurResponse.json();
+        setFormInputs({ ...formInputs, imageLink: parseImgurResponse.data.link });
+        setIsImageSubmitted(true);
+      } catch (err) {
+        setIsLoading(false);
+        console.log(err);
+      }
+    }
+  };
+
+  const submitForm = async () => {
+    try {
+      setEventChange(true);
+      const myHeaders = new Headers();
+      myHeaders.append("Content-Type", "application/json");
+      myHeaders.append("token", localStorage.token);
+
+      const body = { name, price, location, date, attendees, description, rules, details, link, categories, imageLink };
+      const response = await fetch(`/api/events/update/${event.event_id}`, {
+        method: "PUT",
+        headers: myHeaders,
+        body: JSON.stringify(body),
+      });
+      const parseResponse = await response.json();
+      toast.success(parseResponse.message, { theme: "colored" });
+      setEventChange(false);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   useEffect(() => {
     if (event.event_id) {
       fetchCategories();
     } //eslint-disable-next-line
   }, [categoryChange, formInputs]);
-
-  useEffect(() => {
-    async function submitForm() {
-      if (isImageSubmitted) {
-        try {
-          setEventChange(true);
-          const myHeaders = new Headers();
-          myHeaders.append("Content-Type", "application/json");
-          myHeaders.append("token", localStorage.token);
-
-          const body = { name, price, location, date, attendees, description, rules, details, link, categories, imageLink };
-          const response = await fetch(`/api/events/update/${event.event_id}`, {
-            method: "PUT",
-            headers: myHeaders,
-            body: JSON.stringify(body),
-          });
-          const parseResponse = await response.json();
-          toast.success(parseResponse.message, { theme: "colored" });
-          setEventChange(false);
-        } catch (err) {
-          console.log(err);
-        }
-      }
-    }
-    submitForm(); // eslint-disable-next-line
-  }, [isImageSubmitted]);
 
   return (
     <Fragment>
@@ -488,7 +483,17 @@ const EditEvent = ({ eventChange, setEventChange, event }) => {
                 <button type="button" className="btn btn-secondary me-2" data-bs-dismiss="modal" onClick={() => handleFileCancel()}>
                   Cancelar
                 </button>
-                <button type="button" className="btn btn-success" data-bs-dismiss="modal" onClick={(e) => handleSubmit(e, event.event_id)}>
+                <button
+                  type="button"
+                  className="btn btn-success"
+                  data-bs-dismiss="modal"
+                  onClick={(e) => {
+                    if (isImageSubmitted) {
+                      handleSubmit(e, event.event_id);
+                    }
+                    submitForm();
+                  }}
+                >
                   Salvar
                 </button>
               </div>

@@ -18,7 +18,7 @@ router.post("/:id", authorization, async (req, res) => {
 
     const newRegistrations = await pool.query(
       `INSERT INTO registrations (event_id,user_id,category_id,registration_shirt,registration_status) VALUES ($1,$2,$3,$4,$5)`,
-      [id, userId, categoryId, registrationShirt, "complete"]
+      [id, userId, categoryId, registrationShirt, "pending"]
     );
 
     res.status(200).json({ message: "Inscrição realizada com sucesso.", type: "success" });

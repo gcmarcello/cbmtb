@@ -22,6 +22,13 @@ const Registration = ({ userAuthentication, setUserAuthentication, userAdmin, us
     categories: [],
   });
   const { user, event, categories } = registrationInfo;
+
+  const [userRegistration, setUserRegistration] = useState({
+    category: "",
+    shirt: "",
+    rules: false,
+  });
+
   const [stage, setStage] = useState(1);
 
   useEffect(() => {
@@ -52,6 +59,20 @@ const Registration = ({ userAuthentication, setUserAuthentication, userAdmin, us
           Inscrição - <br className="d-block d-lg-none" />
           {event.event_name}
         </h1>
+        <div className="container">
+          <div className="progress my-3" style={{ height: "50px" }}>
+            <div
+              className="progress-bar"
+              role="progressbar"
+              style={{ width: `${stage === 1 ? "33%" : stage === 2 ? "66%" : "100%"}` }}
+              aria-valuenow="25"
+              aria-valuemin="0"
+              aria-valuemax="100"
+            >
+              <h4>{stage === 1 ? "Atleta" : stage === 2 ? "Inscrição" : "Pesquisa"}</h4>
+            </div>
+          </div>
+        </div>
         {stage === 1 ? (
           <UserInfo user={user} registrationInfo={registrationInfo} setRegistrationInfo={setRegistrationInfo} />
         ) : stage === 2 ? (
@@ -61,11 +82,13 @@ const Registration = ({ userAuthentication, setUserAuthentication, userAdmin, us
             categories={categories}
             registrationInfo={registrationInfo}
             setRegistrationInfo={setRegistrationInfo}
+            userRegistration={userRegistration}
+            setUserRegistration={setUserRegistration}
           />
         ) : (
           <div>3</div>
         )}
-        <StageButtons stage={stage} setStage={setStage} />
+        <StageButtons stage={stage} setStage={setStage} userRegistration={userRegistration} />
       </div>
       <Footer />
     </Fragment>

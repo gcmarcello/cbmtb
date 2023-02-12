@@ -5,6 +5,7 @@ import "react-toastify/dist/ReactToastify.css";
 
 // React Components
 // eslint-disable-next-line
+import Payments from "./pages/payment/payments";
 import Register from "./pages/register/register";
 import Login from "./pages/login/login";
 import Dashboard from "./pages/admin/dashboard";
@@ -142,6 +143,29 @@ function App() {
             element={
               userAuthentication ? (
                 <Registration
+                  userAuthentication={userAuthentication}
+                  setUserAuthentication={setUserAuthentication}
+                  userAdmin={userAdmin}
+                  userName={userName}
+                />
+              ) : (
+                <Login
+                  userAuthentication={userAuthentication}
+                  setUserAuthentication={setUserAuthentication}
+                  setUserAdmin={setUserAdmin}
+                  userAdmin={userAdmin}
+                  setUserName={setUserName}
+                  userName={userName}
+                />
+              )
+            }
+          />
+          <Route
+            exact
+            path="/pagamento"
+            element={
+              userAuthentication ? (
+                <Payments
                   userAuthentication={userAuthentication}
                   setUserAuthentication={setUserAuthentication}
                   userAdmin={userAdmin}

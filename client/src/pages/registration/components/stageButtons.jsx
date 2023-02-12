@@ -1,6 +1,6 @@
 import React from "react";
 
-const StageButtons = ({ stage, setStage }) => {
+const StageButtons = ({ stage, setStage, userRegistration }) => {
   return (
     <div className="d-flex justify-content-end ">
       {stage > 1 ? (
@@ -26,6 +26,13 @@ const StageButtons = ({ stage, setStage }) => {
             setStage((prevCount) => prevCount + 1);
           }
         }}
+        disabled={
+          stage === 2 && userRegistration.rules === false
+            ? true
+            : stage === 2 && (!userRegistration.category || !userRegistration.shirt)
+            ? true
+            : false
+        }
       >
         Avançar
       </button>

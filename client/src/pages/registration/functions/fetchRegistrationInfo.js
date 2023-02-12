@@ -5,10 +5,11 @@ export const fetchInformation = async (id) => {
     categories: [],
   };
 
+  const myHeaders = new Headers();
+  myHeaders.append("Content-Type", "application/json");
+  myHeaders.append("token", localStorage.token);
+
   try {
-    const myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-    myHeaders.append("token", localStorage.token);
     const response = await fetch(`/api/users/self`, {
       method: "GET",
       headers: myHeaders,
@@ -26,10 +27,6 @@ export const fetchInformation = async (id) => {
   }
 
   try {
-    const myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-    myHeaders.append("token", localStorage.token);
-
     const response = await fetch(`/api/events/view/${id}`, {
       method: "GET",
       headers: myHeaders,
@@ -47,9 +44,6 @@ export const fetchInformation = async (id) => {
   }
 
   try {
-    const myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-    myHeaders.append("token", localStorage.token);
     const response = await fetch(`/api/categories/${parseResponse.event.event_id}/public`, {
       method: "GET",
       headers: myHeaders,
