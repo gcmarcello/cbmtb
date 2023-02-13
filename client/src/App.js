@@ -164,13 +164,14 @@ function App() {
             exact
             path="/pagamento"
             element={
-              userAuthentication ? (
-                <Payments
-                  userAuthentication={userAuthentication}
-                  setUserAuthentication={setUserAuthentication}
-                  userAdmin={userAdmin}
-                  userName={userName}
-                />
+              <Payments
+                userAuthentication={userAuthentication}
+                setUserAuthentication={setUserAuthentication}
+                userAdmin={userAdmin}
+                userName={userName}
+              />
+              /* userAuthentication ? (
+                
               ) : (
                 <Login
                   userAuthentication={userAuthentication}
@@ -180,7 +181,7 @@ function App() {
                   setUserName={setUserName}
                   userName={userName}
                 />
-              )
+              ) */
             }
           />
         </Routes>
