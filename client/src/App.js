@@ -160,30 +160,7 @@ function App() {
               )
             }
           />
-          <Route
-            exact
-            path="/pagamento"
-            element={
-              <Payments
-                userAuthentication={userAuthentication}
-                setUserAuthentication={setUserAuthentication}
-                userAdmin={userAdmin}
-                userName={userName}
-              />
-              /* userAuthentication ? (
-                
-              ) : (
-                <Login
-                  userAuthentication={userAuthentication}
-                  setUserAuthentication={setUserAuthentication}
-                  setUserAdmin={setUserAdmin}
-                  userAdmin={userAdmin}
-                  setUserName={setUserName}
-                  userName={userName}
-                />
-              ) */
-            }
-          />
+          <Route exact path="/pagamento" element={<Payments />} />
         </Routes>
       </Router>
     </Fragment>
