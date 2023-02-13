@@ -53,9 +53,12 @@ router.post("/create", adminAuthorization, async (req, res) => {
 
     const newEventID = newEvent.rows[0].event_id;
 
-    const categoriesSQL = categories.map((category) => `('${newEventID}','${category.name}','${category.minAge}','${category.maxAge}')`).join(",");
-
-    const newCategories = await pool.query(`INSERT INTO categories (event_id,category_name,category_minage,category_maxage) VALUES ${categoriesSQL}`);
+    const categoriesSQL = categories
+      .map((category) => `('${newEventID}','${category.name}','${category.minAge}','${category.maxAge}', '${category.gender}')`)
+      .join(",");
+    const newCategories = await pool.query(
+      `INSERT INTO categories (event_id,category_name,category_minage,category_maxage,category_gender) VALUES ${categoriesSQL}`
+    );
 
     res.status(200).json({ message: "Evento criado com sucesso!", data: newEvent.rows[0] });
   } catch (err) {

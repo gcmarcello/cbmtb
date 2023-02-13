@@ -1,6 +1,6 @@
 // Library Components
 import React, { useState, useEffect, Fragment } from "react";
-import { useParams, Navigate } from "react-router-dom";
+import { useParams, useNavigate, Navigate } from "react-router-dom";
 import { fetchInformation } from "./functions/fetchRegistrationInfo";
 import { toast } from "react-toastify";
 
@@ -15,6 +15,7 @@ import EventInfo from "./components/eventInfo";
 import StageButtons from "./components/stageButtons";
 
 const Registration = ({ userAuthentication, setUserAuthentication, userAdmin, userName }) => {
+  const navigate = useNavigate();
   const { id } = useParams();
   const [registrationInfo, setRegistrationInfo] = useState({
     user: {},
@@ -31,10 +32,31 @@ const Registration = ({ userAuthentication, setUserAuthentication, userAdmin, us
 
   const [stage, setStage] = useState(1);
 
+  const fetchRegistration = async () => {
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    myHeaders.append("token", localStorage.token);
+    try {
+      const response = await fetch(`/api/registrations/${id}/checkreg`, {
+        method: "GET",
+        headers: myHeaders,
+      });
+      const parseResponse = await response.json();
+      if (parseResponse.type === "error") {
+        toast.error(parseResponse.message, { theme: "colored" });
+        navigate(`/evento/${id}`);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
-    fetchInformation(id).then((data) => {
-      setRegistrationInfo(data);
-    });
+    fetchRegistration().then(
+      fetchInformation(id).then((data) => {
+        setRegistrationInfo(data);
+      })
+    );
   }, [id]);
 
   if (registrationInfo.event.event_status === false) {
@@ -64,7 +86,7 @@ const Registration = ({ userAuthentication, setUserAuthentication, userAdmin, us
             <div
               className="progress-bar"
               role="progressbar"
-              style={{ width: `${stage === 1 ? "33%" : stage === 2 ? "66%" : "100%"}` }}
+              style={{ width: `${stage === 1 ? "50%" : "100%"}` }}
               aria-valuenow="25"
               aria-valuemin="0"
               aria-valuemax="100"
@@ -86,9 +108,9 @@ const Registration = ({ userAuthentication, setUserAuthentication, userAdmin, us
             setUserRegistration={setUserRegistration}
           />
         ) : (
-          <div>3</div>
+          ""
         )}
-        <StageButtons stage={stage} setStage={setStage} userRegistration={userRegistration} />
+        <StageButtons stage={stage} setStage={setStage} userRegistration={userRegistration} id={id} />
       </div>
       <Footer />
     </Fragment>

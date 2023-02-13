@@ -1,6 +1,7 @@
 import React, { Fragment, useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import UserNavigation from "../../utils/userNavigation";
+import { toast } from "react-toastify";
 
 import LoadingScreen from "../../utils/loadingScreen";
 import Footer from "../../utils/footer";

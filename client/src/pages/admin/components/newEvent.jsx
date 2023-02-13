@@ -68,7 +68,7 @@ const NewEvent = ({ eventChange, setEventChange, saveCurrentPanel }) => {
           name: category.categoryName,
           minAge: Number(category.minAge),
           maxAge: Number(category.maxAge),
-          gender: category.categoryGender === "unisex" ? "Unissex" : category.categoryGender === "masc" ? "Masculino" : "Feminino",
+          gender: category.categoryGender,
           index: Number(formInputs.categories.length + 1),
         },
       ],

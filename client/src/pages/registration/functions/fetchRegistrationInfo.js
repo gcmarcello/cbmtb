@@ -1,3 +1,5 @@
+import { toast } from "react-toastify";
+
 export const fetchInformation = async (id) => {
   const parseResponse = {
     user: {},
