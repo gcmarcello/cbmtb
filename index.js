@@ -29,6 +29,8 @@ app.use("/dashboard", express.static(path.join(__dirname, "client/build")));
 app.use("/cadastro/", express.static(path.join(__dirname, "client/build")));
 // View Matches
 app.use("/login/", express.static(path.join(__dirname, "client/build")));
+// View Matches
+app.use("/pagamento", express.static(path.join(__dirname, "client/build")));
 // View Groups
 app.use("/inscricao/*", express.static(path.join(__dirname, "client/build")));
 
