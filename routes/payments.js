@@ -25,6 +25,7 @@ router.get("/pix/", async (req, res) => {
 });
 
 router.get("/bill", async (req, res) => {
+  console.log("Test");
   const reqGN = await reqGNInit;
   const cobResponse = await reqGN.get("/v2/cob?inicio=2023-01-15T16:01:35Z&fim=2023-02-22T23:59:00Z");
   res.json(cobResponse.data);
