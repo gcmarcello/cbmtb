@@ -15,7 +15,7 @@ router.get("/pix/", async (req, res) => {
     valor: {
       original: "1.00",
     },
-    chave: "126bec4a-2eb6-4b79-a045-78db68412899",
+    chave: "abbe6861-4ed1-4567-836f-59c8bc2b08ba",
     solicitacaoPagador: "Cobrança dos serviços prestados.",
   };
 
