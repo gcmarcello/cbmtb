@@ -157,6 +157,35 @@ footer .text-muted:hover {
   background-color: #dc3545 !important;
 }
 
+.share-button {
+  -webkit-transition: all 0.5s ease-in-out;
+  transition: all 0.5s ease-in-out;
+}
+
+#facebook-share:hover {
+  color: #1877f2;
+}
+
+#twitter-share:hover {
+  color: #1d9bf0;
+}
+
+#instagram-share {
+  font-size: 100px;
+  text-align: center;
+  color: #191335;
+  background-image: linear-gradient(45deg, #191335, rgba(131, 58, 180, 1) 45%, rgba(253, 29, 29, 1) 50%, rgba(252, 176, 69, 1) 55%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-size: 2000% 100%;
+  background-position: top left;
+  transition: all 1s ease-in-out;
+}
+
+#instagram-share:hover {
+  background-position: top left 48%;
+}
+
 @media (min-width: 768px) {
   .userbar {
     background-size: cover;

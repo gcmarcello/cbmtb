@@ -3,6 +3,8 @@ const pool = require("../database");
 const authorization = require("./middlewares/authorization");
 const adminAuthorization = require("./middlewares/adminAuthorization");
 
+const { uploadFileToS3 } = require("../apis/awsS3");
+
 // List Events (ADMIN)
 router.get("/list", adminAuthorization, async (req, res) => {
   try {
@@ -44,9 +46,13 @@ router.get("/view/:id", async (req, res) => {
 // Create Event (ADMIN)
 router.post("/create", adminAuthorization, async (req, res) => {
   try {
-    const { name, location, link, imageLink, price, date, attendees, description, rules, details, categories } = req.body;
+    const { name, location, link, base64Image, price, date, attendees, description, rules, details, categories } = req.body;
 
-    const newEvent = await pool.query(
+    const S3Image = await uploadFileToS3(base64Image, "cbmtb");
+
+    console.log(S3Image);
+
+    /* const newEvent = await pool.query(
       "INSERT INTO events (event_name, event_location, event_link, event_image, event_price, event_date, event_max_attendees, event_current_attendees, event_description, event_rules, event_details, event_owner_id, event_status) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13)  RETURNING *",
       [name, location, link, imageLink, Number(price), date, Number(attendees), 0, description, rules, details, req.userId, false]
     );
@@ -59,7 +65,7 @@ router.post("/create", adminAuthorization, async (req, res) => {
     const newCategories = await pool.query(
       `INSERT INTO categories (event_id,category_name,category_minage,category_maxage,category_gender) VALUES ${categoriesSQL}`
     );
-
+ */
     res.status(200).json({ message: "Evento criado com sucesso!", data: newEvent.rows[0] });
   } catch (err) {
     console.log(err.message);

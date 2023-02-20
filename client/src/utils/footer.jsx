@@ -1,6 +1,6 @@
 import React from "react";
 
-const Footer = () => {
+const Footer = ({ userAuthentication }) => {
   return (
     <footer className="footer">
       <div className="container">
@@ -38,28 +38,31 @@ const Footer = () => {
                 </li>
               </ul>
             </div>
-
-            <div className="col-md-7 offset-md-1 mb-3">
-              <form>
-                <h5>Inscreva-se na nossa Newsletter!</h5>
-                <p>Receba as novidades e notícias da Confederação no seu e-mail.</p>
-                <div className="container">
-                  <div className="row p-0">
-                    <div className="col-12 col-lg-8 p-0 mx-1 my-1">
-                      <label htmlFor="newsletter1" className="visually-hidden">
-                        Endereço de Email
-                      </label>
-                      <input id="newsletter1" type="text" className="form-control" placeholder="Endereço de Email" />
-                    </div>
-                    <div className="col-12 col-lg-2 p-0 mx-1 my-1">
-                      <button className="btn btn-success form-control" type="button">
-                        Inscreva-se
-                      </button>
+            {!userAuthentication ? (
+              <div className="col-md-7 offset-md-1 mb-3">
+                <form>
+                  <h5>Inscreva-se na nossa Newsletter!</h5>
+                  <p>Receba as novidades e notícias da Confederação no seu e-mail.</p>
+                  <div className="container">
+                    <div className="row p-0">
+                      <div className="col-12 col-lg-8 p-0 mx-1 my-1">
+                        <label htmlFor="newsletter1" className="visually-hidden">
+                          Endereço de Email
+                        </label>
+                        <input id="newsletter1" type="text" className="form-control" placeholder="Endereço de Email" />
+                      </div>
+                      <div className="col-12 col-lg-2 p-0 mx-1 my-1">
+                        <button className="btn btn-success form-control" type="button">
+                          Inscreva-se
+                        </button>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </form>
-            </div>
+                </form>
+              </div>
+            ) : (
+              ""
+            )}
           </div>
 
           <div className="d-flex flex-column flex-sm-row justify-content-between pt-4 mt-4 border-top">

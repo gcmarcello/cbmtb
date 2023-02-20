@@ -47,12 +47,6 @@ const Login = ({ userAuthentication, setUserAuthentication, setUserAdmin, userAd
 
   return (
     <Fragment>
-      <UserNavigation
-        userAuthentication={userAuthentication}
-        setUserAuthentication={setUserAuthentication}
-        userName={userName}
-        userAdmin={userAdmin}
-      />
       <div className="container inner-page">
         <div className="row my-3 d-flex justify-content-center">
           <div className="col-12 text-center">

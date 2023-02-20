@@ -13,6 +13,7 @@ import Footer from "../../utils/footer";
 import UserInfo from "./components/userInfo";
 import EventInfo from "./components/eventInfo";
 import StageButtons from "./components/stageButtons";
+import Payments from "../payment/payments";
 
 const Registration = ({ userAuthentication, setUserAuthentication, userAdmin, userName }) => {
   const navigate = useNavigate();
@@ -70,12 +71,6 @@ const Registration = ({ userAuthentication, setUserAuthentication, userAdmin, us
 
   return (
     <Fragment>
-      <UserNavigation
-        userAuthentication={userAuthentication}
-        setUserAuthentication={setUserAuthentication}
-        userAdmin={userAdmin}
-        userName={userName}
-      />
       <div className="container inner-page">
         <h1 className="text-center text-justify mb-3">
           Inscrição - <br className="d-block d-lg-none" />
@@ -108,7 +103,7 @@ const Registration = ({ userAuthentication, setUserAuthentication, userAdmin, us
             setUserRegistration={setUserRegistration}
           />
         ) : (
-          ""
+          <Payments id={event.event_id} />
         )}
         <StageButtons stage={stage} setStage={setStage} userRegistration={userRegistration} id={id} />
       </div>

@@ -1,19 +1,23 @@
 import { useEffect, useState, Fragment } from "react";
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 // React Components
 // eslint-disable-next-line
+import UserNavigation from "./utils/userNavigation";
+import UserPanel from "./pages/user/user";
 import Payments from "./pages/payment/payments";
 import Register from "./pages/register/register";
 import Login from "./pages/login/login";
+import Federations from "./pages/federacoes/federations";
 import Dashboard from "./pages/admin/dashboard";
 import LoadingScreen from "./utils/loadingScreen";
 import Home from "./pages/home/home";
 import EventPage from "./pages/event/event";
 import Registration from "./pages/registration/registration";
 import Page404 from "./utils/404";
+import Footer from "./utils/footer";
 
 function App() {
   const [userAuthentication, setUserAuthentication] = useState(false);
@@ -63,6 +67,12 @@ function App() {
         pauseOnHover
         theme="light"
       />
+      {window.location.pathname !== "/dashboard" ? (
+        <UserNavigation userAuthentication={userAuthentication} userName={userName} userAdmin={userAdmin} setUserAdmin={setUserAdmin} />
+      ) : (
+        ""
+      )}
+
       <Router>
         <Routes>
           <Route path="*" element={<Page404 userAuthentication={userAuthentication} setUserAuthentication={setUserAuthentication} />} />
@@ -160,9 +170,29 @@ function App() {
               )
             }
           />
-          <Route exact path="/pagamento" element={<Payments />} />
+          <Route exact path="/pagamento/:linkId" element={<Payments />} />
+          <Route exact path="/federacoes/" element={<Federations />} />
+          <Route
+            exact
+            path="/usuario"
+            element={
+              userAuthentication ? (
+                <UserPanel userAuthentication={userAuthentication} setUserAuthentication={setUserAuthentication} userName={userName} />
+              ) : (
+                <Login
+                  userAuthentication={userAuthentication}
+                  setUserAuthentication={setUserAuthentication}
+                  setUserAdmin={setUserAdmin}
+                  userAdmin={userAdmin}
+                  setUserName={setUserName}
+                  userName={userName}
+                />
+              )
+            }
+          />
         </Routes>
       </Router>
+      {window.location.pathname !== "/dashboard" ? <Footer userAuthentication={userAuthentication} userName={userName} /> : ""}
     </Fragment>
   );
 }

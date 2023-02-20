@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 const StageButtons = ({ stage, setStage, userRegistration, id }) => {
   const navigate = useNavigate();
+
   const createRegistration = async () => {
     try {
       const myHeaders = new Headers();
@@ -23,8 +24,8 @@ const StageButtons = ({ stage, setStage, userRegistration, id }) => {
       parseResponse.type === "success"
         ? toast.success(parseResponse.message, { theme: "colored" })
         : toast.error(parseResponse.message, { theme: "colored" });
-
-      navigate("/");
+      console.log(!!parseResponse.paymentId);
+      navigate(parseResponse.paymentId ? `/pagamento/${parseResponse.paymentId}` : `/usuario/`);
     } catch (error) {
       console.log(error);
     }
@@ -51,7 +52,7 @@ const StageButtons = ({ stage, setStage, userRegistration, id }) => {
         className="btn btn-lg btn-success"
         onClick={() => {
           window.scrollTo(0, 0);
-          if (stage !== 3) {
+          if (stage !== 2) {
             setStage((prevCount) => prevCount + 1);
           } else {
             createRegistration();

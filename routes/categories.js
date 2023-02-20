@@ -40,6 +40,9 @@ router.get("/:id/public", authorization, async (req, res) => {
       "SELECT * FROM categories WHERE (event_id = $1) AND (category_minage <= $2) AND (category_maxage >= $2) AND (category_gender = $3 OR category_gender = 'unisex') ORDER BY category_maxage ASC",
       [id, userAge, userInfo.user_gender]
     );
+    if (!listOfCategories.rows[0]) {
+      res.json({ message: "Esse evento não tem nenhuma categoria disponível para você.", type: "error" });
+    }
     res.json(listOfCategories.rows);
   } catch (err) {
     console.log(err.message);

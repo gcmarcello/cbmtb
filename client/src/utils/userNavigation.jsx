@@ -96,7 +96,7 @@ const UserNavigation = ({ userAuthentication, setUserAuthentication, userName, u
               </ul>
             </li>
             <li className="nav-item">
-              <a className="nav-link" aria-current="page" href="/">
+              <a className="nav-link" aria-current="page" href="/federacoes">
                 Federações
               </a>
             </li>
@@ -138,7 +138,7 @@ const UserNavigation = ({ userAuthentication, setUserAuthentication, userName, u
                     <Fragment />
                   )}
                   <li>
-                    <a className="dropdown-item" href="/">
+                    <a className="dropdown-item" href="/usuario">
                       Minha Página
                     </a>
                   </li>

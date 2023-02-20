@@ -54,43 +54,63 @@ CREATE TABLE categories(
     FOREIGN KEY (event_id) REFERENCES events(event_id)
 );
 
+CREATE TABLE payments(
+    payment_id UUID DEFAULT UUID_generate_v4(),
+    payment_txid VARCHAR(255) NOT NULL UNIQUE,
+    payment_value REAL NOT NULL,
+    user_id UUID NOT NULL,
+    event_id UUID NOT NULL,
+    payment_status VARCHAR(255) NOT NULL,
+    PRIMARY KEY(payment_id),
+    FOREIGN KEY (event_id) REFERENCES events(event_id),
+    FOREIGN KEY (user_id) REFERENCES users(user_id)
+);
+
 CREATE TABLE registrations(
     registration_id UUID DEFAULT UUID_generate_v4(),
     event_id UUID NOT NULL,
     user_id UUID NOT NULL,
     category_id UUID NOT NULL,
-    registration_type VARCHAR(255) NOT NULL,
+    payment_id UUID NOT NULL,
     registration_shirt VARCHAR(255),
     registration_status VARCHAR(255) NOT NULL,
     PRIMARY KEY(registration_id),
     FOREIGN KEY (category_id) REFERENCES categories(category_id),
+    FOREIGN KEY (payment_id) REFERENCES payments(payment_id),
     FOREIGN KEY (event_id) REFERENCES events(event_id),
     FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
 
-CREATE OR REPLACE FUNCTION update_current_attendees_function()
-RETURNS TRIGGER AS $$
+CREATE OR REPLACE FUNCTION update_num_attendees() RETURNS TRIGGER AS $$
 BEGIN
-    DECLARE
-        old_event_id INTEGER;
-        new_event_id INTEGER;
-    BEGIN
-        IF (TG_OP = 'DELETE') THEN
-            old_event_id := OLD.event_id;
-            UPDATE events
-            SET event_current_attendees = (SELECT COUNT(*) FROM registrations WHERE event_id = old_event_id)
-            WHERE event_id = old_event_id;
-        ELSE
-            new_event_id := NEW.event_id;
-            UPDATE events
-            SET event_current_attendees = (SELECT COUNT(*) FROM registrations WHERE event_id = new_event_id)
-            WHERE event_id = new_event_id;
-        END IF;
-        RETURN NULL;
-    END;
-END;
+  -- Update the number of attendees for the corresponding event when a row is inserted into the registration table
+  IF (TG_OP = 'INSERT') THEN
+    UPDATE events
+    SET event_current_attendees = (
+      SELECT COUNT(*)
+      FROM registrations
+      WHERE event_id = NEW.event_id
+    )
+    WHERE event_id = NEW.event_id;
 
-CREATE TRIGGER update_registrations
+    RETURN NEW;
+
+  -- Update the number of attendees for the corresponding event when a row is deleted from the registration table
+  ELSIF (TG_OP = 'DELETE') THEN
+    UPDATE events
+    SET event_current_attendees = (
+      SELECT COUNT(*)
+      FROM registrations
+      WHERE event_id = OLD.event_id
+    )
+    WHERE event_id = OLD.event_id;
+
+    RETURN OLD;
+  END IF;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER update_num_attendees_trigger
 AFTER INSERT OR DELETE ON registrations
 FOR EACH ROW
-EXECUTE PROCEDURE update_registrations_function();
+EXECUTE FUNCTION update_num_attendees();

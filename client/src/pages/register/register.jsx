@@ -236,7 +236,6 @@ const Register = ({ userAuthentication, setUserAuthentication, userName, setUser
 
   return (
     <Fragment>
-      <UserNavigation userAuthentication={userAuthentication} setUserAuthentication={setUserAuthentication} />
       <div className="container inner-page">
         {responseError.message ? (
           <div class="alert alert-danger d-flex align-items-center" role="alert">
