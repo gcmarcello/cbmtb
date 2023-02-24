@@ -1,4 +1,4 @@
-import { React, Fragment, useState } from "react";
+import { React, Fragment } from "react";
 import InputMask from "react-input-mask";
 
 const UserInfo = ({ user, event, categories, registrationInfo, setRegistrationInfo }) => {

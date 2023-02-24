@@ -40,7 +40,7 @@ router.post("/register", registrationValidation, async (req, res) => {
     );
 
     //JWT
-    const token = jwtGenerator(newUser.rows[0].user_id, newUser.rows[0].user_name, newUser.rows[0].user_role);
+    const token = jwtGenerator(newUser.rows[0].user_id, newUser.rows[0].user_name, newUser.rows[0].user_role, newUser.rows[0].user_given_name);
     res.json({ token });
   } catch (err) {
     console.log(err.message);
@@ -58,8 +58,18 @@ router.post("/login", async (req, res) => {
 
   if (await bcrypt.compare(password, userVerification.rows[0].user_password)) {
     try {
-      const token = jwtGenerator(userVerification.rows[0].user_id, userVerification.rows[0].user_name, userVerification.rows[0].user_role);
-      res.json({ token: token, role: userVerification.rows[0].user_role, name: userVerification.rows[0].user_name });
+      const token = jwtGenerator(
+        userVerification.rows[0].user_id,
+        userVerification.rows[0].user_name,
+        userVerification.rows[0].user_role,
+        userVerification.rows[0].user_given_name
+      );
+      res.json({
+        token: token,
+        role: userVerification.rows[0].user_role,
+        name: userVerification.rows[0].user_name,
+        givenName: userVerification.rows[0].user_given_name,
+      });
     } catch (err) {
       console.log(err.message);
       return res.status(500).json("Server Error");
@@ -84,7 +94,7 @@ router.get("/self", authorization, async (req, res) => {
 // Authentication Route
 router.get("/authentication", authorization, async (req, res) => {
   try {
-    res.json({ authentication: true, role: req.userRole, name: req.userName });
+    res.json({ authentication: true, role: req.userRole, name: req.userName, givenName: req.userGivenName });
   } catch (err) {
     res.status(500).json("Server Error");
   }

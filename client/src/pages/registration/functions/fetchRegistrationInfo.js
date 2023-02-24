@@ -1,5 +1,3 @@
-import { toast } from "react-toastify";
-
 export const fetchInformation = async (id) => {
   const parseResponse = {
     user: {},
@@ -29,7 +27,7 @@ export const fetchInformation = async (id) => {
   }
 
   try {
-    const response = await fetch(`/api/events/view/${id}`, {
+    const response = await fetch(`/api/events/${id}`, {
       method: "GET",
       headers: myHeaders,
     });

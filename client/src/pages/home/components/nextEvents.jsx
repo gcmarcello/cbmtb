@@ -6,7 +6,7 @@ const NextEvents = () => {
 
   const getEvents = async (e) => {
     try {
-      const response = await fetch("/api/events/public/list", {
+      const response = await fetch("/api/events/public/", {
         method: "GET",
       });
       const parseResponse = await response.json();
@@ -29,18 +29,18 @@ const NextEvents = () => {
 
   return (
     <Fragment>
-      <div className="container-fluid d-flex flex-column bg-light pt-3">
+      <div className="container-fluid d-flex flex-column pt-3" id="home-next-events">
         <div id="hero-anchor"></div>
         <div className="row">
           <div className="col-12">
             <h1>Próximos Eventos</h1>
-            <div className="d-flex flex-wrap justify-content-center">
+            <div className={`d-flex flex-wrap justify-content-${eventsList > 2 ? "evenly" : "center"}`}>
               {eventsList < 1 ? (
                 <h3>Em breve, mais eventos!</h3>
               ) : (
                 eventsList.map((event) => (
-                  <div key={event.event_id} className="card m-3" style={{ width: "18rem" }}>
-                    <a href={`/evento/${event.event_link}`}>
+                  <div key={event.event_id} className="card main-page-card m-3 shadow-lg" style={{ width: "18rem" }}>
+                    <a href={`/evento/${event.event_link}`} className="stretched-link">
                       <img src={event.event_image} className="card-img-top" alt="..." height={169.73} width={286} />
                     </a>
                     <hr className="my-0" />

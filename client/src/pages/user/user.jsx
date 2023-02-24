@@ -17,7 +17,12 @@ const UserPanel = ({ userAuthentication, userName }) => {
     fetchRegistrations()
       .then((response) => setRegistrations(response))
       .finally(setLoading(false));
+    setLoading(false);
   }, []);
+
+  if (loading) {
+    return <LoadingScreen />;
+  }
 
   return (
     <Fragment>

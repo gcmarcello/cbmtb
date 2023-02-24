@@ -81,6 +81,61 @@ CREATE TABLE registrations(
     FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
 
+CREATE TABLE federations(
+    federation_id UUID DEFAULT UUID_generate_v4(),
+    federation_state VARCHAR(2) NOT NULL UNIQUE,
+    federation_site VARCHAR(255) NOT NULL,
+    federation_phone VARCHAR(255) NOT NULL,
+    federation_address VARCHAR(255) NOT NULL,
+    PRIMARY KEY(federation_id)
+);
+
+CREATE TABLE clubs(
+    club_id UUID DEFAULT UUID_generate_v4(),
+    federation_state VARCHAR(2) NOT NULL UNIQUE,
+    club_site VARCHAR(255) NOT NULL,
+    club_phone VARCHAR(255) NOT NULL,
+    club_address VARCHAR(255) NOT NULL,
+    PRIMARY KEY(federation_id),
+    FOREIGN KEY (federation_state) REFERENCES federation(federation_state)
+);
+
+CREATE TABLE news_categories(
+  category_id UUID DEFAULT UUID_generate_v4(),
+  category_name VARCHAR(20) NOT NULL,
+  PRIMARY KEY (category_id)
+)
+
+CREATE TABLE news(
+    news_id UUID DEFAULT UUID_generate_v4(),
+    news_link VARCHAR(20) NOT NULL UNIQUE,
+    news_title VARCHAR(255) UNIQUE,
+    news_subtitle VARCHAR(255) UNIQUE,
+    news_image_link VARCHAR(255),
+    news_date TIMESTAMP NOT NULL,
+    news_last_update TIMESTAMP NOT NULL,
+    user_id UUID NOT NULL,
+    news_text TEXT NOT NULL,
+    news_category VARCHAR(20) DEFAULT 'Geral',
+    news_status BOOLEAN DEFAULT false;
+    PRIMARY KEY(news_id),
+    FOREIGN KEY (user_id) REFERENCES users(user_id),
+    FOREIGN KEY (news_category) REFERENCES news_categories(category_name)
+);
+
+CREATE TABLE documents(
+    document_id UUID DEFAULT UUID_generate_v4(),
+    document_link VARCHAR(255) NOT NULL UNIQUE,
+    document_title VARCHAR(50) NOT NULL UNIQUE,
+    document_description VARCHAR(255) UNIQUE,
+    document_year INTEGER,
+    document_general BOOLEAN DEFAULT false,
+    user_id UUID NOT NULL,
+    PRIMARY KEY(document_id),
+    FOREIGN KEY (user_id) REFERENCES users(user_id)
+);
+
+
 CREATE OR REPLACE FUNCTION update_num_attendees() RETURNS TRIGGER AS $$
 BEGIN
   -- Update the number of attendees for the corresponding event when a row is inserted into the registration table

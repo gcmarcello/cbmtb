@@ -2,8 +2,6 @@ import React, { Fragment, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import InputMask from "react-input-mask";
 
-import UserNavigation from "../../utils/userNavigation";
-
 const Register = ({ userAuthentication, setUserAuthentication, userName, setUserName }) => {
   const cepSearch = require("cep-promise");
 
@@ -238,8 +236,8 @@ const Register = ({ userAuthentication, setUserAuthentication, userName, setUser
     <Fragment>
       <div className="container inner-page">
         {responseError.message ? (
-          <div class="alert alert-danger d-flex align-items-center" role="alert">
-            <i class="bi bi-exclamation-triangle-fill me-3"></i>
+          <div className="alert alert-danger d-flex align-items-center" role="alert">
+            <i className="bi bi-exclamation-triangle-fill me-3"></i>
             <div>{responseError.message}</div>
           </div>
         ) : (

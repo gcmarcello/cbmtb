@@ -11,7 +11,7 @@ const ListEvents = ({ eventChange, setEventChange, saveCurrentPanel }) => {
       myHeaders.append("Content-Type", "application/json");
       myHeaders.append("token", localStorage.token);
 
-      const response = await fetch("/api/events/list", {
+      const response = await fetch("/api/events/", {
         method: "GET",
         headers: myHeaders,
       });
@@ -56,7 +56,7 @@ const ListEvents = ({ eventChange, setEventChange, saveCurrentPanel }) => {
       <div className="container-fluid mt-3">
         <h1>Lista de Eventos</h1>
         <table className="table table-striped">
-          <thead>
+          <thead className="table-dark">
             <tr>
               <th>Nome</th>
               <th className="d-none d-lg-table-cell">Data</th>
@@ -74,7 +74,7 @@ const ListEvents = ({ eventChange, setEventChange, saveCurrentPanel }) => {
                   <td className="d-none d-lg-table-cell">
                     {event.event_current_attendees}/{event.event_max_attendees}
                   </td>
-                  <td className="d-none d-lg-table-cell">{event.event_status ? "Abertas" : "Fechadas"}</td>
+                  <td className="d-none d-lg-table-cell">{event.event_status ? "Abertas" : "Fechadas"} </td>
                   <td>
                     <EditEvent event={event} setEventChange={setEventChange} />
                     {!event.event_status ? (

@@ -1,23 +1,27 @@
 import React, { Fragment, useState } from "react";
 import { useEffect } from "react";
 import ReactQuill from "react-quill";
-import { modules, formats } from "../../../utils/quillSettings";
+import { modules, formats } from "../../../../utils/quillSettings";
 import { toast } from "react-toastify";
 
-import LoadingScreen from "../../../utils/loadingScreen";
+import LoadingScreen from "../../../../utils/loadingScreen";
+
+import { parseDateToForm, handleChange, handleFileChange, cancelFileUpload, handleDelete } from "../../functions/handleForm";
+import {
+  fetchCategories,
+  createCategoryEditingEvent,
+  deletedSavedCategory,
+  handleCategoryChange,
+  handleNewCategoryChange,
+} from "../../functions/handleCategories";
+import { imageToBase64 } from "../../functions/imageToBase64";
 
 const EditEvent = ({ eventChange, setEventChange, event }) => {
-  let dateToParse = new Date(event.event_date);
-  let dateToParseDay = String(dateToParse.getDate()).padStart(2, 0);
-  let dateToParseMonth = String(dateToParse.getMonth() + 1).padStart(2, 0);
-  let dateToParseYear = String(dateToParse.getFullYear());
-  event.parsedDate = `${dateToParseYear}-${dateToParseMonth}-${dateToParseDay}`;
-
   const [formInputs, setFormInputs] = useState({
     name: event.event_name,
     price: event.event_price,
     location: event.event_location,
-    date: event.parsedDate,
+    date: parseDateToForm(event.event_date),
     attendees: event.event_max_attendees,
     description: event.event_description,
     rules: event.event_rules,
@@ -25,7 +29,7 @@ const EditEvent = ({ eventChange, setEventChange, event }) => {
     link: event.event_link,
     imageLink: event.event_image,
   });
-  const { name, price, location, date, attendees, description, rules, details, link, imageLink } = formInputs; // eslint-disable-next-line
+  const { name, price, location, date, attendees, description, rules, details, link, imageLink } = formInputs;
   const [categories, setCategories] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [newCategory, setNewCategory] = useState({
@@ -37,160 +41,11 @@ const EditEvent = ({ eventChange, setEventChange, event }) => {
   const [categoryChange, setCategoryChange] = useState(false);
   const { categoryName, categoryMinAge, categoryMaxAge, categoryGender } = newCategory;
 
+  // Image Upload States
   const [selectedImage, setSelectedImage] = useState();
   const [imagePreview, setImagePreview] = useState(null);
   const [isImageSelected, setIsImageSelected] = useState(false);
-  const [isImageSubmitted, setIsImageSubmitted] = useState(false);
-
-  const handleChange = (e, type) => {
-    if (type === "text") {
-      setFormInputs({ ...formInputs, [e.target.name]: e.target.value });
-    } else {
-      setFormInputs({ ...formInputs, [type]: e });
-    }
-  };
-
-  const handleFileChange = (e) => {
-    setSelectedImage(e.target.files[0]);
-    setIsImageSelected(true);
-    URL.revokeObjectURL(imagePreview);
-    setImagePreview(URL.createObjectURL(e.target.files[0]));
-  };
-
-  const handleFileCancel = () => {
-    setSelectedImage(null);
-    setImagePreview(null);
-  };
-
-  const handleDelete = async (e, id) => {
-    e.preventDefault();
-    setEventChange(true);
-    try {
-      const myHeaders = new Headers();
-      myHeaders.append("Content-Type", "application/json");
-      myHeaders.append("token", localStorage.token);
-
-      const response = await fetch(`/api/events/delete/${id}`, {
-        method: "DELETE",
-        headers: myHeaders,
-      });
-      setEventChange(false);
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  const createCategory = async (e, id) => {
-    e.preventDefault();
-    setCategoryChange(true);
-    try {
-      setIsLoading(true);
-      const myHeaders = new Headers();
-      myHeaders.append("Content-Type", "application/json");
-      myHeaders.append("token", localStorage.token);
-
-      const body = { categoryName, categoryMinAge, categoryMaxAge, categoryGender };
-
-      const response = await fetch(`/api/categories/${id}`, {
-        method: "POST",
-        headers: myHeaders,
-        body: JSON.stringify(body),
-      });
-      const parseResponse = await response.json();
-      toast.success(parseResponse.message, { theme: "colored" });
-      setNewCategory({
-        categoryName: "",
-        categoryMinAge: "",
-        categoryMaxAge: "",
-        categoryGender: "",
-      });
-    } catch (error) {
-      toast.error(error.message, { theme: "colored" });
-    } finally {
-      setCategoryChange(false);
-      setIsLoading(false);
-    }
-  };
-
-  const fetchCategories = async () => {
-    try {
-      const myHeaders = new Headers();
-      myHeaders.append("Content-Type", "application/json");
-      myHeaders.append("token", localStorage.token);
-      const response = await fetch(`/api/categories/${event.event_id}`, {
-        method: "GET",
-        headers: myHeaders,
-      });
-      const parseResponse = await response.json();
-      setCategories(parseResponse);
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  const handleCategoryChange = (e, categoryId) => {
-    const updatedCategories = categories.map((category) => {
-      if (category.category_id === categoryId) {
-        return { ...category, [e.target.name]: e.target.value };
-      }
-      return category;
-    });
-    setCategories(updatedCategories);
-  };
-
-  const handleNewCategoryChange = (e) => {
-    setNewCategory({ ...newCategory, [e.target.name]: e.target.value });
-  };
-
-  const handleDeleteCategory = async (e, id) => {
-    e.preventDefault();
-    setEventChange(true);
-    try {
-      const myHeaders = new Headers();
-      myHeaders.append("Content-Type", "application/json");
-      myHeaders.append("token", localStorage.token);
-      const response = await fetch(`/api/categories/${id}`, {
-        method: "DELETE",
-        headers: myHeaders,
-      });
-      const parseResponse = await response.json();
-      setCategories(categories.filter((category) => category.category_id !== id));
-      toast.success(parseResponse.message, { theme: "colored" });
-      setEventChange(false);
-    } catch (err) {
-      toast.error(err.message, { theme: "colored" });
-      console.log(err);
-    }
-  };
-
-  const handleSubmit = async (e, id) => {
-    e.preventDefault();
-    if (selectedImage) {
-      try {
-        setIsLoading(true);
-        setEventChange(true);
-
-        const imgurHeaders = new Headers();
-        imgurHeaders.append("Authorization", `Client-ID c9152aece7f0dfe`);
-        let formdata = new FormData();
-        formdata.append("image", selectedImage);
-        let requestOptions = {
-          method: "POST",
-          headers: imgurHeaders,
-          body: formdata,
-          redirect: "follow",
-        };
-
-        const imgurResponse = await fetch("https://api.imgur.com/3/image", requestOptions);
-        const parseImgurResponse = await imgurResponse.json();
-        setFormInputs({ ...formInputs, imageLink: parseImgurResponse.data.link });
-        setIsImageSubmitted(true);
-      } catch (err) {
-        setIsLoading(false);
-        console.log(err);
-      }
-    }
-  };
+  const [base64Image, setBase64Image] = useState(null);
 
   const submitForm = async () => {
     try {
@@ -199,14 +54,18 @@ const EditEvent = ({ eventChange, setEventChange, event }) => {
       myHeaders.append("Content-Type", "application/json");
       myHeaders.append("token", localStorage.token);
 
-      const body = { name, price, location, date, attendees, description, rules, details, link, categories, imageLink };
-      const response = await fetch(`/api/events/update/${event.event_id}`, {
+      const body = { name, price, location, date, attendees, description, rules, details, link, categories, base64Image };
+      const response = await fetch(`/api/events/${event.event_id}`, {
         method: "PUT",
         headers: myHeaders,
         body: JSON.stringify(body),
       });
       const parseResponse = await response.json();
-      toast.success(parseResponse.message, { theme: "colored" });
+      if (parseResponse.type === "success") {
+        toast.success(parseResponse.message, { theme: "colored" });
+      } else {
+        toast.error(parseResponse.message, { theme: "colored" });
+      }
       setEventChange(false);
     } catch (err) {
       console.log(err);
@@ -215,9 +74,17 @@ const EditEvent = ({ eventChange, setEventChange, event }) => {
 
   useEffect(() => {
     if (event.event_id) {
-      fetchCategories();
+      fetchCategories(event.event_id, setCategories);
     } //eslint-disable-next-line
   }, [categoryChange, formInputs]);
+
+  useEffect(() => {
+    if (isImageSelected) {
+      imageToBase64(selectedImage).then((data) => {
+        setBase64Image(data.image);
+      });
+    }
+  }, [selectedImage, isImageSelected]);
 
   return (
     <Fragment>
@@ -242,7 +109,14 @@ const EditEvent = ({ eventChange, setEventChange, event }) => {
             <div className="modal-body">
               <form>
                 <label htmlFor="name">Nome do Evento</label>
-                <input type="text" id="name" name="name" className="form-control" value={name} onChange={(e) => handleChange(e, "text")} />
+                <input
+                  type="text"
+                  id="name"
+                  name="name"
+                  className="form-control"
+                  value={name}
+                  onChange={(e) => handleChange(e, "text", formInputs, setFormInputs)}
+                />
                 <label htmlFor="location">Local do Evento</label>
                 <input
                   type="text"
@@ -250,7 +124,7 @@ const EditEvent = ({ eventChange, setEventChange, event }) => {
                   name="location"
                   className="form-control"
                   value={location}
-                  onChange={(e) => handleChange(e, "text")}
+                  onChange={(e) => handleChange(e, "text", formInputs, setFormInputs)}
                 />
                 <label htmlFor="price">Link do evento</label>
                 <div className="input-group">
@@ -263,21 +137,28 @@ const EditEvent = ({ eventChange, setEventChange, event }) => {
                     name="link"
                     className="form-control"
                     value={link}
-                    onChange={(e) => handleChange(e, "text")}
+                    onChange={(e) => handleChange(e, "text", formInputs, setFormInputs)}
                     placeholder="evento"
                     maxLength={20}
                   />
                 </div>
-                <label htmlFor="selectedImage">Imagem do Evento</label>
-                <img src={imagePreview ? imagePreview : imageLink} alt="" className="img-fluid my-2" />
-                <input
-                  className="form-control"
-                  type="file"
-                  accept="image/*"
-                  name="selectedImage"
-                  id="selectedImage"
-                  onChange={(e) => handleFileChange(e)}
-                />
+                <div className="d-flex flex-column">
+                  <label htmlFor="selectedImage">Imagem do Evento</label>
+                  <img
+                    src={imagePreview ? imagePreview : imageLink}
+                    alt=""
+                    className="img-fluid my-2"
+                    style={{ width: "100%", maxWidth: "800px", maxHeight: "475px" }}
+                  />
+                  <input
+                    className="form-control"
+                    type="file"
+                    accept="image/*"
+                    name="selectedImage"
+                    id="selectedImage"
+                    onChange={(e) => handleFileChange(e, setSelectedImage, setIsImageSelected, imagePreview, setImagePreview)}
+                  />
+                </div>
                 <label htmlFor="price">Preço da Inscrição</label>
                 <div className="input-group">
                   <span className="input-group-text" id="basic-addon1">
@@ -289,13 +170,20 @@ const EditEvent = ({ eventChange, setEventChange, event }) => {
                     name="price"
                     className="form-control"
                     value={price}
-                    onChange={(e) => handleChange(e, "text")}
+                    onChange={(e) => handleChange(e, "text", formInputs, setFormInputs)}
                     placeholder="100"
                   />
                   <span className="input-group-text">,00</span>
                 </div>
                 <label htmlFor="date">Data</label>
-                <input type="date" id="date" name="date" className="form-control" value={date} onChange={(e) => handleChange(e, "text")} />
+                <input
+                  type="date"
+                  id="date"
+                  name="date"
+                  className="form-control"
+                  value={date}
+                  onChange={(e) => handleChange(e, "text", formInputs, setFormInputs)}
+                />
                 <label htmlFor="price">Número de Participantes</label>
                 <div className="input-group">
                   <span className="input-group-text" id="basic-addon1">
@@ -307,7 +195,7 @@ const EditEvent = ({ eventChange, setEventChange, event }) => {
                     name="attendees"
                     className="form-control"
                     value={attendees}
-                    onChange={(e) => handleChange(e, "text")}
+                    onChange={(e) => handleChange(e, "text", formInputs, setFormInputs)}
                     placeholder="Número máximo (ex. 1000)"
                   />
                 </div>
@@ -322,16 +210,28 @@ const EditEvent = ({ eventChange, setEventChange, event }) => {
                   id="description"
                   name="description"
                   value={description}
-                  onChange={(e) => handleChange(e, "description")}
+                  onChange={(e) => handleChange(e, "description", formInputs, setFormInputs)}
                 />
                 <label htmlFor="rules" className="form-label">
                   Regulamento
                 </label>
-                <ReactQuill theme="snow" id="rules" name="rules" value={rules} onChange={(e) => handleChange(e, "rules")} />
+                <ReactQuill
+                  theme="snow"
+                  id="rules"
+                  name="rules"
+                  value={rules}
+                  onChange={(e) => handleChange(e, "rules", formInputs, setFormInputs)}
+                />
                 <label htmlFor="details" className="form-label">
                   Detalhes
                 </label>
-                <ReactQuill theme="snow" id="details" name="details" value={details} onChange={(e) => handleChange(e, "details")} />
+                <ReactQuill
+                  theme="snow"
+                  id="details"
+                  name="details"
+                  value={details}
+                  onChange={(e) => handleChange(e, "details", formInputs, setFormInputs)}
+                />
                 <hr />
                 <h4>Categorias</h4>
                 <div className="container-fluid">
@@ -348,7 +248,7 @@ const EditEvent = ({ eventChange, setEventChange, event }) => {
                             name="categoryName"
                             className="form-control"
                             value={categoryName}
-                            onChange={(e) => handleNewCategoryChange(e)}
+                            onChange={(e) => handleNewCategoryChange(e, setNewCategory, newCategory)}
                           />
                         </div>
                         <div className="col-2">
@@ -359,7 +259,7 @@ const EditEvent = ({ eventChange, setEventChange, event }) => {
                             name="categoryMinAge"
                             className="form-control"
                             value={categoryMinAge}
-                            onChange={(e) => handleNewCategoryChange(e)}
+                            onChange={(e) => handleNewCategoryChange(e, setNewCategory, newCategory)}
                           />
                         </div>
                         <div className="col-2">
@@ -370,7 +270,7 @@ const EditEvent = ({ eventChange, setEventChange, event }) => {
                             name="categoryMaxAge"
                             className="form-control"
                             value={categoryMaxAge}
-                            onChange={(e) => handleNewCategoryChange(e)}
+                            onChange={(e) => handleNewCategoryChange(e, setNewCategory, newCategory)}
                           />
                         </div>
                         <div className="col-3">
@@ -380,7 +280,7 @@ const EditEvent = ({ eventChange, setEventChange, event }) => {
                             id="categoryGender"
                             name="categoryGender"
                             value={categoryGender}
-                            onChange={(e) => handleNewCategoryChange(e)}
+                            onChange={(e) => handleNewCategoryChange(e, setNewCategory, newCategory)}
                           >
                             <option value="" disabled={true}>
                               Selecione
@@ -393,7 +293,22 @@ const EditEvent = ({ eventChange, setEventChange, event }) => {
                       </div>
                       <div className="row my-3">
                         <div className="col-12">
-                          <button className="btn btn-success form-control" onClick={(e) => createCategory(e, event.event_id)}>
+                          <button
+                            className="btn btn-success form-control"
+                            onClick={(e) =>
+                              createCategoryEditingEvent(
+                                e,
+                                event.event_id,
+                                setIsLoading,
+                                setNewCategory,
+                                setCategoryChange,
+                                categoryName,
+                                categoryMinAge,
+                                categoryMaxAge,
+                                categoryGender
+                              )
+                            }
+                          >
                             Criar Categoria
                           </button>
                         </div>
@@ -420,7 +335,7 @@ const EditEvent = ({ eventChange, setEventChange, event }) => {
                                         name="category_name"
                                         value={category.category_name}
                                         className="form-control"
-                                        onChange={(e) => handleCategoryChange(e, category.category_id)}
+                                        onChange={(e) => handleCategoryChange(e, category.category_id, categories, setCategories)}
                                       />
                                     </div>
                                   </td>
@@ -430,7 +345,7 @@ const EditEvent = ({ eventChange, setEventChange, event }) => {
                                       name="category_minage"
                                       value={category.category_minage}
                                       className="form-control"
-                                      onChange={(e) => handleCategoryChange(e, category.category_id)}
+                                      onChange={(e) => handleCategoryChange(e, category.category_id, categories, setCategories)}
                                     />
                                   </td>
                                   <td>
@@ -439,7 +354,7 @@ const EditEvent = ({ eventChange, setEventChange, event }) => {
                                       name="category_maxage"
                                       value={category.category_maxage}
                                       className="form-control"
-                                      onChange={(e) => handleCategoryChange(e, category.category_id)}
+                                      onChange={(e) => handleCategoryChange(e, category.category_id, categories, setCategories)}
                                     />
                                   </td>
                                   <td>
@@ -449,7 +364,7 @@ const EditEvent = ({ eventChange, setEventChange, event }) => {
                                       id={`${category.category_id}-gender`}
                                       name="category_gender"
                                       value={category.category_gender}
-                                      onChange={(e) => handleCategoryChange(e, category.category_id)}
+                                      onChange={(e) => handleCategoryChange(e, category.category_id, categories, setCategories)}
                                     >
                                       <option value="masc">Masc.</option>
                                       <option value="fem">Fem.</option>
@@ -457,7 +372,10 @@ const EditEvent = ({ eventChange, setEventChange, event }) => {
                                     </select>
                                   </td>
                                   <td className="text-center">
-                                    <button className="btn btn-danger" onClick={(e) => handleDeleteCategory(e, category.category_id)}>
+                                    <button
+                                      className="btn btn-danger"
+                                      onClick={(e) => deletedSavedCategory(e, category.category_id, categories, setCategories)}
+                                    >
                                       <i className="bi bi-x-circle"></i>
                                     </button>
                                   </td>
@@ -475,12 +393,22 @@ const EditEvent = ({ eventChange, setEventChange, event }) => {
 
             <div className="modal-footer justify-content-between">
               <div>
-                <button type="button" className="btn btn-danger" data-bs-dismiss="modal" onClick={(e) => handleDelete(e, event.event_id)}>
+                <button
+                  type="button"
+                  className="btn btn-danger"
+                  data-bs-dismiss="modal"
+                  onClick={(e) => handleDelete(e, event.event_id, setEventChange)}
+                >
                   Remover Evento
                 </button>
               </div>
               <div>
-                <button type="button" className="btn btn-secondary me-2" data-bs-dismiss="modal" onClick={() => handleFileCancel()}>
+                <button
+                  type="button"
+                  className="btn btn-secondary me-2"
+                  data-bs-dismiss="modal"
+                  onClick={() => cancelFileUpload(setSelectedImage, setImagePreview)}
+                >
                   Cancelar
                 </button>
                 <button
@@ -488,9 +416,6 @@ const EditEvent = ({ eventChange, setEventChange, event }) => {
                   className="btn btn-success"
                   data-bs-dismiss="modal"
                   onClick={(e) => {
-                    if (isImageSubmitted) {
-                      handleSubmit(e, event.event_id);
-                    }
                     submitForm();
                   }}
                 >

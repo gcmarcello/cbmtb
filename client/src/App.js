@@ -1,5 +1,5 @@
 import { useEffect, useState, Fragment } from "react";
-import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -15,6 +15,7 @@ import Dashboard from "./pages/admin/dashboard";
 import LoadingScreen from "./utils/loadingScreen";
 import Home from "./pages/home/home";
 import EventPage from "./pages/event/event";
+import NewsPage from "./pages/news/news";
 import Registration from "./pages/registration/registration";
 import Page404 from "./utils/404";
 import Footer from "./utils/footer";
@@ -36,7 +37,7 @@ function App() {
         headers: myHeaders,
       });
       const parseData = await res.json();
-      setUserName(parseData.name);
+      setUserName(parseData.givenName);
       parseData.authentication === true ? setUserAuthentication(true) : setUserAuthentication(false);
       parseData.role === "admin" ? setUserAdmin(true) : setUserAdmin(false);
       setLoading(false);
@@ -172,6 +173,7 @@ function App() {
           />
           <Route exact path="/pagamento/:linkId" element={<Payments />} />
           <Route exact path="/federacoes/" element={<Federations />} />
+          <Route exact path="/noticias/:title" element={<NewsPage />} />
           <Route
             exact
             path="/usuario"

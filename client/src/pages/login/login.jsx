@@ -1,7 +1,5 @@
 import React, { Fragment, useState } from "react";
 
-import UserNavigation from "../../utils/userNavigation";
-
 const Login = ({ userAuthentication, setUserAuthentication, setUserAdmin, userAdmin, setUserName, userName }) => {
   const [loginInputs, setLoginInputs] = useState({
     username: "",
@@ -32,7 +30,7 @@ const Login = ({ userAuthentication, setUserAuthentication, setUserAdmin, userAd
       const parseData = await res.json();
       if (parseData.token) {
         localStorage.setItem("token", parseData.token);
-        setUserName(parseData.name);
+        setUserName(parseData.givenName);
         setUserAuthentication(true);
         parseData.role === "admin" ? setUserAdmin(true) : setUserAdmin(false);
         setError(null);
@@ -47,17 +45,33 @@ const Login = ({ userAuthentication, setUserAuthentication, setUserAdmin, userAd
 
   return (
     <Fragment>
-      <div className="container inner-page">
+      <div className="container inner-page ">
+        <div className="col-12 text-center">
+          <h1>Entrar</h1>
+        </div>
         <div className="row my-3 d-flex justify-content-center">
-          <div className="col-12 text-center">
-            <h1>Entrar</h1>
-          </div>
-          <div className="col-10 col-sm-8 col-lg-6">
+          <div className="col-10 col-lg-5">
             <form>
               <label htmlFor="username">Usuário</label>
-              <input type="text" id="username" name="username" className="form-control mb-3" value={username} onChange={(e) => handleChange(e)} />
+              <input
+                type="text"
+                id="username"
+                name="username"
+                className="form-control mb-3"
+                value={username}
+                onChange={(e) => handleChange(e)}
+                style={{ background: "url('/icons/person.svg') 10px 10px no-repeat", textIndent: "25px" }}
+              />
               <label htmlFor="username">Senha</label>
-              <input type="password" id="password" name="password" className="form-control mb-3" value={password} onChange={(e) => handleChange(e)} />
+              <input
+                type="password"
+                id="password"
+                name="password"
+                className="form-control mb-3"
+                value={password}
+                onChange={(e) => handleChange(e)}
+                style={{ background: "url('/icons/shield.svg') 10px 10px no-repeat", textIndent: "25px" }}
+              />
               <hr />
               <button className="btn btn-success form-control mb-3" onClick={(e) => handleSubmit(e)}>
                 Login
@@ -71,6 +85,17 @@ const Login = ({ userAuthentication, setUserAuthentication, setUserAdmin, userAd
                 <Fragment />
               )}
             </form>
+          </div>
+          <div className="col-1 d-flex justify-content-center">
+            <div className="vr h-100"></div>
+          </div>
+          <div className="col-10 col-lg-5">
+            <div className="d-flex flex-column justify-content-center align-items-center h-100">
+              <p>Ainda não tem cadastro? Clique no botão abaixo!</p>
+              <a href="/cadastro" role={"button"} className="btn btn-success px-5">
+                Cadastrar-se
+              </a>
+            </div>
           </div>
         </div>
       </div>

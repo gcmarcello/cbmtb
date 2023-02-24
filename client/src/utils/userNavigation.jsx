@@ -35,37 +35,9 @@ const UserNavigation = ({ userAuthentication, setUserAuthentication, userName, u
               </a>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="/">
-                Filiação
-              </a>
-            </li>
-            <li className="nav-item dropdown">
-              <a className="nav-link dropdown-toggle" href="/" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <a className="nav-link" href="/transparencia">
                 Transparência
               </a>
-              <ul className="dropdown-menu" aria-labelledby="navbarDropdown">
-                <li>
-                  <a className="dropdown-item" href="/">
-                    Confederação
-                  </a>
-                </li>
-                <li>
-                  <hr className="dropdown-divider w-100" />
-                </li>
-                <li>
-                  <a className="dropdown-item" href="/">
-                    Atletas
-                  </a>
-                </li>
-                <li>
-                  <hr className="dropdown-divider" />
-                </li>
-                <li>
-                  <a className="dropdown-item" href="/">
-                    Something else here
-                  </a>
-                </li>
-              </ul>
             </li>
             <li className="nav-item dropdown">
               <a className="nav-link dropdown-toggle" href="/" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -95,11 +67,11 @@ const UserNavigation = ({ userAuthentication, setUserAuthentication, userName, u
                 </li>
               </ul>
             </li>
-            <li className="nav-item">
+            {/* <li className="nav-item">
               <a className="nav-link" aria-current="page" href="/federacoes">
                 Federações
               </a>
-            </li>
+            </li> */}
             <li className="nav-item dropdown">
               <a className="nav-link dropdown-toggle" href="/" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                 Contato
@@ -121,16 +93,23 @@ const UserNavigation = ({ userAuthentication, setUserAuthentication, userName, u
               </ul>
             </li>
             {userAuthentication ? (
-              <li className="nav-item dropdown">
-                <a className="nav-link dropdown-toggle" href="/" id="navbarprofile" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                  <i className="bi bi-person-circle"></i> <span className="fw-semibold p-2">{userName}</span>
+              <li className="nav-item dropdown border rounded border-white border-1 rounded">
+                <a
+                  className="nav-link dropdown-toggle mx-3 mx-lg-0"
+                  href="/"
+                  id="navbarprofile"
+                  role="button"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                >
+                  <i className="bi bi-person-circle fs-3" style={{ verticalAlign: "middle" }}></i> <span className="fw-semibold p-2">{userName}</span>
                 </a>
 
-                <ul className="dropdown-menu user-dropdown" aria-labelledby="navbarDropdown">
+                <ul className="dropdown-menu" aria-labelledby="navbarDropdown">
                   {userAdmin ? (
                     <li>
                       <a className="dropdown-item" href="/dashboard">
-                        Painel de Administrador
+                        Administrativo
                       </a>
                       <hr className="dropdown-divider" />
                     </li>
@@ -150,9 +129,9 @@ const UserNavigation = ({ userAuthentication, setUserAuthentication, userName, u
                   <li>
                     <hr className="dropdown-divider" />
                   </li>
-                  <li className="">
+                  <li className="d-flex">
                     <button
-                      className="btn btn-danger mx-3 px-5 flex-md-fill"
+                      className="btn btn-danger flex-fill mx-1"
                       onClick={() => {
                         handleLogout();
                       }}

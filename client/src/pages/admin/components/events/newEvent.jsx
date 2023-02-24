@@ -3,16 +3,17 @@ import React, { Fragment, useState } from "react";
 import { useEffect } from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
-import { modules, formats } from "../../../utils/quillSettings";
+import { modules, formats } from "../../../../utils/quillSettings";
 import { toast } from "react-toastify";
 
 // Components
-import loadingScreen from "../../../utils/loadingScreen";
+import LoadingScreen from "../../../../utils/loadingScreen";
 
 // Functions
-import { imageToBase64 } from "../functions/imageToBase64";
-import { handleCategoryChange, handleCategorySubmit, deleteCategory } from "../functions/handleCategories";
-import { handleFileChange, handleChange, resetForm, handleSubmit } from "../functions/handleForm";
+import { imageToBase64 } from "../../functions/imageToBase64";
+import { handleNewCategoryChange, handleCategorySubmit, deleteCategory } from "../../functions/handleCategories";
+import { handleFileChange, handleChange, resetForm } from "../../functions/handleForm";
+import ImagePreview from "../imagePreview";
 
 const NewEvent = ({ eventChange, setEventChange, saveCurrentPanel }) => {
   const [formInputs, setFormInputs] = useState({
@@ -28,7 +29,7 @@ const NewEvent = ({ eventChange, setEventChange, saveCurrentPanel }) => {
     details: "",
     categories: [],
   });
-  const { name, link, price, imageLink, location, date, attendees, description, rules, details, categories } = formInputs;
+  const { name, link, price, location, date, attendees, description, rules, details, categories } = formInputs;
   const [category, setCategory] = useState({
     categoryName: "",
     minAge: "",
@@ -36,59 +37,52 @@ const NewEvent = ({ eventChange, setEventChange, saveCurrentPanel }) => {
     categoryGender: "",
   });
   const { categoryName, minAge, maxAge, categoryGender } = category;
+
+  // Image Upload States
   const [selectedImage, setSelectedImage] = useState();
   const [isImageSelected, setIsImageSelected] = useState(false);
   const [imagePreview, setImagePreview] = useState(null);
-  const [isImageSubmitted, setIsImageSubmitted] = useState(false);
   const [base64Image, setBase64Image] = useState(null);
-
   const [isLoading, setIsLoading] = useState(false);
-
-  const config = {
-    bucketName: "cbmtb",
-    dirName: "eventphotos" /* optional */,
-    region: "sa-east-1",
-    accessKeyId: process.env.REACT_APP_S3_ACCESS_KEY,
-    secretAccessKey: process.env.REACT_APP_S3_SECRET_KEY,
-  };
 
   useEffect(() => {
     imageToBase64(selectedImage).then((data) => {
-      setBase64Image(data);
+      setBase64Image(data.image);
     });
   }, [selectedImage]);
 
-  useEffect(() => {
-    async function submitForm() {
-      if (isImageSubmitted) {
-        try {
-          const body = { name, location, link, base64Image, price, date, attendees, description, rules, details, categories };
+  async function submitForm(e) {
+    e.preventDefault();
+    setIsLoading(true);
+    try {
+      const body = { name, location, link, base64Image, price, date, attendees, description, rules, details, categories };
 
-          const myHeaders = new Headers();
-          myHeaders.append("Content-Type", "application/json");
-          myHeaders.append("token", localStorage.token);
+      const myHeaders = new Headers();
+      myHeaders.append("Content-Type", "application/json");
+      myHeaders.append("token", localStorage.token);
 
-          let requestOptions = {
-            method: "POST",
-            headers: myHeaders,
-            body: JSON.stringify(body),
-          };
+      let requestOptions = {
+        method: "POST",
+        headers: myHeaders,
+        body: JSON.stringify(body),
+      };
 
-          const response = await fetch("/api/events/create", requestOptions); // eslint-disable-next-line
-          const parseResponse = await response.json();
-          setEventChange(false);
-          resetForm("event", formInputs, setFormInputs, category, setCategory);
-          saveCurrentPanel("ListEvents");
-          toast.success(parseResponse.message, { theme: "colored" });
-        } catch (error) {
-          toast.error(error.message, { theme: "colored" });
-          console.log(error);
-        }
-        setIsLoading(false);
-      }
+      const response = await fetch("/api/events/", requestOptions); // eslint-disable-next-line
+      const parseResponse = await response.json();
+      setEventChange(false);
+      resetForm("event", formInputs, setFormInputs, category, setCategory);
+      saveCurrentPanel("ListEvents");
+      toast.success(parseResponse.message, { theme: "colored" });
+    } catch (error) {
+      toast.error(error.message, { theme: "colored" });
+      console.log(error);
     }
-    submitForm(); // eslint-disable-next-line
-  }, [isImageSubmitted]);
+    setIsLoading(false);
+  }
+
+  if (isLoading) {
+    return <LoadingScreen />;
+  }
 
   return (
     <Fragment>
@@ -163,31 +157,7 @@ const NewEvent = ({ eventChange, setEventChange, saveCurrentPanel }) => {
               <small id="userHelp" className="form-text text-muted">
                 O tamanho indicado é de 800x475.
               </small>
-
-              {isImageSelected ? (
-                <div className="modal fade" id="eventImageModal" tabIndex="-1" aria-labelledby="eventImageModalLabel" aria-hidden="true">
-                  <div className="modal-dialog">
-                    <div className="modal-content">
-                      <div className="modal-header">
-                        <h5 className="modal-title" id="eventImageModalLabel">
-                          Preview da Imagem
-                        </h5>
-                        <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                      </div>
-                      <div className="modal-body">
-                        <img src={imagePreview} alt="Imagem do Evento" style={{ maxWidth: "100%" }} />
-                      </div>
-                      <div className="modal-footer">
-                        <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">
-                          Fechar
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ) : (
-                ""
-              )}
+              <ImagePreview isImageSelected={isImageSelected} imagePreview={imagePreview} modalId={"eventImageModalLabel"} />
             </div>
             <div className="col-12 col-lg-3 my-1">
               <label htmlFor="price">Preço</label>
@@ -294,7 +264,7 @@ const NewEvent = ({ eventChange, setEventChange, saveCurrentPanel }) => {
                 id="categoryName"
                 value={categoryName}
                 className="form-control"
-                onChange={(e) => handleCategoryChange(category, setCategory, e)}
+                onChange={(e) => handleNewCategoryChange(e, setCategory, category)}
               />
             </div>
             <div className="col-6 col-lg-2 mt-2 mt-lg-0">
@@ -309,7 +279,7 @@ const NewEvent = ({ eventChange, setEventChange, saveCurrentPanel }) => {
                 className="form-control"
                 min={1}
                 max={120}
-                onChange={(e) => handleCategoryChange(category, setCategory, e)}
+                onChange={(e) => handleNewCategoryChange(e, setCategory, category)}
               />
             </div>
             <div className="col-6 col-lg-2 mt-2 mt-lg-0">
@@ -322,7 +292,7 @@ const NewEvent = ({ eventChange, setEventChange, saveCurrentPanel }) => {
                 id="categoryMaxAge"
                 value={maxAge}
                 className="form-control"
-                onChange={(e) => handleCategoryChange(category, setCategory, e)}
+                onChange={(e) => handleNewCategoryChange(e, setCategory, category)}
               />
             </div>
             <div className="col-12 col-lg-3 mt-2 mt-lg-0">
@@ -335,7 +305,7 @@ const NewEvent = ({ eventChange, setEventChange, saveCurrentPanel }) => {
                 id="categoryGender"
                 name="categoryGender"
                 value={categoryGender}
-                onChange={(e) => handleCategoryChange(category, setCategory, e)}
+                onChange={(e) => handleNewCategoryChange(e, setCategory, category)}
               >
                 <option value="" disabled={true}>
                   Selecione
@@ -394,7 +364,7 @@ const NewEvent = ({ eventChange, setEventChange, saveCurrentPanel }) => {
             </div>
           </div>
           <div className="d-flex justify-content-end">
-            <button className="btn btn-success my-3" onClick={(e) => handleSubmit(e, setIsLoading, setEventChange, setIsImageSubmitted)}>
+            <button className="btn btn-success my-3" onClick={(e) => submitForm(e)}>
               Criar Evento
             </button>
           </div>

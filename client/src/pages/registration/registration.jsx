@@ -5,7 +5,6 @@ import { fetchInformation } from "./functions/fetchRegistrationInfo";
 import { toast } from "react-toastify";
 
 // General Components
-import UserNavigation from "../../utils/userNavigation";
 import LoadingScreen from "../../utils/loadingScreen";
 import Footer from "../../utils/footer";
 
@@ -33,32 +32,31 @@ const Registration = ({ userAuthentication, setUserAuthentication, userAdmin, us
 
   const [stage, setStage] = useState(1);
 
-  const fetchRegistration = async () => {
-    const myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-    myHeaders.append("token", localStorage.token);
-    try {
-      const response = await fetch(`/api/registrations/${id}/checkreg`, {
-        method: "GET",
-        headers: myHeaders,
-      });
-      const parseResponse = await response.json();
-      if (parseResponse.type === "error") {
-        toast.error(parseResponse.message, { theme: "colored" });
-        navigate(`/evento/${id}`);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   useEffect(() => {
+    const fetchRegistration = async () => {
+      const myHeaders = new Headers();
+      myHeaders.append("Content-Type", "application/json");
+      myHeaders.append("token", localStorage.token);
+      try {
+        const response = await fetch(`/api/registrations/${id}/checkreg`, {
+          method: "GET",
+          headers: myHeaders,
+        });
+        const parseResponse = await response.json();
+        if (parseResponse.type === "error") {
+          toast.error(parseResponse.message, { theme: "colored" });
+          navigate(`/evento/${id}`);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
     fetchRegistration().then(
       fetchInformation(id).then((data) => {
         setRegistrationInfo(data);
       })
     );
-  }, [id]);
+  }, [id, navigate]);
 
   if (registrationInfo.event.event_status === false) {
     toast.error("As inscrições para este evento não estão abertas.", { theme: "colored" });

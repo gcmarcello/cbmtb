@@ -1,7 +1,6 @@
 import React, { Fragment, useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import LoadingScreen from "../../utils/loadingScreen";
-import UserNavigation from "../../utils/userNavigation";
 import { toast } from "react-toastify";
 
 import { fetchPayment, generateNewPayment } from "./functions/fetchPayment";
@@ -32,7 +31,7 @@ const Payments = ({ id, registration }) => {
         generateNewPayment(id || linkId).then((response) => setPayment(response));
       }
     });
-  }, []);
+  }, [id, linkId, navigate]);
 
   return (
     <Fragment>

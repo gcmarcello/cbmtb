@@ -1,12 +1,11 @@
 const router = require("express").Router();
 const pool = require("../database");
-const authorization = require("./middlewares/authorization");
 const adminAuthorization = require("./middlewares/adminAuthorization");
 
 const { uploadFileToS3 } = require("../apis/awsS3");
 
 // List Events (ADMIN)
-router.get("/list", adminAuthorization, async (req, res) => {
+router.get("/", adminAuthorization, async (req, res) => {
   try {
     const listOfEvents = await pool.query("SELECT * FROM events ORDER BY event_date ASC");
     res.json(listOfEvents.rows);
@@ -16,7 +15,7 @@ router.get("/list", adminAuthorization, async (req, res) => {
 });
 
 // List Events (PUBLIC)
-router.get("/public/list", async (req, res) => {
+router.get("/public/", async (req, res) => {
   try {
     const listOfEvents = await pool.query("SELECT * FROM events WHERE event_status = $1 ORDER BY event_date ASC", [true]);
     res.json(listOfEvents.rows);
@@ -26,7 +25,7 @@ router.get("/public/list", async (req, res) => {
 });
 
 // View Event (PUBLIC)
-router.get("/view/:id", async (req, res) => {
+router.get("/:id", async (req, res) => {
   try {
     const { id } = req.params;
     const typeOfLink = /^\b[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}\b$/.test(id);
@@ -44,17 +43,15 @@ router.get("/view/:id", async (req, res) => {
 });
 
 // Create Event (ADMIN)
-router.post("/create", adminAuthorization, async (req, res) => {
+router.post("/", adminAuthorization, async (req, res) => {
   try {
     const { name, location, link, base64Image, price, date, attendees, description, rules, details, categories } = req.body;
 
-    const S3Image = await uploadFileToS3(base64Image, "cbmtb");
+    const S3Image = await uploadFileToS3(base64Image, "cbmtb", "event-main");
 
-    console.log(S3Image);
-
-    /* const newEvent = await pool.query(
+    const newEvent = await pool.query(
       "INSERT INTO events (event_name, event_location, event_link, event_image, event_price, event_date, event_max_attendees, event_current_attendees, event_description, event_rules, event_details, event_owner_id, event_status) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13)  RETURNING *",
-      [name, location, link, imageLink, Number(price), date, Number(attendees), 0, description, rules, details, req.userId, false]
+      [name, location, link, S3Image, Number(price), date, Number(attendees), 0, description, rules, details, req.userId, false]
     );
 
     const newEventID = newEvent.rows[0].event_id;
@@ -65,7 +62,7 @@ router.post("/create", adminAuthorization, async (req, res) => {
     const newCategories = await pool.query(
       `INSERT INTO categories (event_id,category_name,category_minage,category_maxage,category_gender) VALUES ${categoriesSQL}`
     );
- */
+
     res.status(200).json({ message: "Evento criado com sucesso!", data: newEvent.rows[0] });
   } catch (err) {
     console.log(err.message);
@@ -88,13 +85,21 @@ router.put("/toggle/:id/:boolean", adminAuthorization, async (req, res) => {
 });
 
 // Update Event (ADMIN)
-router.put("/update/:id", adminAuthorization, async (req, res) => {
+router.put("/:id", adminAuthorization, async (req, res) => {
   try {
     const { id } = req.params;
-    const { name, location, date, price, attendees, description, rules, details, categories, imageLink } = req.body;
+    const { name, location, date, price, attendees, description, rules, details, categories, base64Image } = req.body;
+    let S3Image;
+
+    if (base64Image) {
+      S3Image = await uploadFileToS3(base64Image, "cbmtb", "event-main");
+    }
+
     const updateEvent = await pool.query(
-      "UPDATE events SET event_name = $1, event_location = $2, event_date = $3, event_price = $4, event_max_attendees = $5, event_description = $6, event_rules = $7, event_details = $8, event_image = $10 WHERE event_id = $9",
-      [name, location, date, price, attendees, description, rules, details, id, imageLink]
+      `UPDATE events SET event_name = $1, event_location = $2, event_date = $3, event_price = $4, event_max_attendees = $5, event_description = $6, event_rules = $7, event_details = $8, event_image = ${
+        S3Image ? S3Image : "event_image"
+      } WHERE event_id = $9`,
+      [name, location, date, price, attendees, description, rules, details, id]
     );
     const categoriesSQL = categories
       .map((category) => `('${id}',${category.category_name},${category.category_minage},${category.category_maxage})`)
@@ -116,14 +121,14 @@ router.put("/update/:id", adminAuthorization, async (req, res) => {
 });
 
 // Delete Event (ADMIN)
-router.delete("/delete/:id", adminAuthorization, async (req, res) => {
+router.delete("/:id", adminAuthorization, async (req, res) => {
   try {
     const { id } = req.params;
     const deleteEvent = await pool.query("DELETE FROM events WHERE event_id = $1", [id]);
-    res.status(200).json("Evento removido com sucesso.");
+    res.status(200).json({ message: "Evento removido com sucesso.", type: "success" });
   } catch (err) {
     console.log(err.message);
-    res.status(400).json("Evento ao remover o evento.");
+    res.status(400).json({ message: "Evento ao remover o evento!", type: "error" });
   }
 });
 

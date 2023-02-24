@@ -7,14 +7,17 @@ const port = process.env.PORT || 5000;
 const path = require("path");
 
 // Middlewares
-app.use(bodyParser.json({ limit: "3mb", extended: true }));
-app.use(bodyParser.urlencoded({ limit: "3mb", extended: true }));
+app.use(bodyParser.json({ limit: "15mb", extended: true }));
+app.use(bodyParser.urlencoded({ limit: "15mb", extended: true }));
 app.use(express.json());
 app.use(cors());
 
 // Routes
 app.use("/api/categories", require("./routes/categories"));
+app.use("/api/documents", require("./routes/documents"));
+app.use("/api/emails", require("./routes/emails"));
 app.use("/api/events", require("./routes/events"));
+app.use("/api/news", require("./routes/news"));
 app.use("/api/payments", require("./routes/payments"));
 app.use("/api/registrations", require("./routes/registrations"));
 app.use("/api/users", require("./routes/users"));
@@ -36,6 +39,8 @@ app.use("/login/", express.static(path.join(__dirname, "client/build")));
 app.use("/pagamento", express.static(path.join(__dirname, "client/build")));
 // View Groups
 app.use("/inscricao/*", express.static(path.join(__dirname, "client/build")));
+// View Groups
+app.use("/noticias/*", express.static(path.join(__dirname, "client/build")));
 
 app.listen(port, () => {
   console.log(

@@ -1,8 +1,7 @@
 import React, { Fragment } from "react";
+import LatestNews from "./components/latestNews";
 
 import NextEvents from "./components/nextEvents";
-import UserNavigation from "../../utils/userNavigation";
-import Footer from "../../utils/footer";
 
 const Home = ({ userAuthentication, setUserAuthentication, userName, userAdmin }) => {
   return (
@@ -12,6 +11,7 @@ const Home = ({ userAuthentication, setUserAuthentication, userName, userAdmin }
           <img src="./logoconf_white.svg" alt="" className="img-fluid" />
         </a>
       </div>
+      <LatestNews />
       <NextEvents />
     </Fragment>
   );

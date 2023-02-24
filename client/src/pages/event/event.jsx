@@ -1,10 +1,8 @@
 import React, { Fragment, useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import UserNavigation from "../../utils/userNavigation";
 import { toast } from "react-toastify";
 
 import LoadingScreen from "../../utils/loadingScreen";
-import Footer from "../../utils/footer";
 
 const EventPage = ({ userAuthentication, userName }) => {
   const { id } = useParams();
@@ -38,7 +36,7 @@ const EventPage = ({ userAuthentication, userName }) => {
       myHeaders.append("Content-Type", "application/json");
       myHeaders.append("token", localStorage.token);
 
-      const response = await fetch(`/api/events/view/${id}`, {
+      const response = await fetch(`/api/events/${id}`, {
         method: "GET",
         headers: myHeaders,
       });
@@ -62,10 +60,7 @@ const EventPage = ({ userAuthentication, userName }) => {
   };
 
   useEffect(() => {
-    fetchRegistration(); // eslint-disable-next-line
-  }, []);
-  useEffect(() => {
-    fetchEvent(); // eslint-disable-next-line
+    fetchEvent().then((response) => fetchRegistration()); // eslint-disable-next-line
   }, []);
 
   useEffect(() => {
@@ -103,33 +98,31 @@ const EventPage = ({ userAuthentication, userName }) => {
                     </li>
                   </ul>
                   <div className="mt-3">
-                    <h6>Compartilhe o Evento nas Redes Sociais!</h6>
-                    <div className="d-flex justify-content-around">
-                      <a href={`https://www.facebook.com/share.php?u=cbmtb.com/${event.event_link}`} style={{ textDecoration: "none" }}>
-                        <i className="bi bi-facebook fs-1 share-button" id="facebook-share">
-                          {" "}
-                        </i>
-                      </a>
-                      <i className="bi bi-twitter fs-1 share-button" id="twitter-share"></i>
-                      <i className="bi bi-instagram fs-1 share-button" id="instagram-share"></i>
-                    </div>
-                    <div className="input-group my-3">
-                      <input type="text" className="form-control" id="event-link" defaultValue={`cbmtb.com/${event.event_link}`} disabled />
-                      <button
-                        className="btn btn-light border"
-                        type="button"
-                        id="button-addon1"
-                        onClick={() => {
-                          const eventLink = document.getElementById("event-link");
-                          navigator.clipboard.writeText(eventLink.value);
-                          toast.success("Link copiado com sucesso!", { theme: "colored" });
-                        }}
-                      >
-                        <i className="bi bi-clipboard"></i>
-                      </button>
+                    <h6 className="text-center">Compartilhe nas Redes Sociais!</h6>
+                    <div className="d-flex flex-column">
+                      <div className="input-group my-3">
+                        <input type="text" className="form-control" id="event-link" defaultValue={`cbmtb.com/evento/${event.event_link}`} disabled />
+                        <button
+                          className="btn btn-light border"
+                          type="button"
+                          id="button-addon1"
+                          onClick={() => {
+                            const eventLink = document.getElementById("event-link");
+                            navigator.clipboard.writeText(eventLink.value);
+                            toast.success("Link copiado com sucesso!", { theme: "colored" });
+                          }}
+                        >
+                          <i className="bi bi-clipboard"></i>
+                        </button>
+                      </div>
+                      <div className="d-flex justify-content-evenly">
+                        <i className="bi bi-facebook share-button fs-4" id="facebook-share"></i>
+                        <i className="bi bi-twitter share-button fs-4 " id="twitter-share"></i>
+                        <i className="bi bi-instagram share-button fs-4" id="instagram-share"></i>
+                      </div>
                     </div>
                   </div>
-                  <hr className="mb-4" />
+                  <hr className="mb-3 mb-xxl-4" />
                   <div className="container">
                     <div className="row">
                       <div className="col-5 col-md-5 d-flex align-items-center justify-content-center">

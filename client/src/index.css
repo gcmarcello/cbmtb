@@ -162,6 +162,12 @@ footer .text-muted:hover {
   transition: all 0.5s ease-in-out;
 }
 
+#whatsapp-share,
+#twitter-share,
+#facebook-share {
+  color: #212529;
+}
+
 #facebook-share:hover {
   color: #1877f2;
 }
@@ -170,20 +176,39 @@ footer .text-muted:hover {
   color: #1d9bf0;
 }
 
-#instagram-share {
-  font-size: 100px;
-  text-align: center;
-  color: #191335;
-  background-image: linear-gradient(45deg, #191335, rgba(131, 58, 180, 1) 45%, rgba(253, 29, 29, 1) 50%, rgba(252, 176, 69, 1) 55%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-size: 2000% 100%;
-  background-position: top left;
-  transition: all 1s ease-in-out;
+#whatsapp-share:hover {
+  color: #00a85acc;
 }
 
-#instagram-share:hover {
-  background-position: top left 48%;
+.ql-container {
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+}
+
+.ql-toolbar {
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+}
+
+#home-next-events {
+  background: url("../public/bgs/eventos-bg.png") no-repeat;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center;
+}
+
+.main-page-card {
+  transition-duration: 0.5s;
+}
+
+.main-page-card:active,
+.main-page-card:hover {
+  transform: scale(1.05);
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.pagination li {
+  padding: 3em 0 0 0;
 }
 
 @media (min-width: 768px) {
@@ -194,7 +219,7 @@ footer .text-muted:hover {
   }
 
   .userbar .navigation-list {
-    background-color: hwb(152 0% 34% / 0.8);
+    background-color: #00a85acc;
     padding: 0.25em;
     border-radius: 5px;
   }
@@ -236,18 +261,3 @@ footer .text-muted:hover {
     margin-left: 5vw;
   }
 }
-
-@media (min-width: 993px) and (max-width: 1500px) {
-  .user-dropdown {
-    position: absolute;
-    left: -120px;
-  }
-}
-
-/* ::-webkit-scrollbar {
-  width: 0px;
-}
-::-webkit-scrollbar-track-piece {
-  background-color: transparent;
-  -webkit-border-radius: 6px;
-} */
