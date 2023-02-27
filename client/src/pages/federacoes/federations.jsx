@@ -13,7 +13,7 @@ const Federations = () => {
               aria-expanded="false"
               aria-controls="collapseOne"
             >
-              <img src="/estados/18-pernambuco-rounded.png" width={45} height={30} alt="sp" className="me-2" />
+              <img src="/estados/pe.png" width={45} height={30} alt="sp" className="me-2" />
               <span>Pernambuco</span>
             </button>
           </h2>
@@ -66,7 +66,7 @@ const Federations = () => {
               aria-expanded="false"
               aria-controls="collapseTwo"
             >
-              <img src="/estados/25-santa-catarina-rounded.png" width={45} height={30} alt="sp" className="me-2" />
+              <img src="/estados/sc.png" width={45} height={30} alt="sp" className="me-2" />
               <span>Santa Cantarina</span>
             </button>
           </h2>
@@ -89,7 +89,7 @@ const Federations = () => {
               aria-expanded="false"
               aria-controls="collapseThree"
             >
-              <img src="/estados/26-sao-paulo-rounded.png" width={45} height={30} alt="sp" className="me-2" />
+              <img src="/estados/sp.png" width={45} height={30} alt="sp" className="me-2" />
               <span>São Paulo</span>
             </button>
           </h2>

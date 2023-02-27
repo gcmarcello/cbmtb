@@ -15,8 +15,8 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-// List News (ADMIN)
-router.get("/", adminAuthorization, async (req, res) => {
+// List Documents (ADMIN)
+router.get("/", async (req, res) => {
   try {
     const documentsList = await pool.query("SELECT * FROM documents");
     return res.status(200).json(documentsList.rows);

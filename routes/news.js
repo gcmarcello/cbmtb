@@ -29,16 +29,6 @@ router.post("/", adminAuthorization, async (req, res) => {
   }
 });
 
-// List News (PUBLIC)
-router.get("/public/", async (req, res) => {
-  try {
-    const listOfNews = await pool.query("SELECT * FROM news WHERE news_status = $1 ORDER BY news_date DESC LIMIT 4", [true]);
-    res.json(listOfNews.rows);
-  } catch (err) {
-    console.log(err.message);
-  }
-});
-
 // List News (ADMIN)
 router.get("/", adminAuthorization, async (req, res) => {
   try {
@@ -46,6 +36,29 @@ router.get("/", adminAuthorization, async (req, res) => {
     res.json(listOfNews.rows);
   } catch (err) {
     console.log(err.message);
+    res.status(500);
+  }
+});
+
+// List News (PUBLIC)
+router.get("/public/", async (req, res) => {
+  try {
+    const listOfNews = await pool.query("SELECT * FROM news WHERE news_status = $1 ORDER BY news_date DESC LIMIT 4", [true]);
+    res.json(listOfNews.rows);
+  } catch (err) {
+    console.log(err.message);
+    res.status(500);
+  }
+});
+
+// List All News (PUBLIC)
+router.get("/public/all", async (req, res) => {
+  try {
+    const listOfNews = await pool.query("SELECT * FROM news WHERE news_status = $1 ORDER BY news_date DESC", [true]);
+    res.status(200).json(listOfNews.rows);
+  } catch (err) {
+    console.log(err.message);
+    res.status(500);
   }
 });
 

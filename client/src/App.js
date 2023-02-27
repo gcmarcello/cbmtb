@@ -19,6 +19,8 @@ import NewsPage from "./pages/news/news";
 import Registration from "./pages/registration/registration";
 import Page404 from "./utils/404";
 import Footer from "./utils/footer";
+import AllNews from "./pages/news/allNews";
+import Documents from "./pages/documents/documents";
 
 function App() {
   const [userAuthentication, setUserAuthentication] = useState(false);
@@ -173,7 +175,9 @@ function App() {
           />
           <Route exact path="/pagamento/:linkId" element={<Payments />} />
           <Route exact path="/federacoes/" element={<Federations />} />
+          <Route exact path="/noticias/" element={<AllNews />} />
           <Route exact path="/noticias/:title" element={<NewsPage />} />
+          <Route exact path="/transparencia/" element={<Documents />} />
           <Route
             exact
             path="/usuario"
