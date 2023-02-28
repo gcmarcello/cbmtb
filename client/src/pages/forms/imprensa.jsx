@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useForm, Controller } from "react-hook-form";
 import InputMask from "react-input-mask";
-import { useEffect } from "react";
 
 const Imprensa = () => {
   const navigate = useNavigate();
