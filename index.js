@@ -28,27 +28,7 @@ app.use("/api/users", require("./routes/users"));
 // Serve react files
 app.use(express.static(path.join(__dirname, "client/build")));
 // Home Page
-app.use("/", express.static(path.join(__dirname, "client/build")));
-// Register
-app.use("/evento/*", express.static(path.join(__dirname, "client/build")));
-// Dashboard
-app.use("/dashboard", express.static(path.join(__dirname, "client/build")));
-// Edit Matches
-app.use("/cadastro/", express.static(path.join(__dirname, "client/build")));
-// View Federations
-app.use("/federacoes/", express.static(path.join(__dirname, "client/build")));
-// View Matches
-app.use("/login/", express.static(path.join(__dirname, "client/build")));
-// View Matches
-app.use("/pagamento", express.static(path.join(__dirname, "client/build")));
-// View Groups
-app.use("/inscricao/*", express.static(path.join(__dirname, "client/build")));
-// View All News
-app.use("/noticias/", express.static(path.join(__dirname, "client/build")));
-// View News
-app.use("/noticias/*", express.static(path.join(__dirname, "client/build")));
-// View Documents
-app.use("/transparencia/", express.static(path.join(__dirname, "client/build")));
+app.use("/*", express.static(path.join(__dirname, "client/build")));
 
 app.listen(port, () => {
   console.log(
