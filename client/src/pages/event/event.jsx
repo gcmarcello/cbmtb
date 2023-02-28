@@ -92,10 +92,6 @@ const EventPage = ({ userAuthentication, userName }) => {
                     <li className="list-group-item">
                       <i className="bi bi-geo-alt-fill fs-4"></i> <span className="h6">Local:</span> <span></span> {event.event_location}
                     </li>
-                    <li className="list-group-item">
-                      <i className="bi bi-globe fs-4"></i> <span className="h6">Inscritos:</span> {event.event_current_attendees}/
-                      {event.event_max_attendees}
-                    </li>
                   </ul>
                   <div className="mt-3">
                     <h6 className="text-center">Compartilhe nas Redes Sociais!</h6>
@@ -143,7 +139,9 @@ const EventPage = ({ userAuthentication, userName }) => {
                             type="button"
                             className="btn btn-success btn-lg"
                             disabled={registration}
-                            onClick={() => navigate(`/inscricao/${event.event_id}`)}
+                            onClick={() =>
+                              event.event_external ? (window.location = event.event_external) : navigate(`/inscricao/${event.event_id}`)
+                            }
                           >
                             {registration ? (
                               <Fragment>

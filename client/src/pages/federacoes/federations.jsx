@@ -1,140 +1,88 @@
-const Federations = () => {
+import React, { useState, useEffect } from "react";
+
+import LoadingScreen from "../../utils/loadingScreen";
+
+import { retrieveDemonym } from "./functions/demonym";
+
+const FederationsPage = () => {
+  const [federationsList, setFederationsList] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const fetchFederations = async () => {
+    try {
+      setIsLoading(true);
+      const response = await fetch(`/api/federations/`, {
+        method: "GET",
+      });
+      const parseResponse = await response.json();
+      setFederationsList(parseResponse);
+    } catch (err) {
+      console.log(err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchFederations();
+  }, []);
+
+  if (isLoading) {
+    return <LoadingScreen />;
+  }
+
   return (
     <div className="container inner-page">
-      <h1 className="mb-3">Federações Estaduais</h1>
-      <div className="accordion" id="accordionExample">
-        <div className="accordion-item">
-          <h2 className="accordion-header" id="headingOne">
-            <button
-              className="accordion-button collapsed"
-              type="button"
-              data-bs-toggle="collapse"
-              data-bs-target="#collapseOne"
-              aria-expanded="false"
-              aria-controls="collapseOne"
-            >
-              <img src="/estados/pe.png" width={45} height={30} alt="sp" className="me-2" />
-              <span>Pernambuco</span>
-            </button>
-          </h2>
-          <div id="collapseOne" className="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
-            <div className="accordion-body">
-              <strong>Federação Paulista de Mountain Bike</strong>
-              <ul>
-                <li>Site</li>
-                <li>Telefone</li>
-                <li>Endereço</li>
-              </ul>
-
-              <strong>Clubes</strong>
-              <ul>
-                <li>
-                  Media Paulista de Ciclismo
-                  <ul>
-                    <li>Site</li>
-                    <li>Telefone</li>
-                    <li>Endereço</li>
-                  </ul>
-                </li>
-                <li>
-                  Clube 2
-                  <ul>
-                    <li>Site</li>
-                    <li>Telefone</li>
-                    <li>Endereço</li>
-                  </ul>
-                </li>
-                <li>
-                  Clube 3
-                  <ul>
-                    <li>Site</li>
-                    <li>Telefone</li>
-                    <li>Endereço</li>
-                  </ul>
-                </li>
-              </ul>
+      <h1>Federações Estaduais</h1>
+      <div class="accordion" id="accordionFederations">
+        {federationsList.length &&
+          federationsList.map((federation) => (
+            <div class="accordion-item">
+              <h2 class="accordion-header" id={`${federation.federation_state}-heading`}>
+                <button
+                  class="accordion-button collapsed"
+                  type="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target={`#${federation.federation_state}`}
+                  aria-expanded="false"
+                  aria-controls={federation.federation_state}
+                >
+                  <img src={`/estados/${federation.federation_state}.png`} width={45} height={30} alt="sp" className="me-2" /> Federação{" "}
+                  {retrieveDemonym(federation.federation_state)} <span className="d-none d-lg-inline-block ms-1">de Mountain Bike</span>
+                </button>
+              </h2>
+              <div
+                id={federation.federation_state}
+                class="accordion-collapse collapse"
+                aria-labelledby={`${federation.federation_state}-heading`}
+                data-bs-parent="#accordionFederations"
+              >
+                <div class="accordion-body">
+                  <div className="federation-info">
+                    <h5>Informação</h5>
+                    <ul className="list-group" style={{ listStyle: "none" }}>
+                      <li>
+                        <i class="bi bi-globe fs-3"></i> <a href={federation.federation_site}>{federation.federation_site}</a>
+                      </li>
+                      <li>
+                        <i class="bi bi-telephone-fill fs-3"></i> {federation.federation_phone}
+                      </li>
+                      <li>
+                        <i class="bi bi-geo-alt-fill fs-3"></i> {federation.federation_address}
+                      </li>
+                    </ul>
+                  </div>
+                  <div className="federation-clubs mt-3">
+                    <h5>Clubes</h5>
+                    Em Breve...
+                  </div>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
-        <div className="accordion-item">
-          <h2 className="accordion-header" id="headingTwo">
-            <button
-              className="accordion-button collapsed"
-              type="button"
-              data-bs-toggle="collapse"
-              data-bs-target="#collapseTwo"
-              aria-expanded="false"
-              aria-controls="collapseTwo"
-            >
-              <img src="/estados/sc.png" width={45} height={30} alt="sp" className="me-2" />
-              <span>Santa Cantarina</span>
-            </button>
-          </h2>
-          <div id="collapseTwo" className="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
-            <div className="accordion-body">
-              <strong>This is the second item's accordion body.</strong> It is hidden by default, until the collapse plugin adds the appropriate
-              classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS
-              transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any
-              HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
-            </div>
-          </div>
-        </div>
-        <div className="accordion-item">
-          <h2 className="accordion-header" id="headingThree">
-            <button
-              className="accordion-button collapsed"
-              type="button"
-              data-bs-toggle="collapse"
-              data-bs-target="#collapseThree"
-              aria-expanded="false"
-              aria-controls="collapseThree"
-            >
-              <img src="/estados/sp.png" width={45} height={30} alt="sp" className="me-2" />
-              <span>São Paulo</span>
-            </button>
-          </h2>
-          <div id="collapseThree" className="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
-            <div className="accordion-body">
-              <strong>Federação Paulista de Mountain Bike</strong>
-              <ul>
-                <li>Site</li>
-                <li>Telefone</li>
-                <li>Endereço</li>
-              </ul>
-
-              <strong>Clubes</strong>
-              <ul>
-                <li>
-                  Media Paulista de Ciclismo
-                  <ul>
-                    <li>Site</li>
-                    <li>Telefone</li>
-                    <li>Endereço</li>
-                  </ul>
-                </li>
-                <li>
-                  Clube 2
-                  <ul>
-                    <li>Site</li>
-                    <li>Telefone</li>
-                    <li>Endereço</li>
-                  </ul>
-                </li>
-                <li>
-                  Clube 3
-                  <ul>
-                    <li>Site</li>
-                    <li>Telefone</li>
-                    <li>Endereço</li>
-                  </ul>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
+          ))}
       </div>
     </div>
   );
 };
 
-export default Federations;
+export default FederationsPage;

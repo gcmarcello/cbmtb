@@ -67,7 +67,9 @@ const NextEvents = () => {
         <div className="row">
           <div className="col-2"></div>
           <div className="col-8 d-flex justify-content-center my-3">
-            <button className="btn btn-lg btn-primary">Ver Todos</button>
+            <a href="/eventos">
+              <button className="btn btn-lg btn-primary">Ver Todos</button>
+            </a>
           </div>
           <div className="col-2"></div>
         </div>

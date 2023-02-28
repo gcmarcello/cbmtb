@@ -65,7 +65,9 @@ const LatestNews = () => {
         <div className="row">
           <div className="col-2"></div>
           <div className="col-8 d-flex justify-content-center my-3">
-            <button className="btn btn-lg btn-primary">Ver Mais</button>
+            <a href="/noticias">
+              <button className="btn btn-lg btn-primary">Ver Mais</button>
+            </a>
           </div>
           <div className="col-2"></div>
         </div>

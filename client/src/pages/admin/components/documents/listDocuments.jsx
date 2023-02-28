@@ -17,7 +17,7 @@ const ListDocuments = ({ setDocumentChange, documentChange }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   // File Upload States
-  const [selectedFile, setSelectedFile] = useState();
+  const [selectedFile, setSelectedFile] = useState(); //eslint-disable-next-line
   const [isFileSelected, setIsFileSelected] = useState(false);
   const [filePreview, setFilePreview] = useState(null);
   const [base64File, setBase64File] = useState(null);
@@ -30,8 +30,6 @@ const ListDocuments = ({ setDocumentChange, documentChange }) => {
       const myHeaders = new Headers();
       myHeaders.append("Content-Type", "application/json");
       myHeaders.append("token", localStorage.token);
-
-      const body = { title, description, base64File, year, general };
 
       const response = await fetch(`/api/documents/`, {
         method: "GET",

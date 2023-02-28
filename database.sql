@@ -39,6 +39,7 @@ CREATE TABLE events(
     event_max_attendees INTEGER NOT NULL,
     event_current_attendees INTEGER NOT NULL,
     event_status BOOLEAN NOT NULL,
+    event_external VARCHAR(255),
     PRIMARY KEY(event_id),
     FOREIGN KEY (event_owner_id) REFERENCES users(user_id)
 );
@@ -83,11 +84,34 @@ CREATE TABLE registrations(
 
 CREATE TABLE federations(
     federation_id UUID DEFAULT UUID_generate_v4(),
+    federation_name VARCHAR(255) NOT NULL UNIQUE,
     federation_state VARCHAR(2) NOT NULL UNIQUE,
     federation_site VARCHAR(255) NOT NULL,
     federation_phone VARCHAR(255) NOT NULL,
     federation_address VARCHAR(255) NOT NULL,
     PRIMARY KEY(federation_id)
+);
+
+CREATE TABLE press(
+    press_id UUID DEFAULT UUID_generate_v4(),
+    press_rep VARCHAR(255) NOT NULL UNIQUE,
+    press_email VARCHAR(255) NOT NULL UNIQUE,
+    press_phone VARCHAR(255) NOT NULL UNIQUE,
+    press_cpf VARCHAR(255) NOT NULL,
+    press_type VARCHAR(255) NOT NULL,
+    press_vehicle VARCHAR(255) NOT NULL,
+    press_comment TEXT,
+    PRIMARY KEY(press_id)
+);
+
+CREATE TABLE tickets(
+    ticket_id UUID DEFAULT UUID_generate_v4(),
+    ticket_name VARCHAR(255) NOT NULL UNIQUE,
+    ticket_email VARCHAR(255) NOT NULL UNIQUE,
+    ticket_phone VARCHAR(255) NOT NULL UNIQUE,
+    ticket_message TEXT NOT NULL,
+    ticket_status VARCHAR(255) NOT NULL,
+    PRIMARY KEY(ticket_id)
 );
 
 CREATE TABLE clubs(

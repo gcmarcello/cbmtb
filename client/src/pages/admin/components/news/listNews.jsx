@@ -99,7 +99,19 @@ const ListNews = ({ newsChange, setNewsChange, saveCurrentPanel }) => {
 
     return (
       <>
-        <Items currentItems={currentItems} />
+        <table className="table table-striped">
+          <thead className="table-dark">
+            <tr>
+              <th>Nome</th>
+              <th className="d-none d-lg-table-cell">Data</th>
+              <th className="d-none d-lg-table-cell">Última Atualização</th>
+              <th>Opções</th>
+            </tr>
+          </thead>
+          <tbody className="table-group-divider">
+            <Items currentItems={currentItems} />
+          </tbody>
+        </table>
         <ReactPaginate
           breakLabel="..."
           nextLabel="Próximo >"
@@ -131,27 +143,7 @@ const ListNews = ({ newsChange, setNewsChange, saveCurrentPanel }) => {
     <Fragment>
       <div className="container-fluid mt-3">
         <h1>Lista de Notícias</h1>
-        <table className="table table-striped">
-          <thead className="table-dark">
-            <tr>
-              <th>Nome</th>
-              <th className="d-none d-lg-table-cell">Data</th>
-              <th className="d-none d-lg-table-cell">Última Atualização</th>
-              <th>Opções</th>
-            </tr>
-          </thead>
-          <tbody className="table-group-divider">
-            {!isLoading ? (
-              <PaginatedItems itemsPerPage={4} itemList={newsList} />
-            ) : (
-              <tr>
-                <td colSpan={5} className="text-center">
-                  <div className="spinner-border" role="status"></div>
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+        <PaginatedItems itemsPerPage={4} itemList={newsList} />
         <div className="d-flex justify-content-end">
           <button className="btn btn-success" onClick={() => saveCurrentPanel("NewNews")} disabled={isLoading}>
             Criar Notícia

@@ -21,6 +21,9 @@ import Page404 from "./utils/404";
 import Footer from "./utils/footer";
 import AllNews from "./pages/news/allNews";
 import Documents from "./pages/documents/documents";
+import AllEvents from "./pages/event/allEvents";
+import Imprensa from "./pages/forms/imprensa";
+import Ouvidoria from "./pages/forms/ouvidoria";
 
 function App() {
   const [userAuthentication, setUserAuthentication] = useState(false);
@@ -174,9 +177,12 @@ function App() {
             }
           />
           <Route exact path="/pagamento/:linkId" element={<Payments />} />
+          <Route exact path="/eventos/" element={<AllEvents />} />
           <Route exact path="/federacoes/" element={<Federations />} />
+          <Route exact path="/imprensa/" element={<Imprensa />} />
           <Route exact path="/noticias/" element={<AllNews />} />
           <Route exact path="/noticias/:title" element={<NewsPage />} />
+          <Route exact path="/ouvidoria/" element={<Ouvidoria />} />
           <Route exact path="/transparencia/" element={<Documents />} />
           <Route
             exact

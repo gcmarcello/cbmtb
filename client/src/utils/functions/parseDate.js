@@ -8,6 +8,8 @@ export function parseDate(date, type) {
 
   if (type === "complete") {
     return `${dateToParseDay}/${dateToParseMonth}/${dateToParseYear} - ${dateToParseHours}:${dateToParseMinutes}`;
+  } else if (type === "calendar") {
+    return `${dateToParseYear}-${dateToParseMonth}-${dateToParseDay}`;
   } else {
     return `${dateToParseDay}/${dateToParseMonth}/${dateToParseYear}`;
   }

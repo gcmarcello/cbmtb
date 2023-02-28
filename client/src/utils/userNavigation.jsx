@@ -44,18 +44,18 @@ const UserNavigation = ({ userAuthentication, setUserAuthentication, userName, u
                 Notícias
               </a>
             </li>
-            {/* <li className="nav-item">
+            <li className="nav-item">
               <a className="nav-link" aria-current="page" href="/federacoes">
                 Federações
               </a>
-            </li> */}
+            </li>
             <li className="nav-item dropdown">
               <a className="nav-link dropdown-toggle" href="/" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                 Contato
               </a>
               <ul className="dropdown-menu" aria-labelledby="navbarDropdown">
                 <li>
-                  <a className="dropdown-item" href="/">
+                  <a className="dropdown-item" href="/ouvidoria">
                     Ouvidoria
                   </a>
                 </li>
@@ -63,14 +63,14 @@ const UserNavigation = ({ userAuthentication, setUserAuthentication, userName, u
                   <hr className="dropdown-divider" />
                 </li>
                 <li>
-                  <a className="dropdown-item" href="/">
+                  <a className="dropdown-item" href="/imprensa">
                     Cadastro de Imprensa
                   </a>
                 </li>
               </ul>
             </li>
             {userAuthentication ? (
-              <li className="nav-item dropdown border rounded border-white border-1 rounded">
+              <li className="nav-item dropdown border rounded border-white border-1 rounded mt-3 mt-lg-0">
                 <a
                   className="nav-link dropdown-toggle mx-3 mx-lg-0"
                   href="/"
@@ -119,15 +119,13 @@ const UserNavigation = ({ userAuthentication, setUserAuthentication, userName, u
                 </ul>
               </li>
             ) : (
-              <li className="nav-item">
-                <div className="d-flex">
-                  <a className="btn btn-primary me-2 fw-bold" aria-current="page" href="/login">
-                    Entrar
-                  </a>
-                  <a className="btn btn-warning ms-2 fw-bold" aria-current="page" href="/cadastro">
-                    Cadastro
-                  </a>
-                </div>
+              <li className="nav-item d-flex justify-content-evenly align-items-center ">
+                <a className="btn btn-primary me-2 px-5 px-lg-3 fw-bold" aria-current="page" href="/login">
+                  Entrar
+                </a>
+                <a className="btn btn-warning ms-2 px-5 px-lg-3 fw-bold" aria-current="page" href="/cadastro">
+                  Cadastro
+                </a>
               </li>
             )}
           </ul>

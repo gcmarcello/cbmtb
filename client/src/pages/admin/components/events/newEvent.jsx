@@ -27,9 +27,10 @@ const NewEvent = ({ eventChange, setEventChange, saveCurrentPanel }) => {
     description: "",
     rules: "",
     details: "",
+    external: null,
     categories: [],
   });
-  const { name, link, price, location, date, attendees, description, rules, details, categories } = formInputs;
+  const { name, link, price, location, date, attendees, description, rules, details, categories, external } = formInputs;
   const [category, setCategory] = useState({
     categoryName: "",
     minAge: "",
@@ -90,7 +91,7 @@ const NewEvent = ({ eventChange, setEventChange, saveCurrentPanel }) => {
         <h1>Criar Evento</h1>
         <form encType="multipart/form-data">
           <div className="row my-3">
-            <div className="col-12 col-lg-4">
+            <div className="col-12 col-lg-3">
               <label htmlFor="name">Nome do Evento</label>
               <input
                 type="text"
@@ -101,7 +102,7 @@ const NewEvent = ({ eventChange, setEventChange, saveCurrentPanel }) => {
                 onChange={(e) => handleChange(e, "text", formInputs, setFormInputs)}
               />
             </div>
-            <div className="col-12 col-lg-4">
+            <div className="col-12 col-lg-3">
               <label htmlFor="location">Local do Evento</label>
               <input
                 type="text"
@@ -113,7 +114,7 @@ const NewEvent = ({ eventChange, setEventChange, saveCurrentPanel }) => {
               />
             </div>
 
-            <div className="col-12 col-lg-4">
+            <div className="col-12 col-lg-3">
               <label htmlFor="price">Link do evento</label>
               <div className="input-group">
                 <span className="input-group-text" id="basic-addon1">
@@ -127,6 +128,24 @@ const NewEvent = ({ eventChange, setEventChange, saveCurrentPanel }) => {
                   value={link}
                   onChange={(e) => handleChange(e, "text", formInputs, setFormInputs)}
                   placeholder="evento"
+                  maxLength={20}
+                />
+              </div>
+            </div>
+            <div className="col-12 col-lg-3 ">
+              <label htmlFor="price">Inscrição Externa</label>
+              <div className="input-group">
+                <span className="input-group-text" id="basic-addon1">
+                  https://
+                </span>
+                <input
+                  type="text"
+                  id="external"
+                  name="external"
+                  className="form-control"
+                  value={external}
+                  onChange={(e) => handleChange(e, "text", formInputs, setFormInputs)}
+                  placeholder="site.com.br"
                   maxLength={20}
                 />
               </div>

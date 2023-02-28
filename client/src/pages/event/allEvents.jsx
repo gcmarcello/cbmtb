@@ -1,24 +1,27 @@
-import React, { useState, useEffect, Fragment } from "react";
+import React, { useState, useEffect } from "react";
 import ReactPaginate from "react-paginate";
 
 import { parseDate } from "../../utils/functions/parseDate";
 
-const AllNews = () => {
-  const [allNews, setAllNews] = useState([]); //eslint-disable-next-line
+import LoadingScreen from "../../utils/loadingScreen";
+
+const AllEvents = () => {
+  const [allEvents, setAllEvents] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  const fetchAllNews = async () => {
+  const fetchAllEvents = async () => {
     try {
       setIsLoading(true);
-      const response = await fetch(`/api/news/public/all`, {
+      const response = await fetch(`/api/events/public/`, {
         method: "GET",
       });
       const parseResponse = await response.json();
       for (let i = 0; i < parseResponse.length; i++) {
-        parseResponse[i].formattedDate = parseDate(parseResponse[i].news_date);
-        parseResponse[i].formattedUpdate = parseDate(parseResponse[i].news_last_update);
+        parseResponse[i].formattedDate = parseDate(parseResponse[i].event_date);
+        parseResponse[i].date = parseDate(parseResponse[i].event_date, "calendar");
+        parseResponse[i].title = parseResponse[i].event_name;
       }
-      setAllNews(parseResponse);
+      setAllEvents(parseResponse);
     } catch (err) {
       console.log(err);
     } finally {
@@ -30,22 +33,22 @@ const AllNews = () => {
     return (
       <>
         {currentItems &&
-          currentItems.map((news) => (
-            <div key={news.news_id} className="card main-page-card m-3 shadow-lg" style={{ width: "18rem" }}>
-              <a className="stretched-link" href={`/noticias/${news.news_link}`}>
-                <img src={news.news_image_link} className="card-img-top" alt="..." height={169.73} width={286} />
+          currentItems.map((event) => (
+            <div key={event.event_id} className="card main-page-card m-3 shadow-lg" style={{ width: "18rem" }}>
+              <a className="stretched-link" href={`/evento/${event.event_link}`}>
+                <img src={event.event_image} className="card-img-top" alt="..." height={169.73} width={286} />
               </a>
               <hr className="my-0" />
               <div className="card-body">
-                <h5 className="card-title">{news.news_title}</h5>
-                <p>{news.news_subtitle}</p>
+                <h5 className="card-title">{event.event_name}</h5>
+                <p>{event.news_subtitle}</p>
               </div>
               <div className={`card-footer d-flex justify-content-between align-items-center`}>
                 <small className="text-muted">
-                  <i className="bi bi-tag-fill"></i> {news.news_category}
+                  <i className="bi bi-geo-alt-fill"></i> {event.event_location}
                 </small>
                 <small className="text-muted">
-                  <i className="bi bi-calendar-fill"></i> {news.formattedDate}
+                  <i className="bi bi-calendar-fill"></i> {event.formattedDate}
                 </small>
               </div>
             </div>
@@ -103,19 +106,23 @@ const AllNews = () => {
   }
 
   useEffect(() => {
-    fetchAllNews();
+    fetchAllEvents();
   }, []);
+
+  if (isLoading) {
+    return <LoadingScreen />;
+  }
 
   return (
     <div className="container inner-page">
-      <h1>Notícias</h1>
+      <h1>Eventos</h1>
       <div className="row">
         <div className="col-12">
-          <PaginatedItems itemsPerPage={5} itemList={allNews} />
+          <PaginatedItems itemsPerPage={5} itemList={allEvents} />
         </div>
       </div>
     </div>
   );
 };
 
-export default AllNews;
+export default AllEvents;

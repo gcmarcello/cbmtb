@@ -19,7 +19,7 @@ const EditNews = ({ newsChange, setNewsChange, news, setIsLoading }) => {
 
   // Image Upload States
   const [selectedImage, setSelectedImage] = useState();
-  const [imagePreview, setImagePreview] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null); //eslint-disable-next-line
   const [isImageSelected, setIsImageSelected] = useState(false);
   const [base64Image, setBase64Image] = useState(null);
   const [base64ImageSize, setBase64ImageSize] = useState(null);

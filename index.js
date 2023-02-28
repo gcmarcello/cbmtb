@@ -17,6 +17,8 @@ app.use("/api/categories", require("./routes/categories"));
 app.use("/api/documents", require("./routes/documents"));
 app.use("/api/emails", require("./routes/emails"));
 app.use("/api/events", require("./routes/events"));
+app.use("/api/forms", require("./routes/forms"));
+app.use("/api/federations", require("./routes/federations"));
 app.use("/api/news", require("./routes/news"));
 app.use("/api/payments", require("./routes/payments"));
 app.use("/api/registrations", require("./routes/registrations"));
