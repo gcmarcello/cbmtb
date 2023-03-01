@@ -1,9 +1,16 @@
-import React, { Fragment, useState, useEffect } from "react";
+import React, { Fragment, useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import InputMask from "react-input-mask";
+import ReCAPTCHA from "react-google-recaptcha";
+import { toast } from "react-toastify";
 
-const Register = ({ userAuthentication, setUserAuthentication, userName, setUserName }) => {
+import { siteConfigs } from "../../App.config.js";
+
+const Register = ({ setUserAuthentication }) => {
   const cepSearch = require("cep-promise");
+  const reCaptchaComponent = useRef(null);
+
+  const [captcha, setCaptcha] = useState(false);
 
   const [formInputs, setFormInputs] = useState({
     username: { value: "", isValid: null, isOptional: false },
@@ -202,6 +209,7 @@ const Register = ({ userAuthentication, setUserAuthentication, userName, setUser
       });
 
       const body = bodyJSON;
+      body.reCaptcha = captcha;
 
       const res = await fetch(`/api/users/register`, {
         method: "POST",
@@ -214,10 +222,12 @@ const Register = ({ userAuthentication, setUserAuthentication, userName, setUser
         setUserAuthentication(true);
         navigate("/");
       } else {
+        reCaptchaComponent.current.reset();
         setResponseError(parseData);
         setFormInputs({ ...formInputs, [parseData.type]: { ...formInputs.type, isValid: false } });
         setUserAuthentication(false);
       }
+      toast[parseData.type](parseData.message, { theme: "colored" });
     } catch (err) {
       console.log(err.message);
     }
@@ -630,10 +640,30 @@ const Register = ({ userAuthentication, setUserAuthentication, userName, setUser
               </div>
             </div>
           </div>
-          <div className="d-flex justify-content-end">
-            <button className="btn btn-success btn-lg mt-3" onClick={(e) => handleSubmit(e)}>
-              Registrar
-            </button>
+          <hr />
+          <div className="row mt-3 justify-content-end">
+            <div className="col-12 col-lg-6 d-flex justify-content-center justify-content-lg-end">
+              <div className="row">
+                <div className="col-12 col-lg-6 d-flex justify-content-center">
+                  <ReCAPTCHA
+                    ref={reCaptchaComponent}
+                    sitekey={siteConfigs.reCaptchaSiteKey}
+                    onChange={(token) => {
+                      setCaptcha(token);
+                    }}
+                    onExpired={(e) => {
+                      setCaptcha("");
+                      reCaptchaComponent.current.reset();
+                    }}
+                  />
+                </div>
+                <div className="col-12 col-lg-6 d-flex justify-content-center">
+                  <button className="btn btn-success btn-lg form-control my-3 ms-lg-5" onClick={(e) => handleSubmit(e)} disabled={!captcha}>
+                    Registrar
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
         </form>
       </div>

@@ -4,9 +4,10 @@ const bcrypt = require("bcrypt");
 const registrationValidation = require("./middlewares/registrationValidation");
 const authorization = require("./middlewares/authorization");
 const jwtGenerator = require("../utils/jwtGenerator");
+const reCaptcha = require("./middlewares/reCaptcha");
 
 // Register Route
-router.post("/register", registrationValidation, async (req, res) => {
+router.post("/register", [reCaptcha, registrationValidation], async (req, res) => {
   const { username, email, password, name, lastName, cpf, birthDate, phone, gender, cep, state, city, neighborhood, street, number, apartment } =
     req.body;
   try {

@@ -47,8 +47,8 @@ const FederationsPage = () => {
                   aria-expanded="false"
                   aria-controls={federation.federation_state}
                 >
-                  <img src={`/estados/${federation.federation_state}.png`} width={45} height={30} alt="sp" className="me-2" /> Federação{" "}
-                  {retrieveDemonym(federation.federation_state)} <span className="d-none d-lg-inline-block ms-1">de Mountain Bike</span>
+                  <img src={`/estados/${federation.federation_state}.png`} width={45} height={30} alt="sp" className="me-2" />
+                  {federation.federation_name || `Federação ${retrieveDemonym(federation.federation_state)} de Mountain Bike`}
                 </button>
               </h2>
               <div

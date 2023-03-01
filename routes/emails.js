@@ -12,4 +12,13 @@ router.get("/", adminAuthorization, async (req, res) => {
   }
 });
 
+router.post("/recovery/:id", adminAuthorization, async (req, res) => {
+  try {
+    const list = await listVerifiedEmails();
+    return res.json(list);
+  } catch (err) {
+    console.log(err.message);
+  }
+});
+
 module.exports = router;

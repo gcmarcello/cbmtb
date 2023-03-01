@@ -21,6 +21,7 @@ CREATE TABLE users(
     user_number VARCHAR(255),
     user_apartment VARCHAR(255),
     user_role VARCHAR(255) NOT NULL,
+    user_confirmed BOOLEAN NOT NULL,
     PRIMARY KEY(user_id)
 );
 

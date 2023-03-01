@@ -1,9 +1,10 @@
 const router = require("express").Router();
+const reCaptcha = require("./middlewares/reCaptcha");
 const pool = require("../database");
 const adminAuthorization = require("./middlewares/adminAuthorization");
 
 // Send Press Form
-router.post("/press", async (req, res) => {
+router.post("/press", reCaptcha, async (req, res) => {
   try {
     const { fullName, email, type, vehicle, comments, phone, cpf } = req.body;
     const verifyEmail = await pool.query("SELECT press_email FROM press WHERE press_email = $1", [email]);
@@ -30,7 +31,7 @@ router.post("/press", async (req, res) => {
 });
 
 // Send Press Form
-router.post("/ombudsman", async (req, res) => {
+router.post("/ombudsman", reCaptcha, async (req, res) => {
   try {
     const { fullName, email, message, phone } = req.body;
 
