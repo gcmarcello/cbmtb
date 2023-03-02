@@ -12,6 +12,12 @@ app.use(bodyParser.urlencoded({ limit: "15mb", extended: true }));
 app.use(express.json());
 app.use(cors());
 
+/* React Routes */
+// Serve react files
+app.use(express.static(path.join(__dirname, "client/build")));
+// Home Page
+app.use("/*", express.static(path.join(__dirname, "client/build")));
+
 // Routes
 app.use("/api/categories", require("./routes/categories"));
 app.use("/api/confirmations", require("./routes/confirmations"));
@@ -24,12 +30,6 @@ app.use("/api/news", require("./routes/news"));
 app.use("/api/payments", require("./routes/payments"));
 app.use("/api/registrations", require("./routes/registrations"));
 app.use("/api/users", require("./routes/users"));
-
-/* React Routes */
-// Serve react files
-app.use(express.static(path.join(__dirname, "client/build")));
-// Home Page
-app.use("/*", express.static(path.join(__dirname, "client/build")));
 
 app.listen(port, () => {
   console.log(
