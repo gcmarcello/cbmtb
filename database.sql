@@ -4,10 +4,9 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 CREATE TABLE users(
     user_id UUID DEFAULT UUID_generate_v4(),
-    user_name VARCHAR(255) NOT NULL,
     user_email VARCHAR(255) NOT NULL UNIQUE,
     user_password VARCHAR(255) NOT NULL,
-    user_given_name VARCHAR(255) NOT NULL,
+    user_first_name VARCHAR(255) NOT NULL,
     user_last_name VARCHAR(255) NOT NULL,
     user_cpf VARCHAR(255) NOT NULL,
     user_gender VARCHAR(255) NOT NULL,
@@ -16,8 +15,7 @@ CREATE TABLE users(
     user_cep VARCHAR(255) NOT NULL,
     user_state VARCHAR(2) NOT NULL,
     user_city VARCHAR(255) NOT NULL,
-    user_neighborhood VARCHAR(255),
-    user_street VARCHAR(255) NOT NULL,
+    user_address VARCHAR(255) NOT NULL,
     user_number VARCHAR(255),
     user_apartment VARCHAR(255),
     user_role VARCHAR(255) NOT NULL,
@@ -76,6 +74,7 @@ CREATE TABLE registrations(
     payment_id UUID NOT NULL,
     registration_shirt VARCHAR(255),
     registration_status VARCHAR(255) NOT NULL,
+    registration_date TIMESTAMP NOT NULL,
     PRIMARY KEY(registration_id),
     FOREIGN KEY (category_id) REFERENCES categories(category_id),
     FOREIGN KEY (payment_id) REFERENCES payments(payment_id),
@@ -121,15 +120,15 @@ CREATE TABLE clubs(
     club_site VARCHAR(255) NOT NULL,
     club_phone VARCHAR(255) NOT NULL,
     club_address VARCHAR(255) NOT NULL,
-    PRIMARY KEY(federation_id),
-    FOREIGN KEY (federation_state) REFERENCES federation(federation_state)
+    PRIMARY KEY(club_id),
+    FOREIGN KEY (federation_state) REFERENCES federations(federation_state)
 );
 
 CREATE TABLE news_categories(
   category_id UUID DEFAULT UUID_generate_v4(),
-  category_name VARCHAR(20) NOT NULL,
+  category_name VARCHAR(20) NOT NULL UNIQUE,
   PRIMARY KEY (category_id)
-)
+);
 
 CREATE TABLE news(
     news_id UUID DEFAULT UUID_generate_v4(),
@@ -142,7 +141,7 @@ CREATE TABLE news(
     user_id UUID NOT NULL,
     news_text TEXT NOT NULL,
     news_category VARCHAR(20) DEFAULT 'Geral',
-    news_status BOOLEAN DEFAULT false;
+    news_status BOOLEAN DEFAULT false,
     PRIMARY KEY(news_id),
     FOREIGN KEY (user_id) REFERENCES users(user_id),
     FOREIGN KEY (news_category) REFERENCES news_categories(category_name)
@@ -158,6 +157,15 @@ CREATE TABLE documents(
     user_id UUID NOT NULL,
     PRIMARY KEY(document_id),
     FOREIGN KEY (user_id) REFERENCES users(user_id)
+);
+
+CREATE TABLE email_confirmations(
+  confirmation_id UUID DEFAULT UUID_generate_v4(),
+  register_date TIMESTAMP NOT NULL,
+  user_id UUID NOT NULL,
+  confirmation_status BOOLEAN NOT NULL,
+  PRIMARY KEY (confirmation_id),
+  FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
 
 

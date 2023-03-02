@@ -1,20 +1,25 @@
-import React from "react";
+import React, { useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useForm, Controller } from "react-hook-form";
 import InputMask from "react-input-mask";
+import ReCAPTCHA from "react-google-recaptcha";
+import { siteConfigs } from "../../App.config.js";
 
 const Imprensa = () => {
   const navigate = useNavigate();
   const {
-    watch,
     getValues,
+    setError,
+    setValue,
+    watch,
     control,
     register,
     formState: { errors },
     handleSubmit,
-    setError,
   } = useForm({ mode: "onChange" });
+
+  const reCaptchaComponent = useRef(null);
 
   const onSubmit = async (data) => {
     try {
@@ -32,7 +37,6 @@ const Imprensa = () => {
           type: "server",
           message: parseResponse.message,
         });
-        console.log(parseResponse);
       }
       toast[parseResponse.type](parseResponse.message, { theme: "colored" });
     } catch (error) {
@@ -178,8 +182,36 @@ const Imprensa = () => {
             <textarea id="comments" className={`form-control mb-3`} {...register("comments")} />
           </div>
         </div>
-        <div className="d-flex justify-content-end">
-          <input type="submit" className="btn btn-success" />
+
+        <div className="row justify-content-end">
+          <div className="col-12 col-lg-6 d-flex justify-content-center justify-content-lg-end">
+            <div className="row">
+              <div className="col-12 col-lg-6 d-flex justify-content-center">
+                <Controller
+                  name="reCaptcha"
+                  control={control}
+                  defaultValue=""
+                  rules={{
+                    required: true,
+                  }}
+                  render={({ field: { onChange } }) => (
+                    <ReCAPTCHA
+                      ref={reCaptchaComponent}
+                      sitekey={siteConfigs.reCaptchaSiteKey}
+                      onChange={onChange}
+                      onExpired={(e) => {
+                        setValue("reCaptcha", "");
+                        reCaptchaComponent.current.reset();
+                      }}
+                    />
+                  )}
+                />
+              </div>
+              <div className="col-12 col-lg-6 d-flex justify-content-center justify-content-lg-end">
+                <input type="submit" className="btn btn-success my-2 px-5 btn-lg" disabled={!watch("reCaptcha")} />
+              </div>
+            </div>
+          </div>
         </div>
       </form>
     </div>

@@ -14,6 +14,7 @@ app.use(cors());
 
 // Routes
 app.use("/api/categories", require("./routes/categories"));
+app.use("/api/confirmations", require("./routes/confirmations"));
 app.use("/api/documents", require("./routes/documents"));
 app.use("/api/emails", require("./routes/emails"));
 app.use("/api/events", require("./routes/events"));

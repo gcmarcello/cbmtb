@@ -8,8 +8,7 @@ const reCaptcha = require("./middlewares/reCaptcha");
 
 // Register Route
 router.post("/register", [reCaptcha, registrationValidation], async (req, res) => {
-  const { username, email, password, name, lastName, cpf, birthDate, phone, gender, cep, state, city, neighborhood, street, number, apartment } =
-    req.body;
+  const { address, apartment, birthDate, cep, city, cpf, email, firstName, gender, lastName, number, password, phone, state } = req.body;
   try {
     // Encrypting password
     const saltRounds = 10;
@@ -18,58 +17,42 @@ router.post("/register", [reCaptcha, registrationValidation], async (req, res) =
 
     // Inserting user into DB
     const newUser = await pool.query(
-      "INSERT INTO users (user_name, user_email, user_password, user_given_name, user_last_name, user_cpf, user_gender, user_phone, user_birth_date, user_cep, user_state, user_city, user_neighborhood, user_street, user_number, user_apartment, user_role) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17) RETURNING *",
-      [
-        username,
-        email,
-        bcryptPassword,
-        name,
-        lastName,
-        cpf,
-        gender,
-        phone,
-        birthDate,
-        cep,
-        state,
-        city,
-        neighborhood,
-        street,
-        number,
-        apartment,
-        "user",
-      ]
+      "INSERT INTO users (user_email, user_password, user_first_name, user_last_name, user_cpf, user_gender, user_phone, user_birth_date, user_cep, user_state, user_city, user_address, user_number, user_apartment, user_role, user_confirmed) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16) RETURNING *",
+      [email, bcryptPassword, firstName, lastName, cpf, gender, phone, birthDate, cep, state, city, address, number, apartment, "user", false]
     );
 
-    //JWT
-    const token = jwtGenerator(newUser.rows[0].user_id, newUser.rows[0].user_name, newUser.rows[0].user_role, newUser.rows[0].user_given_name);
-    res.json({ token });
+    const newConfirmation = await pool.query("INSERT INTO email_confirmations (register_date,user_id,confirmation_status) VALUES ($1,$2,$3)", [
+      new Date(),
+      newUser.rows[0].user_id,
+      false,
+    ]);
+
+    res.status(200).json({ message: "Cadastro efetuado com sucesso.", type: "success" });
   } catch (err) {
     console.log(err.message);
-    res.status(500).json("Server Error");
+    res.status(500).json({ message: "Erro realizar o cadastro. por favor atualize a página e tente novamente.", type: "error" });
   }
 });
 
 // Login Route
 router.post("/login", async (req, res) => {
-  const { username, password } = req.body;
-  const userVerification = await pool.query("SELECT * FROM users WHERE user_name = $1", [username]);
-  if (!userVerification.rows[0]) {
-    return res.status(400).json("Usuário ou senha estão incorretos.");
+  const { cpf, password } = req.body;
+  const CPFVerification = await pool.query("SELECT * FROM users WHERE user_cpf = $1", [cpf]);
+
+  if (!CPFVerification.rows[0]) {
+    return res.status(400).json({ message: "CPF ou senha estão incorretos.", type: "error" });
+  } else if (!CPFVerification.rows[0].user_confirmed) {
+    return res.status(400).json({ message: "Esta conta ainda não foi confirmada.", type: "error" });
   }
 
-  if (await bcrypt.compare(password, userVerification.rows[0].user_password)) {
+  if (await bcrypt.compare(password, CPFVerification.rows[0].user_password)) {
     try {
-      const token = jwtGenerator(
-        userVerification.rows[0].user_id,
-        userVerification.rows[0].user_name,
-        userVerification.rows[0].user_role,
-        userVerification.rows[0].user_given_name
-      );
+      const token = jwtGenerator(CPFVerification.rows[0].user_id, CPFVerification.rows[0].user_role, CPFVerification.rows[0].user_first_name);
       res.json({
         token: token,
-        role: userVerification.rows[0].user_role,
-        name: userVerification.rows[0].user_name,
-        givenName: userVerification.rows[0].user_given_name,
+        role: CPFVerification.rows[0].user_role,
+        name: CPFVerification.rows[0].user_name,
+        givenName: CPFVerification.rows[0].user_first_name,
       });
     } catch (err) {
       console.log(err.message);
@@ -83,7 +66,7 @@ router.post("/login", async (req, res) => {
 router.get("/self", authorization, async (req, res) => {
   try {
     const self = await pool.query(
-      "SELECT user_name, user_email, user_given_name, user_last_name, user_gender, user_phone, user_cpf, user_birth_date, user_cep, user_state, user_city, user_neighborhood, user_street, user_number, user_apartment FROM users WHERE user_id = $1",
+      "SELECT user_email, user_first_name, user_last_name, user_gender, user_phone, user_cpf, user_birth_date, user_cep, user_state, user_city, user_address, user_number, user_apartment FROM users WHERE user_id = $1",
       [req.userId]
     );
     res.status(200).json(self.rows[0]);

@@ -1,18 +1,24 @@
-import React from "react";
+import React, { useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useForm, Controller } from "react-hook-form";
 import InputMask from "react-input-mask";
+import ReCAPTCHA from "react-google-recaptcha";
+import { siteConfigs } from "../../App.config.js";
 
 const Ouvidoria = () => {
   const navigate = useNavigate();
   const {
+    getValues,
+    setError,
+    setValue,
+    watch,
     control,
     register,
     formState: { errors },
     handleSubmit,
-    setError,
   } = useForm({ mode: "onChange" });
+  const reCaptchaComponent = useRef(null);
 
   const onSubmit = async (data) => {
     try {
@@ -69,7 +75,7 @@ const Ouvidoria = () => {
                 <label htmlFor="name">Nome Completo</label>
                 <input
                   id="fullName"
-                  className={`form-control ${errors.fullName?.type ? "is-invalid" : ""} mb-3`}
+                  className={`form-control ${errors.fullName?.type ? "is-invalid" : getValues("fullName") ? "is-valid" : ""} mb-3`}
                   {...register("fullName", { required: true, pattern: /^([A-Za-z]+\s*){3,}$/i })}
                   aria-invalid={errors.fullName ? "true" : "false"}
                 />
@@ -83,7 +89,7 @@ const Ouvidoria = () => {
                 <label htmlFor="email">Email</label>
                 <input
                   id="email"
-                  className={`form-control ${errors.email?.type ? "is-invalid" : ""} mb-3`}
+                  className={`form-control ${errors.email?.type ? "is-invalid" : getValues("email") ? "is-valid" : ""} mb-3`}
                   {...register("email", { required: true, pattern: /^[\w-.]+@([\w-]+\.)+[\w-]{2,}$/ })}
                   aria-invalid={errors.email ? "true" : "false"}
                 />
@@ -108,7 +114,7 @@ const Ouvidoria = () => {
                   render={({ field }) => (
                     <InputMask
                       mask="(99) 99999-9999"
-                      className={`form-control ${errors.phone ? "is-invalid" : ""} mb-3`}
+                      className={`form-control ${errors.phone ? "is-invalid" : getValues("phone") ? "is-valid" : ""} mb-3`}
                       maskChar=""
                       value={field.value}
                       onChange={field.onChange}
@@ -131,8 +137,32 @@ const Ouvidoria = () => {
                 <textarea id="message" className={`form-control mb-3`} {...register("message")} />
               </div>
             </div>
-            <div className="d-flex justify-content-end">
-              <input type="submit" className="btn btn-success" />
+
+            <div className="row">
+              <div className="col-12 col-lg-6">
+                <Controller
+                  name="reCaptcha"
+                  control={control}
+                  defaultValue=""
+                  rules={{
+                    required: true,
+                  }}
+                  render={({ field: { onChange } }) => (
+                    <ReCAPTCHA
+                      ref={reCaptchaComponent}
+                      sitekey={siteConfigs.reCaptchaSiteKey}
+                      onChange={onChange}
+                      onExpired={(e) => {
+                        setValue("reCaptcha", "");
+                        reCaptchaComponent.current.reset();
+                      }}
+                    />
+                  )}
+                />
+              </div>
+              <div className="col-12 col-lg-6 text-end">
+                <input type="submit" className="btn btn-success my-2 px-5 btn-lg" disabled={!watch("reCaptcha")} />
+              </div>
             </div>
           </form>
         </div>

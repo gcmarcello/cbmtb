@@ -24,6 +24,7 @@ import Documents from "./pages/documents/documents";
 import AllEvents from "./pages/event/allEvents";
 import Imprensa from "./pages/forms/imprensa";
 import Ouvidoria from "./pages/forms/ouvidoria";
+import ConfirmRegistration from "./pages/register/components/registrationConfirmation";
 
 function App() {
   const [userAuthentication, setUserAuthentication] = useState(false);
@@ -184,6 +185,7 @@ function App() {
           <Route exact path="/noticias/:title" element={<NewsPage />} />
           <Route exact path="/ouvidoria/" element={<Ouvidoria />} />
           <Route exact path="/transparencia/" element={<Documents />} />
+          <Route exact path="/cc/" element={<ConfirmRegistration />} />
           <Route
             exact
             path="/usuario"
