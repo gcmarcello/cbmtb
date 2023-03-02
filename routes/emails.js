@@ -23,6 +23,7 @@ router.post("/recovery/:id", adminAuthorization, async (req, res) => {
 
 router.post("/bounces/", async (req, res) => {
   try {
+    console.log(req.body);
     return res.json(req.body);
   } catch (err) {
     console.log(err.message);
