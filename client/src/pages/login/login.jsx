@@ -29,7 +29,7 @@ const Login = ({ setUserAuthentication, setUserAdmin, setUserName }) => {
       } else {
         setError("root.serverError", {
           type: "server",
-          message: "CPF ou senha estão incorretos.",
+          message: parseData.message,
         });
         setUserAuthentication(false);
       }
@@ -37,8 +37,6 @@ const Login = ({ setUserAuthentication, setUserAdmin, setUserName }) => {
       console.log(err.message);
     }
   };
-
-  console.log(errors);
 
   return (
     <Fragment>
@@ -50,12 +48,12 @@ const Login = ({ setUserAuthentication, setUserAdmin, setUserName }) => {
           <div className="col-11">
             {errors.root?.serverError.type && (
               <div className="alert alert-danger mt-2" role="alert">
-                <i class="bi bi-exclamation-triangle-fill me-2"></i> {errors.root.serverError.message}
+                <i className="bi bi-exclamation-triangle-fill me-2"></i> {errors.root.serverError.message}
               </div>
             )}
             {(errors.password || errors.cpf) && (
               <div className="alert alert-danger mt-2" role="alert">
-                <i class="bi bi-exclamation-triangle-fill me-2"></i> Preencha corretamente os campos abaixo.
+                <i className="bi bi-exclamation-triangle-fill me-2"></i> Preencha corretamente os campos abaixo.
               </div>
             )}
           </div>
@@ -96,6 +94,7 @@ const Login = ({ setUserAuthentication, setUserAdmin, setUserName }) => {
                 <button
                   className="input-group-text"
                   id="button-addon1"
+                  type="button"
                   onClick={(e) => {
                     e.preventDefault();
                     setShowPassword(!showPassword);

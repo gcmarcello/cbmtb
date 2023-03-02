@@ -93,7 +93,13 @@ function App() {
           <Route
             exact
             path="/cadastro"
-            element={<Register userAuthentication={userAuthentication} setUserAuthentication={setUserAuthentication} />}
+            element={
+              !userAuthentication ? (
+                <Register userAuthentication={userAuthentication} setUserAuthentication={setUserAuthentication} />
+              ) : (
+                <Navigate to="/usuario" />
+              )
+            }
           />
           <Route
             exact
@@ -109,7 +115,7 @@ function App() {
                   userName={userName}
                 />
               ) : (
-                <Navigate to="/" />
+                <Navigate to="/usuario" />
               )
             }
           />
@@ -185,7 +191,6 @@ function App() {
           <Route exact path="/noticias/:title" element={<NewsPage />} />
           <Route exact path="/ouvidoria/" element={<Ouvidoria />} />
           <Route exact path="/transparencia/" element={<Documents />} />
-          <Route exact path="/cc/" element={<ConfirmRegistration />} />
           <Route
             exact
             path="/usuario"
