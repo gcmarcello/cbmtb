@@ -7,6 +7,12 @@ const port = process.env.PORT || 5000;
 const path = require("path");
 
 // Middlewares
+app.use(function (req, res, next) {
+  if (req.get("x-amz-sns-message-type")) {
+    req.headers["content-type"] = "application/json";
+  }
+  next();
+});
 app.use(bodyParser.json({ limit: "15mb", extended: true }));
 app.use(bodyParser.urlencoded({ limit: "15mb", extended: true }));
 app.use(express.json());
