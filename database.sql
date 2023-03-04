@@ -165,7 +165,13 @@ CREATE TABLE email_confirmations(
   user_id UUID NOT NULL,
   confirmation_status BOOLEAN NOT NULL,
   PRIMARY KEY (confirmation_id),
-  FOREIGN KEY (user_id) REFERENCES users(user_id)
+  FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+);
+
+CREATE TABLE newsletter_subscribers(
+  subscriber_id UUID DEFAULT UUID_generate_v4(),
+  subscriber_email VARCHAR(255) NOT NULL,
+  PRIMARY KEY (subscriber_id),
 );
 
 
