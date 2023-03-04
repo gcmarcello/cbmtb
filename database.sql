@@ -171,7 +171,7 @@ CREATE TABLE email_confirmations(
 CREATE TABLE newsletter_subscribers(
   subscriber_id UUID DEFAULT UUID_generate_v4(),
   subscriber_email VARCHAR(255) NOT NULL,
-  PRIMARY KEY (subscriber_id),
+  PRIMARY KEY (subscriber_id)
 );
 
 

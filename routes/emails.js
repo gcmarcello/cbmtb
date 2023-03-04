@@ -62,4 +62,20 @@ router.post("/complaints/", async (req, res) => {
   }
 });
 
+router.post("/newsletter/", async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    const checkEmail = await pool.query("SELECT * FROM newsletter_subscribers WHERE subscriber_email = $1", [email]);
+
+    if (checkEmail.rows[0]) {
+      return res.status(400).json({ message: `Erro ao se inscrever na newsletter. Este email já existe.`, type: "error" });
+    }
+
+    return res.status(200).json({ message: "Inscrição realizada com sucesso!. Você receberá uma confirmação por e-mail.", type: "success" });
+  } catch (err) {
+    return res.status(400).json({ message: `Erro ao se inscrever na newsletter. ${err.message}`, type: "error" });
+  }
+});
+
 module.exports = router;

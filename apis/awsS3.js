@@ -10,7 +10,6 @@ const s3 = new AWS.S3({
 async function uploadFileToS3(file, bucketName, folder, ACL) {
   const format = file.split(";").shift().split(":").pop();
   const allowedFormats = ["image/jpeg", "image/jpg", "image/png", "image/gif", "image/webp", "application/pdf"];
-  console.log(file.replace(/^data:(image\/\w+|application\/pdf);base64,/, ""));
   const buffer = Buffer.from(file.replace(/^data:(image\/\w+|application\/pdf);base64,/, ""), "base64");
   const key = crypto.randomBytes(16).toString("hex");
 
@@ -20,7 +19,7 @@ async function uploadFileToS3(file, bucketName, folder, ACL) {
 
   const params = {
     Bucket: bucketName,
-    Key: `${folder}/${key}.${format.split("/").pop()}`,
+    Key: `${process.env.NODE_ENV === "production" ? "" : "dev-folder/"}${folder}/${key}.${format.split("/").pop()}`,
     Body: buffer,
     ContentType: format,
     ACL: ACL || "public-read",

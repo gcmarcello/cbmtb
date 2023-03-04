@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState } from "react";
+import EventInfoModal from "./eventInfoModal";
 
 import PaymentModal from "./paymentModal";
 
@@ -6,7 +7,7 @@ const UserRegistrations = ({ registrations }) => {
   return (
     <div className="row mt-2">
       <h3>Inscrições Confirmadas</h3>
-      <div>
+      <div className="d-flex justify-content-center justify-content-lg-start">
         {registrations.filter((registration) => registration.registration_status === "completed").length ? (
           registrations
             .filter((registration) => registration.registration_status === "completed")
@@ -21,7 +22,7 @@ const UserRegistrations = ({ registrations }) => {
                   <br />
                   <span className="fw-bold">Tamanho da Camisa:</span> {registration.registration_shirt.toUpperCase()}
                   <div className="d-flex">
-                    <button className="btn btn-warning form-control mt-2 h-50">Informações</button>
+                    <EventInfoModal registration={registration} />
                   </div>
                 </div>
                 <div className="card-footer d-flex justify-content-between align-items-center">
@@ -32,9 +33,6 @@ const UserRegistrations = ({ registrations }) => {
                     <i className="bi bi-calendar-fill"></i> {registration.formattedDate}
                   </small>
                 </div>
-                {/* <a href={`/evento/${event.event_link}`} className="btn btn-primary">
-                    Inscrições
-                  </a> */}
               </div>
             ))
         ) : (
@@ -58,7 +56,7 @@ const UserRegistrations = ({ registrations }) => {
                   <span className="fw-bold">Tamanho da Camisa:</span> {registration.registration_shirt.toUpperCase()}
                   <div className="d-flex">
                     <PaymentModal registration={registration} />
-                    <button className="btn btn-warning form-control mt-2 h-50">Informações</button>
+                    <EventInfoModal registration={registration} />
                   </div>
                 </div>
                 <div className="card-footer d-flex justify-content-between align-items-center">

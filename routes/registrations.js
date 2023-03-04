@@ -12,7 +12,7 @@ router.get("/user/", authorization, async (req, res) => {
   try {
     const userId = req.userId;
     const registrations = await pool.query(
-      "SELECT r.registration_status, r.registration_shirt, r.registration_id, r.payment_id, c.category_name, e.event_id, e.event_name, e.event_description, e.event_location, e.event_date, e.event_price, e.event_image FROM registrations AS r LEFT JOIN users AS u ON r.user_id = u.user_id LEFT JOIN categories AS c ON r.category_id = c.category_id LEFT JOIN events AS e ON c.event_id = e.event_id WHERE u.user_id = $1",
+      "SELECT r.registration_status, r.registration_shirt, r.registration_id, r.payment_id, c.category_name, e.event_id, e.event_name, e.event_description, e.event_rules, e.event_location, e.event_date, e.event_price, e.event_image FROM registrations AS r LEFT JOIN users AS u ON r.user_id = u.user_id LEFT JOIN categories AS c ON r.category_id = c.category_id LEFT JOIN events AS e ON c.event_id = e.event_id WHERE u.user_id = $1",
       [userId]
     );
 
@@ -47,8 +47,8 @@ router.post("/:id", authorization, async (req, res) => {
     );
 
     const newRegistrations = await pool.query(
-      `INSERT INTO registrations (event_id,user_id,category_id,registration_shirt, payment_id, registration_status) VALUES ($1,$2,$3,$4,$5,$6)`,
-      [id, userId, categoryId, registrationShirt, newPayment.rows[0].payment_id, paymentStatus]
+      `INSERT INTO registrations (event_id,user_id,category_id,registration_shirt, payment_id, registration_status, registration_date) VALUES ($1,$2,$3,$4,$5,$6,$7)`,
+      [id, userId, categoryId, registrationShirt, newPayment.rows[0].payment_id, paymentStatus, new Date()]
     );
 
     axios({
@@ -59,13 +59,11 @@ router.post("/:id", authorization, async (req, res) => {
       },
       url: `http://localhost:3000/api/payments/pix/${newPayment.rows[0].payment_id}`,
     }).then((response) =>
-      res
-        .status(200)
-        .json({
-          message: "Inscrição realizada com sucesso.",
-          type: "success",
-          paymentId: eventCost.rows[0].event_price > 0 ? newPayment.rows[0].payment_id : 0,
-        })
+      res.status(200).json({
+        message: "Inscrição realizada com sucesso.",
+        type: "success",
+        paymentId: eventCost.rows[0].event_price > 0 ? newPayment.rows[0].payment_id : 0,
+      })
     );
   } catch (err) {
     console.log(err.message);
@@ -98,7 +96,7 @@ router.get("/:id", adminAuthorization, async (req, res) => {
   try {
     const { id } = req.params;
     const registrations = await pool.query(
-      "SELECT u.user_given_name, u.user_last_name, u.user_cpf, u.user_gender, u.user_phone, u.user_birth_date, r.registration_status, r.registration_shirt, c.category_name FROM registrations AS r LEFT JOIN users AS u ON r.user_id = u.user_id LEFT JOIN categories AS c ON r.category_id = c.category_id WHERE r.event_id = $1",
+      "SELECT u.user_first_name, u.user_last_name, u.user_cpf, u.user_gender, u.user_phone, u.user_birth_date, r.registration_status, r.registration_shirt, c.category_name FROM registrations AS r LEFT JOIN users AS u ON r.user_id = u.user_id LEFT JOIN categories AS c ON r.category_id = c.category_id WHERE r.event_id = $1",
       [id]
     );
     res.status(200).json(registrations.rows);

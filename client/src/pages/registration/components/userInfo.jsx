@@ -17,7 +17,7 @@ const UserInfo = ({ user, event, categories, registrationInfo, setRegistrationIn
               id="user_given_name"
               name="user_given_name"
               className="form-control"
-              value={user.user_given_name}
+              value={user.user_first_name}
               onChange={(e) => setRegistrationInfo({ ...registrationInfo, user: { ...user, [e.target.name]: e.target.value } })}
             />
             <label htmlFor="user_last_name">Sobrenome</label>

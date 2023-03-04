@@ -52,6 +52,20 @@ const Documents = () => {
   return (
     <div className="container inner-page">
       <h1>Transparência</h1>
+      <div className="mx-2">
+        <p className="text-justify">
+          Bem-vindo à página de Transparência da CBMTB! Aqui você poderá acessar nossos estatutos, regulamentos, atas de reuniões e outros documentos
+          importantes. Também fornecemos informações sobre nossa estrutura organizacional, incluindo os membros de nosso conselho e equipe
+          administrativa. Além disso, nossa página de Transparência oferece informações sobre nosso orçamento, finanças e investimentos.
+        </p>
+        <p className="text-justify">
+          Publicamos anualmente nossos balanços financeiros, demonstrações de resultados e relatórios de auditoria, para que nossos membros possam
+          acompanhar o desempenho financeiro de nossa entidade. Estamos comprometidos em manter um alto nível de integridade e ética em nossas
+          operações. Como tal, nossa página de Transparência e Documentação é atualizada regularmente e estamos sempre disponíveis para responder a
+          quaisquer dúvidas ou preocupações que nossos membros possam ter.
+        </p>
+      </div>
+
       <div className="accordion" id="accordionExample">
         <div className="accordion-item">
           <h2 className="accordion-header" id="headingOne">
@@ -110,7 +124,7 @@ const Documents = () => {
               <div className="accordion-body">
                 <div className="list-group">
                   {documents
-                    .filter((document) => document.document_year === year)
+                    .filter((document) => document.document_year === year && !document.document_general)
                     .map((document) => (
                       <button
                         key={`${document.document_id}-general`}

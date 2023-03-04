@@ -79,63 +79,83 @@ function App() {
       ) : (
         ""
       )}
-
-      <Router>
-        <Routes>
-          <Route path="*" element={<Page404 userAuthentication={userAuthentication} setUserAuthentication={setUserAuthentication} />} />
-          <Route
-            exact
-            path="/"
-            element={
-              <Home userAuthentication={userAuthentication} setUserAuthentication={setUserAuthentication} userAdmin={userAdmin} userName={userName} />
-            }
-          />
-          <Route
-            exact
-            path="/cadastro"
-            element={
-              !userAuthentication ? (
-                <Register userAuthentication={userAuthentication} setUserAuthentication={setUserAuthentication} />
-              ) : (
-                <Navigate to="/usuario" />
-              )
-            }
-          />
-          <Route
-            exact
-            path="/login"
-            element={
-              !userAuthentication ? (
-                <Login
+      <main>
+        <Router>
+          <Routes>
+            <Route path="*" element={<Page404 userAuthentication={userAuthentication} setUserAuthentication={setUserAuthentication} />} />
+            <Route
+              exact
+              path="/"
+              element={
+                <Home
                   userAuthentication={userAuthentication}
                   setUserAuthentication={setUserAuthentication}
-                  setUserAdmin={setUserAdmin}
                   userAdmin={userAdmin}
-                  setUserName={setUserName}
                   userName={userName}
                 />
-              ) : (
-                <Navigate to="/usuario" />
-              )
-            }
-          />
-          <Route
-            exact
-            path="/dashboard"
-            element={
-              userAuthentication ? (
-                userAdmin ? (
-                  <Dashboard
+              }
+            />
+            <Route
+              exact
+              path="/cadastro"
+              element={
+                !userAuthentication ? (
+                  <Register userAuthentication={userAuthentication} setUserAuthentication={setUserAuthentication} />
+                ) : (
+                  <Navigate to="/usuario" />
+                )
+              }
+            />
+            <Route
+              exact
+              path="/login"
+              element={
+                !userAuthentication ? (
+                  <Login
                     userAuthentication={userAuthentication}
                     setUserAuthentication={setUserAuthentication}
                     setUserAdmin={setUserAdmin}
                     userAdmin={userAdmin}
+                    setUserName={setUserName}
+                    userName={userName}
                   />
                 ) : (
-                  <Navigate to="/" />
+                  <Navigate to="/usuario" />
                 )
-              ) : (
-                <Login
+              }
+            />
+            <Route
+              exact
+              path="/dashboard"
+              element={
+                userAuthentication ? (
+                  userAdmin ? (
+                    <Dashboard
+                      userAuthentication={userAuthentication}
+                      setUserAuthentication={setUserAuthentication}
+                      setUserAdmin={setUserAdmin}
+                      userAdmin={userAdmin}
+                    />
+                  ) : (
+                    <Navigate to="/" />
+                  )
+                ) : (
+                  <Login
+                    userAuthentication={userAuthentication}
+                    setUserAuthentication={setUserAuthentication}
+                    setUserAdmin={setUserAdmin}
+                    userAdmin={userAdmin}
+                    setUserName={setUserName}
+                    userName={userName}
+                  />
+                )
+              }
+            />
+            <Route
+              exact
+              path="/evento/:id"
+              element={
+                <EventPage
                   userAuthentication={userAuthentication}
                   setUserAuthentication={setUserAuthentication}
                   setUserAdmin={setUserAdmin}
@@ -143,74 +163,60 @@ function App() {
                   setUserName={setUserName}
                   userName={userName}
                 />
-              )
-            }
-          />
-          <Route
-            exact
-            path="/evento/:id"
-            element={
-              <EventPage
-                userAuthentication={userAuthentication}
-                setUserAuthentication={setUserAuthentication}
-                setUserAdmin={setUserAdmin}
-                userAdmin={userAdmin}
-                setUserName={setUserName}
-                userName={userName}
-              />
-            }
-          />
-          <Route
-            exact
-            path="/inscricao/:id"
-            element={
-              userAuthentication ? (
-                <Registration
-                  userAuthentication={userAuthentication}
-                  setUserAuthentication={setUserAuthentication}
-                  userAdmin={userAdmin}
-                  userName={userName}
-                />
-              ) : (
-                <Login
-                  userAuthentication={userAuthentication}
-                  setUserAuthentication={setUserAuthentication}
-                  setUserAdmin={setUserAdmin}
-                  userAdmin={userAdmin}
-                  setUserName={setUserName}
-                  userName={userName}
-                />
-              )
-            }
-          />
-          <Route exact path="/pagamento/:linkId" element={<Payments />} />
-          <Route exact path="/eventos/" element={<AllEvents />} />
-          <Route exact path="/federacoes/" element={<Federations />} />
-          <Route exact path="/imprensa/" element={<Imprensa />} />
-          <Route exact path="/noticias/" element={<AllNews />} />
-          <Route exact path="/noticias/:title" element={<NewsPage />} />
-          <Route exact path="/ouvidoria/" element={<Ouvidoria />} />
-          <Route exact path="/transparencia/" element={<Documents />} />
-          <Route
-            exact
-            path="/usuario"
-            element={
-              userAuthentication ? (
-                <UserPanel userAuthentication={userAuthentication} setUserAuthentication={setUserAuthentication} userName={userName} />
-              ) : (
-                <Login
-                  userAuthentication={userAuthentication}
-                  setUserAuthentication={setUserAuthentication}
-                  setUserAdmin={setUserAdmin}
-                  userAdmin={userAdmin}
-                  setUserName={setUserName}
-                  userName={userName}
-                />
-              )
-            }
-          />
-        </Routes>
-      </Router>
+              }
+            />
+            <Route
+              exact
+              path="/inscricao/:id"
+              element={
+                userAuthentication ? (
+                  <Registration
+                    userAuthentication={userAuthentication}
+                    setUserAuthentication={setUserAuthentication}
+                    userAdmin={userAdmin}
+                    userName={userName}
+                  />
+                ) : (
+                  <Login
+                    userAuthentication={userAuthentication}
+                    setUserAuthentication={setUserAuthentication}
+                    setUserAdmin={setUserAdmin}
+                    userAdmin={userAdmin}
+                    setUserName={setUserName}
+                    userName={userName}
+                  />
+                )
+              }
+            />
+            <Route exact path="/pagamento/:linkId" element={<Payments />} />
+            <Route exact path="/eventos/" element={<AllEvents />} />
+            <Route exact path="/federacoes/" element={<Federations />} />
+            <Route exact path="/imprensa/" element={<Imprensa />} />
+            <Route exact path="/noticias/" element={<AllNews />} />
+            <Route exact path="/noticias/:title" element={<NewsPage />} />
+            <Route exact path="/ouvidoria/" element={<Ouvidoria />} />
+            <Route exact path="/transparencia/" element={<Documents />} />
+            <Route
+              exact
+              path="/usuario"
+              element={
+                userAuthentication ? (
+                  <UserPanel userAuthentication={userAuthentication} setUserAuthentication={setUserAuthentication} userName={userName} />
+                ) : (
+                  <Login
+                    userAuthentication={userAuthentication}
+                    setUserAuthentication={setUserAuthentication}
+                    setUserAdmin={setUserAdmin}
+                    userAdmin={userAdmin}
+                    setUserName={setUserName}
+                    userName={userName}
+                  />
+                )
+              }
+            />
+          </Routes>
+        </Router>
+      </main>
       {window.location.pathname !== "/dashboard" ? <Footer userAuthentication={userAuthentication} userName={userName} /> : ""}
     </Fragment>
   );

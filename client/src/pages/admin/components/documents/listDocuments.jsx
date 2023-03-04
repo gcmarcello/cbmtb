@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { toast } from "react-toastify";
+import LoadingScreen from "../../../../utils/loadingScreen";
 
 import { handleChange, handleFileChange, cancelFileUpload, resetForm } from "../../functions/handleForm";
 import { imageToBase64 } from "../../functions/imageToBase64";
@@ -125,9 +126,9 @@ const ListDocuments = ({ setDocumentChange, documentChange }) => {
                 <td>{document.document_title}</td>
                 <td className="d-none d-lg-table-cell">{document.document_description}</td>
                 <td className="d-none d-lg-table-cell">{document.document_year}</td>
-                <td className="d-flex justify-content-evenly">
-                  <button className="btn btn-primary" onClick={(e) => openDocument(e, document.document_link.split("/").pop())}>
-                    Gerar Link
+                <td className="">
+                  <button className="btn btn-primary me-2" onClick={(e) => openDocument(e, document.document_link.split("/").pop())}>
+                    Ver
                   </button>
                   <DeleteDocuments document={document} documentChange={documentChange} setDocumentChange={setDocumentChange} />
                 </td>
@@ -232,9 +233,13 @@ const ListDocuments = ({ setDocumentChange, documentChange }) => {
           </div>
         </div>
         <div className="d-flex justify-content-end">
-          <button className="btn btn-success" onClick={(e) => submitFile(e)}>
-            Enviar
-          </button>
+          {isLoading ? (
+            <LoadingScreen />
+          ) : (
+            <button className="btn btn-success" onClick={(e) => submitFile(e)}>
+              Enviar
+            </button>
+          )}
         </div>
       </form>
     </div>
