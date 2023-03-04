@@ -74,7 +74,7 @@ function App() {
         pauseOnHover
         theme="light"
       />
-      {location.pathname !== "/dashboard" && (
+      {location.pathname !== "/dashboard" && location.pathname !== "/dashboard/" && (
         <UserNavigation userAuthentication={userAuthentication} userName={userName} userAdmin={userAdmin} setUserAdmin={setUserAdmin} />
       )}
       <main>
@@ -208,7 +208,9 @@ function App() {
           />
         </Routes>
       </main>
-      {location.pathname !== "/dashboard" && <Footer userAuthentication={userAuthentication} userName={userName} />}
+      {location.pathname !== "/dashboard" && location.pathname !== "/dashboard/" && (
+        <Footer userAuthentication={userAuthentication} userName={userName} />
+      )}
     </Fragment>
   );
 }
