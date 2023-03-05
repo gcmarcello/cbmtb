@@ -24,6 +24,7 @@ import Documents from "./pages/documents/documents";
 import AllEvents from "./pages/event/allEvents";
 import Imprensa from "./pages/forms/imprensa";
 import Ouvidoria from "./pages/forms/ouvidoria";
+import ConfirmationPage from "./pages/confirmation/confirmation";
 
 function App() {
   const [userAuthentication, setUserAuthentication] = useState(false);
@@ -181,6 +182,11 @@ function App() {
             }
           />
           <Route exact path="/pagamento/:linkId" element={<Payments />} />
+          <Route
+            exact
+            path="/confirmacao/:id"
+            element={<ConfirmationPage setUserAuthentication={setUserAuthentication} setUserAdmin={setUserAdmin} setUserName={setUserName} />}
+          />
           <Route exact path="/eventos/" element={<AllEvents />} />
           <Route exact path="/federacoes/" element={<Federations />} />
           <Route exact path="/imprensa/" element={<Imprensa />} />
@@ -208,9 +214,10 @@ function App() {
           />
         </Routes>
       </main>
-      {location.pathname !== "/dashboard" && location.pathname !== "/dashboard/" && (
-        <Footer userAuthentication={userAuthentication} userName={userName} />
-      )}
+      {location.pathname !== "/dashboard" &&
+        location.pathname !== "/dashboard/" &&
+        location.pathname !== "/cadastro/" &&
+        location.pathname !== "/cadastro" && <Footer userAuthentication={userAuthentication} userName={userName} />}
     </Fragment>
   );
 }

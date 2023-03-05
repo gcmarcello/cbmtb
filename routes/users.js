@@ -1,10 +1,13 @@
 const router = require("express").Router();
 const pool = require("../database");
 const bcrypt = require("bcrypt");
+
 const registrationValidation = require("./middlewares/registrationValidation");
 const authorization = require("./middlewares/authorization");
-const jwtGenerator = require("../utils/jwtGenerator");
 const reCaptcha = require("./middlewares/reCaptcha");
+
+const jwtGenerator = require("../utils/jwtGenerator");
+const Email = require("../utils/emails");
 
 // Register Route
 router.post("/register", [reCaptcha, registrationValidation], async (req, res) => {
@@ -21,11 +24,13 @@ router.post("/register", [reCaptcha, registrationValidation], async (req, res) =
       [email, bcryptPassword, firstName, lastName, cpf, gender, phone, birthDate, cep, state, city, address, number, apartment, "user", false]
     );
 
-    const newConfirmation = await pool.query("INSERT INTO email_confirmations (register_date,user_id,confirmation_status) VALUES ($1,$2,$3)", [
-      new Date(),
-      newUser.rows[0].user_id,
-      false,
-    ]);
+    const newConfirmation = await pool.query(
+      "INSERT INTO email_confirmations (register_date,user_id,confirmation_status) VALUES ($1,$2,$3) RETURNING *",
+      [new Date(), newUser.rows[0].user_id, false]
+    );
+
+    const sgEmail = new Email([email]);
+    sgEmail.sendConfirmationEmail(firstName, newConfirmation.rows[0].confirmation_id);
 
     res.status(200).json({ message: "Cadastro efetuado com sucesso.", type: "success" });
   } catch (err) {

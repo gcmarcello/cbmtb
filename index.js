@@ -1,7 +1,6 @@
 console.clear();
 const express = require("express");
 const bodyParser = require("body-parser");
-const cors = require("cors");
 const app = express();
 const port = process.env.PORT || 5000;
 const path = require("path");
@@ -16,7 +15,6 @@ app.use(express.json());
 app.use("/api/categories", require("./routes/categories"));
 app.use("/api/confirmations", require("./routes/confirmations"));
 app.use("/api/documents", require("./routes/documents"));
-app.use("/api/emails", require("./routes/emails"));
 app.use("/api/events", require("./routes/events"));
 app.use("/api/forms", require("./routes/forms"));
 app.use("/api/federations", require("./routes/federations"));
