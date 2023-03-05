@@ -1,6 +1,7 @@
 console.clear();
 const express = require("express");
 const bodyParser = require("body-parser");
+const cors = require("cors");
 const app = express();
 const port = process.env.PORT || 5000;
 const path = require("path");
@@ -10,6 +11,7 @@ const path = require("path");
 app.use(bodyParser.json({ limit: "15mb", extended: true }));
 app.use(bodyParser.urlencoded({ limit: "15mb", extended: true }));
 app.use(express.json());
+app.use(cors());
 
 // Routes
 app.use("/api/categories", require("./routes/categories"));
