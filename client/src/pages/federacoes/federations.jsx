@@ -44,13 +44,13 @@ const FederationsPage = () => {
         o país. Juntos, estamos comprometidos em criar oportunidades para que atletas de todas as idades e habilidades possam desfrutar do Mountain
         Bike em um ambiente seguro e competitivo.
       </p>
-      <div class="accordion" id="accordionFederations">
+      <div className="accordion" id="accordionFederations">
         {federationsList.length
           ? federationsList.map((federation) => (
-              <div class="accordion-item">
-                <h2 class="accordion-header" id={`${federation.federation_state}-heading`}>
+              <div className="accordion-item">
+                <h2 className="accordion-header" id={`${federation.federation_state}-heading`}>
                   <button
-                    class="accordion-button collapsed"
+                    className="accordion-button collapsed"
                     type="button"
                     data-bs-toggle="collapse"
                     data-bs-target={`#${federation.federation_state}`}
@@ -63,22 +63,22 @@ const FederationsPage = () => {
                 </h2>
                 <div
                   id={federation.federation_state}
-                  class="accordion-collapse collapse"
+                  className="accordion-collapse collapse"
                   aria-labelledby={`${federation.federation_state}-heading`}
                   data-bs-parent="#accordionFederations"
                 >
-                  <div class="accordion-body">
+                  <div className="accordion-body">
                     <div className="federation-info">
                       <h5>Informação</h5>
                       <ul className="list-group" style={{ listStyle: "none" }}>
                         <li>
-                          <i class="bi bi-globe fs-3"></i> <a href={federation.federation_site}>{federation.federation_site}</a>
+                          <i className="bi bi-globe fs-3"></i> <a href={federation.federation_site}>{federation.federation_site}</a>
                         </li>
                         <li>
-                          <i class="bi bi-telephone-fill fs-3"></i> {federation.federation_phone}
+                          <i className="bi bi-telephone-fill fs-3"></i> {federation.federation_phone}
                         </li>
                         <li>
-                          <i class="bi bi-geo-alt-fill fs-3"></i> {federation.federation_address}
+                          <i className="bi bi-geo-alt-fill fs-3"></i> {federation.federation_address}
                         </li>
                       </ul>
                     </div>

@@ -18,11 +18,10 @@ router.get("/:id", async (req, res) => {
 // List Documents (ADMIN)
 router.get("/", async (req, res) => {
   try {
-    const documentsList = await pool.query("SELECT * FROM documents");
+    const documentsList = await pool.query("SELECT * FROM documents ORDER BY document_year DESC");
     return res.status(200).json(documentsList.rows);
   } catch (err) {
     return res.status(400).json({ message: `Erro. ${err.message}`, type: "error" });
-    console.log(err.message);
   }
 });
 

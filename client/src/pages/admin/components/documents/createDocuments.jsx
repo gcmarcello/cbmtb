@@ -71,7 +71,7 @@ const CreateDocuments = ({ documentChange, setDocumentChange }) => {
 
   return (
     <Fragment>
-      <form className="collapse" id="collapseNewDocument" onSubmit={handleSubmit(onSubmit)}>
+      <form className="collapse card p-3 mb-5" id="collapseNewDocument" onSubmit={handleSubmit(onSubmit)}>
         <div className="row mb-3">
           <div className="col-12 col-lg-6">
             <label htmlFor="document-title">Nome do Documento</label>
@@ -124,23 +124,29 @@ const CreateDocuments = ({ documentChange, setDocumentChange }) => {
               </div>
               <div className="col-12 col-lg-6">
                 <label htmlFor="general">Documento Geral?</label>
-                <div className="form-check form-switch">
+                <div className="form-check form-switch mt-1">
                   <input
                     id="general"
                     type={"checkbox"}
-                    className={`form-check-input ${errors.general?.type ? "is-invalid" : getValues("general") ? "is-valid" : ""} `}
+                    className={`form-check-input`}
                     {...register("general")}
                     aria-invalid={errors.general ? "true" : "false"}
                   />
                   <label className="form-check-label" htmlFor="flexSwitchCheckDefault">
-                    Default switch checkbox input
+                    Documento Geral?
                   </label>
                 </div>
               </div>
             </div>
           </div>
         </div>
-        <input type="submit" className="btn btn-success my-2 px-5 btn-lg" disabled={!watch("file")} />
+        <hr />
+        <div className="d-flex justify-content-end">
+          <button className="btn btn-secondary my-2 me-5 px-5 btn-lg " onClick={() => reset()}>
+            Limpar
+          </button>
+          <input type="submit" className="btn btn-success my-2 px-5 btn-lg " disabled={!watch("file")} />
+        </div>
       </form>
     </Fragment>
   );

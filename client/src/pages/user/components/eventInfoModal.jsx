@@ -18,18 +18,18 @@ const EventInfoModal = ({ registration }) => {
             </div>
             <div className="modal-body">
               <h6>Informações</h6>
-              <ul class="list-group mb-3">
-                <li class="list-group-item">
-                  <i class="bi bi-geo-alt-fill"></i> <span className="fw-bolder">Local:</span> {registration.event_location}
+              <ul className="list-group mb-3">
+                <li className="list-group-item">
+                  <i className="bi bi-geo-alt-fill"></i> <span className="fw-bolder">Local:</span> {registration.event_location}
                 </li>
-                <li class="list-group-item">
-                  <i class="bi bi-calendar-week-fill"></i> <span className="fw-bolder">Data:</span> {registration.formattedDate}
+                <li className="list-group-item">
+                  <i className="bi bi-calendar-week-fill"></i> <span className="fw-bolder">Data:</span> {registration.formattedDate}
                 </li>
-                <li class="list-group-item">
-                  <i class="bi bi-people-fill"></i> <span className="fw-bolder">Categoria:</span> {registration.category_name}
+                <li className="list-group-item">
+                  <i className="bi bi-people-fill"></i> <span className="fw-bolder">Categoria:</span> {registration.category_name}
                 </li>
-                <li class="list-group-item">
-                  <i class="bi bi-incognito"></i> <span className="fw-bolder">Tamanho da Camiseta:</span>{" "}
+                <li className="list-group-item">
+                  <i className="bi bi-incognito"></i> <span className="fw-bolder">Tamanho da Camiseta:</span>{" "}
                   {registration.registration_shirt.toUpperCase()}
                 </li>
               </ul>

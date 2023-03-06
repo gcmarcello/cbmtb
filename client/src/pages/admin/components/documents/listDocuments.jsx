@@ -62,7 +62,7 @@ const ListDocuments = ({ setDocumentChange, documentChange }) => {
               <td className="d-none d-lg-table-cell">{document.document_year}</td>
               <td className="">
                 <button className="btn btn-primary me-2" onClick={(e) => openDocument(e, document.document_link.split("/").pop())}>
-                  Ver
+                  <i className="bi bi-eye"></i>
                 </button>
                 <DeleteDocuments document={document} documentChange={documentChange} setDocumentChange={setDocumentChange} />
               </td>
@@ -92,20 +92,42 @@ const ListDocuments = ({ setDocumentChange, documentChange }) => {
 
     return (
       <>
-        <table className="table table-striped">
-          <thead className="table-dark">
-            <tr>
-              <th>Nome</th>
-              <th className="d-none d-lg-table-cell">Descrição</th>
-              <th className="d-none d-lg-table-cell">Ano do Arquivo</th>
-              <th>Arquivo</th>
-            </tr>
-          </thead>
-          <tbody className="table-group-divider">
-            <Items currentItems={currentItems} />
-          </tbody>
-        </table>
         <div className="row">
+          <div className="col-12 col-lg-6">
+            <h2>Documentos Gerais</h2>
+            <table className="table table-striped">
+              <thead className="table-dark">
+                <tr>
+                  <th>Nome</th>
+                  <th className="d-none d-lg-table-cell">Descrição</th>
+                  <th className="d-none d-lg-table-cell">Ano do Arquivo</th>
+                  <th>Arquivo</th>
+                </tr>
+              </thead>
+              <tbody className="table-group-divider">
+                <Items currentItems={currentItems.filter((item) => item.document_general === true)} />
+              </tbody>
+            </table>
+          </div>
+          <div className="col-12 col-lg-6">
+            <h2>Outros Documentos</h2>
+            <table className="table table-striped">
+              <thead className="table-dark">
+                <tr>
+                  <th>Nome</th>
+                  <th className="d-none d-lg-table-cell">Descrição</th>
+                  <th className="d-none d-lg-table-cell">Ano do Arquivo</th>
+                  <th>Arquivo</th>
+                </tr>
+              </thead>
+              <tbody className="table-group-divider">
+                <Items currentItems={currentItems} />
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div className="row mb-5">
           <div className="col-12 col-lg-6">
             <ReactPaginate
               breakLabel="..."
@@ -153,6 +175,8 @@ const ListDocuments = ({ setDocumentChange, documentChange }) => {
   return (
     <div className="container-fluid mt-3">
       <h1>Lista de Documentos</h1>
+      <hr />
+
       {!isLoading || !documentChange ? (
         <PaginatedItems itemsPerPage={5} itemList={documentList} />
       ) : (
