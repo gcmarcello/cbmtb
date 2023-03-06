@@ -28,18 +28,22 @@ router.get("/", async (req, res) => {
 
 // Create Document
 router.post("/", adminAuthorization, async (req, res) => {
+  let s3File = null;
   try {
     const userId = req.userId;
-    const { title, description, year, general, base64File } = req.body;
+    const { title, description, year, general, file } = req.body;
 
-    const s3File = await uploadFileToS3(base64File, "cbmtb", "documents", "private");
+    s3File = await uploadFileToS3(file, "cbmtb", "documents", "private");
 
     const newDocument = await pool.query(
-      "INSERT INTO documents (document_title, document_description, document_year, document_general, user_id, document_link) VALUES ($1,$2,$3,$4,$5,$6)",
+      "INSERT INTO documents (document_title, document_description, document_year, document_general, user_id, document_link) VALUES ($1,$2,$3,$4,$5,$6) RETURNING *",
       [title, description, +year, Boolean(general), userId, s3File]
     );
     return res.status(200).json({ message: "Documento foi enviado com sucesso!", type: "success", data: s3File });
   } catch (err) {
+    if (s3File) {
+      await deleteFileFromS3("cbmtb", "documents", s3File.split("/").pop());
+    }
     console.log(err.message);
     return res.status(400).json({ message: `Erro ao enviar o documento. ${err.message}`, type: "error" });
   }

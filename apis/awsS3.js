@@ -56,7 +56,7 @@ async function deleteFileFromS3(bucketName, folder, file) {
 }
 
 function createPreSignedURL(bucketName, folder, file) {
-  var params = { Bucket: bucketName, Key: `${folder}/${file}`, Expires: 60 };
+  var params = { Bucket: bucketName, Key: `${process.env.NODE_ENV === "production" ? "" : "dev-folder/"}${folder}/${file}`, Expires: 60 };
   var url = s3.getSignedUrl("getObject", params);
   return url;
 }
