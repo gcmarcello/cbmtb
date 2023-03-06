@@ -2,6 +2,8 @@ import React, { useState, useRef, useEffect } from "react";
 import { toast } from "react-toastify";
 import LoadingScreen from "../../../../utils/loadingScreen";
 
+import ReactPaginate from "react-paginate";
+
 import { handleChange, handleFileChange, cancelFileUpload, resetForm } from "../../functions/handleForm";
 import { imageToBase64 } from "../../functions/imageToBase64";
 import DeleteDocuments from "./deleteDocuments";
@@ -97,6 +99,83 @@ const ListDocuments = ({ setDocumentChange, documentChange }) => {
     }
   };
 
+  function Items({ currentItems }) {
+    return (
+      <>
+        {currentItems &&
+          currentItems.map((document) => (
+            <tr key={`news-${document.document_id}`}>
+              <td>{document.document_title}</td>
+              <td className="d-none d-lg-table-cell">{document.document_description}</td>
+              <td className="d-none d-lg-table-cell">{document.document_year}</td>
+              <td className="">
+                <button className="btn btn-primary me-2" onClick={(e) => openDocument(e, document.document_link.split("/").pop())}>
+                  Ver
+                </button>
+                <DeleteDocuments document={document} documentChange={documentChange} setDocumentChange={setDocumentChange} />
+              </td>
+            </tr>
+          ))}
+      </>
+    );
+  }
+
+  function PaginatedItems({ itemsPerPage, itemList }) {
+    // Here we use item offsets; we could also use page offsets
+    // following the API or data you're working with.
+    const [itemOffset, setItemOffset] = useState(0);
+
+    // Simulate fetching items from another resources.
+    // (This could be items from props; or items loaded in a local state
+    // from an API endpoint with useEffect and useState)
+    const endOffset = itemOffset + itemsPerPage;
+    const currentItems = itemList.slice(itemOffset, endOffset);
+    const pageCount = Math.ceil(itemList.length / itemsPerPage);
+
+    // Invoke when user click to request another page.
+    const handlePageClick = (event) => {
+      const newOffset = (event.selected * itemsPerPage) % itemList.length;
+      setItemOffset(newOffset);
+    };
+
+    return (
+      <>
+        <table className="table table-striped">
+          <thead className="table-dark">
+            <tr>
+              <th>Nome</th>
+              <th className="d-none d-lg-table-cell">Descrição</th>
+              <th className="d-none d-lg-table-cell">Ano do Arquivo</th>
+              <th>Arquivo</th>
+            </tr>
+          </thead>
+          <tbody className="table-group-divider">
+            <Items currentItems={currentItems} />
+          </tbody>
+        </table>
+        <ReactPaginate
+          breakLabel="..."
+          nextLabel="Próximo >"
+          onPageChange={handlePageClick}
+          pageRangeDisplayed={5}
+          pageCount={pageCount}
+          previousLabel="< Anterior"
+          renderOnZeroPageCount={null}
+          pageClassName="page-item"
+          pageLinkClassName="page-link"
+          previousClassName="page-item"
+          previousLinkClassName="page-link"
+          nextClassName="page-item"
+          nextLinkClassName="page-link"
+          breakClassName="page-item"
+          breakLinkClassName="page-link"
+          containerClassName="pagination"
+          activeClassName="active"
+        />
+      </>
+    );
+  }
+
   useEffect(() => {
     fetchDocuments(); //eslint-disable-next-line
   }, [documentChange]);
@@ -110,39 +189,20 @@ const ListDocuments = ({ setDocumentChange, documentChange }) => {
 
   return (
     <div className="container-fluid mt-3">
-      <table className="table table-striped">
-        <thead className="table-dark">
-          <tr>
-            <th>Nome</th>
-            <th className="d-none d-lg-table-cell">Descrição</th>
-            <th className="d-none d-lg-table-cell">Ano do Arquivo</th>
-            <th>Arquivo</th>
-          </tr>
-        </thead>
-        <tbody className="table-group-divider">
-          {!isLoading || !documentChange ? (
-            documentList.map((document) => (
-              <tr key={`news-${document.document_id}`}>
-                <td>{document.document_title}</td>
-                <td className="d-none d-lg-table-cell">{document.document_description}</td>
-                <td className="d-none d-lg-table-cell">{document.document_year}</td>
-                <td className="">
-                  <button className="btn btn-primary me-2" onClick={(e) => openDocument(e, document.document_link.split("/").pop())}>
-                    Ver
-                  </button>
-                  <DeleteDocuments document={document} documentChange={documentChange} setDocumentChange={setDocumentChange} />
-                </td>
-              </tr>
-            ))
-          ) : (
+      <h1>Lista de Documentos</h1>
+      {!isLoading || !documentChange ? (
+        <PaginatedItems itemsPerPage={5} itemList={documentList} />
+      ) : (
+        <table>
+          <tbody>
             <tr>
               <td colSpan={5} className="text-center">
                 <div className="spinner-border" role="status"></div>
               </td>
             </tr>
-          )}
-        </tbody>
-      </table>
+          </tbody>
+        </table>
+      )}
       <div className="d-flex justify-content-end">
         <a
           className="btn btn-primary mb-2"
