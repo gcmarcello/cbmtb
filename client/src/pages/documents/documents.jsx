@@ -107,51 +107,53 @@ const Documents = () => {
         </div>
 
         <div className="accordion mt-2" id={`accordion-years`}>
-          {documentYears.map((year) => (
-            <div className="accordion-item" key={year}>
-              <h2 className="accordion-header" id={`heading-${year}`}>
-                <button
-                  className="accordion-button collapsed"
-                  type="button"
-                  data-bs-toggle="collapse"
-                  data-bs-target={`#collapse-${year}`}
-                  aria-expanded="false"
-                  aria-controls={`heading-${year}`}
+          {documentYears
+            .sort((a, b) => b - a)
+            .map((year) => (
+              <div className="accordion-item" key={year}>
+                <h2 className="accordion-header" id={`heading-${year}`}>
+                  <button
+                    className="accordion-button collapsed"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target={`#collapse-${year}`}
+                    aria-expanded="false"
+                    aria-controls={`heading-${year}`}
+                  >
+                    Documentos {year}
+                  </button>
+                </h2>
+                <div
+                  id={`collapse-${year}`}
+                  className="accordion-collapse collapse"
+                  aria-labelledby={`heading-${year}`}
+                  data-bs-parent={`#accordion-years`}
                 >
-                  Documentos {year}
-                </button>
-              </h2>
-              <div
-                id={`collapse-${year}`}
-                className="accordion-collapse collapse"
-                aria-labelledby={`heading-${year}`}
-                data-bs-parent={`#accordion-years`}
-              >
-                <div className="accordion-body">
-                  <div className="list-group">
-                    {documents
-                      .filter((document) => document.document_year === year && !document.document_general)
-                      .map((document) => (
-                        <button
-                          key={document.document_id}
-                          href="#"
-                          className="list-group-item list-group-item-action"
-                          aria-current="true"
-                          onClick={(e) => openDocument(e, document.document_link.split("/").pop())}
-                        >
-                          <div className="d-flex w-100 justify-content-between">
-                            <h5 className="mb-1">{document.document_title}</h5>
-                            {/* <small>3 days ago</small> */}
-                          </div>
-                          <p className="mb-1">{document.document_description}</p>
-                          {/* <small>And some small print.</small> */}
-                        </button>
-                      ))}
+                  <div className="accordion-body">
+                    <div className="list-group">
+                      {documents
+                        .filter((document) => document.document_year === year && !document.document_general)
+                        .map((document) => (
+                          <button
+                            key={document.document_id}
+                            href="#"
+                            className="list-group-item list-group-item-action"
+                            aria-current="true"
+                            onClick={(e) => openDocument(e, document.document_link.split("/").pop())}
+                          >
+                            <div className="d-flex w-100 justify-content-between">
+                              <h5 className="mb-1">{document.document_title}</h5>
+                              {/* <small>3 days ago</small> */}
+                            </div>
+                            <p className="mb-1">{document.document_description}</p>
+                            {/* <small>And some small print.</small> */}
+                          </button>
+                        ))}
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          ))}{" "}
+            ))}{" "}
         </div>
       </div>
     </Fragment>
