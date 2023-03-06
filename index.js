@@ -1,4 +1,5 @@
 console.clear();
+require("dotenv").config();
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
@@ -33,6 +34,6 @@ app.use("/*", express.static(path.join(__dirname, "client/build")));
 
 app.listen(port, () => {
   console.log(
-    `\n----------------------------------------------------------------\nServer running on port ${port}...\n----------------------------------------------------------------\n`
+    `\n----------------------------------------------------------------\nServer running on port ${port} - NODE ENV = ${process.env.NODE_ENV}...\n----------------------------------------------------------------\n`
   );
 });
