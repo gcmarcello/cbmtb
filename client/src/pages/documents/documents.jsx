@@ -14,9 +14,7 @@ const Documents = () => {
       });
       const parseResponse = await response.json();
       setDocuments(parseResponse);
-      setDocumentYears([
-        ...new Set(parseResponse.filter((document) => document.document_general === true).map((document) => document.document_year)),
-      ]);
+      setDocumentYears(...new Set([parseResponse.map((document) => document.document_year)]));
     } catch (err) {
       console.log(err);
     } finally {

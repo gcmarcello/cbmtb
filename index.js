@@ -34,6 +34,6 @@ app.use("/*", express.static(path.join(__dirname, "client/build")));
 
 app.listen(port, () => {
   console.log(
-    `\n----------------------------------------------------------------\nServer running on port ${port} - NODE ENV = ${process.env.NODE_ENV}...\n----------------------------------------------------------------\n`
+    `\n----------------------------------------------------------------\nServer running on port ${port} - NODE_ENV = ${process.env.NODE_ENV}\n----------------------------------------------------------------\n`
   );
 });
