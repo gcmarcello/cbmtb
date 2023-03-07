@@ -141,11 +141,11 @@ const CreateDocuments = ({ documentChange, setDocumentChange }) => {
           </div>
         </div>
         <hr />
-        <div className="d-flex justify-content-end">
-          <button className="btn btn-secondary my-2 me-5 px-5 btn-lg " onClick={() => reset()}>
+        <div className="d-flex justify-content-evenly">
+          <button className="btn btn-secondary my-2 btn-lg" onClick={() => reset()}>
             Limpar
           </button>
-          <input type="submit" className="btn btn-success my-2 px-5 btn-lg " disabled={!watch("file")} />
+          <input type="submit" className="btn btn-success my-2 btn-lg " disabled={!watch("file")} />
         </div>
       </form>
     </Fragment>

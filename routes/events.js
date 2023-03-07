@@ -97,11 +97,11 @@ router.put("/:id", adminAuthorization, async (req, res) => {
       S3Image = await uploadFileToS3(base64Image, "cbmtb", "event-main");
     }
 
+    const imageToUpdate = S3Image ? S3Image : "event_image";
+
     const updateEvent = await pool.query(
-      `UPDATE events SET event_name = $1, event_location = $2, event_date = $3, event_price = $4, event_max_attendees = $5, event_description = $6, event_rules = $7, event_details = $8, event_image = ${
-        S3Image ? S3Image : "event_image"
-      } WHERE event_id = $9`,
-      [name, location, date, price, attendees, description, rules, details, id]
+      `UPDATE events SET event_name = $1, event_location = $2, event_date = $3, event_price = $4, event_max_attendees = $5, event_description = $6, event_rules = $7, event_details = $8, event_image = $10 WHERE event_id = $9`,
+      [name, location, date, price, attendees, description, rules, details, id, imageToUpdate]
     );
     const categoriesSQL = categories
       .map((category) => `('${id}',${category.category_name},${category.category_minage},${category.category_maxage})`)

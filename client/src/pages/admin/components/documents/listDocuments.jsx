@@ -57,13 +57,14 @@ const ListDocuments = ({ setDocumentChange, documentChange }) => {
         {currentItems &&
           currentItems.map((document) => (
             <tr key={`news-${document.document_id}`}>
-              <td>{document.document_title}</td>
+              <td>
+                <button className="btn btn-link" onClick={(e) => openDocument(e, document.document_link.split("/").pop())}>
+                  {document.document_title}
+                </button>
+              </td>
               <td className="d-none d-lg-table-cell">{document.document_description}</td>
               <td className="d-none d-lg-table-cell">{document.document_year}</td>
               <td className="">
-                <button className="btn btn-primary me-2" onClick={(e) => openDocument(e, document.document_link.split("/").pop())}>
-                  <i className="bi bi-eye"></i>
-                </button>
                 <DeleteDocuments document={document} documentChange={documentChange} setDocumentChange={setDocumentChange} />
               </td>
             </tr>
