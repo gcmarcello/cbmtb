@@ -90,19 +90,18 @@ router.put("/toggle/:id/:boolean", adminAuthorization, async (req, res) => {
 router.put("/:id", adminAuthorization, async (req, res) => {
   try {
     const { id } = req.params;
-    const { name, location, date, price, attendees, description, rules, details, categories, base64Image } = req.body;
+    const { name, location, date, price, attendees, description, rules, details, categories, link, base64Image } = req.body;
     let S3Image;
 
     if (base64Image) {
       S3Image = await uploadFileToS3(base64Image, "cbmtb", "event-main");
     }
 
-    const imageToUpdate = S3Image ? S3Image : "event_image";
-
     const updateEvent = await pool.query(
-      `UPDATE events SET event_name = $1, event_location = $2, event_date = $3, event_price = $4, event_max_attendees = $5, event_description = $6, event_rules = $7, event_details = $8, event_image = $10 WHERE event_id = $9`,
-      [name, location, date, price, attendees, description, rules, details, id, imageToUpdate]
+      `UPDATE events SET event_name = $1, event_location = $2, event_date = $3, event_price = $4, event_max_attendees = $5, event_description = $6, event_rules = $7, event_details = $8, event_image = $10, event_link = $11 WHERE event_id = $9`,
+      [name, location, date, price, attendees, description, rules, details, id, imageToUpdate, link]
     );
+
     const categoriesSQL = categories
       .map((category) => `('${id}',${category.category_name},${category.category_minage},${category.category_maxage})`)
       .join(",");
@@ -117,7 +116,6 @@ router.put("/:id", adminAuthorization, async (req, res) => {
     });
     res.status(200).json({ message: "Evento atualizado com sucesso!", type: "success" });
   } catch (err) {
-    console.log(err.message);
     res.status(400).json({ message: "Erro ao atualizar o evento.", type: "error" });
   }
 });

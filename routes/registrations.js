@@ -83,8 +83,7 @@ router.get("/:id/checkreg", authorization, async (req, res) => {
     const checkForRegistration = await pool.query("SELECT * FROM registrations WHERE event_id = $1 AND user_id = $2", [id, userId]);
 
     if (checkForRegistration.rows[0]) {
-      res.status(200).json({ message: "Você já se inscreveu neste evento!", type: "error" });
-      return;
+      return res.status(200).json({ message: "Você já se inscreveu neste evento!", type: "error" });
     }
   } catch (err) {
     console.log(err.message);
