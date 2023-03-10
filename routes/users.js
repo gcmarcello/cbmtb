@@ -2,9 +2,9 @@ const router = require("express").Router();
 const pool = require("../database");
 const bcrypt = require("bcrypt");
 
-const registrationValidation = require("./middlewares/registrationValidation");
-const authorization = require("./middlewares/authorization");
-const reCaptcha = require("./middlewares/reCaptcha");
+const registrationValidation = require("../middlewares/registrationValidation");
+const authorization = require("../middlewares/authorization");
+const reCaptcha = require("../middlewares/reCaptcha");
 
 const jwtGenerator = require("../utils/jwtGenerator");
 const Email = require("../utils/emails");

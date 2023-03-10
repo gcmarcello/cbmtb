@@ -2,8 +2,8 @@ const router = require("express").Router();
 const axios = require("axios");
 const crypto = require("crypto");
 const pool = require("../database");
-const authorization = require("./middlewares/authorization");
-const adminAuthorization = require("./middlewares/adminAuthorization");
+const authorization = require("../middlewares/authorization");
+const adminAuthorization = require("../middlewares/authorization");
 
 const fetch = require("node-fetch");
 

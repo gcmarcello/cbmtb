@@ -1,6 +1,6 @@
 const router = require("express").Router();
 const pool = require("../database");
-const adminAuthorization = require("./middlewares/adminAuthorization");
+const adminAuthorization = require("../middlewares/authorization");
 
 // List Federations
 router.get("/", async (req, res) => {

@@ -10,7 +10,6 @@ import { isoTimezone } from "./functions/isoDateTimezone";
 const EditEvent = ({ eventChange, setEventChange, event }) => {
   const {
     getValues,
-    watch,
     setValue,
     trigger,
     control,

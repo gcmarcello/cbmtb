@@ -1,6 +1,6 @@
 const router = require("express").Router();
 const pool = require("../database");
-const adminAuthorization = require("./middlewares/adminAuthorization");
+const adminAuthorization = require("../middlewares/authorization");
 const jwtGenerator = require("../utils/jwtGenerator");
 const emails = require("../utils/emails");
 

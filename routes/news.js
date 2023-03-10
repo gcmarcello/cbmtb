@@ -1,6 +1,6 @@
 const router = require("express").Router();
 const pool = require("../database");
-const adminAuthorization = require("./middlewares/adminAuthorization");
+const adminAuthorization = require("../middlewares/authorization");
 const { uploadFileToS3, deleteFileFromS3 } = require("../apis/awsS3");
 
 // Create News (ADMIN)

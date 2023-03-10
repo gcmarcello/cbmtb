@@ -2,7 +2,7 @@ const router = require("express").Router();
 const GNRequest = require("../apis/gerenciaNet");
 const crypto = require("crypto");
 const pool = require("../database");
-const authorization = require("./middlewares/authorization");
+const authorization = require("../middlewares/authorization");
 
 router.get("/bill", async (req, res) => {
   const reqGN = await GNRequest({
