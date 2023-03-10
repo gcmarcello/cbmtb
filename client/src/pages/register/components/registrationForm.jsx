@@ -219,7 +219,7 @@ const RegistrationForm = ({ onSubmit, reCaptchaComponent, getValues, setError, s
                 <select
                   id="gender"
                   defaultValue=""
-                  className={`form-select ${errors.gender?.type ? "is-invalid" : watch("gender") ? "is-valid" : ""} mb-1`}
+                  className={`form-select ${errors.gender?.type ? "is-invalid" : getValues("gender") ? "is-valid" : ""} mb-1`}
                   {...register("gender", { required: true })}
                 >
                   <option value="" disabled>

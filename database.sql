@@ -26,27 +26,30 @@ CREATE TABLE users(
 CREATE TABLE events(
     event_id UUID DEFAULT UUID_generate_v4(),
     event_link VARCHAR(20) UNIQUE,
-    event_owner_id UUID NOT NULL,
+    event_external VARCHAR(255),
     event_name VARCHAR(255) NOT NULL,
     event_location VARCHAR(255) NOT NULL,
     event_image VARCHAR(255),
-    event_date DATE NOT NULL,
-    event_price INTEGER NOT NULL,
+    event_date_start TIMESTAMP WITH TIME ZONE,
+    event_date_end TIMESTAMP WITH TIME ZONE,
+    event_registrations_start TIMESTAMP WITH TIME ZONE,
+    event_registrations_end TIMESTAMP WITH TIME ZONE,
     event_description TEXT,
     event_rules TEXT,
     event_details TEXT,
     event_max_attendees INTEGER NOT NULL,
     event_current_attendees INTEGER NOT NULL,
     event_status BOOLEAN NOT NULL,
-    event_external VARCHAR(255),
+    event_owner_id UUID NOT NULL,
     PRIMARY KEY(event_id),
     FOREIGN KEY (event_owner_id) REFERENCES users(user_id)
 );
 
-CREATE TABLE categories(
+CREATE TABLE event_categories(
     category_id UUID DEFAULT UUID_generate_v4(),
     event_id UUID NOT NULL,
     category_name VARCHAR(255) NOT NULL,
+    category_price REAL NOT NULL,
     category_minage INTEGER,
     category_maxage INTEGER,
     category_gender VARCHAR(255) NOT NULL,
@@ -76,7 +79,7 @@ CREATE TABLE registrations(
     registration_status VARCHAR(255) NOT NULL,
     registration_date TIMESTAMP NOT NULL,
     PRIMARY KEY(registration_id),
-    FOREIGN KEY (category_id) REFERENCES categories(category_id),
+    FOREIGN KEY (category_id) REFERENCES event_categories(category_id),
     FOREIGN KEY (payment_id) REFERENCES payments(payment_id),
     FOREIGN KEY (event_id) REFERENCES events(event_id),
     FOREIGN KEY (user_id) REFERENCES users(user_id)

@@ -9,7 +9,7 @@ router.post("/:id", adminAuthorization, async (req, res) => {
     const { id } = req.params;
     const { categoryName, categoryMinAge, categoryMaxAge, categoryGender } = req.body;
     const newCategory = await pool.query(
-      `INSERT INTO categories (event_id,category_name,category_minage,category_maxage, category_gender) VALUES ($1,$2,$3,$4,$5)`,
+      `INSERT INTO event_categories (event_id,category_name,category_minage,category_maxage, category_gender) VALUES ($1,$2,$3,$4,$5)`,
       [id, categoryName, categoryMinAge, categoryMaxAge, categoryGender]
     );
     res.status(200).json({ message: "Categoria criada com sucesso!", type: "success" });
@@ -22,7 +22,7 @@ router.post("/:id", adminAuthorization, async (req, res) => {
 router.get("/:id", adminAuthorization, async (req, res) => {
   try {
     const { id } = req.params;
-    const listOfCategories = await pool.query("SELECT * FROM categories WHERE event_id = $1 ORDER BY category_maxage ASC", [id]);
+    const listOfCategories = await pool.query("SELECT * FROM event_categories WHERE event_id = $1 ORDER BY category_maxage ASC", [id]);
     res.json(listOfCategories.rows);
   } catch (err) {
     console.log(err.message);
@@ -37,7 +37,7 @@ router.get("/:id/public", authorization, async (req, res) => {
     const userInfo = verifyUser.rows[0];
     const userAge = Math.round((new Date() - userInfo.user_birth_date) / 31556952000); // Milliseconds to Years
     const listOfCategories = await pool.query(
-      "SELECT * FROM categories WHERE (event_id = $1) AND (category_minage <= $2) AND (category_maxage >= $2) AND (category_gender = $3 OR category_gender = 'unisex') ORDER BY category_maxage ASC",
+      "SELECT * FROM event_categories WHERE (event_id = $1) AND (category_minage <= $2) AND (category_maxage >= $2) AND (category_gender = $3 OR category_gender = 'unisex') ORDER BY category_maxage ASC",
       [id, userAge, userInfo.user_gender]
     );
     if (!listOfCategories.rows[0]) {
@@ -56,7 +56,7 @@ router.put("/:id", adminAuthorization, async (req, res) => {});
 router.delete("/:id", adminAuthorization, async (req, res) => {
   try {
     const { id } = req.params;
-    const removeCategory = await pool.query("DELETE FROM categories WHERE category_id = $1", [id]);
+    const removeCategory = await pool.query("DELETE FROM event_categories WHERE category_id = $1", [id]);
     res.json({ message: "Categoria Removida.", type: "success" });
   } catch (err) {
     console.log(err.message);

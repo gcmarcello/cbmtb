@@ -46,11 +46,10 @@ const EventPage = ({ userAuthentication, userName }) => {
         navigate("/404");
         return;
       }
-      let dateToParse = new Date(parseResponse.event_date);
-      let dateToParseDay = String(dateToParse.getDate()).padStart(2, 0);
-      let dateToParseMonth = String(dateToParse.getMonth() + 1).padStart(2, 0);
-      let dateToParseYear = String(dateToParse.getFullYear());
-      parseResponse.formattedDate = `${dateToParseDay}/${dateToParseMonth}/${dateToParseYear}`;
+      const date = new Date(parseResponse.event_date);
+      parseResponse.formattedDate = date.toLocaleString("pt-BR");
+      const hey = parseResponse.formattedDate.split(" ");
+      console.log(hey[1]);
       setEvent(parseResponse);
       setLoading(false);
     } catch (err) {
@@ -114,7 +113,7 @@ const EventPage = ({ userAuthentication, userName }) => {
                       <div className="d-flex justify-content-evenly">
                         <i className="bi bi-facebook share-button fs-4" id="facebook-share"></i>
                         <i className="bi bi-twitter share-button fs-4 " id="twitter-share"></i>
-                        <i className="bi bi-instagram share-button fs-4" id="instagram-share"></i>
+                        <i className="bi bi-whatsapp share-button fs-4" id="whatsapp-share"></i>
                       </div>
                     </div>
                   </div>

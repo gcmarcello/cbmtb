@@ -1,11 +1,8 @@
 import React, { Fragment, useState } from "react";
 import { useEffect } from "react";
-import ReactQuill from "react-quill";
-import { modules, formats } from "../../../../utils/quillSettings";
 import { toast } from "react-toastify";
 
-import { handleChange, handleFileChange, cancelFileUpload } from "../../functions/handleForm";
-import { imageToBase64 } from "../../functions/imageToBase64";
+import { fileToBase64 } from "../../functions/fileToBase64";
 
 const EditNews = ({ newsChange, setNewsChange, news, setIsLoading }) => {
   const [newsForm, setNewsForm] = useState({
@@ -26,10 +23,6 @@ const EditNews = ({ newsChange, setNewsChange, news, setIsLoading }) => {
 
   const submitForm = async () => {
     try {
-      if (parseFloat(base64ImageSize) > 2000) {
-        cancelFileUpload(setSelectedImage, setImagePreview, setBase64Image);
-        return toast.error("Imagem excede o tamanho máximo de 2000KB (2MB).", { theme: "colored" });
-      }
       setIsLoading(true);
       setNewsChange(true);
       const myHeaders = new Headers();
@@ -76,13 +69,6 @@ const EditNews = ({ newsChange, setNewsChange, news, setIsLoading }) => {
     }
   };
 
-  useEffect(() => {
-    imageToBase64(selectedImage).then((data) => {
-      setBase64Image(data.image);
-      setBase64ImageSize(data.size);
-    });
-  }, [selectedImage]);
-
   return (
     <Fragment>
       <button className="btn btn-dark ms-1" data-bs-toggle="modal" data-bs-target={`#modal-news-${news.news_id}`}>
@@ -106,49 +92,18 @@ const EditNews = ({ newsChange, setNewsChange, news, setIsLoading }) => {
             </div>
             <div className="modal-body">
               <label htmlFor="title">Título da Notícia</label>
-              <input
-                className="form-control mb-3"
-                type="text"
-                name="title"
-                id="title"
-                value={title}
-                onChange={(e) => handleChange(e, "text", newsForm, setNewsForm)}
-              />
+              <input className="form-control mb-3" type="text" name="title" id="title" value={title} />
               <label htmlFor="subtitle">Subtítulo da Notícia</label>
-              <input
-                className="form-control mb-3"
-                type="text"
-                name="subtitle"
-                id="subtitle"
-                value={subtitle}
-                onChange={(e) => handleChange(e, "text", newsForm, setNewsForm)}
-              />
+              <input className="form-control mb-3" type="text" name="subtitle" id="subtitle" value={subtitle} />
               <div className="d-flex flex-column">
                 <label htmlFor="image">Imagem da Notícia</label>
                 <img src={base64Image || news.news_image_link} alt="" className="img-fluid rounded mb-2" />
-                <input
-                  className="form-control "
-                  type="file"
-                  accept="image/*"
-                  name="title"
-                  id="title"
-                  onChange={(e) => handleFileChange(e, setSelectedImage, setIsImageSelected, imagePreview, setImagePreview)}
-                />
+                <input className="form-control " type="file" accept="image/*" name="title" id="title" />
                 <small id="userHelp" className="form-text text-muted mb-3">
                   O tamanho indicado é de 1920x1080.
                 </small>
               </div>
               <label htmlFor="text">Corpo Da Notícia</label>
-              <ReactQuill
-                className="mb-3 rounded"
-                modules={modules}
-                formats={formats}
-                theme="snow"
-                id="newsBody"
-                name="newsBody"
-                value={newsBody}
-                onChange={(e) => handleChange(e, "newsBody", newsForm, setNewsForm)}
-              />
             </div>
             <div className="modal-footer justify-content-between">
               <div>
@@ -157,20 +112,7 @@ const EditNews = ({ newsChange, setNewsChange, news, setIsLoading }) => {
                 </button>
               </div>
               <div>
-                <button
-                  type="button"
-                  className="btn btn-secondary me-2"
-                  data-bs-dismiss="modal"
-                  onClick={() => {
-                    setNewsForm({
-                      title: news.news_title,
-                      image: news.news_image_link,
-                      subtitle: news.news_subtitle,
-                      body: news.news_text,
-                    });
-                    cancelFileUpload(setSelectedImage, setImagePreview, setBase64Image);
-                  }}
-                >
+                <button type="button" className="btn btn-secondary me-2" data-bs-dismiss="modal">
                   Cancelar
                 </button>
                 <button type="button" className="btn btn-success" data-bs-dismiss="modal" onClick={() => submitForm()}>

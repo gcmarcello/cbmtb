@@ -1,11 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
-import ReactQuill from "react-quill";
-import "react-quill/dist/quill.snow.css";
-import { modules, formats } from "../../../../utils/quillSettings";
 import { toast } from "react-toastify";
 
-import { imageToBase64 } from "../../functions/imageToBase64";
-import { handleFileChange } from "../../functions/handleForm";
 import ImagePreview from "../imagePreview";
 
 const NewNews = ({ saveCurrentPanel }) => {
@@ -42,13 +37,6 @@ const NewNews = ({ saveCurrentPanel }) => {
     setImagePreview(null);
     setBase64Image(null);
   };
-
-  useEffect(() => {
-    imageToBase64(selectedImage).then((data) => {
-      setBase64Image(data.image);
-      setBase64ImageSize(data.size);
-    });
-  }, [selectedImage]);
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
@@ -92,15 +80,7 @@ const NewNews = ({ saveCurrentPanel }) => {
               Imagem da Notícia
             </label>
             <div className="input-group">
-              <input
-                className="form-control"
-                type="file"
-                accept="image/*"
-                name="selectedImage"
-                id="selectedImage"
-                onChange={(e) => handleFileChange(e, setSelectedImage, setIsImageSelected, imagePreview, setImagePreview)}
-                ref={fileInput}
-              />
+              <input className="form-control" type="file" accept="image/*" name="selectedImage" id="selectedImage" ref={fileInput} />
               <button
                 type="button"
                 className="btn btn-outline-secondary"
@@ -131,15 +111,7 @@ const NewNews = ({ saveCurrentPanel }) => {
         <label htmlFor="news-text" className="mt-3">
           Corpo da Notícia
         </label>
-        <ReactQuill
-          theme="snow"
-          id="news-text"
-          name="text"
-          value={text}
-          modules={modules}
-          formats={formats}
-          onChange={(e) => handleNewsChange(e, "quill")}
-        />
+
         <div className="d-flex mt-3 justify-content-end">
           <button
             className="btn btn-secondary me-3"

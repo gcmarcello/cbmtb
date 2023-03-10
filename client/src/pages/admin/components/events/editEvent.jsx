@@ -1,90 +1,56 @@
 import React, { Fragment, useState } from "react";
-import { useEffect } from "react";
-import ReactQuill from "react-quill";
-import { modules, formats } from "../../../../utils/quillSettings";
+import QuillEditor from "../../../../utils/quillSettings";
+
 import { toast } from "react-toastify";
+import { useForm, Controller, useFieldArray } from "react-hook-form";
 
 import LoadingScreen from "../../../../utils/loadingScreen";
-
-import { parseDateToForm, handleChange, handleFileChange, cancelFileUpload, handleDelete } from "../../functions/handleForm";
-import {
-  fetchCategories,
-  createCategoryEditingEvent,
-  deletedSavedCategory,
-  handleCategoryChange,
-  handleNewCategoryChange,
-} from "../../functions/handleCategories";
-import { imageToBase64 } from "../../functions/imageToBase64";
+import { isoTimezone } from "./functions/isoDateTimezone";
 
 const EditEvent = ({ eventChange, setEventChange, event }) => {
-  const [formInputs, setFormInputs] = useState({
-    name: event.event_name,
-    price: event.event_price,
-    location: event.event_location,
-    date: parseDateToForm(event.event_date),
-    attendees: event.event_max_attendees,
-    description: event.event_description,
-    rules: event.event_rules,
-    details: event.event_details,
-    link: event.event_link,
-    imageLink: event.event_image,
+  const {
+    getValues,
+    watch,
+    setValue,
+    trigger,
+    control,
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    mode: "onChange",
+    defaultValues: {
+      name: event.event_name,
+      location: event.event_location,
+      link: event.event_link,
+      attendees: event.event_max_attendees,
+      imageOld: event.event_image,
+      dateStart: isoTimezone(event.event_date_start),
+      dateEnd: isoTimezone(event.event_date_end),
+      registrationStart: isoTimezone(event.event_registrations_start),
+      registrationEnd: isoTimezone(event.event_registrations_end),
+      description: event.event_description,
+      rules: event.event_rules,
+      details: event.event_details,
+    },
   });
-  const { name, price, location, date, attendees, description, rules, details, link, imageLink } = formInputs;
-  const [categories, setCategories] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [newCategory, setNewCategory] = useState({
-    categoryName: "",
-    categoryMinAge: "",
-    categoryMaxAge: "",
-    categoryGender: "",
-  });
-  const [categoryChange, setCategoryChange] = useState(false);
-  const { categoryName, categoryMinAge, categoryMaxAge, categoryGender } = newCategory;
+  const [externalRegistration, setExternalRegistration] = useState(false);
+  const [fileSize, setFileSize] = useState(false);
+  const [fileUrl, setFileUrl] = useState(null);
 
-  // Image Upload States
-  const [selectedImage, setSelectedImage] = useState();
-  const [imagePreview, setImagePreview] = useState(null);
-  const [isImageSelected, setIsImageSelected] = useState(false);
-  const [base64Image, setBase64Image] = useState(null);
-
-  const submitForm = async () => {
-    try {
-      setEventChange(true);
-      const myHeaders = new Headers();
-      myHeaders.append("Content-Type", "application/json");
-      myHeaders.append("token", localStorage.token);
-
-      const body = { name, price, location, date, attendees, description, rules, details, link, categories, base64Image };
-      const response = await fetch(`/api/events/${event.event_id}`, {
-        method: "PUT",
-        headers: myHeaders,
-        body: JSON.stringify(body),
-      });
-      const parseResponse = await response.json();
-      if (parseResponse.type === "success") {
-        toast.success(parseResponse.message, { theme: "colored" });
-      } else {
-        toast.error(parseResponse.message, { theme: "colored" });
-      }
-      setEventChange(false);
-    } catch (err) {
-      console.log(err);
+  const onCheckboxToggle = (event) => {
+    if (event.target.checked) {
+      setExternalRegistration(true);
+    } else {
+      setExternalRegistration(false);
+      setValue("external", "");
+      trigger("external");
     }
   };
 
-  useEffect(() => {
-    if (event.event_id) {
-      fetchCategories(event.event_id, setCategories);
-    } //eslint-disable-next-line
-  }, [categoryChange, formInputs]);
-
-  useEffect(() => {
-    if (isImageSelected) {
-      imageToBase64(selectedImage).then((data) => {
-        setBase64Image(data.image);
-      });
-    }
-  }, [selectedImage, isImageSelected]);
+  const onSubmit = (data) => {
+    console.log(data);
+  };
 
   return (
     <Fragment>
@@ -92,7 +58,7 @@ const EditEvent = ({ eventChange, setEventChange, event }) => {
         <i className="bi bi-gear"></i>
       </button>
       <div
-        className="modal modal-lg fade"
+        className="modal modal-xl fade"
         id={`modal-event-${event.event_id}`}
         tabIndex="-1"
         aria-labelledby={`modal-label-event-${event.event_id}`}
@@ -106,323 +72,264 @@ const EditEvent = ({ eventChange, setEventChange, event }) => {
               </h1>
               <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div className="modal-body">
-              <form>
-                <label htmlFor="name">Nome do Evento</label>
-                <input
-                  type="text"
-                  id="name"
-                  name="name"
-                  className="form-control"
-                  value={name}
-                  onChange={(e) => handleChange(e, "text", formInputs, setFormInputs)}
-                />
-                <label htmlFor="location">Local do Evento</label>
-                <input
-                  type="text"
-                  id="location"
-                  name="location"
-                  className="form-control"
-                  value={location}
-                  onChange={(e) => handleChange(e, "text", formInputs, setFormInputs)}
-                />
-                <label htmlFor="price">Link do evento</label>
-                <div className="input-group">
-                  <span className="input-group-text" id="basic-addon1">
-                    cbmtb.com/eventos/
-                  </span>
-                  <input
-                    type="text"
-                    id="link"
-                    name="link"
-                    className="form-control"
-                    value={link}
-                    onChange={(e) => handleChange(e, "text", formInputs, setFormInputs)}
-                    placeholder="evento"
-                    maxLength={20}
-                  />
-                </div>
-                <div className="d-flex flex-column">
-                  <label htmlFor="selectedImage">Imagem do Evento</label>
-                  <img
-                    src={imagePreview ? imagePreview : imageLink}
-                    alt=""
-                    className="img-fluid my-2"
-                    style={{ width: "100%", maxWidth: "800px", maxHeight: "475px" }}
-                  />
-                  <input
-                    className="form-control"
-                    type="file"
-                    accept="image/*"
-                    name="selectedImage"
-                    id="selectedImage"
-                    onChange={(e) => handleFileChange(e, setSelectedImage, setIsImageSelected, imagePreview, setImagePreview)}
-                  />
-                </div>
-                <label htmlFor="price">Preço da Inscrição</label>
-                <div className="input-group">
-                  <span className="input-group-text" id="basic-addon1">
-                    R$
-                  </span>
-                  <input
-                    type="text"
-                    id="price"
-                    name="price"
-                    className="form-control"
-                    value={price}
-                    onChange={(e) => handleChange(e, "text", formInputs, setFormInputs)}
-                    placeholder="100"
-                  />
-                  <span className="input-group-text">,00</span>
-                </div>
-                <label htmlFor="date">Data</label>
-                <input
-                  type="date"
-                  id="date"
-                  name="date"
-                  className="form-control"
-                  value={date}
-                  onChange={(e) => handleChange(e, "text", formInputs, setFormInputs)}
-                />
-                <label htmlFor="price">Número de Participantes</label>
-                <div className="input-group">
-                  <span className="input-group-text" id="basic-addon1">
-                    <i className="bi bi-people-fill"></i>
-                  </span>
-                  <input
-                    type="text"
-                    id="attendees"
-                    name="attendees"
-                    className="form-control"
-                    value={attendees}
-                    onChange={(e) => handleChange(e, "text", formInputs, setFormInputs)}
-                    placeholder="Número máximo (ex. 1000)"
-                  />
-                </div>
-                <hr />
-                <label htmlFor="description" className="form-label">
-                  Descrição
-                </label>
-                <ReactQuill
-                  modules={modules}
-                  formats={formats}
-                  theme="snow"
-                  id="description"
-                  name="description"
-                  value={description}
-                  onChange={(e) => handleChange(e, "description", formInputs, setFormInputs)}
-                />
-                <label htmlFor="rules" className="form-label">
-                  Regulamento
-                </label>
-                <ReactQuill
-                  theme="snow"
-                  id="rules"
-                  name="rules"
-                  value={rules}
-                  onChange={(e) => handleChange(e, "rules", formInputs, setFormInputs)}
-                />
-                <label htmlFor="details" className="form-label">
-                  Detalhes
-                </label>
-                <ReactQuill
-                  theme="snow"
-                  id="details"
-                  name="details"
-                  value={details}
-                  onChange={(e) => handleChange(e, "details", formInputs, setFormInputs)}
-                />
-                <hr />
-                <h4>Categorias</h4>
-                <div className="container-fluid">
-                  {isLoading ? (
-                    <LoadingScreen />
-                  ) : (
-                    <Fragment>
-                      <div className="row">
-                        <div className="col-5">
-                          <label htmlFor="name">Nome</label>
-                          <input
-                            type="text"
-                            id="categoryName"
-                            name="categoryName"
-                            className="form-control"
-                            value={categoryName}
-                            onChange={(e) => handleNewCategoryChange(e, setNewCategory, newCategory)}
-                          />
-                        </div>
-                        <div className="col-2">
-                          <label htmlFor="name">Id. Min.</label>
-                          <input
-                            type="number"
-                            id="categoryMinAge"
-                            name="categoryMinAge"
-                            className="form-control"
-                            value={categoryMinAge}
-                            onChange={(e) => handleNewCategoryChange(e, setNewCategory, newCategory)}
-                          />
-                        </div>
-                        <div className="col-2">
-                          <label htmlFor="name">Id. Max.</label>
-                          <input
-                            type="number"
-                            id="categoryMaxAge"
-                            name="categoryMaxAge"
-                            className="form-control"
-                            value={categoryMaxAge}
-                            onChange={(e) => handleNewCategoryChange(e, setNewCategory, newCategory)}
-                          />
-                        </div>
-                        <div className="col-3">
-                          <label htmlFor="name">Sexo</label>
-                          <select
-                            className="form-select"
-                            id="categoryGender"
-                            name="categoryGender"
-                            value={categoryGender}
-                            onChange={(e) => handleNewCategoryChange(e, setNewCategory, newCategory)}
-                          >
-                            <option value="" disabled={true}>
-                              Selecione
-                            </option>
-                            <option value="masc">Masc.</option>
-                            <option value="fem">Fem.</option>
-                            <option value="unisex">Unissex</option>
-                          </select>
-                        </div>
-                      </div>
-                      <div className="row my-3">
-                        <div className="col-12">
-                          <button
-                            className="btn btn-success form-control"
-                            onClick={(e) =>
-                              createCategoryEditingEvent(
-                                e,
-                                event.event_id,
-                                setIsLoading,
-                                setNewCategory,
-                                setCategoryChange,
-                                categoryName,
-                                categoryMinAge,
-                                categoryMaxAge,
-                                categoryGender
-                              )
-                            }
-                          >
-                            Criar Categoria
-                          </button>
-                        </div>
-                      </div>
-                      <div className="row">
-                        <div className="col-12">
-                          <table className="table">
-                            <thead>
-                              <tr>
-                                <td colSpan={2}>Nome</td>
-                                <td>Idade Max.</td>
-                                <td>Idade Min.</td>
-                                <td>Sexo</td>
-                                <td></td>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              {categories.map((category) => (
-                                <tr key={`category-${category.category_id}`}>
-                                  <td colSpan={2}>
-                                    <div>
-                                      <input
-                                        id={`${category.category_id}-name`}
-                                        name="category_name"
-                                        value={category.category_name}
-                                        className="form-control"
-                                        onChange={(e) => handleCategoryChange(e, category.category_id, categories, setCategories)}
-                                      />
-                                    </div>
-                                  </td>
-                                  <td>
-                                    <input
-                                      id={`${category.category_id}-minage`}
-                                      name="category_minage"
-                                      value={category.category_minage}
-                                      className="form-control"
-                                      onChange={(e) => handleCategoryChange(e, category.category_id, categories, setCategories)}
-                                    />
-                                  </td>
-                                  <td>
-                                    <input
-                                      id={`${category.category_id}-maxage`}
-                                      name="category_maxage"
-                                      value={category.category_maxage}
-                                      className="form-control"
-                                      onChange={(e) => handleCategoryChange(e, category.category_id, categories, setCategories)}
-                                    />
-                                  </td>
-                                  <td>
-                                    <select
-                                      className={`form-select`}
-                                      aria-label="Default select example"
-                                      id={`${category.category_id}-gender`}
-                                      name="category_gender"
-                                      value={category.category_gender}
-                                      onChange={(e) => handleCategoryChange(e, category.category_id, categories, setCategories)}
-                                    >
-                                      <option value="masc">Masc.</option>
-                                      <option value="fem">Fem.</option>
-                                      <option value="unisex">Unissex</option>
-                                    </select>
-                                  </td>
-                                  <td className="text-center">
-                                    <button
-                                      className="btn btn-danger"
-                                      onClick={(e) => deletedSavedCategory(e, category.category_id, categories, setCategories)}
-                                    >
-                                      <i className="bi bi-x-circle"></i>
-                                    </button>
-                                  </td>
-                                </tr>
-                              ))}
-                            </tbody>
-                          </table>
-                        </div>
-                      </div>
-                    </Fragment>
-                  )}
-                </div>
-              </form>
-            </div>
+            <form onSubmit={handleSubmit(onSubmit)} className="needs-validation" noValidate>
+              <div className="modal-body">
+                <div className="row mb-3">
+                  <div className="col-12 col-lg-6">
+                    <label htmlFor="name">Nome do Evento</label>
+                    <input
+                      id="name"
+                      className={`form-control ${errors.name?.type ? "is-invalid" : ""}`}
+                      {...register("name", { required: true, pattern: /.{2,}/ })}
+                      aria-invalid={errors.name ? "true" : "false"}
+                    />
+                  </div>
+                  <div className="col-12 col-lg-6">
+                    <label htmlFor="price">Máximo de Participantes</label>
+                    <div className="input-group">
+                      <span className="input-group-text" id="basic-addon1">
+                        <i className="bi bi-people-fill"></i>
+                      </span>
 
-            <div className="modal-footer justify-content-between">
-              <div>
-                <button
-                  type="button"
-                  className="btn btn-danger"
-                  data-bs-dismiss="modal"
-                  onClick={(e) => handleDelete(e, event.event_id, setEventChange)}
-                >
-                  Remover Evento
-                </button>
+                      <input
+                        id="attendees"
+                        name="attendees"
+                        type="number"
+                        className={`form-control ${errors.attendees?.type ? "is-invalid" : ""}`}
+                        {...register("attendees", { required: true, min: 2 })}
+                        aria-invalid={errors.attendees ? "true" : "false"}
+                        placeholder="(ex. 1000)"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div className="row">
+                  <div className="col-12">
+                    <label htmlFor="location">Local do Evento</label>
+                    <input
+                      id="location"
+                      className={`form-control ${errors.location?.type ? "is-invalid" : ""}`}
+                      {...register("location", { required: true, pattern: /.{2,}/ })}
+                      aria-invalid={errors.location ? "true" : "false"}
+                    />
+                  </div>
+                </div>
+
+                <div className="row my-3">
+                  <div className="col-12 col-lg-6">
+                    <label htmlFor="price">Link do evento</label>
+                    <div className="input-group">
+                      <span className="input-group-text" id="basic-addon1">
+                        cbmtb.com/eventos/
+                      </span>
+                      <input
+                        id="link"
+                        className={`form-control ${errors.link?.type ? "is-invalid" : ""}`}
+                        {...register("link", { required: true, pattern: /^[a-z0-9]{2,20}$/ })}
+                        aria-invalid={errors.link ? "true" : "false"}
+                      />
+                    </div>
+                  </div>
+                  <div className="col-12 col-lg-6 ">
+                    <label htmlFor="price">Inscrição Externa</label>
+                    <div className="input-group">
+                      <span className="input-group-text" id="basic-addon1">
+                        <div className="form-check form-switch">
+                          <input className="form-check-input" type="checkbox" id="flexSwitchCheckDefault" onChange={(e) => onCheckboxToggle(e)} />
+                          <label className="form-check-label" htmlFor="flexSwitchCheckDefault">
+                            Habilitar
+                          </label>
+                        </div>
+                      </span>
+                      <input
+                        id="external"
+                        name="external"
+                        className={`form-control ${externalRegistration ? (errors.external?.type ? "is-invalid" : "") : ""}`}
+                        {...register("external", {
+                          required: externalRegistration,
+                          pattern: /^(https?:\/\/)?[a-z0-9-]+(\.[a-z0-9-]+)*\.[a-z]+(\/[^\s]*)?$/,
+                        })}
+                        aria-invalid={errors.external ? "true" : "false"}
+                        disabled={!externalRegistration}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="row">
+                  <div className="col-12 my-3">
+                    <label htmlFor="location">Imagem Principal do Evento</label>
+                    <br />
+                    <img src={fileUrl || getValues("imageOld")} className="img-fluid rounded mx-auto d-block my-2" alt="" />
+                    <div className="input-group">
+                      <Controller
+                        name="image"
+                        control={control}
+                        defaultValue=""
+                        rules={{
+                          required: false,
+                        }}
+                        render={({ field }) => (
+                          <input
+                            id="image"
+                            accept="image/*"
+                            type="file"
+                            onChange={(e) => {
+                              field.onChange(e.target.files[0]);
+                              setFileUrl(URL.createObjectURL(e.target.files[0]));
+                              setFileSize(e.target.files[0]?.size);
+                            }}
+                            className={`form-control ${errors.image?.type ? "is-invalid" : ""}`}
+                            aria-invalid={errors.image ? "true" : "false"}
+                          />
+                        )}
+                      />
+
+                      <button type="button" className="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#eventImageModal">
+                        <i className="bi bi-zoom-in"></i>
+                      </button>
+                    </div>
+                    <div className="d-flex justify-content-between">
+                      <small id="userHelp" className="form-text text-muted">
+                        O tamanho indicado é de 800x475.
+                      </small>
+                      <small id="userHelp" className="form-text text-muted">
+                        Formato JPEG, PNG, GIF, WEBP. Tamanho: {fileSize / 1000 || 0}/5000kb
+                      </small>
+                    </div>
+                  </div>
+                </div>
+                <div className="row my-3">
+                  <div className="col-12 col-lg-6 my-1">
+                    <label htmlFor="date">Início do Evento</label>
+                    <input
+                      type="datetime-local"
+                      id="dateStart"
+                      name="dateStart"
+                      className={`form-control ${errors.dateStart?.type ? "is-invalid" : ""}`}
+                      {...register("dateStart", { required: true })}
+                    />
+                  </div>
+                  <div className="col-12 col-lg-6 my-1">
+                    <label htmlFor="date">Término do Evento</label>
+                    <input
+                      type="datetime-local"
+                      id="dateEnd"
+                      name="dateEnd"
+                      className={`form-control ${errors.dateEnd?.type ? "is-invalid" : ""}`}
+                      {...register("dateEnd", { required: true })}
+                    />
+                  </div>
+                </div>
+                <div className="row my-3">
+                  <div className="col-12 col-lg-6 my-1">
+                    <label htmlFor="date">Início das Inscrições</label>
+                    <input
+                      type="datetime-local"
+                      id="registrationStart"
+                      name="registrationStart"
+                      className={`form-control ${errors.registrationStart?.type ? "is-invalid" : ""}`}
+                      {...register("registrationStart", { required: true })}
+                    />
+                  </div>
+                  <div className="col-12 col-lg-6 my-1">
+                    <label htmlFor="date">Término das Inscrições</label>
+                    <input
+                      type="datetime-local"
+                      id="registrationEnd"
+                      name="registrationEnd"
+                      className={`form-control ${errors.registrationEnd?.type ? "is-invalid" : ""}`}
+                      {...register("registrationEnd", { required: true })}
+                    />
+                  </div>
+                </div>
+
+                <div className="row my-3 mb-5">
+                  <div className="col-12">
+                    <label htmlFor="description" className="form-label">
+                      Descrição
+                    </label>
+                    <Controller
+                      name="description"
+                      control={control}
+                      rules={{
+                        required: false,
+                      }}
+                      render={({ field: { onChange, value } }) => (
+                        <QuillEditor
+                          id="description"
+                          name="description"
+                          defaultValue={value}
+                          onChange={onChange}
+                          className={`${errors.description?.type ? "is-invalid" : ""}`}
+                          aria-invalid={errors.description ? "true" : "false"}
+                        />
+                      )}
+                    />
+                  </div>
+                  <div className="col-12">
+                    <label htmlFor="rules" className="form-label">
+                      Regulamento
+                    </label>
+                    <Controller
+                      name="rules"
+                      control={control}
+                      defaultValue=""
+                      rules={{
+                        required: false,
+                      }}
+                      render={({ field: { onChange, value } }) => (
+                        <QuillEditor
+                          id="rules"
+                          name="rules"
+                          defaultValue={value}
+                          onChange={onChange}
+                          className={`${errors.rules?.type ? "is-invalid" : ""}`}
+                          aria-invalid={errors.rules ? "true" : "false"}
+                        />
+                      )}
+                    />
+                  </div>
+                  <div className="col-12">
+                    <label htmlFor="details" className="form-label">
+                      Detalhes
+                    </label>
+                    <Controller
+                      name="details"
+                      control={control}
+                      defaultValue=""
+                      rules={{
+                        required: false,
+                      }}
+                      render={({ field: { onChange, value } }) => (
+                        <QuillEditor
+                          id="details"
+                          name="details"
+                          defaultValue={value}
+                          onChange={onChange}
+                          className={`${errors.details?.type ? "is-invalid" : ""}`}
+                          aria-invalid={errors.details ? "true" : "false"}
+                        />
+                      )}
+                    />
+                  </div>
+                </div>
               </div>
-              <div>
-                <button
-                  type="button"
-                  className="btn btn-secondary me-2"
-                  data-bs-dismiss="modal"
-                  onClick={() => cancelFileUpload(setSelectedImage, setImagePreview)}
-                >
-                  Cancelar
-                </button>
-                <button
-                  type="button"
-                  className="btn btn-success"
-                  data-bs-dismiss="modal"
-                  onClick={(e) => {
-                    submitForm();
-                  }}
-                >
-                  Salvar
-                </button>
+
+              <div className="modal-footer justify-content-between">
+                <div>
+                  <button type="button" className="btn btn-danger" data-bs-dismiss="modal">
+                    Remover Evento
+                  </button>
+                </div>
+                <div>
+                  <button type="button" className="btn btn-secondary me-2" data-bs-dismiss="modal">
+                    Cancelar
+                  </button>
+                  <input type="submit" className="btn btn-success" />
+                </div>
               </div>
-            </div>
+            </form>
           </div>
         </div>
       </div>

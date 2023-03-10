@@ -1,15 +1,15 @@
 import { Buffer } from "buffer";
 
-export function imageToBase64(image) {
+export function fileToBase64(file) {
   return new Promise((resolve, reject) => {
-    if (image) {
+    if (file) {
       const reader = new FileReader();
-      reader.readAsDataURL(image);
+      reader.readAsDataURL(file);
       reader.onload = () => {
         const binaryData = Buffer.from(reader.result, "base64");
         const sizeInBytes = binaryData.length;
         const sizeInKilobytes = (sizeInBytes / 1024).toFixed(2);
-        resolve({ image: reader.result, size: sizeInKilobytes });
+        resolve({ file: reader.result, size: sizeInKilobytes });
       };
       reader.onerror = (error) => reject(error);
     }

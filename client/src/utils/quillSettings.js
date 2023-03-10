@@ -1,46 +1,71 @@
-const modules = {
-  toolbar: [
-    [{ header: [1, 2, 3, 4, false] }],
-    ["bold", "italic", "underline", "blockquote"],
-    [{ list: "ordered" }, { list: "bullet" }],
-    ["link", "image"],
-    [
-      {
-        color: [
-          "#000000",
-          "#333333",
-          "#666666",
-          "#999999",
-          "#ff4000",
-          "#ff8000",
-          "#ffbf00",
-          "#ffff00",
-          "#bfff00",
-          "#80ff00",
-          "#40ff00",
-          "#00ff00",
-          "#00ff40",
-          "#00ff80",
-          "#00ffbf",
-          "#00ffff",
-          "#00bfff",
-          "#0080ff",
-          "#0040ff",
-          "#0000ff",
-          "#4000ff",
-          "#8000ff",
-          "#bf00ff",
-          "#ff00ff",
-          "#ff00bf",
-          "#ff0080",
-          "#ff0040",
-          "#ff0000",
-        ],
-      },
-    ],
-  ],
-};
+import React, { useEffect, useRef } from "react";
+import Quill from "quill";
+import "quill/dist/quill.snow.css";
 
-const formats = ["header", "bold", "italic", "underline", "blockquote", "list", "bullet", "indent", "link", "image", "color"];
+function QuillEditor({ defaultValue, value, onChange }) {
+  const quillRef = useRef(null);
+  const quill = useRef(null);
 
-export { modules, formats };
+  useEffect(() => {
+    if (!quill.current) {
+      quill.current = new Quill(quillRef.current, {
+        modules: {
+          toolbar: {
+            container: [
+              [{ header: [1, 2, false] }],
+              ["bold", "italic", "underline", "strike"],
+              ["link", { image: customImageHandler }],
+              [{ list: "ordered" }, { list: "bullet" }],
+              [{ script: "sub" }, { script: "super" }],
+              [{ indent: "-1" }, { indent: "+1" }],
+              [{ direction: "rtl" }],
+              [{ size: ["small", false, "large", "huge"] }],
+              [{ color: [] }, { background: [] }],
+              [{ font: [] }],
+              [{ align: [] }],
+              ["clean"],
+            ],
+            handlers: {
+              image: customImageHandler,
+            },
+          },
+        },
+        theme: "snow",
+      });
+
+      // Set the initial value of the Quill editor
+      if (defaultValue) {
+        quill.current.clipboard.dangerouslyPasteHTML(defaultValue);
+      }
+
+      quill.current.on("text-change", handleTextChange);
+    }
+
+    // Update the value of the Quill editor
+    if (value && quill.current && quill.current.getText() !== value) {
+      quill.current.setText(value);
+    }
+  }, [defaultValue, value]);
+
+  function customImageHandler() {
+    const range = quill.current.getSelection();
+    const url = prompt("Adicione a URL da imagem:");
+
+    if (!url) return;
+
+    quill.current.insertEmbed(range.index, "image", url, Quill.sources.USER);
+  }
+
+  function handleTextChange() {
+    const html = quillRef.current.children[0].innerHTML;
+    onChange(html);
+  }
+
+  return (
+    <div className="quill-editor-container">
+      <div ref={quillRef} />
+    </div>
+  );
+}
+
+export default QuillEditor;

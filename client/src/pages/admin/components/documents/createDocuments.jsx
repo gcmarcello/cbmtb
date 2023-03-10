@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 
 import LoadingScreen from "../../../../utils/loadingScreen";
-import { imageToBase64 } from "../../functions/imageToBase64";
+import { fileToBase64 } from "../../functions/fileToBase64";
 
 const CreateDocuments = ({ documentChange, setDocumentChange }) => {
   const {
@@ -54,8 +54,8 @@ const CreateDocuments = ({ documentChange, setDocumentChange }) => {
     setIsLoading(true);
     const file = event.target.files[0];
     if (file) {
-      imageToBase64(file).then((data) => {
-        register("file", { value: data.image, required: true });
+      fileToBase64(file).then((data) => {
+        register("file", { value: data.file, required: true });
         register("fileSize", { value: data.size });
         setFileSize(data.size);
       });

@@ -1,13 +1,17 @@
 const router = require("express").Router();
 const pool = require("../database");
 const adminAuthorization = require("./middlewares/adminAuthorization");
+const multer = require("multer");
+const path = require("path");
+const fs = require("fs");
 
 const { uploadFileToS3 } = require("../apis/awsS3");
+var upload = multer({ dest: "uploads/" });
 
 // List Events (ADMIN)
 router.get("/", adminAuthorization, async (req, res) => {
   try {
-    const listOfEvents = await pool.query("SELECT * FROM events ORDER BY event_date ASC");
+    const listOfEvents = await pool.query("SELECT * FROM events ORDER BY event_date_start ASC");
     res.json(listOfEvents.rows);
   } catch (err) {
     console.log(err.message);
@@ -17,7 +21,7 @@ router.get("/", adminAuthorization, async (req, res) => {
 // List Events (PUBLIC)
 router.get("/public/", async (req, res) => {
   try {
-    const listOfEvents = await pool.query("SELECT * FROM events WHERE event_status = $1 ORDER BY event_date ASC", [true]);
+    const listOfEvents = await pool.query("SELECT * FROM events WHERE event_status = $1 ORDER BY event_date_start ASC", [true]);
     res.json(listOfEvents.rows);
   } catch (err) {
     console.log(err.message);
@@ -43,29 +47,61 @@ router.get("/:id", async (req, res) => {
 });
 
 // Create Event (ADMIN)
-router.post("/", adminAuthorization, async (req, res) => {
+router.post("/", [adminAuthorization, upload.single("image")], async (req, res) => {
   try {
-    const { name, location, link, base64Image, price, date, attendees, description, rules, details, categories, external } = req.body;
+    console.log(req.body);
+    console.log(req.file);
 
-    const S3Image = await uploadFileToS3(base64Image, "cbmtb", "event-main");
+    const { name, location, link, external, attendees, dateStart, dateEnd, registrationStart, registrationEnd, description, rules, details } =
+      req.body;
+
+    const categories = JSON.parse(req.body.categories);
+
+    const S3Image = await uploadFileToS3(req.file, "cbmtb", "event-main");
 
     const newEvent = await pool.query(
-      "INSERT INTO events (event_name, event_location, event_link, event_image, event_price, event_date, event_max_attendees, event_current_attendees, event_description, event_rules, event_details, event_owner_id, event_status, event_external) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14)  RETURNING *",
-      [name, location, link, S3Image, Number(price), date, Number(attendees), 0, description, rules, details, req.userId, false, external]
+      "INSERT INTO events (event_name, event_location, event_link, event_external, event_image, event_max_attendees, event_current_attendees, event_owner_id, event_status, event_date_start, event_date_end, event_registrations_start, event_registrations_end, event_description, event_rules, event_details) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16)  RETURNING *",
+      [
+        name,
+        location,
+        link,
+        external !== "undefined" ? external : null,
+        S3Image,
+        attendees,
+        0,
+        req.userId,
+        false,
+        dateStart,
+        dateEnd,
+        registrationStart,
+        registrationEnd,
+        description,
+        rules,
+        details,
+      ]
     );
 
     const newEventID = newEvent.rows[0].event_id;
 
     if (categories.length) {
       const categoriesSQL = categories
-        .map((category) => `('${newEventID}','${category.name}','${category.minAge}','${category.maxAge}', '${category.gender}')`)
+        .map(
+          (category) => `('${newEventID}','${category.name}','${category.minAge}','${category.maxAge}', '${category.gender}', '${category.price}')`
+        )
         .join(",");
       const newCategories = await pool.query(
-        `INSERT INTO categories (event_id,category_name,category_minage,category_maxage,category_gender) VALUES ${categoriesSQL}`
+        `INSERT INTO event_categories (event_id,category_name,category_minage,category_maxage,category_gender, category_price) VALUES ${categoriesSQL}`
       );
     }
 
-    res.status(200).json({ message: "Evento criado com sucesso!", data: newEvent.rows[0] });
+    const filePath = path.join(req.file.destination, req.file.filename);
+    fs.unlink(filePath, (err) => {
+      if (err) {
+        console.error(err);
+      }
+    });
+
+    res.status(200).json({ message: "Evento criado com sucesso!", type: "success" });
   } catch (err) {
     console.log(err.message);
   }
@@ -108,7 +144,7 @@ router.put("/:id", adminAuthorization, async (req, res) => {
       .join(",");
 
     categories.forEach(async (category) => {
-      await pool.query("UPDATE categories SET category_name = $1, category_minage = $2, category_maxage = $3 WHERE category_id = $4", [
+      await pool.query("UPDATE event_categories SET category_name = $1, category_minage = $2, category_maxage = $3 WHERE category_id = $4", [
         category.category_name,
         category.category_minage,
         category.category_maxage,

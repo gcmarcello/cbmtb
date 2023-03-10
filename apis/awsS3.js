@@ -1,5 +1,6 @@
 const AWS = require("aws-sdk");
 const fs = require("fs");
+const path = require("path");
 const crypto = require("crypto");
 
 const s3 = new AWS.S3({
@@ -8,9 +9,9 @@ const s3 = new AWS.S3({
 });
 
 async function uploadFileToS3(file, bucketName, folder, ACL) {
-  const format = file.split(";").shift().split(":").pop();
-  const allowedFormats = ["image/jpeg", "image/jpg", "image/png", "image/gif", "image/webp", "application/pdf"];
-  const buffer = Buffer.from(file.replace(/^data:(image\/\w+|application\/pdf);base64,/, ""), "base64");
+  const format = file.originalname.split(".").pop();
+  const allowedFormats = ["jpeg", "jpg", "png", "gif", "webp", "pdf"];
+  const buffer = fs.createReadStream(path.join("uploads/", file.filename));
   const key = crypto.randomBytes(16).toString("hex");
 
   if (allowedFormats.indexOf(format) < 0) {
