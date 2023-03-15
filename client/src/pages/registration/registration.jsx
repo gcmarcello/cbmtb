@@ -6,7 +6,6 @@ import { toast } from "react-toastify";
 
 // General Components
 import LoadingScreen from "../../utils/loadingScreen";
-import Footer from "../../utils/footer";
 
 // Page Components
 import UserInfo from "./components/userInfo";
@@ -106,7 +105,6 @@ const Registration = ({ userAuthentication, setUserAuthentication, userAdmin, us
         )}
         <StageButtons stage={stage} setStage={setStage} userRegistration={userRegistration} id={id} />
       </div>
-      <Footer />
     </Fragment>
   );
 };

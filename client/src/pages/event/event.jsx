@@ -48,8 +48,6 @@ const EventPage = ({ userAuthentication, userName }) => {
       }
       const date = new Date(parseResponse.event_date);
       parseResponse.formattedDate = date.toLocaleString("pt-BR");
-      const hey = parseResponse.formattedDate.split(" ");
-      console.log(hey[1]);
       setEvent(parseResponse);
       setLoading(false);
     } catch (err) {

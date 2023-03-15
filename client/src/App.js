@@ -1,5 +1,5 @@
 import { useEffect, useState, Fragment } from "react";
-import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from "react-router-dom";
+import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -25,6 +25,7 @@ import AllEvents from "./pages/event/allEvents";
 import Imprensa from "./pages/forms/imprensa";
 import Ouvidoria from "./pages/forms/ouvidoria";
 import ConfirmationPage from "./pages/confirmation/confirmation";
+import PrivateRoute from "./components/auth/auth";
 
 function App() {
   const [userAuthentication, setUserAuthentication] = useState(false);
@@ -32,6 +33,16 @@ function App() {
   const [userName, setUserName] = useState("");
   const [loading, setLoading] = useState(true);
   let location = useLocation();
+  let page = location.pathname.split("/")[1];
+
+  let loginProps = {
+    userAuthentication: userAuthentication,
+    setUserAuthentication: setUserAuthentication,
+    userAdmin: userAdmin,
+    setUserAdmin: setUserAdmin,
+    userName: userName,
+    setUserName: setUserName,
+  };
 
   const checkAuthentication = async () => {
     setLoading(true);
@@ -80,113 +91,39 @@ function App() {
       )}
       <main>
         <Routes>
-          <Route path="*" element={<Page404 userAuthentication={userAuthentication} setUserAuthentication={setUserAuthentication} />} />
+          <Route exact path="/cadastro" element={!userAuthentication ? <Register /> : <Navigate to="/usuario" />} />
+          <Route exact path="/login" element={!userAuthentication ? <Login {...loginProps} /> : <Navigate to="/usuario" />} />
           <Route
             exact
-            path="/"
+            path="/dashboard/"
             element={
-              <Home userAuthentication={userAuthentication} setUserAuthentication={setUserAuthentication} userAdmin={userAdmin} userName={userName} />
+              <PrivateRoute {...loginProps}>
+                <Dashboard userAdmin={userAdmin} userName={userName} />
+              </PrivateRoute>
             }
           />
           <Route
             exact
-            path="/cadastro"
+            path="/usuario"
             element={
-              !userAuthentication ? (
-                <Register userAuthentication={userAuthentication} setUserAuthentication={setUserAuthentication} />
-              ) : (
-                <Navigate to="/usuario" />
-              )
-            }
-          />
-          <Route
-            exact
-            path="/login"
-            element={
-              !userAuthentication ? (
-                <Login
-                  userAuthentication={userAuthentication}
-                  setUserAuthentication={setUserAuthentication}
-                  setUserAdmin={setUserAdmin}
-                  userAdmin={userAdmin}
-                  setUserName={setUserName}
-                  userName={userName}
-                />
-              ) : (
-                <Navigate to="/usuario" />
-              )
-            }
-          />
-          <Route
-            exact
-            path="/dashboard"
-            element={
-              userAuthentication ? (
-                userAdmin ? (
-                  <Dashboard
-                    userAuthentication={userAuthentication}
-                    setUserAuthentication={setUserAuthentication}
-                    setUserAdmin={setUserAdmin}
-                    userAdmin={userAdmin}
-                  />
-                ) : (
-                  <Navigate to="/" />
-                )
-              ) : (
-                <Login
-                  userAuthentication={userAuthentication}
-                  setUserAuthentication={setUserAuthentication}
-                  setUserAdmin={setUserAdmin}
-                  userAdmin={userAdmin}
-                  setUserName={setUserName}
-                  userName={userName}
-                />
-              )
-            }
-          />
-          <Route
-            exact
-            path="/evento/:id"
-            element={
-              <EventPage
-                userAuthentication={userAuthentication}
-                setUserAuthentication={setUserAuthentication}
-                setUserAdmin={setUserAdmin}
-                userAdmin={userAdmin}
-                setUserName={setUserName}
-                userName={userName}
-              />
+              <PrivateRoute userAuthentication={userAuthentication}>
+                <UserPanel userAuthentication={userAuthentication} setUserAuthentication={setUserAuthentication} userName={userName} />
+              </PrivateRoute>
             }
           />
           <Route
             exact
             path="/inscricao/:id"
             element={
-              userAuthentication ? (
-                <Registration
-                  userAuthentication={userAuthentication}
-                  setUserAuthentication={setUserAuthentication}
-                  userAdmin={userAdmin}
-                  userName={userName}
-                />
-              ) : (
-                <Login
-                  userAuthentication={userAuthentication}
-                  setUserAuthentication={setUserAuthentication}
-                  setUserAdmin={setUserAdmin}
-                  userAdmin={userAdmin}
-                  setUserName={setUserName}
-                  userName={userName}
-                />
-              )
+              <PrivateRoute userAuthentication={userAuthentication}>
+                <Registration userAdmin={userAdmin} userName={userName} />
+              </PrivateRoute>
             }
           />
+          <Route exact path="/" element={<Home />} />
           <Route exact path="/pagamento/:linkId" element={<Payments />} />
-          <Route
-            exact
-            path="/confirmacao/:id"
-            element={<ConfirmationPage setUserAuthentication={setUserAuthentication} setUserAdmin={setUserAdmin} setUserName={setUserName} />}
-          />
+          <Route exact path="/confirmacao/:id" element={<ConfirmationPage {...loginProps} />} />
+          <Route exact path="/evento/:id" element={<EventPage />} />
           <Route exact path="/eventos/" element={<AllEvents />} />
           <Route exact path="/federacoes/" element={<Federations />} />
           <Route exact path="/imprensa/" element={<Imprensa />} />
@@ -194,30 +131,10 @@ function App() {
           <Route exact path="/noticias/:title" element={<NewsPage />} />
           <Route exact path="/ouvidoria/" element={<Ouvidoria />} />
           <Route exact path="/transparencia/" element={<Documents />} />
-          <Route
-            exact
-            path="/usuario"
-            element={
-              userAuthentication ? (
-                <UserPanel userAuthentication={userAuthentication} setUserAuthentication={setUserAuthentication} userName={userName} />
-              ) : (
-                <Login
-                  userAuthentication={userAuthentication}
-                  setUserAuthentication={setUserAuthentication}
-                  setUserAdmin={setUserAdmin}
-                  userAdmin={userAdmin}
-                  setUserName={setUserName}
-                  userName={userName}
-                />
-              )
-            }
-          />
+          <Route path="*" element={<Page404 />} />
         </Routes>
       </main>
-      {location.pathname !== "/dashboard" &&
-        location.pathname !== "/dashboard/" &&
-        location.pathname !== "/cadastro/" &&
-        location.pathname !== "/cadastro" && <Footer userAuthentication={userAuthentication} userName={userName} />}
+      {!(page === "cadastro" || page === "dashboard") && <Footer userAuthentication={userAuthentication} userName={userName} />}
     </Fragment>
   );
 }

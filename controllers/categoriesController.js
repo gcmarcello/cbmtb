@@ -1,3 +1,5 @@
+const pool = require("../database");
+
 async function create_category(req, res) {
   try {
     const { id } = req.params;
@@ -27,7 +29,7 @@ async function read_event_categories_public(req, res) {
     const { id } = req.params;
     const verifyUser = await pool.query("SELECT user_birth_date, user_gender FROM users WHERE user_id = $1", [req.userId]);
     const userInfo = verifyUser.rows[0];
-    const userAge = Math.round((new Date() - userInfo.user_birth_date) / 31556952000); // Milliseconds to Years
+    const userAge = new Date().getFullYear() - userInfo.user_birth_date.getFullYear(); // Milliseconds to Years
     const listOfCategories = await pool.query(
       "SELECT * FROM event_categories WHERE (event_id = $1) AND (category_minage <= $2) AND (category_maxage >= $2) AND (category_gender = $3 OR category_gender = 'unisex') ORDER BY category_maxage ASC",
       [id, userAge, userInfo.user_gender]

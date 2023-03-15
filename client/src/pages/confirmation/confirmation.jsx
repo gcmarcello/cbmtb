@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
-const ConfirmationPage = ({ setUserAuthentication, setUserAdmin, setUserName }) => {
+const ConfirmationPage = (props) => {
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -18,9 +18,9 @@ const ConfirmationPage = ({ setUserAuthentication, setUserAdmin, setUserName }) 
 
       if (parseResponse.token) {
         localStorage.setItem("token", parseResponse.token);
-        setUserName(parseResponse.givenName);
-        setUserAuthentication(true);
-        parseResponse.role === "admin" ? setUserAdmin(true) : setUserAdmin(false);
+        props.setUserName(parseResponse.givenName);
+        props.setUserAuthentication(true);
+        parseResponse.role === "admin" ? props.setUserAdmin(true) : props.setUserAdmin(false);
         navigate("/usuario");
       } else {
         toast[parseResponse.type](parseResponse.message, { theme: "colored" });

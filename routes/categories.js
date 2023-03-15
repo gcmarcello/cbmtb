@@ -1,5 +1,5 @@
 const router = require("express").Router();
-const pool = require("../database");
+
 const authorization = require("../middlewares/authorization");
 const adminAuthorization = require("../middlewares/authorization");
 const categoryController = require("../controllers/categoriesController");

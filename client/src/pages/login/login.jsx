@@ -2,8 +2,9 @@ import React, { Fragment, useState } from "react";
 
 import { useForm, Controller } from "react-hook-form";
 import InputMask from "react-input-mask";
+import { useLocation } from "react-router-dom";
 
-const Login = ({ setUserAuthentication, setUserAdmin, setUserName }) => {
+const Login = (props) => {
   const {
     setError,
     control,
@@ -23,15 +24,15 @@ const Login = ({ setUserAuthentication, setUserAdmin, setUserName }) => {
       const parseData = await res.json();
       if (parseData.token) {
         localStorage.setItem("token", parseData.token);
-        setUserName(parseData.givenName);
-        setUserAuthentication(true);
-        parseData.role === "admin" ? setUserAdmin(true) : setUserAdmin(false);
+        props.setUserName(parseData.givenName);
+        props.setUserAuthentication(true);
+        parseData.role === "admin" ? props.setUserAdmin(true) : props.setUserAdmin(false);
       } else {
         setError("root.serverError", {
           type: "server",
           message: parseData.message,
         });
-        setUserAuthentication(false);
+        props.setUserAuthentication(false);
       }
     } catch (err) {
       console.log(err.message);
