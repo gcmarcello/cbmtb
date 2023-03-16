@@ -1,8 +1,7 @@
 import React, { Fragment, useEffect, useState } from "react";
+import LoadingScreen from "../../../../utils/loadingScreen";
 
-import EditEvent from "./editEvent";
-
-const ListEvents = ({ eventChange, setEventChange, saveCurrentPanel }) => {
+const ListEvents = ({ eventChange, setEventChange }) => {
   const [eventsList, setEventsList] = useState([]);
 
   const getEvents = async (e) => {
@@ -73,7 +72,9 @@ const ListEvents = ({ eventChange, setEventChange, saveCurrentPanel }) => {
                   </td>
                   <td className="d-none d-lg-table-cell">{event.event_status ? "Abertas" : "Fechadas"} </td>
                   <td>
-                    <EditEvent event={event} setEventChange={setEventChange} />
+                    <a className="btn btn-dark ms-1" role="button" href={`/dashboard/evento/${event.event_id}`}>
+                      <i className="bi bi-gear"></i>
+                    </a>
                     {!event.event_status ? (
                       <button className="btn btn-success my-1 ms-1" onClick={(e) => toggleEvents(e, event.event_id, true)}>
                         <i className="bi bi-check-circle"></i>
@@ -95,9 +96,7 @@ const ListEvents = ({ eventChange, setEventChange, saveCurrentPanel }) => {
             )}
           </tbody>
         </table>
-        <button className="btn btn-success" onClick={() => saveCurrentPanel("NewEvent")}>
-          Criar Evento
-        </button>
+        <button className="btn btn-success">Criar Evento</button>
       </div>
     </Fragment>
   );

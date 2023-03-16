@@ -11,7 +11,6 @@ import Payments from "./pages/payment/payments";
 import Register from "./pages/register/register";
 import Login from "./pages/login/login";
 import Federations from "./pages/federacoes/federations";
-import Dashboard from "./pages/admin/dashboard";
 import LoadingScreen from "./utils/loadingScreen";
 import Home from "./pages/home/home";
 import EventPage from "./pages/event/event";
@@ -26,6 +25,9 @@ import Imprensa from "./pages/forms/imprensa";
 import Ouvidoria from "./pages/forms/ouvidoria";
 import ConfirmationPage from "./pages/confirmation/confirmation";
 import PrivateRoute from "./components/auth/auth";
+import AdminNavigation from "./pages/admin/components/adminNavigation";
+import EditEventPanel from "./pages/admin/components/events/editEventPanel";
+import ListEvents from "./pages/admin/components/events/listEvents";
 
 function App() {
   const [userAuthentication, setUserAuthentication] = useState(false);
@@ -86,8 +88,10 @@ function App() {
         pauseOnHover
         theme="light"
       />
-      {location.pathname !== "/dashboard" && location.pathname !== "/dashboard/" && (
+      {!(page === "dashboard") ? (
         <UserNavigation userAuthentication={userAuthentication} userName={userName} userAdmin={userAdmin} setUserAdmin={setUserAdmin} />
+      ) : (
+        <AdminNavigation userAuthentication={userAuthentication} userName={userName} userAdmin={userAdmin} setUserAdmin={setUserAdmin} />
       )}
       <main>
         <Routes>
@@ -98,7 +102,25 @@ function App() {
             path="/dashboard/"
             element={
               <PrivateRoute {...loginProps}>
-                <Dashboard userAdmin={userAdmin} userName={userName} />
+                <ListEvents userAdmin={userAdmin} userName={userName} />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            exact
+            path="/dashboard/eventos"
+            element={
+              <PrivateRoute {...loginProps}>
+                <ListEvents userAdmin={userAdmin} userName={userName} />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            exact
+            path="/dashboard/evento/:id"
+            element={
+              <PrivateRoute {...loginProps}>
+                <EditEventPanel />
               </PrivateRoute>
             }
           />

@@ -5,7 +5,6 @@ import { toast } from "react-toastify";
 import { useForm, Controller, useFieldArray } from "react-hook-form";
 
 // Components
-import LoadingScreen from "../../../../utils/loadingScreen";
 import { useEffect } from "react";
 
 // Functions
@@ -16,7 +15,6 @@ const NewEvent = ({ saveCurrentPanel }) => {
     setValue,
     watch,
     control,
-    reset,
     trigger,
     register,
     handleSubmit,

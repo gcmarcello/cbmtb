@@ -6,7 +6,9 @@ const path = require("path");
 
 async function listEventsAdmin(req, res) {
   try {
-    const listOfEvents = await pool.query("SELECT * FROM events ORDER BY event_date_start ASC");
+    const listOfEvents = await pool.query(
+      "SELECT event_id,event_name, event_date_start, event_status, event_current_attendees, event_max_attendees FROM events ORDER BY event_date_start ASC"
+    );
     res.json(listOfEvents.rows);
   } catch (err) {
     console.log(err.message);
@@ -113,6 +115,18 @@ async function toggleRegistrations(req, res) {
   }
 }
 
+async function retrieveEventInformation(req, res) {
+  try {
+    const { id } = req.params;
+    const event = (await pool.query("SELECT * FROM events WHERE event_id = $1", [id])).rows[0];
+    const categories = (await pool.query("SELECT * FROM event_categories WHERE event_id = $1", [id])).rows;
+    res.status(200).json({ ...event, categories });
+  } catch (err) {
+    res.status(400).json({ message: `Erro ao encontrar o evento. ${err}`, type: "error" });
+    console.log(err.message);
+  }
+}
+
 async function updateEvent(req, res) {
   try {
     const { id } = req.params;
@@ -158,4 +172,13 @@ async function deleteEvent(req, res) {
   }
 }
 
-module.exports = { listEventsAdmin, listEventsPublic, readEventPage, createEvent, toggleRegistrations, updateEvent, deleteEvent };
+module.exports = {
+  listEventsAdmin,
+  listEventsPublic,
+  readEventPage,
+  createEvent,
+  toggleRegistrations,
+  updateEvent,
+  deleteEvent,
+  retrieveEventInformation,
+};

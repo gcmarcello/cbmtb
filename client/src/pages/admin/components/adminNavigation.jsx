@@ -3,7 +3,7 @@ import React, { Fragment } from "react";
 const AdminNavigation = ({ screen, setScreen, saveCurrentPanel }) => {
   return (
     <Fragment>
-      <nav className="navbar navbar-expand-lg navbar-light bg-light">
+      <nav className="navbar navbar-expand-lg navbar-light shadow-sm">
         <div className="container-fluid">
           <a className="navbar-brand" href="/">
             <img src="/logoconf_black.svg" alt="LOGO" className="img-fluid" height={100} width={150} />

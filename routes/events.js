@@ -17,6 +17,8 @@ router.get("/:id", eventsController.readEventPage);
 router.post("/", [adminAuthorization, upload.single("image")], eventsController.createEvent);
 // Open/Close Event (ADMIN)
 router.put("/toggle/:id/:boolean", adminAuthorization, eventsController.toggleRegistrations);
+// GET Info to Update Event (ADMIN)
+router.get("/update/:id", adminAuthorization, eventsController.retrieveEventInformation);
 // Update Event (ADMIN)
 router.put("/:id", adminAuthorization, eventsController.updateEvent);
 // Delete Event (ADMIN)
