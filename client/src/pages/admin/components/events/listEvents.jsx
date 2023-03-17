@@ -1,5 +1,4 @@
 import React, { Fragment, useEffect, useState } from "react";
-import LoadingScreen from "../../../../utils/loadingScreen";
 
 const ListEvents = ({ eventChange, setEventChange }) => {
   const [eventsList, setEventsList] = useState([]);

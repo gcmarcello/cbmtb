@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import EventInfoModal from "./eventInfoModal";
 
 import PaymentModal from "./paymentModal";

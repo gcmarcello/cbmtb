@@ -2,7 +2,6 @@ import React, { Fragment, useState } from "react";
 
 import { useForm, Controller } from "react-hook-form";
 import InputMask from "react-input-mask";
-import { useLocation } from "react-router-dom";
 
 const Login = (props) => {
   const {

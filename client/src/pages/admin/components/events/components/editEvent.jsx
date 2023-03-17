@@ -1,7 +1,7 @@
 import React, { Fragment, useState } from "react";
 import QuillEditor from "../../../../../utils/quillSettings";
 
-import { useForm, Controller, useFieldArray } from "react-hook-form";
+import { Controller } from "react-hook-form";
 
 const EditEvent = (props) => {
   const [externalRegistration, setExternalRegistration] = useState(false);

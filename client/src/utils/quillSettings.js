@@ -44,7 +44,7 @@ function QuillEditor({ defaultValue, value, onChange }) {
     // Update the value of the Quill editor
     if (value && quill.current && quill.current.getText() !== value) {
       quill.current.setText(value);
-    }
+    } //eslint-disable-next-line
   }, [defaultValue, value]);
 
   function customImageHandler() {

@@ -1,5 +1,3 @@
-import React from "react";
-import { useState } from "react";
 import { useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -32,7 +30,7 @@ const ConfirmationPage = (props) => {
   };
 
   useEffect(() => {
-    confirmAccount();
+    confirmAccount(); //eslint-disable-next-line
   }, []);
 };
 

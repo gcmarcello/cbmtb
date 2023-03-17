@@ -120,7 +120,13 @@ async function retrieveEventInformation(req, res) {
     const { id } = req.params;
     const event = (await pool.query("SELECT * FROM events WHERE event_id = $1", [id])).rows[0];
     const categories = (await pool.query("SELECT * FROM event_categories WHERE event_id = $1", [id])).rows;
-    res.status(200).json({ ...event, categories });
+    const registrations = (
+      await pool.query(
+        "SELECT r.registration_id,r.registration_shirt,r.registration_status,r.registration_date,u.user_email,u.user_first_name,u.user_last_name,u.user_cpf, u.user_phone, u.user_birth_date,c.category_name FROM registrations AS r LEFT JOIN users AS u ON r.user_id = u.user_id LEFT JOIN event_categories AS c ON r.category_id = c.category_id WHERE r.event_id = $1",
+        [id]
+      )
+    ).rows;
+    res.status(200).json({ ...event, categories, registrations });
   } catch (err) {
     res.status(400).json({ message: `Erro ao encontrar o evento. ${err}`, type: "error" });
     console.log(err.message);

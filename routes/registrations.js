@@ -37,13 +37,13 @@ router.post("/:id", authorization, async (req, res) => {
     }
 
     const txid = crypto.randomUUID().replace(/-/g, "");
-    const eventCost = await pool.query("SELECT event_price FROM events WHERE event_id = $1", [id]);
+    const eventCost = await pool.query("SELECT category_price FROM event_categories WHERE category_id = $1", [categoryId]);
 
     const paymentStatus = eventCost.rows[0].event_price > 0 ? "pending" : "completed";
 
     const newPayment = await pool.query(
       `INSERT INTO payments (payment_txid, payment_value, user_id, event_id, payment_status) VALUES ($1,$2,$3,$4,$5) RETURNING payment_id`,
-      [txid, eventCost.rows[0].event_price, userId, id, paymentStatus]
+      [txid, eventCost.rows[0].category_price, userId, id, paymentStatus]
     );
 
     const newRegistrations = await pool.query(

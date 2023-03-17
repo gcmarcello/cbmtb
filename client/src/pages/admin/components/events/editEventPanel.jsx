@@ -1,16 +1,14 @@
-import React, { Fragment, useState, useMemo } from "react";
-import QuillEditor from "../../../../utils/quillSettings";
+import React, { Fragment, useState } from "react";
 import { useParams } from "react-router-dom";
 
-import { toast } from "react-toastify";
-import { useForm, Controller, useFieldArray } from "react-hook-form";
+import { useForm } from "react-hook-form";
 
-import Table from "../table";
 import EditEvent from "./components/editEvent";
 import LoadingScreen from "../../../../utils/loadingScreen";
 import { isoTimezone } from "./functions/isoDateTimezone";
 import { useEffect } from "react";
 import EditCategories from "./components/editCategories";
+import ListRegistrations from "./listRegistrations";
 
 const EditEventPanel = () => {
   const { id } = useParams();
@@ -171,7 +169,17 @@ const EditEventPanel = () => {
                 />
               </div>
               <div className="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
-                ...
+                <ListRegistrations
+                  event={event}
+                  getValues={getValues}
+                  setValue={setValue}
+                  reset={reset}
+                  trigger={trigger}
+                  control={control}
+                  register={register}
+                  handleSubmit={handleSubmit}
+                  errors={errors}
+                />
               </div>
             </div>
           </div>
