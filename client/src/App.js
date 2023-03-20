@@ -28,6 +28,7 @@ import PrivateRoute from "./components/auth/auth";
 import AdminNavigation from "./pages/admin/components/adminNavigation";
 import EditEventPanel from "./pages/admin/components/events/editEventPanel";
 import ListEvents from "./pages/admin/components/events/listEvents";
+import NewEvent from "./pages/admin/components/events/newEvent";
 
 function App() {
   const [userAuthentication, setUserAuthentication] = useState(false);
@@ -117,7 +118,16 @@ function App() {
           />
           <Route
             exact
-            path="/dashboard/evento/:id"
+            path="/dashboard/eventos/novo"
+            element={
+              <PrivateRoute {...loginProps}>
+                <NewEvent userAdmin={userAdmin} userName={userName} />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            exact
+            path="/dashboard/evento/:id/:tab?"
             element={
               <PrivateRoute {...loginProps}>
                 <EditEventPanel />

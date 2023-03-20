@@ -12,7 +12,7 @@ router.get("/user/", authorization, async (req, res) => {
   try {
     const userId = req.userId;
     const registrations = await pool.query(
-      "SELECT r.registration_status, r.registration_shirt, r.registration_id, r.payment_id, c.category_name, e.event_id, e.event_name, e.event_description, e.event_rules, e.event_location, e.event_date, e.event_price, e.event_image FROM registrations AS r LEFT JOIN users AS u ON r.user_id = u.user_id LEFT JOIN categories AS c ON r.category_id = c.category_id LEFT JOIN events AS e ON c.event_id = e.event_id WHERE u.user_id = $1",
+      "SELECT r.registration_status, r.registration_shirt, r.registration_id, r.payment_id, c.category_name, e.event_id, e.event_name, e.event_description, e.event_rules, e.event_location, e.event_date_start, e.event_image FROM registrations AS r LEFT JOIN users AS u ON r.user_id = u.user_id LEFT JOIN event_categories AS c ON r.category_id = c.category_id LEFT JOIN events AS e ON c.event_id = e.event_id WHERE u.user_id = $1",
       [userId]
     );
 
@@ -85,20 +85,6 @@ router.get("/:id/checkreg", authorization, async (req, res) => {
     if (checkForRegistration.rows[0]) {
       return res.status(200).json({ message: "Você já se inscreveu neste evento!", type: "error" });
     }
-  } catch (err) {
-    console.log(err.message);
-  }
-});
-
-// Read Event Registrations (ADMIN)
-router.get("/:id", adminAuthorization, async (req, res) => {
-  try {
-    const { id } = req.params;
-    const registrations = await pool.query(
-      "SELECT u.user_first_name, u.user_last_name, u.user_cpf, u.user_gender, u.user_phone, u.user_birth_date, r.registration_status, r.registration_shirt, c.category_name FROM registrations AS r LEFT JOIN users AS u ON r.user_id = u.user_id LEFT JOIN categories AS c ON r.category_id = c.category_id WHERE r.event_id = $1",
-      [id]
-    );
-    res.status(200).json(registrations.rows);
   } catch (err) {
     console.log(err.message);
   }

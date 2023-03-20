@@ -1,7 +1,42 @@
 import React, { Fragment, useEffect, useState } from "react";
+import Table from "../table";
 
 const ListEvents = ({ eventChange, setEventChange }) => {
   const [eventsList, setEventsList] = useState([]);
+
+  const columns = [
+    {
+      Header: "Nome",
+      accessor: "event_name",
+    },
+    {
+      accessor: "event_status",
+      Header: "Status",
+      Cell: ({ value }) => (value ? "Abertas" : "Fechadas"),
+    },
+    {
+      Header: "Inscrições",
+      accessor: "event_current_attendees",
+    },
+    {
+      Header: "Data",
+      accessor: "formattedDate",
+    },
+    {
+      accessor: "event_id",
+      Header: "Opções",
+      Cell: ({ value }) => (
+        <div>
+          <a href={`./evento/${value}`} className="btn btn-dark mx-1">
+            <i className="bi bi-gear-fill"></i>
+          </a>
+          <a href={`./evento/${value}/inscritos`} className="btn btn-primary mx-1">
+            <i className="bi bi-people-fill"></i>
+          </a>
+        </div>
+      ),
+    },
+  ];
 
   const getEvents = async (e) => {
     try {
@@ -48,54 +83,15 @@ const ListEvents = ({ eventChange, setEventChange }) => {
 
   return (
     <Fragment>
-      <div className="container-fluid mt-3">
-        <h1>Lista de Eventos</h1>
-        <table className="table table-striped">
-          <thead className="table-dark">
-            <tr>
-              <th>Nome</th>
-              <th className="d-none d-lg-table-cell">Data</th>
-              <th className="d-none d-lg-table-cell">Inscritos</th>
-              <th className="d-none d-lg-table-cell">Inscrições</th>
-              <th>Opções</th>
-            </tr>
-          </thead>
-          <tbody className="table-group-divider">
-            {eventsList.length ? (
-              eventsList.map((event) => (
-                <tr key={`evento-${event.event_id}`}>
-                  <td>{event.event_name}</td>
-                  <td className="d-none d-lg-table-cell">{event.formattedDate}</td>
-                  <td className="d-none d-lg-table-cell">
-                    {event.event_current_attendees}/{event.event_max_attendees}
-                  </td>
-                  <td className="d-none d-lg-table-cell">{event.event_status ? "Abertas" : "Fechadas"} </td>
-                  <td>
-                    <a className="btn btn-dark ms-1" role="button" href={`/dashboard/evento/${event.event_id}`}>
-                      <i className="bi bi-gear"></i>
-                    </a>
-                    {!event.event_status ? (
-                      <button className="btn btn-success my-1 ms-1" onClick={(e) => toggleEvents(e, event.event_id, true)}>
-                        <i className="bi bi-check-circle"></i>
-                      </button>
-                    ) : (
-                      <button className="btn btn-danger my-1 ms-1" onClick={(e) => toggleEvents(e, event.event_id, false)}>
-                        <i className="bi bi-x-circle"></i>
-                      </button>
-                    )}
-                  </td>
-                </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan={5} className="text-center">
-                  {eventsList ? "Você ainda não criou nenhum evento." : <div className="spinner-border" role="status"></div>}
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-        <button className="btn btn-success">Criar Evento</button>
+      <div className="bg-light">
+        <div className="px-lg-5 py-lg-5">
+          <div className="p-3 bg-white rounded rounded-2 shadow">
+            <a href="eventos/novo" target="_blank" rel="noopener noreferrer" className="btn btn-success">
+              Novo Evento
+            </a>
+            <Table data={eventsList} columns={columns} />
+          </div>
+        </div>
       </div>
     </Fragment>
   );

@@ -1,5 +1,5 @@
 // Modules
-import React, { Fragment, useState, useRef } from "react";
+import React, { Fragment, useState } from "react";
 import QuillEditor from "../../../../utils/quillSettings";
 import { toast } from "react-toastify";
 import { useForm, Controller, useFieldArray } from "react-hook-form";
@@ -9,7 +9,7 @@ import { useEffect } from "react";
 
 // Functions
 
-const NewEvent = ({ saveCurrentPanel }) => {
+const NewEvent = () => {
   const {
     getValues,
     setValue,
@@ -78,7 +78,7 @@ const NewEvent = ({ saveCurrentPanel }) => {
 
   return (
     <Fragment>
-      <div className="container-fluid mt-3 mb-5">
+      <div className="container-fluid px-5 mt-3 mb-5">
         <h1>Criar Evento</h1>
         <form onSubmit={handleSubmit(onSubmit)} className="needs-validation" noValidate>
           <div className="row my-3">
@@ -419,7 +419,7 @@ const NewEvent = ({ saveCurrentPanel }) => {
               <div className="col-6 col-lg-1 mt-2 mt-lg-0 d-flex align-items-end">
                 <button
                   style={{ maxHeight: "42px", maxWidth: "60px" }}
-                  className="btn btn-danger"
+                  className="btn btn-danger form-control"
                   onClick={(e) => {
                     e.preventDefault();
                     if (!index) {

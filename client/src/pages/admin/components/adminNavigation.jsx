@@ -1,6 +1,6 @@
 import React, { Fragment } from "react";
 
-const AdminNavigation = ({ screen, setScreen, saveCurrentPanel }) => {
+const AdminNavigation = () => {
   return (
     <Fragment>
       <nav className="navbar navbar-expand-lg navbar-light shadow-sm">
@@ -39,14 +39,14 @@ const AdminNavigation = ({ screen, setScreen, saveCurrentPanel }) => {
                 </a>
                 <ul className="dropdown-menu" aria-labelledby="navbarScrollingDropdown">
                   <li>
-                    <button className="dropdown-item" onClick={() => saveCurrentPanel("ListEvents")}>
+                    <a href="/dashboard/eventos" className="dropdown-item">
                       Listar Eventos
-                    </button>
+                    </a>
                   </li>
                   <li>
-                    <button className="dropdown-item" onClick={() => saveCurrentPanel("NewEvent")}>
+                    <a href="/dashboard/eventos/novo" className="dropdown-item">
                       Novo Evento
-                    </button>
+                    </a>
                   </li>
                 </ul>
               </li>
@@ -63,14 +63,10 @@ const AdminNavigation = ({ screen, setScreen, saveCurrentPanel }) => {
                 </a>
                 <ul className="dropdown-menu" aria-labelledby="navbarScrollingDropdown">
                   <li>
-                    <button className="dropdown-item" onClick={() => saveCurrentPanel("ListNews")}>
-                      Listar Notícias
-                    </button>
+                    <button className="dropdown-item">Listar Notícias</button>
                   </li>
                   <li>
-                    <button className="dropdown-item" onClick={() => saveCurrentPanel("NewNews")}>
-                      Nova Notícia
-                    </button>
+                    <button className="dropdown-item">Nova Notícia</button>
                   </li>
                   <li>
                     <hr className="dropdown-divider" />
@@ -83,12 +79,7 @@ const AdminNavigation = ({ screen, setScreen, saveCurrentPanel }) => {
                 </ul>
               </li>
               <li className="nav-item">
-                <button
-                  className="nav-link"
-                  aria-current="page"
-                  style={{ border: "0", background: "none" }}
-                  onClick={() => saveCurrentPanel("ListDocuments")}
-                >
+                <button className="nav-link" aria-current="page" style={{ border: "0", background: "none" }}>
                   Documentos
                 </button>
               </li>

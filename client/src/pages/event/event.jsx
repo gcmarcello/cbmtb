@@ -118,23 +118,15 @@ const EventPage = ({ userAuthentication, userName }) => {
                   <hr className="mb-3 mb-xxl-4" />
                   <div className="container">
                     <div className="row">
-                      <div className="col-5 col-md-5 d-flex align-items-center justify-content-center">
-                        <div className="fs-2 fw-bolder ">
-                          R$ <span className="text-success fw-normal"> {event.event_price},00</span>
-                        </div>
-                      </div>
-                      <div className="d-none d-lg-block col-1">
-                        <div className="vr mx-1 h-100" />
-                      </div>
-                      <div className="col-7 col-md-6 d-flex justify-content-center">
+                      <div className="col-12 d-flex justify-content-center">
                         {event.event_status === false ? (
-                          <button type="button" className="btn btn-danger btn-lg " disabled>
+                          <button type="button" className="btn btn-danger btn-lg form-control" disabled>
                             Inscrições Fechadas
                           </button>
                         ) : (
                           <button
                             type="button"
-                            className="btn btn-success btn-lg"
+                            className="btn btn-success btn-lg form-control"
                             disabled={registration}
                             onClick={() =>
                               event.event_external ? (window.location = event.event_external) : navigate(`/inscricao/${event.event_id}`)

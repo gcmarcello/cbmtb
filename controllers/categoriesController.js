@@ -49,9 +49,10 @@ async function delete_categories(req, res) {
   try {
     const { id } = req.params;
     const removeCategory = await pool.query("DELETE FROM event_categories WHERE category_id = $1", [id]);
-    res.json({ message: "Categoria Removida.", type: "success" });
+    res.status(200).json({ message: "Categoria Removida.", type: "success" });
   } catch (err) {
     console.log(err.message);
+    res.status(400).json({ message: `Erro ao remover categoria. ${err.message}`, type: "error" });
   }
 }
 

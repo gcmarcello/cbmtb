@@ -1,7 +1,7 @@
 import React, { Fragment, useState } from "react";
 import { useParams } from "react-router-dom";
 
-import { useForm } from "react-hook-form";
+import { useForm, Controller, useFieldArray } from "react-hook-form";
 
 import EditEvent from "./components/editEvent";
 import LoadingScreen from "../../../../utils/loadingScreen";
@@ -11,7 +11,7 @@ import EditCategories from "./components/editCategories";
 import ListRegistrations from "./listRegistrations";
 
 const EditEventPanel = () => {
-  const { id } = useParams();
+  const { id, tab } = useParams();
   const [event, setEvent] = useState();
   const [isLoading, setIsLoading] = useState(true);
 
@@ -100,13 +100,13 @@ const EditEventPanel = () => {
             <ul className="nav nav-tabs" id="myTab" role="tablist">
               <li className="nav-item" role="presentation">
                 <button
-                  className="nav-link active"
-                  id="home-tab"
+                  className={`nav-link ${tab === undefined && "active"} `}
+                  id="evento-tab"
                   data-bs-toggle="tab"
-                  data-bs-target="#home"
+                  data-bs-target="#evento"
                   type="button"
                   role="tab"
-                  aria-controls="home"
+                  aria-controls="evento"
                   aria-selected="true"
                 >
                   Evento
@@ -114,13 +114,13 @@ const EditEventPanel = () => {
               </li>
               <li className="nav-item" role="presentation">
                 <button
-                  className="nav-link"
-                  id="profile-tab"
+                  className={`nav-link ${tab === "categorias" && "active"} `}
+                  id="categorias-tab"
                   data-bs-toggle="tab"
-                  data-bs-target="#profile"
+                  data-bs-target="#categorias"
                   type="button"
                   role="tab"
-                  aria-controls="profile"
+                  aria-controls="categorias"
                   aria-selected="false"
                 >
                   Categorias
@@ -128,13 +128,13 @@ const EditEventPanel = () => {
               </li>
               <li className="nav-item" role="presentation">
                 <button
-                  className="nav-link"
-                  id="contact-tab"
+                  className={`nav-link ${tab === "inscritos" && "active"} `}
+                  id="inscritos-tab"
                   data-bs-toggle="tab"
-                  data-bs-target="#contact"
+                  data-bs-target="#inscritos"
                   type="button"
                   role="tab"
-                  aria-controls="contact"
+                  aria-controls="inscritos"
                   aria-selected="false"
                 >
                   Inscritos
@@ -142,7 +142,7 @@ const EditEventPanel = () => {
               </li>
             </ul>
             <div className="tab-content" id="myTabContent">
-              <div className="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+              <div className={`tab-pane fade ${tab === undefined && "show active"}`} id="evento" role="tabpanel" aria-labelledby="home-tab">
                 <EditEvent
                   event={event}
                   getValues={getValues}
@@ -155,7 +155,7 @@ const EditEventPanel = () => {
                   errors={errors}
                 />
               </div>
-              <div className="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+              <div className={`tab-pane fade ${tab === "categorias" && "show active"}`} id="categorias" role="tabpanel" aria-labelledby="profile-tab">
                 <EditCategories
                   event={event}
                   getValues={getValues}
@@ -168,7 +168,7 @@ const EditEventPanel = () => {
                   errors={errors}
                 />
               </div>
-              <div className="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
+              <div className={`tab-pane fade ${tab === "inscritos" && "show active"}`} id="inscritos" role="tabpanel" aria-labelledby="contact-tab">
                 <ListRegistrations
                   event={event}
                   getValues={getValues}
@@ -179,6 +179,7 @@ const EditEventPanel = () => {
                   register={register}
                   handleSubmit={handleSubmit}
                   errors={errors}
+                  useFieldArray={useFieldArray}
                 />
               </div>
             </div>
