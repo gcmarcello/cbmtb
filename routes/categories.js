@@ -13,6 +13,6 @@ router.get("/:id/public", authorization, categoryController.read_event_categorie
 // Update Categories (ADMIN)
 router.put("/:id", adminAuthorization, categoryController.update_categories);
 // Delete Category
-router.delete("/:id", adminAuthorization, categoryController.delete_categories);
+router.delete("/:id/:targetCategoryId", adminAuthorization, categoryController.delete_categories);
 
 module.exports = router;

@@ -1,11 +1,13 @@
 import React, { useEffect } from "react";
+import { useState } from "react";
 import { useFieldArray, Controller } from "react-hook-form";
 import { toast } from "react-toastify";
 
 const EditCategories = (props) => {
   const categories = props.event.categories;
-
   const control = props.control;
+
+  const [targetCategory, setTargetCategory] = useState("");
 
   const { fields, append, remove } = useFieldArray({
     control,
@@ -128,36 +130,96 @@ const EditCategories = (props) => {
           </div>
           <div className="col-6 col-lg-1 mt-2 mt-lg-0 d-flex align-items-end">
             <button
+              type="button"
               style={{ maxHeight: "42px", maxWidth: "60px" }}
               className="btn btn-danger form-control"
-              onClick={async (e) => {
-                e.preventDefault();
-                if (field.category_id) {
-                  try {
-                    const myHeaders = new Headers();
-                    myHeaders.append("Content-Type", "application/json");
-                    myHeaders.append("token", localStorage.token);
-
-                    const response = await fetch(`/api/categories/${field.category_id}`, {
-                      method: "DELETE",
-                      headers: myHeaders,
-                    });
-                    const parseResponse = await response.json();
-                    if (parseResponse.type === "success") {
-                      remove(index);
-                    }
-                    toast[parseResponse.type](parseResponse.message, { theme: "colored" });
-                  } catch (err) {
-                    console.log(err);
-                  }
-                  return;
-                }
-                remove(index);
-              }}
-              disabled={fields.length < 2}
+              data-bs-toggle="modal"
+              data-bs-target={`#deleteCategoryModal-${field.category_id}`}
             >
               <i className="bi bi-x-circle"></i>
             </button>
+            <div
+              className="modal fade"
+              id={`deleteCategoryModal-${field.category_id}`}
+              tabIndex="-1"
+              aria-labelledby="exampleModalLabel"
+              aria-hidden="true"
+            >
+              <div className="modal-dialog">
+                <div className="modal-content">
+                  <div className="modal-header">
+                    <h5 className="modal-title" id="exampleModalLabel">
+                      Remover Categoria - {field.category_name}
+                    </h5>
+                    <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div className="modal-body">
+                    Para remover uma categoria, você precisa escolher uma categoria para receber os inscritos da categoria a ser removida. Selecione a
+                    categoria alvo abaixo e confirme a remoção.
+                    <form className="mt-2">
+                      <select className="form-select" aria-label="Categoria Alvo" defaultValue="" onChange={(e) => setTargetCategory(e.target.value)}>
+                        <option value="" disabled>
+                          Selecionar
+                        </option>
+                        {fields
+                          .filter((category) => category.category_id !== field.category_id && category.category_id)
+                          .map((category) => (
+                            <option key={`${field.category_id}-option-${category.category_id}`} value={category.category_id}>
+                              {category.category_name}
+                            </option>
+                          ))}
+                      </select>
+                    </form>
+                  </div>
+                  <div className="modal-footer">
+                    <button
+                      type="button"
+                      className="btn btn-secondary"
+                      data-bs-dismiss="modal"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setTargetCategory("");
+                      }}
+                    >
+                      Cancelar
+                    </button>
+                    <button
+                      type="button"
+                      className="btn btn-danger"
+                      onClick={async (e) => {
+                        e.preventDefault();
+                        if (field.category_id) {
+                          try {
+                            const myHeaders = new Headers();
+                            myHeaders.append("Content-Type", "application/json");
+                            myHeaders.append("token", localStorage.token);
+
+                            const response = await fetch(`/api/categories/${field.category_id}/${targetCategory}`, {
+                              method: "DELETE",
+                              headers: myHeaders,
+                            });
+                            const parseResponse = await response.json();
+                            if (parseResponse.type === "success") {
+                              remove(index);
+                            }
+                            toast[parseResponse.type](parseResponse.message, { theme: "colored" });
+                          } catch (err) {
+                            console.log(err);
+                          }
+                          return;
+                        }
+                        remove(index);
+                        setTargetCategory("");
+                      }}
+                      disabled={!targetCategory}
+                      data-bs-dismiss="modal"
+                    >
+                      Remover Categoria
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
 
           <hr className="my-3" />

@@ -47,7 +47,8 @@ async function update_categories(req, res) {}
 
 async function delete_categories(req, res) {
   try {
-    const { id } = req.params;
+    const { id, targetCategoryId } = req.params;
+    const moveRegistrations = await pool.query("UPDATE registrations SET category_id = $1 WHERE category_id = $2", [targetCategoryId, id]);
     const removeCategory = await pool.query("DELETE FROM event_categories WHERE category_id = $1", [id]);
     res.status(200).json({ message: "Categoria Removida.", type: "success" });
   } catch (err) {

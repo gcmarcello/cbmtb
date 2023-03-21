@@ -124,7 +124,7 @@ const EditEventPanel = () => {
                 <a role="button" href="/dashboard/eventos" className="btn btn-secondary my-1 w-100">
                   Voltar
                 </a>
-                <button className="btn btn-success my-1 w-100" onClick={handleSubmit(onSubmit)}>
+                <button className="btn btn-success ms-lg-2 my-1 w-100" onClick={handleSubmit(onSubmit)}>
                   Salvar
                 </button>
               </div>
@@ -162,6 +162,20 @@ const EditEventPanel = () => {
               </li>
               <li className="nav-item" role="presentation">
                 <button
+                  className={`nav-link ${tab === "categorias" && "active"} `}
+                  id="kits-tab"
+                  data-bs-toggle="tab"
+                  data-bs-target="#kits"
+                  type="button"
+                  role="tab"
+                  aria-controls="kits"
+                  aria-selected="false"
+                >
+                  Kits
+                </button>
+              </li>
+              <li className="nav-item" role="presentation">
+                <button
                   className={`nav-link ${tab === "inscritos" && "active"} `}
                   id="inscritos-tab"
                   data-bs-toggle="tab"
@@ -176,7 +190,7 @@ const EditEventPanel = () => {
               </li>
             </ul>
             <div className="tab-content" id="myTabContent">
-              <div className={`tab-pane fade ${tab === undefined && "show active"}`} id="evento" role="tabpanel" aria-labelledby="home-tab">
+              <div className={`tab-pane fade ${tab === undefined && "show active"}`} id="evento" role="tabpanel" aria-labelledby="event-tab">
                 <EditEvent
                   event={event}
                   setFocus={setFocus}
@@ -190,7 +204,12 @@ const EditEventPanel = () => {
                   errors={errors}
                 />
               </div>
-              <div className={`tab-pane fade ${tab === "categorias" && "show active"}`} id="categorias" role="tabpanel" aria-labelledby="profile-tab">
+              <div
+                className={`tab-pane fade ${tab === "categorias" && "show active"}`}
+                id="categorias"
+                role="tabpanel"
+                aria-labelledby="categories-tab"
+              >
                 <EditCategories
                   event={event}
                   getValues={getValues}
@@ -203,7 +222,15 @@ const EditEventPanel = () => {
                   errors={errors}
                 />
               </div>
-              <div className={`tab-pane fade ${tab === "inscritos" && "show active"}`} id="inscritos" role="tabpanel" aria-labelledby="contact-tab">
+              <div className={`tab-pane fade ${tab === "kits" && "show active"}`} id="kits" role="tabpanel" aria-labelledby="kits-tab">
+                Em Breve...
+              </div>
+              <div
+                className={`tab-pane fade ${tab === "inscritos" && "show active"}`}
+                id="inscritos"
+                role="tabpanel"
+                aria-labelledby="registrations-tab"
+              >
                 <ListRegistrations
                   event={event}
                   getValues={getValues}
