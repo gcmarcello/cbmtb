@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
-import { useFieldArray } from "react-hook-form";
+import { useFieldArray, Controller } from "react-hook-form";
+import { toast } from "react-toastify";
 
 const EditCategories = (props) => {
   const categories = props.event.categories;
@@ -13,7 +14,6 @@ const EditCategories = (props) => {
       required: "Por favor, insira pelo menos 1 categoria.",
     },
     mode: "onChange",
-    defaultValue: categories,
   });
 
   useEffect(() => {
@@ -21,7 +21,7 @@ const EditCategories = (props) => {
     if (fields.length === 0) {
       append(categories);
     }
-  }, [append, fields, categories]);
+  }, []);
 
   return (
     <div className="p-lg-3">
@@ -41,6 +41,14 @@ const EditCategories = (props) => {
       {fields.map((field, index) => (
         <div className="row" key={`category-${index}`}>
           <div className="col-12 col-lg-3">
+            <input
+              type="text"
+              name="categoryId"
+              id="categoryId"
+              defaultValue={field.category_id || null}
+              className={`d-none`}
+              {...props.register(`category.${index}.category_id`, { required: false })}
+            />
             <label htmlFor="categoryName" className="form-label">
               Nome da Categoria
             </label>
@@ -49,15 +57,9 @@ const EditCategories = (props) => {
               name="categoryName"
               id="categoryName"
               defaultValue={field.category_name}
-              className={`form-control ${
-                props.errors.category && props.errors.category[index]?.name
-                  ? "is-invalid"
-                  : props.getValues(`category.${index}.name`)
-                  ? "is-valid"
-                  : ""
-              }`}
+              className={`form-control ${props.errors.category && props.errors.category[index]?.name ? "is-invalid" : ""}`}
               onChange={(e) => console.log(e)}
-              {...props.register(`category.${index}.name`, { required: true })}
+              {...props.register(`category.${index}.category_name`, { required: true })}
             />
           </div>
           <div className="col-6 col-lg-2 mt-2 mt-lg-0">
@@ -69,14 +71,8 @@ const EditCategories = (props) => {
               name="minAge"
               id="categoryMinAge"
               defaultValue={field.category_minage}
-              className={`form-control ${
-                props.errors.category && props.errors.category[index]?.minAge
-                  ? "is-invalid"
-                  : props.getValues(`category.${index}.name`)
-                  ? "is-valid"
-                  : ""
-              }`}
-              {...props.register(`category.${index}.minAge`, { required: true })}
+              className={`form-control ${props.errors.category && props.errors.category[index]?.minAge ? "is-invalid" : ""}`}
+              {...props.register(`category.${index}.category_minAge`, { required: true })}
             />
           </div>
           <div className="col-6 col-lg-2 mt-2 mt-lg-0">
@@ -88,14 +84,8 @@ const EditCategories = (props) => {
               name="maxAge"
               id="categoryMaxAge"
               defaultValue={field.category_maxage}
-              className={`form-control ${
-                props.errors.category && props.errors.category[index]?.maxAge
-                  ? "is-invalid"
-                  : props.getValues(`category.${index}.name`)
-                  ? "is-valid"
-                  : ""
-              }`}
-              {...props.register(`category.${index}.maxAge`, { required: true })}
+              className={`form-control ${props.errors.category && props.errors.category[index]?.maxAge ? "is-invalid" : ""}`}
+              {...props.register(`category.${index}.category_maxAge`, { required: true })}
             />
           </div>
           <div className="col-12 col-lg-2 mt-2 mt-lg-0">
@@ -104,17 +94,11 @@ const EditCategories = (props) => {
             </label>
             <select
               defaultValue={field.category_gender}
-              className={`form-select ${
-                props.errors.category && props.errors.category[index]?.gender
-                  ? "is-invalid"
-                  : props.getValues(`category.${index}.gender`)
-                  ? "is-valid"
-                  : ""
-              }`}
+              className={`form-select ${props.errors.category && props.errors.category[index]?.gender ? "is-invalid" : ""}`}
               aria-label="Default select example"
               id="categoryGender"
               name="categoryGender"
-              {...props.register(`category.${index}.gender`, { required: true })}
+              {...props.register(`category.${index}.category_gender`, { required: true })}
             >
               <option value="" disabled>
                 Selecione
@@ -137,14 +121,8 @@ const EditCategories = (props) => {
                 name="categoryPrice"
                 id="categoryPrice"
                 defaultValue={field.category_price}
-                className={`form-control ${
-                  props.errors.category && props.errors.category[index]?.price
-                    ? "is-invalid"
-                    : props.getValues(`category.${index}.name`)
-                    ? "is-valid"
-                    : ""
-                }`}
-                {...props.register(`category.${index}.price`, { required: true })}
+                className={`form-control ${props.errors.category && props.errors.category[index]?.price ? "is-invalid" : ""}`}
+                {...props.register(`category.${index}.category_price`, { required: true })}
               />
             </div>
           </div>
@@ -152,9 +130,26 @@ const EditCategories = (props) => {
             <button
               style={{ maxHeight: "42px", maxWidth: "60px" }}
               className="btn btn-danger form-control"
-              onClick={(e) => {
+              onClick={async (e) => {
                 e.preventDefault();
-                if (fields.length < 2) {
+                if (field.category_id) {
+                  try {
+                    const myHeaders = new Headers();
+                    myHeaders.append("Content-Type", "application/json");
+                    myHeaders.append("token", localStorage.token);
+
+                    const response = await fetch(`/api/categories/${field.category_id}`, {
+                      method: "DELETE",
+                      headers: myHeaders,
+                    });
+                    const parseResponse = await response.json();
+                    if (parseResponse.type === "success") {
+                      remove(index);
+                    }
+                    toast[parseResponse.type](parseResponse.message, { theme: "colored" });
+                  } catch (err) {
+                    console.log(err);
+                  }
                   return;
                 }
                 remove(index);
@@ -164,6 +159,7 @@ const EditCategories = (props) => {
               <i className="bi bi-x-circle"></i>
             </button>
           </div>
+
           <hr className="my-3" />
         </div>
       ))}

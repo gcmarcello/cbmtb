@@ -2,6 +2,7 @@ import React, { Fragment, useState } from "react";
 import QuillEditor from "../../../../../utils/quillSettings";
 
 import { Controller } from "react-hook-form";
+import { useEffect } from "react";
 
 const EditEvent = (props) => {
   const [externalRegistration, setExternalRegistration] = useState(false);
@@ -17,6 +18,10 @@ const EditEvent = (props) => {
       props.trigger("external");
     }
   };
+
+  useEffect(() => {
+    props.setFocus("name", { shouldSelect: true });
+  }, []);
 
   return (
     <Fragment>
@@ -113,7 +118,7 @@ const EditEvent = (props) => {
                 <Controller
                   name="image"
                   control={props.control}
-                  defaultValue=""
+                  defaultValue={null}
                   rules={{
                     required: false,
                   }}
@@ -224,6 +229,7 @@ const EditEvent = (props) => {
               <Controller
                 name="description"
                 control={props.control}
+                defaultValue={props.event.event_description}
                 rules={{
                   required: false,
                 }}
@@ -246,7 +252,7 @@ const EditEvent = (props) => {
               <Controller
                 name="rules"
                 control={props.control}
-                defaultValue=""
+                defaultValue={props.event.event_rules}
                 rules={{
                   required: false,
                 }}
@@ -269,7 +275,7 @@ const EditEvent = (props) => {
               <Controller
                 name="details"
                 control={props.control}
-                defaultValue=""
+                defaultValue={props.event.event_details}
                 rules={{
                   required: false,
                 }}

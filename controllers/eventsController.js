@@ -136,34 +136,98 @@ async function retrieveEventInformation(req, res) {
 async function updateEvent(req, res) {
   try {
     const { id } = req.params;
-    const { name, location, date, price, attendees, description, rules, details, categories, link, base64Image } = req.body;
-    let S3Image;
+    const categories = JSON.parse(req.body.categories);
 
-    if (base64Image) {
-      S3Image = await uploadFileToS3(base64Image, "cbmtb", "event-main");
-      const updateImage = await pool.query(`UPDATE events SET event_image = $1 WHERE event_id = $2`, [S3Image, id]);
-    }
+    const {
+      name,
+      location,
+      link,
+      attendees,
+      imageOld,
+      dateStart,
+      dateEnd,
+      registrationStart,
+      registrationEnd,
+      description,
+      rules,
+      details,
+      external,
+    } = req.body;
+
+    const image = req.file ? await uploadFileToS3(req.file, "cbmtb", "event-main") : imageOld;
 
     const updateEvent = await pool.query(
-      `UPDATE events SET event_name = $1, event_location = $2, event_date = $3, event_price = $4, event_max_attendees = $5, event_description = $6, event_rules = $7, event_details = $8, event_link = $10 WHERE event_id = $9`,
-      [name, location, date, price, attendees, description, rules, details, id, link]
+      `UPDATE events SET event_link = $1, event_owner_id = $2, event_name= $3, event_location = $4, event_image = $5, event_description = $6, event_rules = $7, event_details = $8, event_max_attendees = $9, event_external = $10, event_date_start = $11, event_date_end = $12, event_registrations_start = $13, event_registrations_end = $14`,
+      [
+        link,
+        req.userId,
+        name,
+        location,
+        image,
+        description,
+        rules,
+        details,
+        attendees,
+        external,
+        dateStart,
+        dateEnd,
+        registrationStart,
+        registrationEnd,
+      ]
     );
 
-    const categoriesSQL = categories
-      .map((category) => `('${id}',${category.category_name},${category.category_minage},${category.category_maxage})`)
-      .join(",");
+    const existingCategories = categories.filter((category) => category.category_id);
 
-    categories.forEach(async (category) => {
-      await pool.query("UPDATE event_categories SET category_name = $1, category_minage = $2, category_maxage = $3 WHERE category_id = $4", [
-        category.category_name,
-        category.category_minage,
-        category.category_maxage,
-        category.category_id,
-      ]);
-    });
+    if (existingCategories.length) {
+      const existingCategoriesSQL = existingCategories
+        .map(
+          (category) =>
+            `('${category.category_id}'::uuid, '${category.category_name}', '${category.category_minAge}'::integer, '${category.category_maxAge}'::integer, '${category.category_gender}', '${category.category_price}'::real)`
+        )
+        .join(",");
+
+      const updateExistingCategories = await pool.query(
+        `UPDATE event_categories AS ec SET
+      category_id = t.category_id,
+      category_name = t.category_name,
+      category_minage = t.category_minage,
+      category_maxage = t.category_maxage,
+      category_gender = t.category_gender,
+      category_price = t.category_price
+      FROM (VALUES ${existingCategoriesSQL}) AS t(category_id, category_name, category_minage, category_maxage, category_gender, category_price)
+      WHERE t.category_id = ec.category_id`
+      );
+    }
+
+    const newCategories = categories.filter((category) => !category.category_id);
+
+    if (newCategories.length) {
+      const newCategoriesSQL = categories
+        .filter((category) => category.category_id.length < 1)
+        .map(
+          (category) =>
+            `('${id}'::uuid,'${category.category_name}','${category.category_minAge}'::integer,'${category.category_maxAge}'::integer, '${category.category_gender}', '${category.category_price}'::real)`
+        )
+        .join(",");
+
+      const createNewCategories = await pool.query(
+        `INSERT INTO event_categories (event_id,category_name,category_minage,category_maxage,category_gender, category_price) VALUES ${newCategoriesSQL}`
+      );
+    }
+
+    if (req.file) {
+      const filePath = path.join(req.file.destination, req.file.filename);
+      fs.unlink(filePath, (err) => {
+        if (err) {
+          console.error(err);
+        }
+      });
+    }
+
     res.status(200).json({ message: "Evento atualizado com sucesso!", type: "success" });
   } catch (err) {
-    res.status(400).json({ message: "Erro ao atualizar o evento.", type: "error" });
+    console.log(err.message);
+    res.status(400).json({ message: `Erro ao atualizar o evento. ${err.message}`, type: "error" });
   }
 }
 

@@ -103,7 +103,7 @@ function App() {
             path="/dashboard/"
             element={
               <PrivateRoute {...loginProps}>
-                <ListEvents userAdmin={userAdmin} userName={userName} />
+                <Navigate to="/dashboard/eventos" />
               </PrivateRoute>
             }
           />
@@ -127,7 +127,7 @@ function App() {
           />
           <Route
             exact
-            path="/dashboard/evento/:id/:tab?"
+            path="/dashboard/eventos/:id/:tab?"
             element={
               <PrivateRoute {...loginProps}>
                 <EditEventPanel />

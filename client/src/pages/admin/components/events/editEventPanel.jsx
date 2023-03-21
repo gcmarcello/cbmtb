@@ -1,7 +1,8 @@
 import React, { Fragment, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 import { useForm, Controller, useFieldArray } from "react-hook-form";
+import { toast } from "react-toastify";
 
 import EditEvent from "./components/editEvent";
 import LoadingScreen from "../../../../utils/loadingScreen";
@@ -14,12 +15,14 @@ const EditEventPanel = () => {
   const { id, tab } = useParams();
   const [event, setEvent] = useState();
   const [isLoading, setIsLoading] = useState(true);
+  const navigate = useNavigate();
 
   const {
     getValues,
     setValue,
     reset,
     trigger,
+    setFocus,
     control,
     register,
     handleSubmit,
@@ -29,8 +32,39 @@ const EditEventPanel = () => {
     defaultValues: {},
   });
 
-  const onSubmit = (data) => {
-    console.log(data);
+  const onSubmit = async (data) => {
+    try {
+      const formData = new FormData();
+      const formValues = getValues();
+
+      Object.keys(formValues).forEach((key) => {
+        if (key !== "category") {
+          formData.append(key, formValues[key]);
+        } else {
+          formData.append("categories", JSON.stringify(data.category));
+        }
+      });
+
+      const myHeaders = new Headers();
+      myHeaders.append("token", localStorage.token);
+
+      let requestOptions = {
+        method: "PUT",
+        headers: myHeaders,
+        body: formData,
+      };
+
+      const response = await fetch(`/api/events/${id}`, requestOptions); // eslint-disable-next-line
+      const parseResponse = await response.json();
+
+      if (parseResponse.type === "success") {
+        navigate("/dashboard/eventos");
+      }
+
+      toast[parseResponse.type](parseResponse.message, { theme: "colored" });
+    } catch (error) {
+      toast.error(error, { theme: "colored" });
+    }
   };
 
   useEffect(() => {
@@ -145,6 +179,7 @@ const EditEventPanel = () => {
               <div className={`tab-pane fade ${tab === undefined && "show active"}`} id="evento" role="tabpanel" aria-labelledby="home-tab">
                 <EditEvent
                   event={event}
+                  setFocus={setFocus}
                   getValues={getValues}
                   setValue={setValue}
                   reset={reset}

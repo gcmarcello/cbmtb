@@ -27,10 +27,10 @@ const ListEvents = ({ eventChange, setEventChange }) => {
       Header: "Opções",
       Cell: ({ value }) => (
         <div>
-          <a href={`./evento/${value}`} className="btn btn-dark mx-1">
+          <a href={`eventos/${value}/`} className="btn btn-dark mx-1">
             <i className="bi bi-gear-fill"></i>
           </a>
-          <a href={`./evento/${value}/inscritos`} className="btn btn-primary mx-1">
+          <a href={`eventos/${value}/inscritos`} className="btn btn-primary mx-1">
             <i className="bi bi-people-fill"></i>
           </a>
         </div>
