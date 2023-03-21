@@ -1,7 +1,6 @@
 const router = require("express").Router();
 const reCaptcha = require("../middlewares/reCaptcha");
 const pool = require("../database");
-const adminAuthorization = require("../middlewares/authorization");
 
 // Send Press Form
 router.post("/press", reCaptcha, async (req, res) => {

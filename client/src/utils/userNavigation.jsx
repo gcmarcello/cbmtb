@@ -85,7 +85,7 @@ const UserNavigation = ({ userAuthentication, setUserAuthentication, userName, u
                 <ul className="dropdown-menu" aria-labelledby="navbarDropdown">
                   {userAdmin ? (
                     <li>
-                      <a className="dropdown-item" href="/dashboard">
+                      <a className="dropdown-item" href="/painel">
                         Administrativo
                       </a>
                       <hr className="dropdown-divider" />

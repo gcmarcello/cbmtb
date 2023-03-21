@@ -39,12 +39,12 @@ const AdminNavigation = () => {
                 </a>
                 <ul className="dropdown-menu" aria-labelledby="navbarScrollingDropdown">
                   <li>
-                    <a href="/dashboard/eventos" className="dropdown-item">
+                    <a href="/painel/eventos" className="dropdown-item">
                       Listar Eventos
                     </a>
                   </li>
                   <li>
-                    <a href="/dashboard/eventos/novo" className="dropdown-item">
+                    <a href="/painel/eventos/novo" className="dropdown-item">
                       Novo Evento
                     </a>
                   </li>

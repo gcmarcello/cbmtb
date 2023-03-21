@@ -5,6 +5,7 @@ import { useForm, Controller, useFieldArray } from "react-hook-form";
 import { toast } from "react-toastify";
 
 import EditEvent from "./components/editEvent";
+import EditKits from "./components/editKits";
 import LoadingScreen from "../../../../utils/loadingScreen";
 import { isoTimezone } from "./functions/isoDateTimezone";
 import { useEffect } from "react";
@@ -223,7 +224,7 @@ const EditEventPanel = () => {
                 />
               </div>
               <div className={`tab-pane fade ${tab === "kits" && "show active"}`} id="kits" role="tabpanel" aria-labelledby="kits-tab">
-                Em Breve...
+                <EditKits />
               </div>
               <div
                 className={`tab-pane fade ${tab === "inscritos" && "show active"}`}

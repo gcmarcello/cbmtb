@@ -2,6 +2,7 @@ const router = require("express").Router();
 
 const authorization = require("../middlewares/authorization");
 const adminAuthorization = require("../middlewares/authorization");
+
 const categoryController = require("../controllers/categoriesController");
 
 // Create Categories (ADMIN)

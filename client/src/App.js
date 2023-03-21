@@ -89,7 +89,7 @@ function App() {
         pauseOnHover
         theme="light"
       />
-      {!(page === "dashboard") ? (
+      {!(page === "painel") ? (
         <UserNavigation userAuthentication={userAuthentication} userName={userName} userAdmin={userAdmin} setUserAdmin={setUserAdmin} />
       ) : (
         <AdminNavigation userAuthentication={userAuthentication} userName={userName} userAdmin={userAdmin} setUserAdmin={setUserAdmin} />
@@ -100,16 +100,16 @@ function App() {
           <Route exact path="/login" element={!userAuthentication ? <Login {...loginProps} /> : <Navigate to="/usuario" />} />
           <Route
             exact
-            path="/dashboard/"
+            path="/painel/"
             element={
               <PrivateRoute {...loginProps}>
-                <Navigate to="/dashboard/eventos" />
+                <Navigate to="/painel/eventos" />
               </PrivateRoute>
             }
           />
           <Route
             exact
-            path="/dashboard/eventos"
+            path="/painel/eventos"
             element={
               <PrivateRoute {...loginProps}>
                 <ListEvents userAdmin={userAdmin} userName={userName} />
@@ -118,7 +118,7 @@ function App() {
           />
           <Route
             exact
-            path="/dashboard/eventos/novo"
+            path="/painel/eventos/novo"
             element={
               <PrivateRoute {...loginProps}>
                 <NewEvent userAdmin={userAdmin} userName={userName} />
@@ -127,7 +127,7 @@ function App() {
           />
           <Route
             exact
-            path="/dashboard/eventos/:id/:tab?"
+            path="/painel/eventos/:id/:tab?"
             element={
               <PrivateRoute {...loginProps}>
                 <EditEventPanel />
@@ -166,7 +166,7 @@ function App() {
           <Route path="*" element={<Page404 />} />
         </Routes>
       </main>
-      {!(page === "cadastro" || page === "dashboard") && <Footer userAuthentication={userAuthentication} userName={userName} />}
+      {!(page === "cadastro" || page === "painel") && <Footer userAuthentication={userAuthentication} userName={userName} />}
     </Fragment>
   );
 }
