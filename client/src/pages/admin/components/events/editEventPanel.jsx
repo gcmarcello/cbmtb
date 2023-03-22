@@ -59,7 +59,7 @@ const EditEventPanel = () => {
       const parseResponse = await response.json();
 
       if (parseResponse.type === "success") {
-        navigate("/dashboard/eventos");
+        navigate("/painel/eventos");
       }
 
       toast[parseResponse.type](parseResponse.message, { theme: "colored" });
@@ -163,7 +163,7 @@ const EditEventPanel = () => {
               </li>
               <li className="nav-item" role="presentation">
                 <button
-                  className={`nav-link ${tab === "categorias" && "active"} `}
+                  className={`nav-link ${tab === "kits" && "active"} `}
                   id="kits-tab"
                   data-bs-toggle="tab"
                   data-bs-target="#kits"
