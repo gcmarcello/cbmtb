@@ -1,5 +1,5 @@
 const router = require("express").Router();
-const GNRequest = require("../apis/gerenciaNet");
+/* const GNRequest = require("../apis/gerenciaNet"); */
 const crypto = require("crypto");
 const pool = require("../database");
 const authorization = require("../middlewares/authorization");

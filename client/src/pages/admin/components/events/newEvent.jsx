@@ -1,5 +1,6 @@
 // Modules
 import React, { Fragment, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import QuillEditor from "../../../../utils/quillSettings";
 import { toast } from "react-toastify";
 import { useForm, Controller, useFieldArray } from "react-hook-form";
@@ -10,6 +11,7 @@ import { useEffect } from "react";
 // Functions
 
 const NewEvent = () => {
+  const navigate = useNavigate()
   const {
     getValues,
     setValue,
@@ -53,7 +55,9 @@ const NewEvent = () => {
 
       const response = await fetch("/api/events/", requestOptions); // eslint-disable-next-line
       const parseResponse = await response.json();
+      navigate('/painel/noticias')
       toast[parseResponse.type](parseResponse.message, { theme: "colored" });
+      
     } catch (error) {
       toast.error(error, { theme: "colored" });
     }

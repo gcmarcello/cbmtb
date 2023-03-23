@@ -1,10 +1,12 @@
 import React, { Fragment } from "react";
+import {useNavigate} from "react-router-dom"
 import { toast } from "react-toastify";
 
 import QuillEditor from "../../../../utils/quillSettings";
 import { useForm, Controller } from "react-hook-form";
 
-const NewNews = ({ saveCurrentPanel }) => {
+const NewNews = () => {
+  const navigate = useNavigate();
   const {
     getValues,
     control,
@@ -15,7 +17,6 @@ const NewNews = ({ saveCurrentPanel }) => {
   } = useForm({ mode: "onChange" });
 
   const onSubmit = async (data) => {
-    console.log(data);
     try {
       const myHeaders = new Headers();
       myHeaders.append("token", localStorage.token);
@@ -27,7 +28,6 @@ const NewNews = ({ saveCurrentPanel }) => {
         formData.append(key, formValues[key]);
       });
 
-      console.log(formData);
 
       const response = await fetch(`/api/news/`, {
         method: "POST",
@@ -36,6 +36,7 @@ const NewNews = ({ saveCurrentPanel }) => {
       });
 
       const parseResponse = await response.json();
+      navigate('/painel/noticias')
       toast[parseResponse.type](parseResponse.message, { theme: "colored" });
     } catch (error) {
       console.log(error);
