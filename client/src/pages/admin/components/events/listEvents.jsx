@@ -1,8 +1,10 @@
 import React, { Fragment, useEffect, useState } from "react";
 import Table from "../table";
 
-const ListEvents = ({ eventChange, setEventChange }) => {
+const ListEvents = () => {
+  const [eventChange, setEventChange] = useState(false)
   const [eventsList, setEventsList] = useState([]);
+  
 
   const columns = [
     {
@@ -25,7 +27,7 @@ const ListEvents = ({ eventChange, setEventChange }) => {
     {
       accessor: "event_id",
       Header: "Opções",
-      Cell: ({ value }) => (
+      Cell: ({ value, row }) => (
         <div>
           <a href={`/painel/eventos/${value}/`} className="btn btn-dark mx-1">
             <i className="bi bi-gear-fill"></i>
@@ -33,6 +35,7 @@ const ListEvents = ({ eventChange, setEventChange }) => {
           <a href={`/painel/eventos/${value}/inscritos`} className="btn btn-primary mx-1">
             <i className="bi bi-people-fill"></i>
           </a>
+          {row.original.event_status ? <button className="btn btn-danger" onClick={e=>toggleEvents(e,value,!row.original.event_status)}>Fechar</button> : <button className="btn btn-success" onClick={e=>toggleEvents(e,value,!row.original.event_status)}>Abrir</button>}
         </div>
       ),
     },
@@ -60,6 +63,7 @@ const ListEvents = ({ eventChange, setEventChange }) => {
   };
 
   const toggleEvents = async (e, id, boolean) => {
+    e.preventDefault();
     try {
       setEventChange(true);
       const myHeaders = new Headers();
@@ -78,7 +82,9 @@ const ListEvents = ({ eventChange, setEventChange }) => {
   };
 
   useEffect(() => {
-    getEvents();
+    if(!eventChange){
+      getEvents();
+    }
   }, [eventChange]);
 
   return (

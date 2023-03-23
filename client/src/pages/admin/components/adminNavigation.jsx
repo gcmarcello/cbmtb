@@ -75,9 +75,9 @@ const AdminNavigation = () => {
                 </ul>
               </li>
               <li className="nav-item">
-                <button className="nav-link" aria-current="page" style={{ border: "0", background: "none" }}>
+                <a href="/painel/documentos" className="nav-link" aria-current="page" style={{ border: "0", background: "none" }}>
                   Documentos
-                </button>
+                </a>
               </li>
             </ul>
           </div>

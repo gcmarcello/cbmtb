@@ -175,7 +175,7 @@ function App() {
             path="/painel/documentos/"
             element={
               <PrivateRoute {...loginProps}>
-                <NewDocument />
+                <ListDocuments />
               </PrivateRoute>
             }
           />
