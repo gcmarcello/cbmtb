@@ -4,7 +4,6 @@ import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 
 import LoadingScreen from "../../../../utils/loadingScreen";
-import { fileToBase64 } from "../../functions/fileToBase64";
 
 const CreateDocuments = ({ documentChange, setDocumentChange }) => {
   const {
@@ -50,21 +49,6 @@ const CreateDocuments = ({ documentChange, setDocumentChange }) => {
     }
   };
 
-  const handleFileChange = (event) => {
-    setIsLoading(true);
-    const file = event.target.files[0];
-    if (file) {
-      fileToBase64(file).then((data) => {
-        register("file", { value: data.file, required: true });
-        register("fileSize", { value: data.size });
-        setFileSize(data.size);
-      });
-    } else {
-      unregister("file");
-    }
-    setIsLoading(false);
-  };
-
   if (isLoading) {
     return <LoadingScreen />;
   }
@@ -90,7 +74,7 @@ const CreateDocuments = ({ documentChange, setDocumentChange }) => {
               type="file"
               name="file"
               className={`form-control`}
-              onChange={handleFileChange}
+              /*               onChange={handleFileChange} */
               aria-invalid={errors.file ? "true" : "false"}
               ref={fileInput}
             />

@@ -1,14 +1,54 @@
-import React, { Fragment, useEffect, useState } from "react";
+import React, { useState } from "react";
+import { useEffect } from "react";
 import { toast } from "react-toastify";
-import ReactPaginate from "react-paginate";
 
-import EditNews from "./editNews";
+import Table from "../table";
 
-import { parseDate } from "../../../../utils/functions/parseDate";
-
-const ListNews = ({ newsChange, setNewsChange, saveCurrentPanel }) => {
+const ListNews = () => {
   const [newsList, setNewsList] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
+
+  const columns = [
+    {
+      Header: "Notícia",
+      accessor: "news_title",
+    },
+    {
+      accessor: "formattedDate",
+      Header: "Data",
+    },
+    {
+      accessor: "formattedUpdate",
+      Header: "Última Atualização",
+    },
+    {
+      Header: "Status",
+      accessor: "news_status",
+      Cell: ({ value, row }) => (
+        <div>
+          {value ? (
+            <span role="button" className="badge text-bg-success" onClick={() => toggleNews(row.original.news_id, !value)}>
+              Publicada
+            </span>
+          ) : (
+            <span role="button" className="badge text-bg-danger" onClick={() => toggleNews(row.original.news_id, !value)}>
+              Não Publicada
+            </span>
+          )}
+        </div>
+      ),
+    },
+    {
+      accessor: "news_id",
+      Header: "Opções",
+      Cell: ({ value }) => (
+        <div>
+          <a href={`/painel/noticias/${value}/`} className="btn btn-dark mx-1">
+            <i className="bi bi-gear-fill"></i>
+          </a>
+        </div>
+      ),
+    },
+  ];
 
   const getNews = async () => {
     try {
@@ -21,12 +61,12 @@ const ListNews = ({ newsChange, setNewsChange, saveCurrentPanel }) => {
         headers: myHeaders,
       });
       const parseResponse = await response.json();
-
       for (let i = 0; i < parseResponse.length; i++) {
-        parseResponse[i].formattedDate = parseDate(parseResponse[i].news_date, "complete");
-        parseResponse[i].formattedUpdate = parseDate(parseResponse[i].news_last_update, "complete");
+        const date = new Date(parseResponse[i].news_date);
+        const update = new Date(parseResponse[i].news_last_update);
+        parseResponse[i].formattedDate = date.toLocaleString("pt-BR");
+        parseResponse[i].formattedUpdate = update.toLocaleString("pt-BR");
       }
-
       setNewsList(parseResponse);
     } catch (err) {
       console.log(err);
@@ -35,7 +75,6 @@ const ListNews = ({ newsChange, setNewsChange, saveCurrentPanel }) => {
 
   const toggleNews = async (id, boolean) => {
     try {
-      setNewsChange(true);
       const myHeaders = new Headers();
       myHeaders.append("Content-Type", "application/json");
       myHeaders.append("token", localStorage.token);
@@ -46,111 +85,29 @@ const ListNews = ({ newsChange, setNewsChange, saveCurrentPanel }) => {
       });
       const parseResponse = await response.json();
       toast[parseResponse.type](parseResponse.message, { theme: "colored" });
-      setNewsChange(false);
+      getNews();
     } catch (err) {
       console.log(err);
     }
   };
 
-  function Items({ currentItems }) {
-    return (
-      <>
-        {currentItems &&
-          currentItems.map((news) => (
-            <tr key={`news-${news.news_id}`}>
-              <td>{news.news_title}</td>
-              <td className="d-none d-lg-table-cell">{news.formattedDate}</td>
-              <td className="d-none d-lg-table-cell">{news.formattedUpdate}</td>
-              <td>
-                <EditNews news={news} setNewsChange={setNewsChange} setIsLoading={setIsLoading} />
-                {!news.news_status ? (
-                  <button className="btn btn-success my-1 ms-1" onClick={(e) => toggleNews(news.news_id, 1)}>
-                    <i className="bi bi-check-circle"> Publicar</i>
-                  </button>
-                ) : (
-                  <button className="btn btn-danger my-1 ms-1" onClick={(e) => toggleNews(news.news_id, 0)}>
-                    <i className="bi bi-x-circle"> Despublicar</i>
-                  </button>
-                )}
-              </td>
-            </tr>
-          ))}
-      </>
-    );
-  }
-
-  function PaginatedItems({ itemsPerPage, itemList }) {
-    // Here we use item offsets; we could also use page offsets
-    // following the API or data you're working with.
-    const [itemOffset, setItemOffset] = useState(0);
-
-    // Simulate fetching items from another resources.
-    // (This could be items from props; or items loaded in a local state
-    // from an API endpoint with useEffect and useState)
-    const endOffset = itemOffset + itemsPerPage;
-    const currentItems = itemList.slice(itemOffset, endOffset);
-    const pageCount = Math.ceil(itemList.length / itemsPerPage);
-
-    // Invoke when user click to request another page.
-    const handlePageClick = (event) => {
-      const newOffset = (event.selected * itemsPerPage) % itemList.length;
-      setItemOffset(newOffset);
-    };
-
-    return (
-      <>
-        <table className="table table-striped">
-          <thead className="table-dark">
-            <tr>
-              <th>Nome</th>
-              <th className="d-none d-lg-table-cell">Data</th>
-              <th className="d-none d-lg-table-cell">Última Atualização</th>
-              <th>Opções</th>
-            </tr>
-          </thead>
-          <tbody className="table-group-divider">
-            <Items currentItems={currentItems} />
-          </tbody>
-        </table>
-        <ReactPaginate
-          breakLabel="..."
-          nextLabel="Próximo >"
-          onPageChange={handlePageClick}
-          pageRangeDisplayed={5}
-          pageCount={pageCount}
-          previousLabel="< Anterior"
-          renderOnZeroPageCount={null}
-          pageClassName="page-item"
-          pageLinkClassName="page-link"
-          previousClassName="page-item"
-          previousLinkClassName="page-link"
-          nextClassName="page-item"
-          nextLinkClassName="page-link"
-          breakClassName="page-item"
-          breakLinkClassName="page-link"
-          containerClassName="pagination"
-          activeClassName="active"
-        />
-      </>
-    );
-  }
-
   useEffect(() => {
     getNews();
-  }, [newsChange]);
+  }, []);
 
   return (
-    <Fragment>
-      <div className="container-fluid mt-3">
-        <h1>Lista de Notícias</h1>
-        <PaginatedItems itemsPerPage={4} itemList={newsList} />
-        <div className="d-flex justify-content-end">
-          <button className="btn btn-success" onClick={() => saveCurrentPanel("NewNews")} disabled={isLoading}>
-            Criar Notícia
-          </button>
+    <div className="bg-light">
+      <div className="px-lg-5 py-lg-5">
+        <div className="p-3 bg-white rounded rounded-2 shadow">
+          <Table data={newsList} columns={columns} />
+          <div className="d-flex justify-content-end">
+            <a href="noticias/nova" className="btn btn-success">
+              Nova Notícia
+            </a>
+          </div>
         </div>
       </div>
-    </Fragment>
+    </div>
   );
 };
 

@@ -1,58 +1,60 @@
-import React, { Fragment, useState } from "react";
-import { useEffect } from "react";
+import React, { Fragment, useState, useEffect } from "react";
+
+import { useForm, Controller } from "react-hook-form";
+import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import LoadingScreen from "../../../../utils/loadingScreen";
+import QuillEditor from "../../../../utils/quillSettings";
 
-import { fileToBase64 } from "../../functions/fileToBase64";
+const EditNews = () => {
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const [news, setNews] = useState();
+  const [isLoading, setIsLoading] = useState(false);
+  const [fileSize, setFileSize] = useState(false);
+  const [fileUrl, setFileUrl] = useState(null);
+  const {
+    getValues,
+    control,
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm({ mode: "onChange" });
 
-const EditNews = ({ newsChange, setNewsChange, news, setIsLoading }) => {
-  const [newsForm, setNewsForm] = useState({
-    title: news.news_title,
-    image: news.news_image_link,
-    subtitle: news.news_subtitle,
-    newsBody: news.news_text,
-  });
-
-  const { title, image, subtitle, newsBody } = newsForm;
-
-  // Image Upload States
-  const [selectedImage, setSelectedImage] = useState();
-  const [imagePreview, setImagePreview] = useState(null); //eslint-disable-next-line
-  const [isImageSelected, setIsImageSelected] = useState(false);
-  const [base64Image, setBase64Image] = useState(null);
-  const [base64ImageSize, setBase64ImageSize] = useState(null);
-
-  const submitForm = async () => {
+  const onSubmit = async (data) => {
     try {
       setIsLoading(true);
-      setNewsChange(true);
       const myHeaders = new Headers();
-      myHeaders.append("Content-Type", "application/json");
       myHeaders.append("token", localStorage.token);
 
-      const body = { title, image, subtitle, newsBody, base64Image };
+      const formData = new FormData();
+      const formValues = getValues();
+      Object.keys(formValues).forEach((key) => {
+        formData.append(key, formValues[key]);
+      });
+
       const response = await fetch(`/api/news/${news.news_id}`, {
         method: "PUT",
         headers: myHeaders,
-        body: JSON.stringify(body),
+        body: formData,
       });
       const parseResponse = await response.json();
       if (parseResponse.type === "success") {
         toast.success(parseResponse.message, { theme: "colored" });
+        navigate("/painel/noticias");
       } else {
         toast.error(parseResponse.message, { theme: "colored" });
       }
-      setNewsChange(false);
-      setIsLoading(false);
     } catch (err) {
       console.log(err);
     }
+    setIsLoading(false);
   };
 
   const deleteNews = async () => {
     try {
       setIsLoading(true);
-      setNewsChange(true);
-
       const myHeaders = new Headers();
       myHeaders.append("Content-Type", "application/json");
       myHeaders.append("token", localStorage.token);
@@ -61,64 +63,193 @@ const EditNews = ({ newsChange, setNewsChange, news, setIsLoading }) => {
         headers: myHeaders,
       });
       const parseResponse = await response.json();
-      toast[parseResponse.type](parseResponse.message, { theme: "colored" });
-      setNewsChange(false);
-      setIsLoading(false);
+      if (parseResponse.type === "success") {
+        toast.success(parseResponse.message, { theme: "colored" });
+        navigate("/painel/noticias");
+      } else {
+        toast.error(parseResponse.message, { theme: "colored" });
+      }
     } catch (err) {
       console.log(err);
     }
+    setIsLoading(false);
   };
+
+  useEffect(() => {
+    const getNews = async () => {
+      setIsLoading(true);
+      try {
+        const myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+        myHeaders.append("token", localStorage.token);
+
+        const response = await fetch(`/api/news/${id}`, {
+          method: "GET",
+          headers: myHeaders,
+        });
+        const parseResponse = await response.json();
+        setNews(parseResponse);
+      } catch (err) {
+        console.log(err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    getNews();
+  }, [id]);
+
+  useEffect(() => {
+    if (news) {
+      reset({
+        title: news.news_title,
+        subtitle: news.news_subtitle,
+        imageOld: news.news_image_link,
+        body: news.news_text,
+      });
+    }
+  }, [news, reset]);
+
+  if (isLoading) return <LoadingScreen />;
 
   return (
     <Fragment>
-      <button className="btn btn-dark ms-1" data-bs-toggle="modal" data-bs-target={`#modal-news-${news.news_id}`}>
-        <i className="bi bi-gear"></i>
-      </button>
+      <div className="bg-light">
+        <div className="px-lg-5 py-lg-5">
+          <div className="p-3 bg-white rounded rounded-2 shadow">
+            <div className="container-fluid px-3 mt-3 mb-5">
+              <h2 className="mb-0">Editar Notícia</h2>
+              <hr />
+              <form onSubmit={handleSubmit(onSubmit)}>
+                <div className="row">
+                  <div className="col-12 col-lg-6">
+                    <label htmlFor="news-title" className="form-label">
+                      Título da Notícia
+                    </label>
+                    <input
+                      type="text"
+                      id="news-title"
+                      name="title"
+                      className={`form-control ${errors.title?.type ? "is-invalid" : getValues("name") ? "is-valid" : ""}`}
+                      {...register("title", { required: true, pattern: /.{2,}/ })}
+                    />
+                  </div>
+                  <div className="col-12 col-lg-6">
+                    <label htmlFor="selectedImage" className="form-label">
+                      Imagem da Notícia
+                    </label>
+                    <div className="input-group">
+                      <Controller
+                        name="image"
+                        control={control}
+                        defaultValue={null}
+                        rules={{
+                          required: false,
+                        }}
+                        render={({ field }) => (
+                          <input
+                            id="image"
+                            accept="image/*"
+                            type="file"
+                            onChange={(e) => {
+                              field.onChange(e.target.files[0]);
+                              setFileUrl(URL.createObjectURL(e.target.files[0]));
+                              setFileSize(e.target.files[0]?.size);
+                            }}
+                            className={`form-control ${errors.image?.type ? "is-invalid" : ""}`}
+                            aria-invalid={errors.image ? "true" : "false"}
+                          />
+                        )}
+                      />
+                      <button type="button" className="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#newsImageModal">
+                        <i className="bi bi-zoom-in"></i>
+                      </button>
+                    </div>
+                    <div className="modal fade" id="newsImageModal" tabIndex="-1" aria-labelledby="newsImageModalLabel" aria-hidden="true">
+                      <div className="modal-dialog">
+                        <div className="modal-content">
+                          <div className="modal-header">
+                            <h5 className="modal-title" id="newsImageModalLabel">
+                              Imagem da Notícia
+                            </h5>
+                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                          </div>
+                          <div className="modal-body">
+                            <img src={fileUrl || getValues("imageOld")} className="img-fluid rounded mx-auto d-block my-2" alt="" />
+                          </div>
+                          <div className="modal-footer">
+                            <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">
+                              Close
+                            </button>
+                            <button type="button" className="btn btn-primary">
+                              Save changes
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="d-flex justify-content-between">
+                      <small id="userHelp" className="form-text text-muted">
+                        A resolução indicada é de 1920x1080.
+                      </small>
+                      <small id="userHelp" className="form-text text-muted">
+                        Tamanho: {/* Math.round(watch("image").size / 1000) ||  */ 0}/2000KB
+                      </small>
+                    </div>
+                  </div>
+                </div>
+                <label htmlFor="title" className="form-label">
+                  Sub-Título da Notícia
+                </label>
 
-      <div
-        className="modal modal-lg fade"
-        id={`modal-news-${news.news_id}`}
-        tabIndex="-1"
-        aria-labelledby={`#modal-label-${news.news_id}`}
-        aria-hidden="true"
-      >
-        <div className="modal-dialog">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h5 className="modal-title" id={`#modal-label-${news.news_id}`}>
-                Editar Notícia - {news.news_title}
-              </h5>
-              <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div className="modal-body">
-              <label htmlFor="title">Título da Notícia</label>
-              <input className="form-control mb-3" type="text" name="title" id="title" value={title} />
-              <label htmlFor="subtitle">Subtítulo da Notícia</label>
-              <input className="form-control mb-3" type="text" name="subtitle" id="subtitle" value={subtitle} />
-              <div className="d-flex flex-column">
-                <label htmlFor="image">Imagem da Notícia</label>
-                <img src={base64Image || news.news_image_link} alt="" className="img-fluid rounded mb-2" />
-                <input className="form-control " type="file" accept="image/*" name="title" id="title" />
-                <small id="userHelp" className="form-text text-muted mb-3">
-                  O tamanho indicado é de 1920x1080.
-                </small>
-              </div>
-              <label htmlFor="text">Corpo Da Notícia</label>
-            </div>
-            <div className="modal-footer justify-content-between">
-              <div>
-                <button type="button" className="btn btn-danger" data-bs-dismiss="modal" onClick={() => deleteNews()}>
-                  Remover Notícia
-                </button>
-              </div>
-              <div>
-                <button type="button" className="btn btn-secondary me-2" data-bs-dismiss="modal">
-                  Cancelar
-                </button>
-                <button type="button" className="btn btn-success" data-bs-dismiss="modal" onClick={() => submitForm()}>
-                  Salvar Mudanças
-                </button>
-              </div>
+                <input
+                  type="text"
+                  id="subtitle"
+                  name="subtitle"
+                  className={`form-control ${errors.subtitle?.type ? "is-invalid" : ""}`}
+                  {...register("subtitle", { required: true, pattern: /.{2,}/ })}
+                />
+
+                <label htmlFor="news-text" className="mt-3">
+                  Corpo da Notícia
+                </label>
+                <Controller
+                  name="body"
+                  control={control}
+                  defaultValue={news?.news_text}
+                  rules={{
+                    required: true,
+                  }}
+                  render={({ field: { onChange, value } }) => (
+                    <Fragment>
+                      <QuillEditor id="body" name="body" onChange={onChange} defaultValue={value} aria-invalid={errors.body ? "true" : "false"} />
+                      {errors.body?.type && (
+                        <div className="alert alert-danger mt-2" role="alert">
+                          A notícia não pode estar em branco!
+                        </div>
+                      )}
+                    </Fragment>
+                  )}
+                />
+                <div className="d-flex mt-3 justify-content-between">
+                  <div>
+                    <button
+                      className="btn btn-danger"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        deleteNews();
+                      }}
+                    >
+                      Remover Notícia
+                    </button>
+                  </div>
+                  <div>
+                    <button className="btn btn-success" onClick={handleSubmit(onSubmit)}>
+                      Atualizar
+                    </button>
+                  </div>
+                </div>
+              </form>
             </div>
           </div>
         </div>

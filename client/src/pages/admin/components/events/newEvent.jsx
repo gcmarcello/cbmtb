@@ -82,7 +82,13 @@ const NewEvent = () => {
         <div className="px-lg-5 py-lg-5">
           <div className="p-3 bg-white rounded rounded-2 shadow">
             <div className="container-fluid px-3 mt-3 mb-5">
-              <h2>Criar Evento</h2>
+              <div className="d-flex justify-content-between">
+                <h2 className="mb-0">Criar Evento</h2>
+                <a href="/painel/eventos/" className="btn btn-secondary">
+                  Voltar
+                </a>
+              </div>
+
               <hr />
               <form onSubmit={handleSubmit(onSubmit)} className="needs-validation" noValidate>
                 <div className="row my-3">

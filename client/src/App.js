@@ -3,8 +3,17 @@ import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-// React Components
-// eslint-disable-next-line
+/* React Components */
+
+// Events
+import ListEvents from "./pages/admin/components/events/listEvents";
+import NewEvent from "./pages/admin/components/events/newEvent";
+import EditEventPanel from "./pages/admin/components/events/editEventPanel";
+// News
+import ListNews from "./pages/admin/components/news/listNews";
+import NewNews from "./pages/admin/components/news/newNews";
+import EditNews from "./pages/admin/components/news/editNews";
+
 import UserNavigation from "./utils/userNavigation";
 import UserPanel from "./pages/user/user";
 import Payments from "./pages/payment/payments";
@@ -26,9 +35,9 @@ import Ouvidoria from "./pages/forms/ouvidoria";
 import ConfirmationPage from "./pages/confirmation/confirmation";
 import PrivateRoute from "./components/auth/auth";
 import AdminNavigation from "./pages/admin/components/adminNavigation";
-import EditEventPanel from "./pages/admin/components/events/editEventPanel";
-import ListEvents from "./pages/admin/components/events/listEvents";
-import NewEvent from "./pages/admin/components/events/newEvent";
+import ListDocuments from "./pages/admin/components/documents/listDocuments";
+
+import NewDocument from "./pages/admin/components/documents/createDocuments";
 
 function App() {
   const [userAuthentication, setUserAuthentication] = useState(false);
@@ -131,6 +140,42 @@ function App() {
             element={
               <PrivateRoute {...loginProps}>
                 <EditEventPanel />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            exact
+            path="/painel/noticias"
+            element={
+              <PrivateRoute {...loginProps}>
+                <ListNews />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            exact
+            path="/painel/noticias/nova"
+            element={
+              <PrivateRoute {...loginProps}>
+                <NewNews />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            exact
+            path="/painel/noticias/:id"
+            element={
+              <PrivateRoute {...loginProps}>
+                <EditNews />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            exact
+            path="/painel/documentos/"
+            element={
+              <PrivateRoute {...loginProps}>
+                <NewDocument />
               </PrivateRoute>
             }
           />

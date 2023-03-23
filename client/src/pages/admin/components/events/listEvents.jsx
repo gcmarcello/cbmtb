@@ -27,10 +27,10 @@ const ListEvents = ({ eventChange, setEventChange }) => {
       Header: "Opções",
       Cell: ({ value }) => (
         <div>
-          <a href={`eventos/${value}/`} className="btn btn-dark mx-1">
+          <a href={`/painel/eventos/${value}/`} className="btn btn-dark mx-1">
             <i className="bi bi-gear-fill"></i>
           </a>
-          <a href={`eventos/${value}/inscritos`} className="btn btn-primary mx-1">
+          <a href={`/painel/eventos/${value}/inscritos`} className="btn btn-primary mx-1">
             <i className="bi bi-people-fill"></i>
           </a>
         </div>
@@ -86,10 +86,12 @@ const ListEvents = ({ eventChange, setEventChange }) => {
       <div className="bg-light">
         <div className="px-lg-5 py-lg-5">
           <div className="p-3 bg-white rounded rounded-2 shadow">
-            <a href="eventos/novo" target="_blank" rel="noopener noreferrer" className="btn btn-success">
-              Novo Evento
-            </a>
             <Table data={eventsList} columns={columns} />
+            <div className="d-flex justify-content-end">
+              <a href="eventos/novo" className="btn btn-success">
+                Novo Evento
+              </a>
+            </div>
           </div>
         </div>
       </div>

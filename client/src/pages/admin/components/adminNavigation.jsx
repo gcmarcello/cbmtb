@@ -22,7 +22,7 @@ const AdminNavigation = () => {
           <div className="collapse navbar-collapse" id="navbarScroll">
             <ul className="navbar-nav me-auto my-2 my-lg-0" style={{ "--bs-scroll-height": "100px" }}>
               <li className="nav-item">
-                <a className="nav-link active fw-bolder" aria-current="page" href="/dashboard">
+                <a className="nav-link active fw-bolder" aria-current="page" href="/painel">
                   Início
                 </a>
               </li>
@@ -63,17 +63,13 @@ const AdminNavigation = () => {
                 </a>
                 <ul className="dropdown-menu" aria-labelledby="navbarScrollingDropdown">
                   <li>
-                    <button className="dropdown-item">Listar Notícias</button>
+                    <a href="/painel/noticias" className="dropdown-item">
+                      Listar Notícias
+                    </a>
                   </li>
                   <li>
-                    <button className="dropdown-item">Nova Notícia</button>
-                  </li>
-                  <li>
-                    <hr className="dropdown-divider" />
-                  </li>
-                  <li>
-                    <a className="dropdown-item" href="/">
-                      Something else here
+                    <a href="/painel/noticias/nova" className="dropdown-item">
+                      Nova Notícia
                     </a>
                   </li>
                 </ul>

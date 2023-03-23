@@ -1,63 +1,41 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { Fragment } from "react";
 import { toast } from "react-toastify";
 
-import ImagePreview from "../imagePreview";
+import QuillEditor from "../../../../utils/quillSettings";
+import { useForm, Controller } from "react-hook-form";
 
 const NewNews = ({ saveCurrentPanel }) => {
-  const [news, setNews] = useState({
-    title: "",
-    subtitle: "",
-    text: "",
-  });
-  const { title, subtitle, text } = news;
-  const fileInput = useRef(null);
+  const {
+    getValues,
+    control,
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm({ mode: "onChange" });
 
-  // Image Upload States
-  const [selectedImage, setSelectedImage] = useState();
-  const [isImageSelected, setIsImageSelected] = useState(false);
-  const [imagePreview, setImagePreview] = useState(null);
-  const [base64Image, setBase64Image] = useState(null);
-  const [base64ImageSize, setBase64ImageSize] = useState(null);
-
-  const handleNewsChange = (e, quill) => {
-    if (!quill) {
-      setNews({ ...news, [e.target.name]: e.target.value });
-    } else {
-      setNews({ ...news, text: e });
-    }
-  };
-
-  const handleFormReset = (e) => {
-    e.preventDefault();
-    setNews({ title: "", subtitle: "", text: "<p><br></p>" });
-    fileInput.current.value = "";
-
-    setSelectedImage();
-    setIsImageSelected(false);
-    setImagePreview(null);
-    setBase64Image(null);
-  };
-
-  const handleFormSubmit = async (e) => {
-    e.preventDefault();
+  const onSubmit = async (data) => {
+    console.log(data);
     try {
-      if (parseFloat(base64ImageSize) > 2000) {
-        return toast.error("Imagem excede o tamanho máximo de 2000KB (2MB).", { theme: "colored" });
-      }
       const myHeaders = new Headers();
-      myHeaders.append("Content-Type", "application/json");
       myHeaders.append("token", localStorage.token);
 
-      const body = { title, subtitle, text, base64Image };
+      const formData = new FormData();
+      const formValues = getValues();
+
+      Object.keys(formValues).forEach((key) => {
+        formData.append(key, formValues[key]);
+      });
+
+      console.log(formData);
 
       const response = await fetch(`/api/news/`, {
         method: "POST",
         headers: myHeaders,
-        body: JSON.stringify(body),
+        body: formData,
       });
 
       const parseResponse = await response.json();
-      saveCurrentPanel("ListNews");
       toast[parseResponse.type](parseResponse.message, { theme: "colored" });
     } catch (error) {
       console.log(error);
@@ -65,73 +43,115 @@ const NewNews = ({ saveCurrentPanel }) => {
   };
 
   return (
-    <div className="container-fluid mt-3">
-      <h1>Nova Notícia</h1>
-      <form>
-        <div className="row">
-          <div className="col-12 col-lg-6">
-            <label htmlFor="news-title" className="mt-3">
-              Título da Notícia
-            </label>
-            <input type="text" id="news-title" name="title" className="form-control" value={title} onChange={(e) => handleNewsChange(e)} />
-          </div>
-          <div className="col-12 col-lg-6">
-            <label htmlFor="selectedImage" className="mt-3">
-              Imagem da Notícia
-            </label>
-            <div className="input-group">
-              <input className="form-control" type="file" accept="image/*" name="selectedImage" id="selectedImage" ref={fileInput} />
-              <button
-                type="button"
-                className="btn btn-outline-secondary"
-                data-bs-toggle="modal"
-                data-bs-target="#eventImageModal"
-                disabled={!isImageSelected}
-              >
-                <i className="bi bi-zoom-in"></i>
-              </button>
-            </div>
-            <div className="d-flex justify-content-between">
-              <small id="userHelp" className="form-text text-muted">
-                A resolução indicada é de 1920x1080.
-              </small>
-              <small id="userHelp" className="form-text text-muted">
-                Tamanho: {base64ImageSize || 0}/2000KB
-              </small>
-            </div>
+    <div className="bg-light">
+      <div className="px-lg-5 py-lg-5">
+        <div className="p-3 bg-white rounded rounded-2 shadow">
+          <div className="container-fluid px-3 mt-3 mb-5">
+            <h2 className="mb-0">Nova Notícia</h2>
+            <hr />
+            <form onSubmit={handleSubmit(onSubmit)}>
+              <div className="row">
+                <div className="col-12 col-lg-6">
+                  <label htmlFor="news-title" className="form-label">
+                    Título da Notícia
+                  </label>
+                  <input
+                    type="text"
+                    id="news-title"
+                    name="title"
+                    className={`form-control ${errors.title?.type ? "is-invalid" : getValues("name") ? "is-valid" : ""}`}
+                    {...register("title", { required: true, pattern: /.{2,}/ })}
+                  />
+                </div>
+                <div className="col-12 col-lg-6">
+                  <label htmlFor="selectedImage" className="form-label">
+                    Imagem da Notícia
+                  </label>
+                  <div className="input-group">
+                    <Controller
+                      name="image"
+                      control={control}
+                      defaultValue=""
+                      rules={{
+                        required: true,
+                      }}
+                      render={({ field }) => (
+                        <input
+                          id="image"
+                          accept="image/*"
+                          type="file"
+                          onChange={(e) => {
+                            field.onChange(e.target.files[0]);
+                          }}
+                          className={`form-control ${errors.image?.type ? "is-invalid" : ""}`}
+                          aria-invalid={errors.image ? "true" : "false"}
+                        />
+                      )}
+                    />
+                    <button type="button" className="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#newsImageModal">
+                      <i className="bi bi-zoom-in"></i>
+                    </button>
+                  </div>
+                  <div className="d-flex justify-content-between">
+                    <small id="userHelp" className="form-text text-muted">
+                      A resolução indicada é de 1920x1080.
+                    </small>
+                    <small id="userHelp" className="form-text text-muted">
+                      Tamanho: {/* Math.round(watch("image").size / 1000) ||  */ 0}/2000KB
+                    </small>
+                  </div>
+                </div>
+              </div>
+              <label htmlFor="title" className="form-label">
+                Sub-Título da Notícia
+              </label>
+
+              <input
+                type="text"
+                id="subtitle"
+                name="subtitle"
+                className={`form-control ${errors.subtitle?.type ? "is-invalid" : ""}`}
+                {...register("subtitle", { required: true, pattern: /.{2,}/ })}
+              />
+
+              <label htmlFor="news-text" className="mt-3">
+                Corpo da Notícia
+              </label>
+              <Controller
+                name="body"
+                control={control}
+                defaultValue=""
+                rules={{
+                  required: true,
+                }}
+                render={({ field: { onChange } }) => (
+                  <Fragment>
+                    <QuillEditor id="body" name="body" onChange={onChange} aria-invalid={errors.body ? "true" : "false"} />
+                    {errors.body?.type && (
+                      <div class="alert alert-danger mt-2" role="alert">
+                        A notícia não pode estar em branco!
+                      </div>
+                    )}
+                  </Fragment>
+                )}
+              />
+              <div className="d-flex mt-3 justify-content-end">
+                <button
+                  className="btn btn-secondary me-3"
+                  onClick={() => {
+                    reset();
+                  }}
+                >
+                  Limpar Formulário
+                </button>
+                <button className="btn btn-success" onClick={(e) => {}}>
+                  Enviar
+                </button>
+              </div>
+            </form>
           </div>
         </div>
-        <label htmlFor="news-title" className="mt-3">
-          Sub-Título da Notícia
-        </label>
-
-        <input type="text" id="news-subtitle" name="subtitle" className="form-control" value={subtitle} onChange={(e) => handleNewsChange(e)} />
-
-        <ImagePreview isImageSelected={isImageSelected} imagePreview={imagePreview} modalId={"newsImageModalLabel"} />
-        <label htmlFor="news-text" className="mt-3">
-          Corpo da Notícia
-        </label>
-
-        <div className="d-flex mt-3 justify-content-end">
-          <button
-            className="btn btn-secondary me-3"
-            onClick={(e) => {
-              handleFormReset(e);
-            }}
-          >
-            Limpar Formulário
-          </button>
-          <button
-            className="btn btn-success"
-            onClick={(e) => {
-              handleFormSubmit(e);
-            }}
-            disabled={!(news.title && news.subtitle && selectedImage)}
-          >
-            Enviar
-          </button>
-        </div>
-      </form>
+      </div>
     </div>
   );
 };
