@@ -288,3 +288,9 @@ input[type="number"] {
     margin-left: 5vw;
   }
 }
+
+@media (max-width: 374px) {
+  .xxs {
+    display: none;
+  }
+}

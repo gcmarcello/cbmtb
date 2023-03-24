@@ -16,12 +16,12 @@ const ListDocuments = () => {
       accessor: "document_title",
     },
     {
-      Header: "Ano",
-      accessor: "document_year",
+      Header: "Descrição",
+      accessor: "document_description",
     },
     {
-      Header: "Geral",
-      accessor: "document_general",
+      Header: "Ano",
+      accessor: "document_year",
     },
   ];
 
@@ -72,19 +72,20 @@ const ListDocuments = () => {
     <div className="bg-light">
       <div className="px-lg-5 py-lg-5">
         <div className="p-3 bg-white rounded rounded-2 shadow">
-          <h1>Lista de Documentos</h1>
-          <hr />
+          <div className="d-flex justify-content-between align-items-center mb-4">
+            <h1 className="">Documentos</h1>
+            <a href="documentos/novo" className="btn btn-success align-center">
+              Novo <span className="xxs">Documento</span>
+            </a>
+          </div>
+
           <h3>Documentos Destaque</h3>
+          <hr />
           <Table data={documentList.filter((document) => document.document_general)} columns={columns} />
 
           <h3 className="mt-4">Documentos Gerais</h3>
           <hr />
           <Table data={documentList} columns={columns} />
-          <div className="d-flex justify-content-end">
-            <a href="documentos/novo" className="btn btn-success">
-              Novo Documento
-            </a>
-          </div>
         </div>
       </div>
     </div>

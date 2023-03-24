@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import { useTable, useGlobalFilter, usePagination } from "react-table";
+import { useTable, useGlobalFilter, usePagination, useSortBy } from "react-table";
 
 const GlobalFilter = ({ globalFilter, setGlobalFilter }) => {
   return (
@@ -71,7 +71,7 @@ const Pagination = (props) => {
   );
 };
 
-const Table = ({ data, columns }) => {
+const Table = ({ data, columns, customPageSize }) => {
   const memoData = useMemo(() => data, [data]);
   const memoColumns = useMemo(() => columns || Object.keys(data[0]).map((header) => ({ Header: header, accessor: header })), [columns, data]);
 
@@ -92,7 +92,12 @@ const Table = ({ data, columns }) => {
     previousPage,
     setPageSize,
     setGlobalFilter,
-  } = useTable({ columns: memoColumns, data: memoData, initialState: { pageIndex: 0, pageSize: 5 } }, useGlobalFilter, usePagination);
+  } = useTable(
+    { columns: memoColumns, data: memoData, initialState: { pageIndex: 0, pageSize: customPageSize || 10 } },
+    useGlobalFilter,
+    useSortBy,
+    usePagination
+  );
 
   const filteredRows = rows.filter((row) =>
     Object.values(row.values).some((cellValue) =>
@@ -126,6 +131,7 @@ const Table = ({ data, columns }) => {
               {headerGroup.headers.map((column) => (
                 <th
                   {...column.getHeaderProps([
+                    column.getSortByToggleProps(),
                     {
                       className: column.className, // pay attention to this
                       style: column.style,
@@ -133,7 +139,9 @@ const Table = ({ data, columns }) => {
                     },
                   ])}
                 >
-                  {column.render("Header")}
+                  <div className={`bg-${column.isSorted ? "danger" : "white"} rounded-2 p-1`}>
+                    {column.render("Header")} <span>{column.isSorted ? (column.isSortedDesc ? " 🔽" : " 🔼") : ""}</span>
+                  </div>
                 </th>
               ))}
             </tr>
