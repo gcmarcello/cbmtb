@@ -99,6 +99,8 @@ const ListNews = () => {
     <div className="bg-light">
       <div className="px-lg-5 py-lg-5">
         <div className="p-3 bg-white rounded rounded-2 shadow">
+          <h1>Lista de Notícias</h1>
+          <hr />
           <Table data={newsList} columns={columns} />
           <div className="d-flex justify-content-end">
             <a href="noticias/nova" className="btn btn-success">

@@ -45,6 +45,7 @@ const Pagination = (props) => {
         | Go to page:{" "}
         <input
           type="number"
+          className="form-control"
           defaultValue={props.pageIndex + 1}
           onChange={(e) => {
             const page = e.target.value ? Number(e.target.value) - 1 : 0;
@@ -55,6 +56,7 @@ const Pagination = (props) => {
       </span>{" "}
       <select
         value={props.pageSize}
+        className="form-select"
         onChange={(e) => {
           props.setPageSize(Number(e.target.value));
         }}
@@ -90,7 +92,7 @@ const Table = ({ data, columns }) => {
     previousPage,
     setPageSize,
     setGlobalFilter,
-  } = useTable({ columns: memoColumns, data: memoData, initialState: { pageIndex: 0 } }, useGlobalFilter, usePagination);
+  } = useTable({ columns: memoColumns, data: memoData, initialState: { pageIndex: 0, pageSize: 5 } }, useGlobalFilter, usePagination);
 
   const filteredRows = rows.filter((row) =>
     Object.values(row.values).some((cellValue) =>
@@ -117,12 +119,22 @@ const Table = ({ data, columns }) => {
           setPageSize={setPageSize}
         />
       </div>
-      <table className="table" {...getTableProps()}>
+      <table className="table table-striped" {...getTableProps()}>
         <thead>
           {headerGroups.map((headerGroup) => (
             <tr {...headerGroup.getHeaderGroupProps()}>
               {headerGroup.headers.map((column) => (
-                <th {...column.getHeaderProps()}>{column.render("Header")}</th>
+                <th
+                  {...column.getHeaderProps([
+                    {
+                      className: column.className, // pay attention to this
+                      style: column.style,
+                      // set here your other custom props
+                    },
+                  ])}
+                >
+                  {column.render("Header")}
+                </th>
               ))}
             </tr>
           ))}
@@ -134,7 +146,19 @@ const Table = ({ data, columns }) => {
               return (
                 <tr {...row.getRowProps()}>
                   {row.cells.map((cell) => {
-                    return <td {...cell.getCellProps()}>{cell.render("Cell")}</td>;
+                    return (
+                      <td
+                        {...cell.getCellProps([
+                          {
+                            className: cell.column.className, // pay attention to this
+                            style: cell.column.style,
+                            // set here your other custom props
+                          },
+                        ])}
+                      >
+                        {cell.render("Cell")}
+                      </td>
+                    );
                   })}
                 </tr>
               );

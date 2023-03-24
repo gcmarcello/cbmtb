@@ -109,8 +109,9 @@ async function toggleRegistrations(req, res) {
       id,
       req.userId,
     ]);
-    res.status(200).json(`${boolean ? "Inscrições abertas!" : "Inscrições fechadas."}`);
+    res.status(200).json({ message: boolean === "true" ? "Inscrições abertas!" : "Inscrições fechadas.", type: "success" });
   } catch (err) {
+    res.status(400).json({ message: `Erro ao abrir/fechar inscrições. ${err.message}`, type: "error" });
     console.log(err.message);
   }
 }
