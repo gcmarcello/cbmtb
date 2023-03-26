@@ -168,7 +168,11 @@ const EventPage = ({ userAuthentication, userName }) => {
                 </h2>
                 <div id="collapseOne" className="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
                   <div className="accordion-body">
-                    <div dangerouslySetInnerHTML={{ __html: event.event_description }}></div>
+                    {event.event_description ? (
+                      <div dangerouslySetInnerHTML={{ __html: event.event_description }}></div>
+                    ) : (
+                      <span>Nada por aqui.</span>
+                    )}
                   </div>
                 </div>
               </div>

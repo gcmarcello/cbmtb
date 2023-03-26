@@ -26,16 +26,22 @@ const DeleteDocuments = ({ document, setDocumentChange }) => {
 
   return (
     <Fragment>
-      <button type="button" className="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteDocumentModal">
+      <button type="button" className="btn btn-danger" data-bs-toggle="modal" data-bs-target={`#deleteDocumentModal-${document.document_id}`}>
         <i className="bi bi-x-circle"></i>
       </button>
 
-      <div className="modal fade" id="deleteDocumentModal" tabIndex="-1" aria-labelledby="deleteDocumentModalLabel" aria-hidden="true">
+      <div
+        className="modal fade"
+        id={`deleteDocumentModal-${document.document_id}`}
+        tabIndex="-1"
+        aria-labelledby={`deleteDocumentModalLabel-${document.document_id}`}
+        aria-hidden="true"
+      >
         <div className="modal-dialog">
           <div className="modal-content">
             <div className="modal-header">
-              <h1 className="modal-title fs-5" id="deleteDocumentModalLabel">
-                Remover {document.document_title}
+              <h1 className="modal-title fs-5" id={`deleteDocumentModalLabel-${document.document_id}`}>
+                Remover
               </h1>
               <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>

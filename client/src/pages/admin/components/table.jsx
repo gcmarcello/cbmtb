@@ -139,8 +139,19 @@ const Table = ({ data, columns, customPageSize }) => {
                     },
                   ])}
                 >
-                  <div className={`bg-${column.isSorted ? "danger" : "white"} rounded-2 p-1`}>
-                    {column.render("Header")} <span>{column.isSorted ? (column.isSortedDesc ? " 🔽" : " 🔼") : ""}</span>
+                  <div className={`rounded-2 p-1`}>
+                    {column.render("Header")}{" "}
+                    <span className="align-middle">
+                      {column.isSorted ? (
+                        column.isSortedDesc ? (
+                          <i className="bi bi-sort-up text-dark"></i>
+                        ) : (
+                          <i className="bi bi-sort-down text-dark"></i>
+                        )
+                      ) : (
+                        <i className="bi bi-filter-left text-tertiary"></i>
+                      )}
+                    </span>
                   </div>
                 </th>
               ))}

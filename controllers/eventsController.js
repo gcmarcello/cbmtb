@@ -43,9 +43,6 @@ async function readEventPage(req, res) {
 
 async function createEvent(req, res) {
   try {
-    console.log(req.body);
-    console.log(req.file);
-
     const { name, location, link, external, attendees, dateStart, dateEnd, registrationStart, registrationEnd, description, rules, details } =
       req.body;
 
@@ -155,10 +152,12 @@ async function updateEvent(req, res) {
       external,
     } = req.body;
 
+    console.log(link);
+
     const image = req.file ? await uploadFileToS3(req.file, "cbmtb", "event-main") : imageOld;
 
     const updateEvent = await pool.query(
-      `UPDATE events SET event_link = $1, event_owner_id = $2, event_name= $3, event_location = $4, event_image = $5, event_description = $6, event_rules = $7, event_details = $8, event_max_attendees = $9, event_external = $10, event_date_start = $11, event_date_end = $12, event_registrations_start = $13, event_registrations_end = $14`,
+      `UPDATE events SET event_link = $1, event_owner_id = $2, event_name= $3, event_location = $4, event_image = $5, event_description = $6, event_rules = $7, event_details = $8, event_max_attendees = $9, event_external = $10, event_date_start = $11, event_date_end = $12, event_registrations_start = $13, event_registrations_end = $14 WHERE event_id = $15`,
       [
         link,
         req.userId,
@@ -174,6 +173,7 @@ async function updateEvent(req, res) {
         dateEnd,
         registrationStart,
         registrationEnd,
+        id,
       ]
     );
 

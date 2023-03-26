@@ -36,7 +36,6 @@ import ConfirmationPage from "./pages/confirmation/confirmation";
 import PrivateRoute from "./components/auth/auth";
 import AdminNavigation from "./pages/admin/components/adminNavigation";
 import ListDocuments from "./pages/admin/components/documents/listDocuments";
-
 import NewDocument from "./pages/admin/components/documents/createDocuments";
 
 function App() {
@@ -176,6 +175,15 @@ function App() {
             element={
               <PrivateRoute {...loginProps}>
                 <ListDocuments />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            exact
+            path="/painel/documentos/novo"
+            element={
+              <PrivateRoute {...loginProps}>
+                <NewDocument />
               </PrivateRoute>
             }
           />

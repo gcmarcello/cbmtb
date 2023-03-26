@@ -4,6 +4,9 @@ const adminAuthorization = require("../middlewares/authorization");
 
 const documentsController = require("../controllers/documentsController");
 
+const multer = require("multer");
+var upload = multer({ dest: "uploads/" });
+
 // Read Document
 router.get("/:id", documentsController.read_document);
 
@@ -11,7 +14,7 @@ router.get("/:id", documentsController.read_document);
 router.get("/", documentsController.list_documents);
 
 // Create Document
-router.post("/", adminAuthorization, documentsController.create_document);
+router.post("/", [adminAuthorization, upload.single("file")], documentsController.create_document);
 
 // Delete Document
 router.delete("/:id", adminAuthorization, documentsController.delete_document);

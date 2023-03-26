@@ -23,6 +23,15 @@ const ListDocuments = () => {
       Header: "Ano",
       accessor: "document_year",
     },
+    {
+      Header: "Remover",
+      accessor: "document_id",
+      Cell: ({ row }) => (
+        <div>
+          <DeleteDocuments document={row.original} setDocumentChange={setDocumentChange} />
+        </div>
+      ),
+    },
   ];
 
   const fetchDocuments = async () => {
