@@ -130,15 +130,16 @@ const CreateDocuments = () => {
                     </div>
                     <div className="col-12 col-lg-6">
                       <label htmlFor="general"> </label>
-                      <div className="form-check form-switch mt-1">
+                      <div className="form-check form-switch d-flex">
                         <input
                           id="general"
                           type={"checkbox"}
                           className={`form-check-input`}
+                          style={{ height: "1.5rem", width: "calc(2rem + 0.75rem)", borderRadius: "3rem" }}
                           {...register("general")}
                           aria-invalid={errors.general ? "true" : "false"}
                         />
-                        <label className="form-check-label" htmlFor="flexSwitchCheckDefault">
+                        <label className="form-check-label align-middle my-1 ms-2" htmlFor="flexSwitchCheckDefault">
                           Documento Destaque?
                         </label>
                       </div>
