@@ -77,7 +77,7 @@ CREATE TABLE registrations(
     payment_id UUID NOT NULL,
     registration_shirt VARCHAR(255),
     registration_status VARCHAR(255) NOT NULL,
-    registration_date TIMESTAMP NOT NULL,
+    registration_date TIMESTAMP WITH TIME ZONE NOT NULL,
     PRIMARY KEY(registration_id),
     FOREIGN KEY (category_id) REFERENCES event_categories(category_id),
     FOREIGN KEY (payment_id) REFERENCES payments(payment_id),

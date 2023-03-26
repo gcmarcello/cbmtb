@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 
-import CreateDocuments from "./createDocuments";
 import DeleteDocuments from "./deleteDocuments";
 import Table from "../table";
-import LoadingScreen from "../../../../utils/loadingScreen";
 
 const ListDocuments = () => {
   const [documentList, setDocumentList] = useState([]);

@@ -17,7 +17,7 @@ const GlobalFilter = ({ globalFilter, setGlobalFilter }) => {
 const Pagination = (props) => {
   return (
     <div className="pagination-container ms-2 d-flex">
-      <ul className="pagination">
+      <ul className="pagination mb-0">
         <li className={`page-item ${!props.canPreviousPage && `disabled`}`}>
           <button className={`page-link`} onClick={() => props.previousPage()} disabled={!props.canPreviousPage}>
             Anterior
@@ -71,7 +71,7 @@ const Pagination = (props) => {
   );
 };
 
-const Table = ({ data, columns, customPageSize }) => {
+const Table = ({ data, columns, customPageSize, generateXlsx }) => {
   const memoData = useMemo(() => data, [data]);
   const memoColumns = useMemo(() => columns || Object.keys(data[0]).map((header) => ({ Header: header, accessor: header })), [columns, data]);
 
@@ -109,7 +109,7 @@ const Table = ({ data, columns, customPageSize }) => {
 
   return (
     <div className="table-responsive">
-      <div className="d-flex my-2 mx-1">
+      <div className="d-flex my-2 mx-1 align-items-center">
         <GlobalFilter globalFilter={globalFilter} setGlobalFilter={setGlobalFilter} />
         <Pagination
           canPreviousPage={canPreviousPage}
@@ -123,6 +123,19 @@ const Table = ({ data, columns, customPageSize }) => {
           previousPage={previousPage}
           setPageSize={setPageSize}
         />
+        {generateXlsx && (
+          <div className="flex-fill text-end">
+            <button
+              className="btn btn-outline-success mt-auto mx-auto"
+              onClick={(e) => {
+                e.preventDefault();
+                generateXlsx();
+              }}
+            >
+              <i className="bi bi-filetype-xlsx fs-3"></i>
+            </button>
+          </div>
+        )}
       </div>
       <table className="table table-striped" {...getTableProps()}>
         <thead>
