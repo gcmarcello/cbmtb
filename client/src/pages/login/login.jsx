@@ -44,20 +44,7 @@ const Login = (props) => {
         <div className="col-12 text-center">
           <h1>Entrar</h1>
         </div>
-        <div className="row justify-content-center">
-          <div className="col-11">
-            {errors.root?.serverError.type && (
-              <div className="alert alert-danger mt-2" role="alert">
-                <i className="bi bi-exclamation-triangle-fill me-2"></i> {errors.root.serverError.message}
-              </div>
-            )}
-            {(errors.password || errors.cpf) && (
-              <div className="alert alert-danger mt-2" role="alert">
-                <i className="bi bi-exclamation-triangle-fill me-2"></i> Preencha corretamente os campos abaixo.
-              </div>
-            )}
-          </div>
-        </div>
+        <div className="row justify-content-center"></div>
         <div className="row my-3 d-flex justify-content-center">
           <div className="col-10 col-lg-5">
             <form onSubmit={handleSubmit(onSubmit)}>
@@ -108,6 +95,16 @@ const Login = (props) => {
                 Login
               </button>
             </form>
+            {errors.root?.serverError.type && (
+              <div className="alert alert-danger mt-3" role="alert">
+                <i className="bi bi-exclamation-triangle-fill me-2"></i> {errors.root.serverError.message}
+              </div>
+            )}
+            {(errors.password || errors.cpf) && (
+              <div className="alert alert-danger mt-3" role="alert">
+                <i className="bi bi-exclamation-triangle-fill me-2"></i> Preencha corretamente os campos abaixo.
+              </div>
+            )}
           </div>
           <div className="col-1 d-none d-lg-flex justify-content-center">
             <div className="vr h-100"></div>
