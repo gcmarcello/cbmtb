@@ -82,6 +82,7 @@ const Documents = () => {
             </h2>
             <div id="collapseOne" className="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
               <div className="accordion-body">
+                {!documents.filter((document) => document.document_general === true).length && "Nada por aqui."}
                 <div className="list-group">
                   {documents
                     .filter((document) => document.document_general === true)
@@ -130,6 +131,7 @@ const Documents = () => {
                   data-bs-parent={`#accordion-years`}
                 >
                   <div className="accordion-body">
+                    {!documents.filter((document) => document.document_year === year && !document.document_general) && "Nada por aqui."}
                     <div className="list-group">
                       {documents
                         .filter((document) => document.document_year === year && !document.document_general)
