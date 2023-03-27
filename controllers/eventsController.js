@@ -4,6 +4,10 @@ const { uploadFileToS3 } = require("../apis/awsS3");
 const fs = require("fs");
 const path = require("path");
 
+const dayjs = require("dayjs");
+const isBetween = require("dayjs/plugin/isBetween");
+dayjs.extend(isBetween);
+
 async function listEventsAdmin(req, res) {
   try {
     const listOfEvents = await pool.query(
@@ -18,7 +22,14 @@ async function listEventsAdmin(req, res) {
 async function listEventsPublic(req, res) {
   try {
     const listOfEvents = await pool.query("SELECT * FROM events WHERE event_status = $1 ORDER BY event_date_start ASC", [true]);
-    res.json(listOfEvents.rows);
+
+    const checkForAvailability = (registrationStartDate, registrationEndDate) => {
+      const registrationStarts = dayjs(registrationStartDate);
+      const registrationEnds = dayjs(registrationEndDate);
+      return dayjs().isBetween(registrationStarts, registrationEnds, null, []);
+    };
+
+    res.json(listOfEvents.rows.filter((event) => checkForAvailability(event.event_registrations_start, event.event_registrations_end)));
   } catch (err) {
     console.log(err.message);
   }
