@@ -13,7 +13,7 @@ const ListEvents = () => {
     },
     {
       accessor: "event_status",
-      Header: "Inscrições",
+      Header: "Manual",
       Cell: ({ value, row }) => (
         <Fragment>
           {eventChange ? (

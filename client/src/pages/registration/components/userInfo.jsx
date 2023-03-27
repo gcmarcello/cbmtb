@@ -2,6 +2,7 @@ import { React, Fragment } from "react";
 import InputMask from "react-input-mask";
 
 const UserInfo = ({ user, event, categories, registrationInfo, setRegistrationInfo }) => {
+  console.log(user);
   return (
     <Fragment>
       <form className="mb-3">
@@ -37,8 +38,8 @@ const UserInfo = ({ user, event, categories, registrationInfo, setRegistrationIn
                     <option value="" disabled={true}>
                       Selecione
                     </option>
-                    <option value={"masc"}>Masculino</option>
-                    <option value={"fem"}>Feminino</option>
+                    <option value={"Masculino"}>Masculino</option>
+                    <option value={"Feminino"}>Feminino</option>
                   </select>
                 </div>
                 <div className="col-12 col-lg-6">

@@ -5,6 +5,8 @@ const pool = require("../database");
 const authorization = require("../middlewares/authorization");
 const adminAuthorization = require("../middlewares/authorization");
 
+const Email = require("../utils/emails");
+
 const dayjs = require("dayjs");
 const isBetween = require("dayjs/plugin/isBetween");
 dayjs.extend(isBetween);
@@ -49,9 +51,26 @@ router.post("/:id", authorization, async (req, res) => {
     );
 
     const newRegistrations = await pool.query(
-      `INSERT INTO registrations (event_id,user_id,category_id,registration_shirt, payment_id, registration_status, registration_date) VALUES ($1,$2,$3,$4,$5,$6,$7)`,
+      `INSERT INTO registrations (event_id,user_id,category_id,registration_shirt, payment_id, registration_status, registration_date) VALUES ($1,$2,$3,$4,$5,$6,$7) RETURNING registration_id`,
       [id, userId, categoryId, registrationShirt, newPayment.rows[0].payment_id, paymentStatus, new Date()]
     );
+
+    if (paymentStatus === "completed") {
+      const userInfo = await pool.query("SELECT user_email, user_first_name FROM users WHERE user_id = $1", [userId]);
+      const eventInfo = await pool.query("SELECT * FROM events WHERE event_id = $1", [id]);
+      const categoryInfo = await pool.query("SELECT * FROM event_categories WHERE category_id = $1", [categoryId]);
+      const sgEmail = new Email([userInfo.rows[0].user_email]);
+      sgEmail.sendRegistrationEmail(
+        userInfo.rows[0].user_first_name,
+        eventInfo.rows[0].event_name,
+        eventInfo.rows[0].event_date_start,
+        eventInfo.rows[0].event_date_end,
+        eventInfo.rows[0].event_location,
+        categoryInfo.rows[0].category_name,
+        newRegistrations.rows[0].registration_id,
+        eventInfo.rows[0].event_link
+      );
+    }
 
     axios({
       method: "GET",
@@ -85,12 +104,25 @@ router.get("/:id/checkreg", authorization, async (req, res) => {
 
     const checkForRegistration = await pool.query("SELECT * FROM registrations WHERE event_id = $1 AND user_id = $2", [id, userId]);
     const checkForAvailability = await pool.query(
-      "SELECT event_registrations_start, event_registrations_end, event_status FROM events WHERE event_id = $1",
+      "SELECT event_registrations_start, event_registrations_end, event_status, event_current_attendees, event_max_attendees FROM events WHERE event_id = $1",
       [id]
     );
+    const checkForUser = await pool.query("SELECT * from users WHERE user_id = $1", [userId]);
+    const userAge = dayjs().diff(checkForUser.rows[0].user_birth_date, "years");
+
     const registrationStarts = dayjs(checkForAvailability.rows[0].event_registrations_start);
     const registrationEnds = dayjs(checkForAvailability.rows[0].event_registrations_end);
+    const currentAttendees = checkForAvailability.rows[0].event_current_attendees;
+    const maxAttendees = checkForAvailability.rows[0].event_max_attendees;
     const periodVerification = dayjs().isBetween(registrationStarts, registrationEnds, null, []);
+
+    const listOfCategories = await pool.query(
+      "SELECT * FROM event_categories WHERE (event_id = $1) AND (category_minage <= $2) AND (category_maxage >= $2) AND (category_gender = $3 OR category_gender = 'unisex') ORDER BY category_maxage ASC",
+      [id, userAge, checkForUser.rows[0].user_gender]
+    );
+    if (!listOfCategories.rows[0]) {
+      return res.status(200).json({ message: "Esse evento não tem nenhuma categoria disponível para você.", type: "error" });
+    }
 
     // Checking if user is already registered
     if (checkForRegistration.rows[0]) {
@@ -100,6 +132,11 @@ router.get("/:id/checkreg", authorization, async (req, res) => {
     // Checking for manual registration status
     if (!checkForAvailability.rows[0].event_status) {
       return res.status(200).json({ message: "Inscrições Indisponíveis", type: "error" });
+    }
+
+    // Checking for number of registrations
+    if (currentAttendees >= maxAttendees) {
+      return res.status(200).json({ message: "Inscrições Esgotadas", type: "error" });
     }
 
     // Checking for registration period

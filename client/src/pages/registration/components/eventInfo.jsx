@@ -25,7 +25,7 @@ const EventInfo = ({ user, event, categories, registrationInfo, setRegistrationI
               <div className="card-body">
                 <ul className="list-group">
                   <li className="list-group-item">
-                    <strong>Nome:</strong> {user.user_given_name} {user.user_last_name}
+                    <strong>Nome:</strong> {user.user_first_name} {user.user_last_name}
                   </li>
                   <li className="list-group-item">
                     <strong>Idade:</strong> {user.age}
