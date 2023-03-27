@@ -152,8 +152,6 @@ async function updateEvent(req, res) {
       external,
     } = req.body;
 
-    console.log(link);
-
     const image = req.file ? await uploadFileToS3(req.file, "cbmtb", "event-main") : imageOld;
 
     const updateEvent = await pool.query(
@@ -168,7 +166,7 @@ async function updateEvent(req, res) {
         rules,
         details,
         attendees,
-        external,
+        external === "undefined" ? null : external,
         dateStart,
         dateEnd,
         registrationStart,

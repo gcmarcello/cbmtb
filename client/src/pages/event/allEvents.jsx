@@ -5,6 +5,8 @@ import { parseDate } from "../../utils/functions/parseDate";
 
 import LoadingScreen from "../../utils/loadingScreen";
 
+const dayjs = require("dayjs");
+
 const AllEvents = () => {
   const [allEvents, setAllEvents] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -48,7 +50,7 @@ const AllEvents = () => {
                   <i className="bi bi-geo-alt-fill"></i> {event.event_location}
                 </small>
                 <small className="text-muted">
-                  <i className="bi bi-calendar-fill"></i> {event.formattedDate}
+                  <i className="bi bi-calendar-fill"></i> {dayjs(event.event_date_start).format("DD/MM/YYYY")}
                 </small>
               </div>
             </div>

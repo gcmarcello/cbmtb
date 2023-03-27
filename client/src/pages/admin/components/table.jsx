@@ -155,14 +155,18 @@ const Table = ({ data, columns, customPageSize, generateXlsx }) => {
                   <div className={`rounded-2 p-1`}>
                     {column.render("Header")}{" "}
                     <span className="align-middle">
-                      {column.isSorted ? (
-                        column.isSortedDesc ? (
-                          <i className="bi bi-sort-up text-dark"></i>
+                      {!column.disableSortBy ? (
+                        column.isSorted ? (
+                          column.isSortedDesc ? (
+                            <i className="bi bi-caret-down-fill"></i>
+                          ) : (
+                            <i className="bi bi-caret-up-fill"></i>
+                          )
                         ) : (
-                          <i className="bi bi-sort-down text-dark"></i>
+                          <i className="bi bi-filter"></i>
                         )
                       ) : (
-                        <i className="bi bi-filter-left text-tertiary"></i>
+                        ""
                       )}
                     </span>
                   </div>

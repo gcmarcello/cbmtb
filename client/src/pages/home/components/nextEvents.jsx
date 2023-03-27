@@ -1,5 +1,6 @@
 import React, { Fragment, useState } from "react";
 import { useEffect } from "react";
+const dayjs = require("dayjs");
 
 const NextEvents = () => {
   const [eventsList, setEventsList] = useState([]);
@@ -10,13 +11,6 @@ const NextEvents = () => {
         method: "GET",
       });
       const parseResponse = await response.json();
-      for (let i = 0; i < parseResponse.length; i++) {
-        let dateToParse = new Date(parseResponse[i].event_date);
-        let dateToParseDay = String(dateToParse.getDate()).padStart(2, 0);
-        let dateToParseMonth = String(dateToParse.getMonth() + 1).padStart(2, 0);
-        let dateToParseYear = String(dateToParse.getFullYear());
-        parseResponse[i].formattedDate = `${dateToParseDay}/${dateToParseMonth}/${dateToParseYear}`;
-      }
       setEventsList(parseResponse);
     } catch (err) {
       console.log(err);
@@ -41,7 +35,13 @@ const NextEvents = () => {
                 eventsList.map((event) => (
                   <div key={event.event_id} className="card main-page-card m-3 shadow-lg" style={{ width: "18rem" }}>
                     <a href={`/evento/${event.event_link}`} className="stretched-link">
-                      <img src={event.event_image} className="card-img-top" alt="..." height={169.73} width={286} />
+                      <img
+                        src={event.event_image}
+                        className="card-img-top"
+                        alt={`Thumbnail do Evento ${event.event_name}`}
+                        height={169.73}
+                        width={286}
+                      />
                     </a>
                     <hr className="my-0" />
                     <div className="card-body">
@@ -52,7 +52,7 @@ const NextEvents = () => {
                         <i className="bi bi-geo-alt-fill"></i> {event.event_location}
                       </small>
                       <small className="text-muted">
-                        <i className="bi bi-calendar-fill"></i> {event.formattedDate}
+                        <i className="bi bi-calendar-fill"></i> {dayjs(event.event_date_start).format("DD/MM/YYYY")}
                       </small>
                     </div>
                     {/* <a href={`/evento/${event.event_link}`} className="btn btn-primary">

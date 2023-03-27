@@ -5,7 +5,9 @@ const pool = require("../database");
 const authorization = require("../middlewares/authorization");
 const adminAuthorization = require("../middlewares/authorization");
 
-const fetch = require("node-fetch");
+const dayjs = require("dayjs");
+const isBetween = require("dayjs/plugin/isBetween");
+dayjs.extend(isBetween);
 
 // Read User Registrations (USER)
 router.get("/user/", authorization, async (req, res) => {
@@ -80,11 +82,32 @@ router.get("/:id/checkreg", authorization, async (req, res) => {
       const response = await pool.query("SELECT event_id FROM events WHERE event_link = $1", [id]);
       id = await response.rows[0].event_id;
     }
-    const checkForRegistration = await pool.query("SELECT * FROM registrations WHERE event_id = $1 AND user_id = $2", [id, userId]);
 
+    const checkForRegistration = await pool.query("SELECT * FROM registrations WHERE event_id = $1 AND user_id = $2", [id, userId]);
+    const checkForAvailability = await pool.query(
+      "SELECT event_registrations_start, event_registrations_end, event_status FROM events WHERE event_id = $1",
+      [id]
+    );
+    const registrationStarts = dayjs(checkForAvailability.rows[0].event_registrations_start);
+    const registrationEnds = dayjs(checkForAvailability.rows[0].event_registrations_end);
+    const periodVerification = dayjs().isBetween(registrationStarts, registrationEnds, null, []);
+
+    // Checking if user is already registered
     if (checkForRegistration.rows[0]) {
-      return res.status(200).json({ message: "Você já se inscreveu neste evento!", type: "error" });
+      return res.status(200).json({ message: "Inscrito!", type: "error" });
     }
+
+    // Checking for manual registration status
+    if (!checkForAvailability.rows[0].event_status) {
+      return res.status(200).json({ message: "Inscrições Indisponíveis", type: "error" });
+    }
+
+    // Checking for registration period
+    if (!periodVerification) {
+      return res.status(200).json({ message: "Inscrições Encerradas", type: "error" });
+    }
+
+    return res.status(200).json({ message: "Inscrições Disponíveis", type: "success" });
   } catch (err) {
     console.log(err.message);
   }

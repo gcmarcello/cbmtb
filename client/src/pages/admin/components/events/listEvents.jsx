@@ -60,6 +60,7 @@ const ListEvents = () => {
     {
       accessor: "event_id",
       Header: "Opções",
+      disableSortBy: true,
       Cell: ({ value }) => (
         <div>
           <a href={`/painel/eventos/${value}/`} className="btn btn-dark mx-1">
