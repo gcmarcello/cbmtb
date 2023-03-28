@@ -99,7 +99,7 @@ const EventPage = () => {
                   <div className="mt-3">
                     <h6 className="text-center">Compartilhe nas Redes Sociais!</h6>
                     <div className="input-group my-3">
-                      <input type="text" className="form-control" id="event-link" defaultValue={`cbmtb.com/evento/${event.event_link}`} disabled />
+                      <input type="text" className="form-control" id="event-link" defaultValue={`cbmtb.com.br/evento/${event.event_link}`} disabled />
                       <button
                         className="btn btn-light border"
                         type="button"
