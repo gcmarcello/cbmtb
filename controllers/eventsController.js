@@ -178,10 +178,10 @@ async function updateEvent(req, res) {
         details,
         attendees,
         external === "undefined" ? null : external,
-        dateStart,
-        dateEnd,
-        registrationStart,
-        registrationEnd,
+        dayjs(dateStart).format("YYYY-MM-DD HH:mm:ss.SSSSSSZ"),
+        dayjs(dateEnd).format("YYYY-MM-DD HH:mm:ss.SSSSSSZ"),
+        dayjs(registrationStart).format("YYYY-MM-DD HH:mm:ss.SSSSSSZ"),
+        dayjs(registrationEnd).format("YYYY-MM-DD HH:mm:ss.SSSSSSZ"),
         id,
       ]
     );
