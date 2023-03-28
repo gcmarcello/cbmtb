@@ -1,8 +1,7 @@
 import { React, Fragment } from "react";
 import InputMask from "react-input-mask";
 
-const UserInfo = ({ user, event, categories, registrationInfo, setRegistrationInfo }) => {
-  console.log(user);
+const UserInfo = ({ user, registrationInfo, setRegistrationInfo }) => {
   return (
     <Fragment>
       <form className="mb-3">
