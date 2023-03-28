@@ -5,7 +5,7 @@ import { Controller } from "react-hook-form";
 import { useEffect } from "react";
 
 const EditEvent = (props) => {
-  const [externalRegistration, setExternalRegistration] = useState(false);
+  const [externalRegistration, setExternalRegistration] = useState(props.event.event_external);
   const [fileSize, setFileSize] = useState(false);
   const [fileUrl, setFileUrl] = useState(null);
 
@@ -88,7 +88,13 @@ const EditEvent = (props) => {
               <div className="input-group">
                 <span className="input-group-text" id="basic-addon1">
                   <div className="form-check form-switch">
-                    <input className="form-check-input" type="checkbox" id="flexSwitchCheckDefault" onChange={(e) => onCheckboxToggle(e)} />
+                    <input
+                      className="form-check-input"
+                      type="checkbox"
+                      id="flexSwitchCheckDefault"
+                      checked={externalRegistration}
+                      onChange={(e) => onCheckboxToggle(e)}
+                    />
                     <label className="form-check-label" htmlFor="flexSwitchCheckDefault">
                       Habilitar
                     </label>
@@ -99,7 +105,7 @@ const EditEvent = (props) => {
                   name="external"
                   className={`form-control ${props.externalRegistration ? (props.errors.external?.type ? "is-invalid" : "") : ""}`}
                   {...props.register("external", {
-                    required: props.externalRegistration,
+                    required: externalRegistration,
                     pattern: /^(https?:\/\/)?[a-z0-9-]+(\.[a-z0-9-]+)*\.[a-z]+(\/[^\s]*)?$/,
                   })}
                   aria-invalid={props.errors.external ? "true" : "false"}

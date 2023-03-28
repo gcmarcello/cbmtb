@@ -11,7 +11,7 @@ import { useEffect } from "react";
 // Functions
 
 const NewEvent = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const {
     getValues,
     setValue,
@@ -55,9 +55,8 @@ const NewEvent = () => {
 
       const response = await fetch("/api/events/", requestOptions); // eslint-disable-next-line
       const parseResponse = await response.json();
-      navigate('/painel/noticias')
+      navigate("/painel/eventos");
       toast[parseResponse.type](parseResponse.message, { theme: "colored" });
-      
     } catch (error) {
       toast.error(error, { theme: "colored" });
     }
