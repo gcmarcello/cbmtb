@@ -1,6 +1,9 @@
 const pool = require("../database");
 const { uploadFileToS3, deleteFileFromS3, createPreSignedURL } = require("../apis/awsS3");
 
+const fs = require("fs");
+const path = require("path");
+
 async function read_document(req, res) {
   try {
     const { id } = req.params;
@@ -32,6 +35,15 @@ async function create_document(req, res) {
       "INSERT INTO documents (document_title, document_description, document_year, document_general, user_id, document_link) VALUES ($1,$2,$3,$4,$5,$6) RETURNING *",
       [title, description, +year, general, userId, s3File]
     );
+
+    if (req.file) {
+      const filePath = path.join(req.file.destination, req.file.filename);
+      fs.unlink(filePath, (err) => {
+        if (err) {
+          console.error(err);
+        }
+      });
+    }
 
     return res.status(200).json({ message: "Documento foi enviado com sucesso!", type: "success" });
   } catch (err) {

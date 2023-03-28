@@ -22,7 +22,7 @@ async function uploadFileToS3(file, bucketName, folder, ACL) {
     Bucket: bucketName,
     Key: `${process.env.NODE_ENV === "production" ? "" : "dev-folder/"}${folder}/${key}.${format.split("/").pop()}`,
     Body: buffer,
-    ContentType: format,
+    ContentType: format === "pdf" ? "application/pdf" : format,
     ACL: ACL || "public-read",
   };
 
