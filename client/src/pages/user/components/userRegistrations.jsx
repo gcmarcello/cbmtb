@@ -1,9 +1,9 @@
 import React from "react";
 import EventInfoModal from "./eventInfoModal";
-
 import PaymentModal from "./paymentModal";
 
 const UserRegistrations = ({ registrations }) => {
+  const dayjs = require("dayjs");
   return (
     <div className="row mt-2">
       <h3>Inscrições Confirmadas</h3>
@@ -30,7 +30,7 @@ const UserRegistrations = ({ registrations }) => {
                     <i className="bi bi-geo-alt-fill"></i> {registration.event_location}
                   </small>
                   <small className="text-muted">
-                    <i className="bi bi-calendar-fill"></i> {registration.formattedDate}
+                    <i className="bi bi-calendar-fill"></i> {dayjs(registration.event_date_start).format("DD/MM/YYYY")}
                   </small>
                 </div>
               </div>
@@ -64,7 +64,7 @@ const UserRegistrations = ({ registrations }) => {
                     <i className="bi bi-geo-alt-fill"></i> {registration.event_location}
                   </small>
                   <small className="text-muted">
-                    <i className="bi bi-calendar-fill"></i> {registration.formattedDate}
+                    <i className="bi bi-calendar-fill"></i> {dayjs(registration.event_date_start).format("DD/MM/YYYY")}
                   </small>
                 </div>
                 {/* <a href={`/evento/${event.event_link}`} className="btn btn-primary">

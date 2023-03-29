@@ -1,6 +1,7 @@
 import React, { Fragment } from "react";
 
 const EventInfoModal = ({ registration }) => {
+  const dayjs = require("dayjs");
   return (
     <Fragment>
       <button type="button" className="btn btn-warning form-control mt-2 h-50" data-bs-toggle="modal" data-bs-target="#InfoModal">
@@ -23,7 +24,8 @@ const EventInfoModal = ({ registration }) => {
                   <i className="bi bi-geo-alt-fill"></i> <span className="fw-bolder">Local:</span> {registration.event_location}
                 </li>
                 <li className="list-group-item">
-                  <i className="bi bi-calendar-week-fill"></i> <span className="fw-bolder">Data:</span> {registration.formattedDate}
+                  <i className="bi bi-calendar-week-fill"></i> <span className="fw-bolder">Data:</span>{" "}
+                  {dayjs(registration.event_date_start).format("DD/MM/YYYY")}
                 </li>
                 <li className="list-group-item">
                   <i className="bi bi-people-fill"></i> <span className="fw-bolder">Categoria:</span> {registration.category_name}

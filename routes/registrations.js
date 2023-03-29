@@ -40,19 +40,21 @@ router.post("/:id", authorization, async (req, res) => {
       return;
     }
 
-    const txid = crypto.randomUUID().replace(/-/g, "");
     const eventCost = await pool.query("SELECT category_price FROM event_categories WHERE category_id = $1", [categoryId]);
+    const paymentStatus = eventCost.rows[0].category_price > 0 ? "pending" : "completed";
 
-    const paymentStatus = eventCost.rows[0].event_price > 0 ? "pending" : "completed";
+    if (eventCost.rows[0].category_price) {
+      const txid = crypto.randomUUID().replace(/-/g, "");
 
-    const newPayment = await pool.query(
-      `INSERT INTO payments (payment_txid, payment_value, user_id, event_id, payment_status) VALUES ($1,$2,$3,$4,$5) RETURNING payment_id`,
-      [txid, eventCost.rows[0].category_price, userId, id, paymentStatus]
-    );
+      const newPayment = await pool.query(
+        `INSERT INTO payments (payment_txid, payment_value, user_id, event_id, payment_status) VALUES ($1,$2,$3,$4,$5) RETURNING payment_id`,
+        [txid, eventCost.rows[0].category_price, userId, id, paymentStatus]
+      );
+    }
 
     const newRegistrations = await pool.query(
       `INSERT INTO registrations (event_id,user_id,category_id,registration_shirt, payment_id, registration_status, registration_date) VALUES ($1,$2,$3,$4,$5,$6,$7) RETURNING registration_id`,
-      [id, userId, categoryId, registrationShirt, newPayment.rows[0].payment_id, paymentStatus, new Date()]
+      [id, userId, categoryId, registrationShirt, eventCost.rows[0].category_price ? newPayment?.rows[0].payment_id : null, paymentStatus, new Date()]
     );
 
     if (paymentStatus === "completed") {
@@ -72,7 +74,12 @@ router.post("/:id", authorization, async (req, res) => {
       );
     }
 
-    axios({
+    res.status(200).json({
+      message: "Inscrição realizada com sucesso.",
+      type: "success",
+    });
+
+    /* axios({
       method: "GET",
       headers: {
         token: `${req.header("token")}`,
@@ -85,7 +92,7 @@ router.post("/:id", authorization, async (req, res) => {
         type: "success",
         paymentId: eventCost.rows[0].event_price > 0 ? newPayment.rows[0].payment_id : 0,
       })
-    );
+    ); */
   } catch (err) {
     console.log(err.message);
   }
