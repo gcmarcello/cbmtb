@@ -92,7 +92,7 @@ const ListDocuments = () => {
 
           <h3 className="mt-4">Documentos Gerais</h3>
           <hr />
-          <Table data={documentList} columns={columns} />
+          <Table data={documentList.filter((document) => !document.document_general)} columns={columns} customPageSize={5} />
         </div>
       </div>
     </div>
