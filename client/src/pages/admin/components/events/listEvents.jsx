@@ -1,8 +1,10 @@
 import React, { Fragment, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import Table from "../table";
 
 const ListEvents = () => {
+  const navigate = useNavigate();
   const [eventChange, setEventChange] = useState(false);
   const [eventsList, setEventsList] = useState([]);
 
@@ -134,7 +136,7 @@ const ListEvents = () => {
             <Table data={eventsList} columns={columns} />
 
             <div className="d-flex justify-content-end">
-              <a href="eventos/novo" className="btn btn-success">
+              <a href="/painel/eventos/novo/" className="btn btn-success">
                 Novo Evento
               </a>
             </div>

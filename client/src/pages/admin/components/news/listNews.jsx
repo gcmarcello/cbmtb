@@ -103,7 +103,7 @@ const ListNews = () => {
           <hr />
           <Table data={newsList} columns={columns} />
           <div className="d-flex justify-content-end">
-            <a href="/noticias/nova" className="btn btn-success">
+            <a href="/painel/noticias/nova" className="btn btn-success">
               Nova Notícia
             </a>
           </div>
