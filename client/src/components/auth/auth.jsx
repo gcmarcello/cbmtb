@@ -23,7 +23,7 @@ const PrivateRoute = (props) => {
           userName={props.userName}
         />
       ) : (
-        <Navigate to="/login" />
+        <Navigate to="/login" replace />
       )}
     </Fragment>
   );
