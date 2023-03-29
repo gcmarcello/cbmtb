@@ -81,7 +81,7 @@ const ListDocuments = () => {
         <div className="p-3 bg-white rounded rounded-2 shadow">
           <div className="d-flex justify-content-between align-items-center mb-4">
             <h1 className="">Documentos</h1>
-            <a href="documentos/novo" className="btn btn-success align-center">
+            <a href="/documentos/novo" className="btn btn-success align-center">
               Novo <span className="xxs">Documento</span>
             </a>
           </div>
