@@ -67,6 +67,7 @@ const EventInfo = ({ user, event, categories, registrationInfo, setRegistrationI
                     <option value={"m"}>M</option>
                     <option value={"g"}>G</option>
                     <option value={"gg"}>GG</option>
+                    <option value={"exg"}>EXG</option>
                   </select>
                 </form>
               </div>
