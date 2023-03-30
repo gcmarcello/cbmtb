@@ -276,11 +276,18 @@ input[type="number"] {
   border-radius: 3rem;
 }
 
+.tox-notifications-container {
+  display: none;
+}
+
+.accordion-body img {
+  max-width: 100%;
+  height: auto;
+}
+
 @media (min-width: 992px) {
   .navbar .nav-item .dropdown-menu {
     display: none;
-  }
-  .navbar .nav-item:hover .nav-link {
   }
   .navbar .nav-item:hover .dropdown-menu {
     display: block;
