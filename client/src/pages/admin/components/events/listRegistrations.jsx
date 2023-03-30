@@ -84,7 +84,7 @@ const ListRegistrations = (props) => {
 
   return (
     <div className="p-lg-3">
-      <Table data={props.event.registrations} columns={columns} generateXlsx={generateXlsx} />
+      <Table data={props.event.registrations} columns={columns} generateXlsx={generateXlsx} customPageSize={50} />
     </div>
   );
 };
