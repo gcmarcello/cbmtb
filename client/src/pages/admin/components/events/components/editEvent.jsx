@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useRef } from "react";
+import React, { Fragment, useState } from "react";
 
 import { Controller } from "react-hook-form";
 import { useEffect } from "react";
@@ -8,7 +8,6 @@ import tinyConfig from "../../../config/tiny.config";
 import uploadImage from "../../../functions/uploadImage";
 
 const EditEvent = (props) => {
-  const editorRef = useRef(null);
   const [externalRegistration, setExternalRegistration] = useState(props.event.event_external);
   const [fileSize, setFileSize] = useState(false);
   const [fileUrl, setFileUrl] = useState(null);

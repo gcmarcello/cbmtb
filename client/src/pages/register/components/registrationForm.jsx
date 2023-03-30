@@ -389,9 +389,7 @@ const RegistrationForm = ({ onSubmit, reCaptchaComponent, getValues, setError, s
                 />
               </div>
               <div className="col-12 col-lg-6 d-flex justify-content-center justify-content-lg-end">
-                <input type="submit" className="btn btn-success my-2 px-5 btn-lg" disabled={!watch("reCaptcha")}>
-                  Enviar
-                </input>
+                <input type="submit" className="btn btn-success my-2 px-5 btn-lg" disabled={!watch("reCaptcha")} value={"Enviar"}></input>
               </div>
             </div>
           </div>
