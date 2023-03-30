@@ -285,6 +285,14 @@ input[type="number"] {
   height: auto;
 }
 
+.accordion-body table {
+  display: block;
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  -ms-overflow-style: -ms-autohiding-scrollbar;
+}
+
 @media (min-width: 992px) {
   .navbar .nav-item .dropdown-menu {
     display: none;
