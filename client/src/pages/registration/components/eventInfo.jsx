@@ -31,7 +31,7 @@ const EventInfo = ({ user, event, categories, registrationInfo, setRegistrationI
                     <strong>Idade:</strong> {user.age}
                   </li>
                   <li className="list-group-item">
-                    <strong>Sexo:</strong> {(user.user_gender = "masc" ? "Masculino" : "Feminino")}
+                    <strong>Sexo:</strong> {user.user_gender}
                   </li>
                 </ul>
                 <form className="my-3">
