@@ -1,10 +1,14 @@
-import React, { Fragment, useState } from "react";
-import QuillEditor from "../../../../../utils/quillSettings";
+import React, { Fragment, useState, useRef } from "react";
 
 import { Controller } from "react-hook-form";
 import { useEffect } from "react";
 
+import { Editor } from "@tinymce/tinymce-react";
+import tinyConfig from "../../../config/tiny.config";
+import uploadImage from "../../../functions/uploadImage";
+
 const EditEvent = (props) => {
+  const editorRef = useRef(null);
   const [externalRegistration, setExternalRegistration] = useState(props.event.event_external);
   const [fileSize, setFileSize] = useState(false);
   const [fileUrl, setFileUrl] = useState(null);
@@ -239,14 +243,27 @@ const EditEvent = (props) => {
                 rules={{
                   required: false,
                 }}
-                render={({ field: { onChange, value } }) => (
-                  <QuillEditor
-                    id="description"
-                    name="description"
-                    defaultValue={value}
-                    onChange={onChange}
-                    className={`${props.errors.description?.type ? "is-invalid" : ""}`}
-                    aria-invalid={props.errors.description ? "true" : "false"}
+                render={({ field: { onChange, value, ref } }) => (
+                  <Editor
+                    value={value}
+                    ref={ref}
+                    apiKey={process.env.REACT_APP_REACT_ENV === "production" ? process.env.REACT_APP_TINYMCE_KEY : ""}
+                    onEditorChange={(content) => onChange(content)}
+                    init={{
+                      language: "pt_BR",
+                      language_url: "/langs/pt_BR.js",
+                      height: 500,
+                      menubar: true,
+                      images_upload_handler: async (blobInfo) => {
+                        const url = await uploadImage(blobInfo.blob());
+                        if (typeof url !== "string") {
+                          throw new Error("Arquivo muito grande.");
+                        }
+                        return url;
+                      },
+                      plugins: tinyConfig.plugins,
+                      toolbar: tinyConfig.toolbar,
+                    }}
                   />
                 )}
               />
@@ -262,14 +279,27 @@ const EditEvent = (props) => {
                 rules={{
                   required: false,
                 }}
-                render={({ field: { onChange, value } }) => (
-                  <QuillEditor
-                    id="rules"
-                    name="rules"
-                    defaultValue={value}
-                    onChange={onChange}
-                    className={`${props.errors.rules?.type ? "is-invalid" : ""}`}
-                    aria-invalid={props.errors.rules ? "true" : "false"}
+                render={({ field: { onChange, value, ref } }) => (
+                  <Editor
+                    value={value}
+                    ref={ref}
+                    apiKey={process.env.REACT_APP_REACT_ENV === "production" ? process.env.REACT_APP_TINYMCE_KEY : ""}
+                    onEditorChange={(content) => onChange(content)}
+                    init={{
+                      language: "pt_BR",
+                      language_url: "/langs/pt_BR.js",
+                      height: 500,
+                      menubar: true,
+                      images_upload_handler: async (blobInfo) => {
+                        const url = await uploadImage(blobInfo.blob());
+                        if (typeof url !== "string") {
+                          throw new Error("Arquivo muito grande.");
+                        }
+                        return url;
+                      },
+                      plugins: tinyConfig.plugins,
+                      toolbar: tinyConfig.toolbar,
+                    }}
                   />
                 )}
               />
@@ -285,14 +315,27 @@ const EditEvent = (props) => {
                 rules={{
                   required: false,
                 }}
-                render={({ field: { onChange, value } }) => (
-                  <QuillEditor
-                    id="details"
-                    name="details"
-                    defaultValue={value}
-                    onChange={onChange}
-                    className={`${props.errors.details?.type ? "is-invalid" : ""}`}
-                    aria-invalid={props.errors.details ? "true" : "false"}
+                render={({ field: { onChange, value, ref } }) => (
+                  <Editor
+                    value={value}
+                    ref={ref}
+                    apiKey={process.env.REACT_APP_REACT_ENV === "production" ? process.env.REACT_APP_TINYMCE_KEY : ""}
+                    onEditorChange={(content) => onChange(content)}
+                    init={{
+                      language: "pt_BR",
+                      language_url: "/langs/pt_BR.js",
+                      height: 500,
+                      menubar: true,
+                      images_upload_handler: async (blobInfo) => {
+                        const url = await uploadImage(blobInfo.blob());
+                        if (typeof url !== "string") {
+                          throw new Error("Arquivo muito grande.");
+                        }
+                        return url;
+                      },
+                      plugins: tinyConfig.plugins,
+                      toolbar: tinyConfig.toolbar,
+                    }}
                   />
                 )}
               />

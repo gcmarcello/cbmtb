@@ -9,6 +9,9 @@ const s3 = new AWS.S3({
 });
 
 async function uploadFileToS3(file, bucketName, folder, ACL) {
+  if (!file) {
+    return { message: "No file found", type: "error" };
+  }
   const format = file.originalname.split(".").pop();
   const allowedFormats = ["jpeg", "jpg", "png", "gif", "webp", "pdf"];
   const buffer = fs.createReadStream(path.join("uploads/", file.filename));

@@ -38,6 +38,8 @@ const EditEventPanel = () => {
       const formData = new FormData();
       const formValues = getValues();
 
+      console.log(data);
+
       Object.keys(formValues).forEach((key) => {
         if (key !== "category") {
           formData.append(key, formValues[key]);

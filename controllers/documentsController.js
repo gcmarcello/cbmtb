@@ -11,7 +11,6 @@ async function read_document(req, res) {
     return res.status(200).json(link);
   } catch (err) {
     return res.status(400).json({ message: `Erro. ${err.message}`, type: "error" });
-    console.log(err.message);
   }
 }
 

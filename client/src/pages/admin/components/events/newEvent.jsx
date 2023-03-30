@@ -1,13 +1,12 @@
 // Modules
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import QuillEditor from "../../../../utils/quillSettings";
 import { toast } from "react-toastify";
 import { useForm, Controller, useFieldArray } from "react-hook-form";
+import { Editor } from "@tinymce/tinymce-react";
 
-// Components
-import { useEffect } from "react";
-
+import tinyConfig from "../../config/tiny.config";
+import uploadImage from "../../functions/uploadImage";
 // Functions
 
 const NewEvent = () => {
@@ -273,19 +272,33 @@ const NewEvent = () => {
                       rules={{
                         required: false,
                       }}
-                      render={({ field: { onChange } }) => (
-                        <QuillEditor
-                          id="description"
-                          name="description"
-                          onChange={onChange}
-                          className={`${errors.description?.type ? "is-invalid" : getValues("description") ? "is-valid" : ""}`}
-                          aria-invalid={errors.description ? "true" : "false"}
+                      render={({ field: { onChange, value, ref } }) => (
+                        <Editor
+                          value={value}
+                          ref={ref}
+                          apiKey={process.env.REACT_APP_REACT_ENV === "production" ? process.env.REACT_APP_TINYMCE_KEY : ""}
+                          onEditorChange={(content) => onChange(content)}
+                          init={{
+                            language: "pt_BR",
+                            language_url: "/langs/pt_BR.js",
+                            height: 500,
+                            menubar: true,
+                            images_upload_handler: async (blobInfo) => {
+                              const url = await uploadImage(blobInfo.blob());
+                              if (typeof url !== "string") {
+                                throw new Error("Arquivo muito grande.");
+                              }
+                              return url;
+                            },
+                            plugins: tinyConfig.plugins,
+                            toolbar: tinyConfig.toolbar,
+                          }}
                         />
                       )}
                     />
                   </div>
                   <div className="col-12">
-                    <label htmlFor="rules" className="form-label">
+                    <label htmlFor="rules" className="form-label mt-4">
                       Regulamento
                     </label>
                     <Controller
@@ -295,19 +308,33 @@ const NewEvent = () => {
                       rules={{
                         required: false,
                       }}
-                      render={({ field: { onChange } }) => (
-                        <QuillEditor
-                          id="rules"
-                          name="rules"
-                          onChange={onChange}
-                          className={`${errors.rules?.type ? "is-invalid" : getValues("rules") ? "is-valid" : ""}`}
-                          aria-invalid={errors.rules ? "true" : "false"}
+                      render={({ field: { onChange, value, ref } }) => (
+                        <Editor
+                          value={value}
+                          ref={ref}
+                          apiKey={process.env.REACT_APP_REACT_ENV === "production" ? process.env.REACT_APP_TINYMCE_KEY : ""}
+                          onEditorChange={(content) => onChange(content)}
+                          init={{
+                            language: "pt_BR",
+                            language_url: "/langs/pt_BR.js",
+                            height: 500,
+                            menubar: true,
+                            images_upload_handler: async (blobInfo) => {
+                              const url = await uploadImage(blobInfo.blob());
+                              if (typeof url !== "string") {
+                                throw new Error("Arquivo muito grande.");
+                              }
+                              return url;
+                            },
+                            plugins: tinyConfig.plugins,
+                            toolbar: tinyConfig.toolbar,
+                          }}
                         />
                       )}
                     />
                   </div>
                   <div className="col-12">
-                    <label htmlFor="details" className="form-label">
+                    <label htmlFor="details" className="form-label mt-4">
                       Detalhes
                     </label>
                     <Controller
@@ -317,13 +344,27 @@ const NewEvent = () => {
                       rules={{
                         required: false,
                       }}
-                      render={({ field: { onChange } }) => (
-                        <QuillEditor
-                          id="details"
-                          name="details"
-                          onChange={onChange}
-                          className={`${errors.details?.type ? "is-invalid" : getValues("details") ? "is-valid" : ""}`}
-                          aria-invalid={errors.details ? "true" : "false"}
+                      render={({ field: { onChange, value, ref } }) => (
+                        <Editor
+                          value={value}
+                          ref={ref}
+                          apiKey={process.env.REACT_APP_REACT_ENV === "production" ? process.env.REACT_APP_TINYMCE_KEY : ""}
+                          onEditorChange={(content) => onChange(content)}
+                          init={{
+                            language: "pt_BR",
+                            language_url: "/langs/pt_BR.js",
+                            height: 500,
+                            menubar: true,
+                            images_upload_handler: async (blobInfo) => {
+                              const url = await uploadImage(blobInfo.blob());
+                              if (typeof url !== "string") {
+                                throw new Error("Arquivo muito grande.");
+                              }
+                              return url;
+                            },
+                            plugins: tinyConfig.plugins,
+                            toolbar: tinyConfig.toolbar,
+                          }}
                         />
                       )}
                     />

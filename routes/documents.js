@@ -1,7 +1,5 @@
 const router = require("express").Router();
-
 const adminAuthorization = require("../middlewares/authorization");
-
 const documentsController = require("../controllers/documentsController");
 
 const multer = require("multer");

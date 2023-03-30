@@ -15,6 +15,7 @@ app.use(express.json());
 app.use(cors());
 
 // Routes
+app.use("/api/bucket", require("./routes/bucket"));
 app.use("/api/categories", require("./routes/categories"));
 app.use("/api/confirmations", require("./routes/confirmations"));
 app.use("/api/documents", require("./routes/documents"));

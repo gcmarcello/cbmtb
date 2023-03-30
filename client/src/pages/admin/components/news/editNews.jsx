@@ -4,7 +4,11 @@ import { useForm, Controller } from "react-hook-form";
 import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import LoadingScreen from "../../../../utils/loadingScreen";
-import QuillEditor from "../../../../utils/quillSettings";
+
+import { Editor } from "@tinymce/tinymce-react";
+
+import tinyConfig from "../../config/tiny.config";
+import uploadImage from "../../functions/uploadImage";
 
 const EditNews = () => {
   const { id } = useParams();
@@ -220,15 +224,28 @@ const EditNews = () => {
                   rules={{
                     required: true,
                   }}
-                  render={({ field: { onChange, value } }) => (
-                    <Fragment>
-                      <QuillEditor id="body" name="body" onChange={onChange} defaultValue={value} aria-invalid={errors.body ? "true" : "false"} />
-                      {errors.body?.type && (
-                        <div className="alert alert-danger mt-2" role="alert">
-                          A notícia não pode estar em branco!
-                        </div>
-                      )}
-                    </Fragment>
+                  render={({ field: { onChange, value, ref } }) => (
+                    <Editor
+                      value={value}
+                      ref={ref}
+                      apiKey={process.env.REACT_APP_REACT_ENV === "production" ? process.env.REACT_APP_TINYMCE_KEY : ""}
+                      onEditorChange={(content) => onChange(content)}
+                      init={{
+                        language: "pt_BR",
+                        language_url: "/langs/pt_BR.js",
+                        height: 500,
+                        menubar: true,
+                        images_upload_handler: async (blobInfo) => {
+                          const url = await uploadImage(blobInfo.blob());
+                          if (typeof url !== "string") {
+                            throw new Error("Arquivo muito grande.");
+                          }
+                          return url;
+                        },
+                        plugins: tinyConfig.plugins,
+                        toolbar: tinyConfig.toolbar,
+                      }}
+                    />
                   )}
                 />
                 <div className="d-flex mt-3 justify-content-between">
