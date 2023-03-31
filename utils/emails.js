@@ -66,4 +66,48 @@ module.exports = class Email {
         console.error(error);
       });
   }
+
+  async sendPasswordReset(firstName, passwordResetId) {
+    sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+    let response;
+    const msg = {
+      to: this.emails[0],
+      from: {
+        name: "CBMTB - Confederação Brasileira de Mountain Bike",
+        email: "noreply@cbmtb.com",
+      },
+      subject: "Redefinição de Senha CBMTB",
+      html: `<h2>Redefini&ccedil;&atilde;o de Senha no Sistema CBMTB</h2>
+
+      <p>Prezado(a) ${firstName},</p>
+      
+      <p>Recebemos uma solicita&ccedil;&atilde;o de redefini&ccedil;&atilde;o de senha para a sua conta em nosso sistema. Se voc&ecirc; n&atilde;o solicitou essa mudan&ccedil;a, por favor, entre em contato conosco imediatamente para investigarmos.</p>
+      
+      <p>Se foi voc&ecirc; quem solicitou, clique no link abaixo para ser direcionado para a p&aacute;gina de redefini&ccedil;&atilde;o de senha:</p>
+      
+      <p><a href="${
+        process.env.NODE_ENV === "production" ? "https://cbmtb.com.br" : "http://localhost:3000"
+      }/senha/${passwordResetId}">Redefinir Senha</a></p>
+      
+      <p>Por quest&otilde;es de seguran&ccedil;a, o link acima expirar&aacute; em 2 horas. Certifique-se de concluir o processo de redefini&ccedil;&atilde;o de senha antes desse prazo.</p>
+      
+      <p>Se voc&ecirc; encontrar dificuldades ou precisar de ajuda durante o processo de redefini&ccedil;&atilde;o, por favor, entre em contato com nossa equipe de suporte.</p>
+      
+      <p>Atenciosamente,</p>
+      
+      <p>&nbsp;</p>
+      
+      <p>a CBMTB</p>`,
+    };
+
+    return sgMail
+      .send(msg)
+      .then(() => {
+        return { message: "Email enviado com sucesso.", type: "success" };
+      })
+      .catch((error) => {
+        console.error(error);
+        return { message: error.message, type: "error" };
+      });
+  }
 };

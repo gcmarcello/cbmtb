@@ -37,6 +37,7 @@ import PrivateRoute from "./components/auth/auth";
 import AdminNavigation from "./pages/admin/components/adminNavigation";
 import ListDocuments from "./pages/admin/components/documents/listDocuments";
 import NewDocument from "./pages/admin/components/documents/createDocuments";
+import PasswordReset from "./pages/login/passwordReset";
 
 function App() {
   const [userAuthentication, setUserAuthentication] = useState(false);
@@ -214,12 +215,13 @@ function App() {
           <Route exact path="/imprensa/" element={<Imprensa />} />
           <Route exact path="/noticias/" element={<AllNews />} />
           <Route exact path="/noticias/:title" element={<NewsPage />} />
+          <Route exact path="/senha/:requestId" element={<PasswordReset {...loginProps} />} />
           <Route exact path="/ouvidoria/" element={<Ouvidoria />} />
           <Route exact path="/transparencia/" element={<Documents />} />
           <Route path="*" element={<Page404 />} />
         </Routes>
       </main>
-      {!(page === "cadastro" || page === "painel") && <Footer userAuthentication={userAuthentication} userName={userName} />}
+      {!(page === "cadastro" || page === "painel" || page === "senha") && <Footer userAuthentication={userAuthentication} userName={userName} />}
     </Fragment>
   );
 }

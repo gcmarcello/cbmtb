@@ -177,6 +177,16 @@ CREATE TABLE newsletter_subscribers(
   PRIMARY KEY (subscriber_id)
 );
 
+CREATE TABLE password_resets(
+    reset_id UUID DEFAULT UUID_generate_v4(),
+    reset_email VARCHAR(255) NOT NULL,
+    reset_user_id UUID NOT NULL,
+    reset_expiration TIMESTAMPTZ NOT NULL,
+    PRIMARY KEY(reset_id),
+    FOREIGN KEY(reset_email) REFERENCES users(user_email),
+    FOREIGN KEY(reset_user_id) REFERENCES users(user_id)
+);
+
 
 CREATE OR REPLACE FUNCTION update_num_attendees() RETURNS TRIGGER AS $$
 BEGIN

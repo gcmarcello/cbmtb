@@ -2,6 +2,7 @@ import React, { Fragment, useState } from "react";
 
 import { useForm, Controller } from "react-hook-form";
 import InputMask from "react-input-mask";
+import PasswordRequest from "./passwordRequest";
 
 const Login = (props) => {
   const {
@@ -91,10 +92,15 @@ const Login = (props) => {
                 </button>
               </div>
               <hr className="d-none d-lg-block" />
-              <button className="btn btn-success form-control mb-2 mt-2 mb-lg-0" onClick={(e) => handleSubmit(e)}>
+
+              <button className="btn btn-success mt-auto form-control" onClick={handleSubmit(onSubmit)}>
                 Login
               </button>
             </form>
+            <div>
+              <PasswordRequest />
+            </div>
+
             {errors.root?.serverError.type && (
               <div className="alert alert-danger mt-3" role="alert">
                 <i className="bi bi-exclamation-triangle-fill me-2"></i> {errors.root.serverError.message}
