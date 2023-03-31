@@ -391,7 +391,7 @@ const RegistrationForm = ({
         <div className="row justify-content-end">
           <div className="col-12 col-lg-6 ">
             <div className="row justify-content-between">
-              <div className="col-12 col-lg-6">
+              <div className="col-12 col-lg-6 d-flex justify-content-center">
                 <Controller
                   name="reCaptcha"
                   control={control}
@@ -414,7 +414,7 @@ const RegistrationForm = ({
               </div>
               <div className="col-12 col-lg-4 d-flex align-items-center">
                 <button
-                  className="btn btn-success form-control"
+                  className="btn btn-success form-control py-2 mt-2"
                   onClick={() => {
                     clearErrors("root.serverError");
                     handleSubmit(onSubmit);
