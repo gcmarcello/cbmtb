@@ -335,7 +335,7 @@ const RegistrationForm = ({ onSubmit, reCaptchaComponent, getValues, setError, s
                 <input
                   id="address"
                   className={`form-control ${errors.address?.type ? "is-invalid" : getValues("address") ? "is-valid" : ""}`}
-                  {...register("address", { required: true, pattern: /^[\d\w\s\u00C0-\u024F/]+$/iu })}
+                  {...register("address", { required: true, pattern: /.{2,}/ })}
                   aria-invalid={errors.address ? "true" : "false"}
                 />
               </div>
