@@ -15,13 +15,13 @@ module.exports = async (req, res, next) => {
     const checkExistingCPF = await pool.query("SELECT * FROM users WHERE user_cpf = $1", [cpf]);
     const checkExistingEmail = await pool.query("SELECT * FROM users WHERE user_email = $1", [email]);
     if (!validEmail(email)) {
-      return res.status(400).json({ message: "Email inválido.", type: "email" });
+      return res.status(400).json({ message: "Email inválido.", type: "error", field: "email" });
     } else if (!validPassword(password)) {
-      return res.status(400).json({ message: "Senha inválida.", type: "password" });
+      return res.status(400).json({ message: "Senha inválida.", type: "error", field: "password" });
     } else if (checkExistingEmail.rows[0]) {
-      return res.status(400).json({ message: "Este email já pertence a outra conta.", type: "email" });
+      return res.status(400).json({ message: "Este email já pertence a outra conta.", type: "error", field: "email" });
     } else if (checkExistingCPF.rows[0]) {
-      return res.status(400).json({ message: "Este CPF já pertence a outra conta.", type: "cpf" });
+      return res.status(400).json({ message: "Este CPF já pertence a outra conta.", type: "error", field: "cpf" });
     }
   }
 

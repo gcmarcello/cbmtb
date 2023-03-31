@@ -5,7 +5,7 @@ const ConfirmRegistration = ({ name }) => {
     <div className="container inner-page">
       <h1>
         {" "}
-        <i className="bi bi-check-circle-fill text-success"></i> Bem vindo à CBMTB!
+        <i className="bi bi-check-circle-fill text-success"></i> Bem vindo(a) à CBMTB!
       </h1>
       <p>
         {name || "Usuário"}, obrigado por se cadastrar no sistema da CBMTB! Para concluir seu cadastro, você precisa confirmar sua conta. Por favor,

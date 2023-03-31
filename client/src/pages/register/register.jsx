@@ -1,4 +1,5 @@
 import React, { useState, useRef } from "react";
+import { Fragment } from "react";
 
 import { useForm } from "react-hook-form";
 
@@ -10,10 +11,12 @@ const Register = () => {
   const reCaptchaComponent = useRef(null);
   const {
     getValues,
+    clearErrors,
     setError,
     setValue,
     watch,
     control,
+    resetField,
     register,
     handleSubmit,
     formState: { errors },
@@ -30,11 +33,17 @@ const Register = () => {
       if (parseResponse.type === "success") {
         setIsRegistered(true);
       } else {
-        console.log(parseResponse);
-        reCaptchaComponent.current.reset();
+        resetField(`${parseResponse.field}`);
+        setError("root.serverError", {
+          type: parseResponse.field,
+          message: parseResponse.message,
+        });
       }
     } catch (err) {
       console.log(err.message);
+    } finally {
+      reCaptchaComponent.current.reset();
+      resetField("reCaptcha");
     }
   };
 
@@ -42,18 +51,21 @@ const Register = () => {
     return <ConfirmRegistration name={getValues("firstName")} />;
   } else
     return (
-      <RegistrationForm
-        onSubmit={onSubmit}
-        reCaptchaComponent={reCaptchaComponent}
-        getValues={getValues}
-        setError={setError}
-        setValue={setValue}
-        watch={watch}
-        control={control}
-        register={register}
-        handleSubmit={handleSubmit}
-        errors={errors}
-      />
+      <Fragment>
+        <RegistrationForm
+          onSubmit={onSubmit}
+          reCaptchaComponent={reCaptchaComponent}
+          getValues={getValues}
+          setError={setError}
+          setValue={setValue}
+          watch={watch}
+          control={control}
+          register={register}
+          handleSubmit={handleSubmit}
+          errors={errors}
+          clearErrors={clearErrors}
+        />
+      </Fragment>
     );
 };
 

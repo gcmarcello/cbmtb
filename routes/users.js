@@ -14,8 +14,8 @@ const Email = require("../utils/emails");
 router.post("/register", [reCaptcha, registrationValidation], async (req, res) => {
   const { address, apartment, birthDate, cep, city, cpf, email, firstName, gender, lastName, number, password, phone, state } = req.body;
 
-  if (dayjs().diff(date, "year") > 1) {
-    return res.status(400).json({ message: "Por faovr, verifique a data de nascimento.", type: "error" });
+  if (dayjs().diff(dayjs(birthDate), "year") < 1) {
+    return res.status(400).json({ message: "Por favor, verifique a data de nascimento.", type: "error" });
   }
 
   try {

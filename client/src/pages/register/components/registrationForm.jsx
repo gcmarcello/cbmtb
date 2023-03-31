@@ -3,12 +3,25 @@ import { Controller } from "react-hook-form";
 
 import InputMask from "react-input-mask";
 import ReCAPTCHA from "react-google-recaptcha";
+import { animateScroll } from "react-scroll";
 
 // import { properErrorNames } from "../functions/properNames";
 import { siteConfigs } from "../../../App.config";
 const dayjs = require("dayjs");
 
-const RegistrationForm = ({ onSubmit, reCaptchaComponent, getValues, setError, setValue, watch, control, register, handleSubmit, errors }) => {
+const RegistrationForm = ({
+  onSubmit,
+  reCaptchaComponent,
+  getValues,
+  setError,
+  setValue,
+  watch,
+  control,
+  register,
+  handleSubmit,
+  errors,
+  clearErrors,
+}) => {
   const cepSearch = require("cep-promise");
 
   const [showPassword, setShowPassword] = useState(false);
@@ -37,7 +50,13 @@ const RegistrationForm = ({ onSubmit, reCaptchaComponent, getValues, setError, s
   };
 
   return (
-    <div className="container inner-page">
+    <div className="container inner-page px-3">
+      {errors?.root && (
+        <div className="alert alert-danger mt-2" role="alert">
+          <i class="bi bi-exclamation-triangle-fill mx-2"></i>
+          {errors.root.serverError.message} Clique aqui para fazer login ou recuperar sua senha.
+        </div>
+      )}
       <h1>Cadastro de Atleta</h1>
       <hr />
       <h2>Informações de Cadastro</h2>
@@ -370,9 +389,9 @@ const RegistrationForm = ({ onSubmit, reCaptchaComponent, getValues, setError, s
         </div>
         <hr className="mt-4" />
         <div className="row justify-content-end">
-          <div className="col-12 col-lg-6 d-flex justify-content-center justify-content-lg-end">
-            <div className="row">
-              <div className="col-12 col-lg-6 d-flex justify-content-center">
+          <div className="col-12 col-lg-6 ">
+            <div className="row justify-content-between">
+              <div className="col-12 col-lg-6">
                 <Controller
                   name="reCaptcha"
                   control={control}
@@ -393,8 +412,18 @@ const RegistrationForm = ({ onSubmit, reCaptchaComponent, getValues, setError, s
                   )}
                 />
               </div>
-              <div className="col-12 col-lg-6 d-flex justify-content-center justify-content-lg-end">
-                <input type="submit" className="btn btn-success my-2 px-5 btn-lg" disabled={!watch("reCaptcha")} value={"Enviar"}></input>
+              <div className="col-12 col-lg-4 d-flex align-items-center">
+                <button
+                  className="btn btn-success form-control"
+                  onClick={() => {
+                    clearErrors("root.serverError");
+                    handleSubmit(onSubmit);
+                    animateScroll.scrollToTop();
+                  }}
+                  disabled={!watch("reCaptcha")}
+                >
+                  Cadastrar
+                </button>
               </div>
             </div>
           </div>
