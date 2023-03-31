@@ -1,6 +1,7 @@
 const router = require("express").Router();
 const pool = require("../database");
 const bcrypt = require("bcrypt");
+const dayjs = require("dayjs");
 
 const registrationValidation = require("../middlewares/registrationValidation");
 const authorization = require("../middlewares/authorization");
@@ -12,6 +13,11 @@ const Email = require("../utils/emails");
 // Register Route
 router.post("/register", [reCaptcha, registrationValidation], async (req, res) => {
   const { address, apartment, birthDate, cep, city, cpf, email, firstName, gender, lastName, number, password, phone, state } = req.body;
+
+  if (dayjs().diff(date, "year") > 1) {
+    return res.status(400).json({ message: "Por faovr, verifique a data de nascimento.", type: "error" });
+  }
+
   try {
     // Encrypting password
     const saltRounds = 10;

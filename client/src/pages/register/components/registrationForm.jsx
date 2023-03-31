@@ -6,6 +6,7 @@ import ReCAPTCHA from "react-google-recaptcha";
 
 // import { properErrorNames } from "../functions/properNames";
 import { siteConfigs } from "../../../App.config";
+const dayjs = require("dayjs");
 
 const RegistrationForm = ({ onSubmit, reCaptchaComponent, getValues, setError, setValue, watch, control, register, handleSubmit, errors }) => {
   const cepSearch = require("cep-promise");
@@ -207,11 +208,10 @@ const RegistrationForm = ({ onSubmit, reCaptchaComponent, getValues, setError, s
                   id="birthDate"
                   type="date"
                   className={`form-control ${errors.birthDate?.type ? "is-invalid" : watch("birthDate") ? "is-valid" : ""}`}
-                  {...register("birthDate", { required: true, pattern: /^\d{4}-\d{2}-\d{2}$/i })}
+                  {...register("birthDate", { required: true, pattern: /^\d{4}-\d{2}-\d{2}$/i, validate: (date) => dayjs().diff(date, "year") > 1 })}
                   aria-invalid={errors.fullName ? "true" : "false"}
                 />
               </div>
-
               <div className="col-12 col-lg-6">
                 <label htmlFor="gender">
                   Sexo<span className="text-danger">*</span>
@@ -230,6 +230,11 @@ const RegistrationForm = ({ onSubmit, reCaptchaComponent, getValues, setError, s
                 </select>
               </div>
             </div>
+            {errors.birthDate && (
+              <div className="alert alert-danger mt-2" role="alert">
+                Por favor, verifique sua data de nascimento.
+              </div>
+            )}
           </div>
 
           <div className="col-12 col-lg-6">
