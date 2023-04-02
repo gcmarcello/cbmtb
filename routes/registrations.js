@@ -104,7 +104,7 @@ router.delete("/:eventId/:registrationId", authorization, async (req, res) => {
     const { eventId, registrationId } = req.params;
     const userId = req.userId;
 
-    /* const deleteRegistration = await pool.query("DELETE FROM registrations WHERE registration_id = $1 AND user_id = $2 RETURNING *", [
+    const deleteRegistration = await pool.query("DELETE FROM registrations WHERE registration_id = $1 AND user_id = $2 RETURNING *", [
       registrationId,
       userId,
     ]);
@@ -112,7 +112,7 @@ router.delete("/:eventId/:registrationId", authorization, async (req, res) => {
     const eventInfo = (await pool.query("SELECT event_name, event_link FROM events WHERE event_id = $1", [eventId])).rows[0];
 
     const sgEmail = new Email([userInfo.user_email]);
-    sgEmail.sendRegistrationCancellationEmail(userInfo.user_first_name, eventInfo.event_name, eventInfo.event_link); */
+    sgEmail.sendRegistrationCancellationEmail(userInfo.user_first_name, eventInfo.event_name, eventInfo.event_link);
 
     res.status(200).json({
       message: "Inscrição cancelada com sucesso.",
