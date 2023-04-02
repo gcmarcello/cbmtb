@@ -106,11 +106,11 @@ const Login = (props) => {
                 <i className="bi bi-exclamation-triangle-fill me-2"></i> {errors.root.serverError.message}
               </div>
             )}
-            {(errors.password || errors.cpf) && (
+            {/* {(errors.password || errors.cpf) && (
               <div className="alert alert-danger mt-3" role="alert">
                 <i className="bi bi-exclamation-triangle-fill me-2"></i> Preencha corretamente os campos acima.
               </div>
-            )}
+            )} */}
           </div>
           <div className="col-1 d-none d-lg-flex justify-content-center">
             <div className="vr h-100"></div>

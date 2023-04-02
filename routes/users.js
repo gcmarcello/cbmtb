@@ -90,7 +90,7 @@ router.post("/login", async (req, res) => {
       return res.status(500).json("Server Error");
     }
   } else {
-    return res.json("Usuário ou senha estão incorretos.");
+    return res.status(403).json({ message: "Usuário ou senha estão incorretos.", type: "error" });
   }
 });
 
