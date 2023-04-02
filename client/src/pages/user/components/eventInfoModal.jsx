@@ -38,7 +38,7 @@ const EventInfoModal = ({ registration }) => {
               <div className="container">
                 <h6>Informações da Prova</h6>
                 <div
-                  dangerouslySetInnerHTML={{ __html: registration.event_rules }}
+                  dangerouslySetInnerHTML={{ __html: registration.event_description }}
                   className="overflow-auto mb-3"
                   style={{ maxHeight: "200px" }}
                 ></div>

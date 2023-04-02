@@ -1,31 +1,28 @@
-import React, { useState } from "react";
-import { Controller } from "react-hook-form";
-
+import React, { useState, useEffect, Fragment } from "react";
+import { useForm, Controller } from "react-hook-form";
 import InputMask from "react-input-mask";
-import ReCAPTCHA from "react-google-recaptcha";
-import { animateScroll } from "react-scroll";
-
-// import { properErrorNames } from "../functions/properNames";
-import { siteConfigs } from "../../../App.config";
+import LoadingScreen from "../../../utils/loadingScreen";
+import { toast } from "react-toastify";
 const dayjs = require("dayjs");
+const cepSearch = require("cep-promise");
 
-const RegistrationForm = ({
-  onSubmit,
-  reCaptchaComponent,
-  getValues,
-  setError,
-  setValue,
-  watch,
-  control,
-  register,
-  handleSubmit,
-  errors,
-  clearErrors,
-}) => {
-  const cepSearch = require("cep-promise");
+const UserOptions = () => {
+  const [userInfo, setUserInfo] = useState(null);
+  const {
+    getValues,
+    setError,
+    setValue,
+    resetField,
+    watch,
+    control,
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitted },
+  } = useForm({ mode: "onChange", defaultValues: userInfo || {} });
 
   const [showPassword, setShowPassword] = useState(false);
   const [cepLoading, setCepLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleCep = async () => {
     try {
@@ -49,30 +46,86 @@ const RegistrationForm = ({
     }
   };
 
+  const onSubmit = async (data) => {
+    try {
+      setIsLoading(true);
+      const myHeaders = new Headers();
+      myHeaders.append("Content-Type", "application/json");
+      myHeaders.append("token", localStorage.token);
+
+      const response = await fetch(`/api/users/`, {
+        method: "PUT",
+        headers: myHeaders,
+        body: JSON.stringify(data),
+      });
+      const parseResponse = await response.json();
+      if (parseResponse.type === "error") {
+        setError("root.serverError", {
+          type: parseResponse.type,
+          message: parseResponse.message,
+        });
+      } else {
+        toast.success(parseResponse.message, { theme: "colored" });
+      }
+    } catch (err) {
+      console.log(err.message);
+    } finally {
+      resetField("password");
+      setTimeout(function () {
+        setIsLoading(false);
+      }, 1000);
+    }
+  };
+
+  useEffect(() => {
+    const getUser = async () => {
+      setIsLoading(true);
+      try {
+        const myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+        myHeaders.append("token", localStorage.token);
+
+        const response = await fetch(`/api/users/self`, {
+          method: "GET",
+          headers: myHeaders,
+        });
+        const parseResponse = await response.json();
+        setUserInfo(parseResponse);
+      } catch (err) {
+        console.log(err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    getUser();
+  }, []);
+
+  useEffect(() => {
+    if (userInfo) {
+      setValue("firstName", userInfo.user_first_name);
+      setValue("lastName", userInfo.user_last_name);
+      setValue("email", userInfo.user_email);
+      setValue("cpf", userInfo.user_cpf);
+      setValue("phone", userInfo.user_phone);
+      setValue("gender", userInfo.user_gender);
+      setValue("birthDate", dayjs(userInfo.user_birth_date).format("YYYY-MM-DD"));
+      setValue("cep", userInfo.user_cep);
+      setValue("state", userInfo.user_state);
+      setValue("city", userInfo.user_city);
+      setValue("address", userInfo.user_address);
+      setValue("number", userInfo.user_number);
+      setValue("apartment", userInfo.user_apartment);
+    }
+  }, [userInfo, setValue]);
+
+  if (isLoading) {
+    return <LoadingScreen />;
+  }
+
   return (
-    <div className="container inner-page px-3">
-      {errors?.root && (
-        <div className="alert alert-danger mt-2" role="alert">
-          <i className="bi bi-exclamation-triangle-fill mx-2"></i>
-          {errors.root.serverError.message} <a href="/login">Clique aqui</a> para fazer login ou recuperar sua senha.
-        </div>
-      )}
-      <h1>Cadastro de Atleta</h1>
-      <hr />
-      <h2>Informações de Cadastro</h2>
-      {/* {isSubmitted ? (
-        <div className="alert alert-danger mt-2" role="alert">
-          Esses campos não foram preenchidos corretamente:
-          <ul className="d-flex flex-wrap">
-            {Object.keys(errors).map((error) => (
-              <li className="mx-3">{properErrorNames(error)}</li>
-            ))}
-          </ul>
-        </div>
-      ) : (
-        ""
-      )} */}
-      <form onSubmit={handleSubmit(onSubmit)} className="needs-validation" noValidate>
+    <Fragment>
+      <form onSubmit={handleSubmit(onSubmit)} className="needs-validation mt-2 px-2" noValidate>
         <div className="row mb-2">
           <div className="col-12 col-lg-6">
             <label htmlFor="firstName">
@@ -80,16 +133,10 @@ const RegistrationForm = ({
             </label>
             <input
               id="firstName"
-              className={`form-control ${errors.firstName?.type ? "is-invalid" : getValues("firstName") ? "is-valid" : ""}`}
+              className={`form-control ${errors.firstName?.type ? "is-invalid" : ""}`}
               {...register("firstName", { required: true, pattern: /^([A-Za-z]+\s*){3,}$/i })}
               aria-invalid={errors.firstName ? "true" : "false"}
             />
-            {/* Show errors in between form */}
-            {/* {errors.firstName && (
-              <div className="alert alert-danger mt-2" role="alert">
-                Por favor, insira o seu nome.
-              </div>
-            )} */}
           </div>
           <div className="col-12 col-lg-6">
             <label htmlFor="lastName">
@@ -97,7 +144,7 @@ const RegistrationForm = ({
             </label>
             <input
               id="lastName"
-              className={`form-control ${errors.lastName?.type ? "is-invalid" : getValues("lastName") ? "is-valid" : ""}`}
+              className={`form-control ${errors.lastName?.type ? "is-invalid" : ""}`}
               {...register("lastName", { required: true, pattern: /^([A-Za-z]+\s*){3,}$/i })}
               aria-invalid={errors.fullName ? "true" : "false"}
             />
@@ -110,7 +157,7 @@ const RegistrationForm = ({
             </label>
             <input
               id="email"
-              className={`form-control ${errors.email?.type ? "is-invalid" : getValues("email") ? "is-valid" : ""}`}
+              className={`form-control ${errors.email?.type ? "is-invalid" : ""}`}
               {...register("email", { required: true, pattern: /^[\w-.]+@([\w-]+\.)+[\w-]{2,}$/ })}
               aria-invalid={errors.email ? "true" : "false"}
             />
@@ -130,74 +177,21 @@ const RegistrationForm = ({
               render={({ field }) => (
                 <InputMask
                   mask="999.999.999-99"
-                  className={`form-control ${errors.cpf ? "is-invalid" : getValues("cpf") ? "is-valid" : ""}`}
+                  className={`form-control ${errors.cpf ? "is-invalid" : ""}`}
                   maskChar=""
                   value={field.value}
                   onChange={field.onChange}
+                  disabled={true}
                 >
-                  {(inputProps) => <input {...inputProps} type="text" />}
+                  {(inputProps) => <input {...inputProps} disabled type="text" />}
                 </InputMask>
               )}
             />
           </div>
         </div>
         <div className="row">
-          <div className="col-12 col-lg-6 mb-1">
-            <label htmlFor="password">
-              Senha<span className="text-danger">*</span>
-            </label>
-            <div className="input-group mb-1">
-              <input
-                id="password"
-                type={showPassword ? "text" : "password"}
-                className={`form-control ${errors.password?.type ? "is-invalid" : getValues("password") ? "is-valid" : ""} `}
-                {...register("password", { required: true, pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/ })}
-                aria-invalid={errors.password ? "true" : "false"}
-              />
-              <button
-                className="input-group-text"
-                id="button-addon1"
-                onClick={(e) => {
-                  e.preventDefault();
-                  setShowPassword(!showPassword);
-                }}
-              >
-                <i className={`bi bi-eye${showPassword ? "-slash-" : "-"}fill`}></i>
-              </button>
-            </div>
-            {errors.password && (
-              <div className="alert alert-danger mt-2" role="alert">
-                Sua senha deve conter:{" "}
-                <ul>
-                  <li>Uma letra maiúscula</li>
-                  <li>Uma letra minúscula</li>
-                  <li>Um número</li>
-                  <li>Um caractere especial (*&%!@?)</li>
-                  <li>8 caracteres</li>
-                </ul>
-              </div>
-            )}
-          </div>
-          <div className="col-12 col-lg-6 mb-1">
-            <label htmlFor="repeatPassword">
-              Confirmar Senha<span className="text-danger">*</span>
-            </label>
-            <input
-              id="repeatPassword"
-              type={showPassword ? "text" : "password"}
-              className={`form-control ${errors.repeatPassword?.type ? "is-invalid" : getValues("repeatPassword") ? "is-valid" : ""} mb-1`}
-              {...register("repeatPassword", { required: true, validate: (value) => value === getValues("password") })}
-              aria-invalid={errors.repeatPassword ? "true" : "false"}
-            />
-          </div>
-        </div>
-        <hr />
-        <h2>Informações Pessoais</h2>
-        <div className="row">
           <div className="col-12 col-lg-6">
-            <label htmlFor="phone">
-              Telefone<span className="text-danger">*</span>
-            </label>
+            <label htmlFor="phone">Telefone</label>
             <Controller
               name="phone"
               control={control}
@@ -209,7 +203,7 @@ const RegistrationForm = ({
               render={({ field }) => (
                 <InputMask
                   mask="99 99999-9999"
-                  className={`form-control ${errors.phone ? "is-invalid" : getValues("phone") ? "is-valid" : ""} mb-1`}
+                  className={`form-control ${errors.phone ? "is-invalid" : ""} mb-1`}
                   maskChar=""
                   value={field.value}
                   onChange={field.onChange}
@@ -220,15 +214,14 @@ const RegistrationForm = ({
             />
             <div className="row">
               <div className="col-12 col-lg-6">
-                <label htmlFor="birthDate">
-                  Data de Nascimento<span className="text-danger">*</span>
-                </label>
+                <label htmlFor="birthDate">Data de Nascimento</label>
                 <input
                   id="birthDate"
                   type="date"
-                  className={`form-control ${errors.birthDate?.type ? "is-invalid" : watch("birthDate") ? "is-valid" : ""}`}
+                  className={`form-control ${errors.birthDate?.type ? "is-invalid" : ""}`}
                   {...register("birthDate", { required: true, pattern: /^\d{4}-\d{2}-\d{2}$/i, validate: (date) => dayjs().diff(date, "year") > 1 })}
                   aria-invalid={errors.fullName ? "true" : "false"}
+                  disabled
                 />
               </div>
               <div className="col-12 col-lg-6">
@@ -238,8 +231,9 @@ const RegistrationForm = ({
                 <select
                   id="gender"
                   defaultValue=""
-                  className={`form-select ${errors.gender?.type ? "is-invalid" : getValues("gender") ? "is-valid" : ""} mb-1`}
+                  className={`form-select ${errors.gender?.type ? "is-invalid" : ""} mb-1`}
                   {...register("gender", { required: true })}
+                  disabled
                 >
                   <option value="" disabled>
                     Selecionar
@@ -287,7 +281,7 @@ const RegistrationForm = ({
                     <InputMask
                       mask="99999-999"
                       name="cep"
-                      className={`form-control ${errors.cep ? "is-invalid" : cepLoading ? "is-loading" : getValues("cep") ? "is-valid" : ""} `}
+                      className={`form-control ${errors.cep ? "is-invalid" : cepLoading ? "is-loading" : ""} `}
                       maskChar=""
                       value={field.value}
                       onChange={field.onChange}
@@ -304,7 +298,7 @@ const RegistrationForm = ({
                 <select
                   id="state"
                   defaultValue=""
-                  className={`form-select ${errors.state ? "is-invalid" : watch("state") ? "is-valid" : ""} mb-1`}
+                  className={`form-select ${errors.state ? "is-invalid" : ""} mb-1`}
                   {...register("state", { required: true })}
                 >
                   <option value="" disabled>
@@ -345,7 +339,7 @@ const RegistrationForm = ({
                 </label>
                 <input
                   id="city"
-                  className={`form-control ${errors.city?.type ? "is-invalid" : getValues("city") ? "is-valid" : ""}`}
+                  className={`form-control ${errors.city?.type ? "is-invalid" : ""}`}
                   {...register("city", { required: true, pattern: /^([A-Za-zÀ-ÖØ-öø]+\s*){3,}$/i })}
                   aria-invalid={errors.city ? "true" : "false"}
                 />
@@ -358,7 +352,7 @@ const RegistrationForm = ({
                 </label>
                 <input
                   id="address"
-                  className={`form-control ${errors.address?.type ? "is-invalid" : getValues("address") ? "is-valid" : ""}`}
+                  className={`form-control ${errors.address?.type ? "is-invalid" : ""}`}
                   {...register("address", { required: true, pattern: /.{2,}/ })}
                   aria-invalid={errors.address ? "true" : "false"}
                 />
@@ -367,7 +361,7 @@ const RegistrationForm = ({
                 <label htmlFor="number">Número</label>
                 <input
                   id="number"
-                  className={`form-control ${errors.number?.type ? "is-invalid" : getValues("number") ? "is-valid" : ""}`}
+                  className={`form-control ${errors.number?.type ? "is-invalid" : ""}`}
                   {...register("number", { required: false, pattern: /.{2,}/ })}
                   aria-invalid={errors.number ? "true" : "false"}
                 />
@@ -376,7 +370,7 @@ const RegistrationForm = ({
                 <label htmlFor="apartment">Complemento</label>
                 <input
                   id="apartment"
-                  className={`form-control ${errors.apartment?.type ? "is-invalid" : getValues("apartment") ? "is-valid" : ""}`}
+                  className={`form-control ${errors.apartment?.type ? "is-invalid" : ""}`}
                   {...register("apartment", {
                     required: false,
                     pattern: /.{2,}/,
@@ -387,50 +381,57 @@ const RegistrationForm = ({
             </div>
           </div>
         </div>
-        <hr className="mt-4" />
-        <div className="row justify-content-end">
-          <div className="col-12 col-lg-6 ">
-            <div className="row justify-content-between">
-              <div className="col-12 col-lg-6 d-flex justify-content-center">
-                <Controller
-                  name="reCaptcha"
-                  control={control}
-                  defaultValue=""
-                  rules={{
-                    required: true,
-                  }}
-                  render={({ field: { onChange } }) => (
-                    <ReCAPTCHA
-                      ref={reCaptchaComponent}
-                      sitekey={siteConfigs.reCaptchaSiteKey}
-                      onChange={onChange}
-                      onExpired={(e) => {
-                        setValue("reCaptcha", "");
-                        reCaptchaComponent.current.reset();
-                      }}
-                    />
-                  )}
-                />
-              </div>
-              <div className="col-12 col-lg-4 d-flex align-items-center">
-                <button
-                  className="btn btn-success form-control py-2 mt-2"
-                  onClick={() => {
-                    clearErrors("root.serverError");
-                    handleSubmit(onSubmit);
-                    animateScroll.scrollToTop();
-                  }}
-                  disabled={!watch("reCaptcha")}
-                >
-                  Cadastrar
-                </button>
-              </div>
+        <div className="mt-3">
+          <span id="passwordHelpInline" className="form-text">
+            Para alterar a data de nascimento, CPF ou gênero, por favor entre em contato com a nossa ouvidoria <a href="/ouvidoria">clicando aqui.</a>
+          </span>
+        </div>
+        <hr className="mt-2" />
+
+        <div className="row">
+          <div className="col-12 col-lg-6 d-flex align-items-center">
+            <div>
+              <label htmlFor="password" className="me-2">
+                Senha
+              </label>
             </div>
+            <div className="input-group mb-1">
+              <input
+                id="password"
+                type={showPassword ? "text" : "password"}
+                className={`form-control`}
+                {...register("password", { required: true })}
+                aria-invalid={errors.password ? "true" : "false"}
+              />
+              <button
+                type="button"
+                className="input-group-text"
+                id="button-addon1"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setShowPassword(!showPassword);
+                }}
+              >
+                <i className={`bi bi-eye${showPassword ? "-slash-" : "-"}fill`}></i>
+              </button>
+            </div>
+          </div>
+
+          <div className="col-12 col-lg-6">
+            <input className="btn btn-success form-control py-2 mt-3 mt-lg-0" type="submit" value="Salvar Alterações" disabled={!watch("password")} />
+          </div>
+          <div className="col-12">
+            {errors?.root && (
+              <div className="alert alert-danger mt-3" role="alert">
+                <i className="bi bi-exclamation-triangle-fill mx-2"></i>
+                {errors.root.serverError.message}
+              </div>
+            )}
           </div>
         </div>
       </form>
-    </div>
+    </Fragment>
   );
 };
 
-export default RegistrationForm;
+export default UserOptions;

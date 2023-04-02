@@ -190,7 +190,7 @@ function App() {
           />
           <Route
             exact
-            path="/usuario"
+            path="/usuario/:panel?"
             element={
               <PrivateRoute userAuthentication={userAuthentication}>
                 <UserPanel userAuthentication={userAuthentication} setUserAuthentication={setUserAuthentication} userName={userName} />

@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Fragment } from "react";
+import { useParams } from "react-router-dom";
 
 import LoadingScreen from "../../utils/loadingScreen";
+import UserOptions from "./components/userOptions";
 
 import UserRegistrations from "./components/userRegistrations";
 
@@ -9,7 +11,7 @@ import { fetchRegistrations } from "./functions/fetchRegistrations";
 
 const UserPanel = ({ userAuthentication, userName }) => {
   const [registrations, setRegistrations] = useState([]);
-  const [panel, setPanel] = useState("registrations");
+  const { panel } = useParams();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -28,25 +30,25 @@ const UserPanel = ({ userAuthentication, userName }) => {
     <Fragment>
       <div className="container-lg inner-page">
         <h1>Minha Conta</h1>
+
         <ul className="nav nav-tabs" id="myTab" role="tablist">
           <li className="nav-item" role="presentation">
             <button
-              className="nav-link active"
+              className={`nav-link ${panel === "inscricoes" && "active"}`}
               id="registrations-tab"
               data-bs-toggle="tab"
               data-bs-target="#registrations"
               type="button"
               role="tab"
-              aria-controls="registrations"
+              aria-controls="home"
               aria-selected="true"
-              onClick={() => setPanel("registrations")}
             >
               Inscrições
             </button>
           </li>
           <li className="nav-item" role="presentation">
             <button
-              className="nav-link"
+              className={`nav-link ${panel === "perfil" && "active"}`}
               id="profile-tab"
               data-bs-toggle="tab"
               data-bs-target="#profile"
@@ -54,28 +56,43 @@ const UserPanel = ({ userAuthentication, userName }) => {
               role="tab"
               aria-controls="profile"
               aria-selected="false"
-              onClick={() => setPanel("membership")}
             >
-              Filiação
+              Perfil
             </button>
           </li>
           <li className="nav-item" role="presentation">
             <button
-              className="nav-link"
-              id="contact-tab"
+              className={`nav-link ${panel === "filiacao" && "active"}`}
+              id="membership-tab"
               data-bs-toggle="tab"
-              data-bs-target="#contact"
+              data-bs-target="#membership"
               type="button"
               role="tab"
               aria-controls="contact"
               aria-selected="false"
-              onClick={() => setPanel("options")}
             >
-              Opções
+              Filiação
             </button>
           </li>
         </ul>
-        {panel === "registrations" ? <UserRegistrations registrations={registrations} /> : <h1>Em Breve</h1>}
+        <div className="tab-content" id="myTabContent">
+          <div
+            className={`tab-pane fade ${panel === "inscricoes" && "show active"}`}
+            id="registrations"
+            role="tabpanel"
+            aria-labelledby="registrations-tab"
+          >
+            <UserRegistrations registrations={registrations} />
+          </div>
+          <div className={`tab-pane fade ${panel === "perfil" && "show active"}`} id="profile" role="tabpanel" aria-labelledby="profile-tab">
+            <UserOptions />
+          </div>
+          <div className={`tab-pane fade ${panel === "filiacao" && "show active"}`} id="membership" role="tabpanel" aria-labelledby="membership-tab">
+            <div className="container inner-page">
+              <h2>Em Breve...</h2>
+            </div>
+          </div>
+        </div>
       </div>
     </Fragment>
   );

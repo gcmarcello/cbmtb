@@ -108,7 +108,7 @@ const Login = (props) => {
             )}
             {(errors.password || errors.cpf) && (
               <div className="alert alert-danger mt-3" role="alert">
-                <i className="bi bi-exclamation-triangle-fill me-2"></i> Preencha corretamente os campos abaixo.
+                <i className="bi bi-exclamation-triangle-fill me-2"></i> Preencha corretamente os campos acima.
               </div>
             )}
           </div>

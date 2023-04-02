@@ -94,12 +94,12 @@ const UserNavigation = ({ userAuthentication, setUserAuthentication, userName, u
                     <Fragment />
                   )}
                   <li>
-                    <a className="dropdown-item" href="/usuario">
+                    <a className="dropdown-item" href="/usuario/">
                       Minha Página
                     </a>
                   </li>
                   <li>
-                    <a className="dropdown-item" href="/">
+                    <a className="dropdown-item" href="/usuario/perfil">
                       Editar Perfil
                     </a>
                   </li>
