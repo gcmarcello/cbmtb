@@ -73,8 +73,6 @@ const EventPage = () => {
     return <LoadingScreen />;
   }
 
-  console.log(event.categories);
-
   return (
     <Fragment>
       <div className="container inner-page">
