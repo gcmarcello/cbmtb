@@ -24,7 +24,6 @@ const StageButtons = ({ stage, setStage, userRegistration, id }) => {
       parseResponse.type === "success"
         ? toast.success(parseResponse.message, { theme: "colored" })
         : toast.error(parseResponse.message, { theme: "colored" });
-      console.log(!!parseResponse.paymentId);
       navigate(parseResponse.paymentId ? `/pagamento/${parseResponse.paymentId}` : `/usuario/`);
     } catch (error) {
       console.log(error);

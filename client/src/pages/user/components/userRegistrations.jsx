@@ -4,6 +4,21 @@ import PaymentModal from "./paymentModal";
 
 const UserRegistrations = ({ registrations }) => {
   const dayjs = require("dayjs");
+  const deleteRegistration = async (id) => {
+    try {
+      const myHeaders = new Headers();
+      myHeaders.append("Content-Type", "application/json");
+      myHeaders.append("token", localStorage.token);
+
+      const response = await fetch(`/api/registrations/${id}`, {
+        method: "DELETE",
+        headers: myHeaders,
+      });
+      const parseResponse = await response.json();
+    } catch (err) {
+      console.log(err.message);
+    }
+  };
   return (
     <div className="row mt-2">
       <h3>Inscrições Confirmadas</h3>
@@ -23,6 +38,9 @@ const UserRegistrations = ({ registrations }) => {
                   <span className="fw-bold">Tamanho da Camisa:</span> {registration.registration_shirt.toUpperCase()}
                   <div className="d-flex">
                     <EventInfoModal registration={registration} />
+                    <button type="button" className="btn btn-danger form-control ms-2 mt-2 h-50" data-bs-toggle="modal" data-bs-target="#CancelModal">
+                      Cancelar
+                    </button>
                   </div>
                 </div>
                 <div className="card-footer d-flex justify-content-between align-items-center">

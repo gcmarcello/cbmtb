@@ -17,7 +17,7 @@ const UserOptions = () => {
     control,
     register,
     handleSubmit,
-    formState: { errors, isSubmitted },
+    formState: { errors },
   } = useForm({ mode: "onChange", defaultValues: userInfo || {} });
 
   const [showPassword, setShowPassword] = useState(false);

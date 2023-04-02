@@ -4,7 +4,7 @@ const EventInfoModal = ({ registration }) => {
   const dayjs = require("dayjs");
   return (
     <Fragment>
-      <button type="button" className="btn btn-warning form-control mt-2 h-50" data-bs-toggle="modal" data-bs-target="#InfoModal">
+      <button type="button" className="btn btn-warning form-control me-2 mt-2 h-50" data-bs-toggle="modal" data-bs-target="#InfoModal">
         Informações
       </button>
 

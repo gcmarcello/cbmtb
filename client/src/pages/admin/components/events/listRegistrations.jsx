@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment } from "react";
 import Table from "../table";
 import xlsx from "json-as-xlsx";
 const dayjs = require("dayjs");
@@ -44,6 +44,44 @@ const ListRegistrations = (props) => {
     {
       Header: "Email",
       accessor: "user_email",
+    },
+    {
+      Header: "Opções",
+      accessor: "registration_id",
+      disableSortBy: true,
+      Cell: ({ value }) => (
+        <Fragment>
+          <button type="button" className="btn btn-danger" data-bs-toggle="modal" data-bs-target="#removeRegistrationModal">
+            <i className="bi bi-x-circle"></i>
+          </button>
+
+          <div className="modal fade" id="removeRegistrationModal" tabIndex="-1" aria-labelledby="removeRegistrationModalLabel" aria-hidden="true">
+            <div className="modal-dialog">
+              <form>
+                <div className="modal-content">
+                  <div className="modal-header">
+                    <h5 className="modal-title" id="removeRegistrationModalLabel">
+                      Cancelar inscrição
+                    </h5>
+                    <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div className="modal-body">
+                    Tem certeza que deseja cancelar esta inscrição? O inscrito receberá um email com a confirmação do cancelamento.
+                  </div>
+                  <div className="modal-footer">
+                    <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">
+                      Voltar
+                    </button>
+                    <button type="button" className="btn btn-danger" onClick={() => props.deleteRegistration(value)} data-bs-dismiss="modal">
+                      Cancelar Inscrição
+                    </button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </Fragment>
+      ),
     },
   ];
 

@@ -42,8 +42,9 @@ async function readEventPage(req, res) {
     const eventInfo = typeOfLink
       ? await pool.query("SELECT * FROM events WHERE event_id = $1", [id])
       : await pool.query("SELECT * FROM events WHERE event_link = $1", [id]);
+    const categories = (await pool.query("SELECT * FROM event_categories WHERE event_id = $1", [eventInfo.rows[0].event_id])).rows;
     if (eventInfo.rows[0]) {
-      res.json(eventInfo.rows[0]);
+      res.json({ ...eventInfo.rows[0], categories });
     } else {
       res.json("Evento não encontrado!");
     }

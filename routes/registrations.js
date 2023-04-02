@@ -98,6 +98,28 @@ router.post("/:id", authorization, async (req, res) => {
   }
 });
 
+// Delete Registrations (USER)
+router.delete("/:id", authorization, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const userId = req.userId;
+
+    const deleteRegistration = await pool.query("DELETE FROM registrations WHERE registration_id = $1 AND user_id = $2 RETURNING *", [id, userId]);
+    console.log(deleteRegistration.rows[0]);
+
+    res.status(200).json({
+      message: "Inscrição cancelada com sucesso.",
+      type: "success",
+    });
+  } catch (err) {
+    console.log(err.message);
+    res.status(400).json({
+      message: `Inscrição cancelada com sucesso. ${err.message}`,
+      type: "error",
+    });
+  }
+});
+
 // Check if user is registered (USER)
 router.get("/:id/checkreg", authorization, async (req, res) => {
   try {
@@ -151,7 +173,7 @@ router.get("/:id/checkreg", authorization, async (req, res) => {
       return res.status(200).json({ message: "Inscrições Encerradas", type: "error" });
     }
 
-    return res.status(200).json({ message: "Inscrições Disponíveis", type: "success" });
+    return res.status(200).json({ message: "Inscrições Disponíveis", type: "success", data: listOfCategories.rows });
   } catch (err) {
     console.log(err.message);
   }

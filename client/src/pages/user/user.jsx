@@ -34,7 +34,7 @@ const UserPanel = ({ userAuthentication, userName }) => {
         <ul className="nav nav-tabs" id="myTab" role="tablist">
           <li className="nav-item" role="presentation">
             <button
-              className={`nav-link ${panel === "inscricoes" && "active"}`}
+              className={`nav-link ${(panel === "inscricoes" || panel === undefined) && "active"}`}
               id="registrations-tab"
               data-bs-toggle="tab"
               data-bs-target="#registrations"
@@ -77,7 +77,7 @@ const UserPanel = ({ userAuthentication, userName }) => {
         </ul>
         <div className="tab-content" id="myTabContent">
           <div
-            className={`tab-pane fade ${panel === "inscricoes" && "show active"}`}
+            className={`tab-pane fade ${(panel === "inscricoes" || panel === undefined) && "show active"}`}
             id="registrations"
             role="tabpanel"
             aria-labelledby="registrations-tab"

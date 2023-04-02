@@ -1,4 +1,6 @@
 import React, { useMemo } from "react";
+import { useEffect } from "react";
+import { useState } from "react";
 import { useTable, useGlobalFilter, usePagination, useSortBy } from "react-table";
 
 const GlobalFilter = ({ globalFilter, setGlobalFilter }) => {
@@ -20,7 +22,7 @@ const Pagination = (props) => {
       <ul className="pagination mb-0">
         <li className={`page-item ${!props.canPreviousPage && `disabled`}`}>
           <button className={`page-link`} onClick={() => props.previousPage()} disabled={!props.canPreviousPage}>
-            Anterior
+            {`<`} <span className="d-none d-lg-inline-block">Anterior</span>
           </button>
         </li>
         {Array.from(Array(props.pageCount).keys()).map((page, index) => (
@@ -37,7 +39,7 @@ const Pagination = (props) => {
         ))}
         <li className={`page-item ${!props.canNextPage && `disabled`}`}>
           <button className="page-link" onClick={() => props.nextPage()}>
-            Próxima
+            <span className="d-none d-lg-inline-block">Próxima</span> {`>`}
           </button>
         </li>
       </ul>
@@ -107,15 +109,34 @@ const Table = ({ data, columns, customPageSize, generateXlsx }) => {
     )
   );
 
+  const [windowDimensions, setWindowDimensions] = useState({
+    width: window.innerWidth,
+    height: window.innerHeight,
+  });
+
+  const handleResize = () => {
+    setWindowDimensions({
+      width: window.innerWidth,
+      height: window.innerHeight,
+    });
+  };
+
+  useEffect(() => {
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
   return (
     <div className="table-responsive">
-      <div className="d-flex my-2 mx-1 align-items-center">
+      <div className={`d-flex ${pageCount > 3 && "flex-column"} my-2 mx-1 align-items-center`}>
         <GlobalFilter globalFilter={globalFilter} setGlobalFilter={setGlobalFilter} />
         <Pagination
           canPreviousPage={canPreviousPage}
           canNextPage={canNextPage}
           pageIndex={pageIndex}
-          pageCount={pageCount}
+          pageCount={windowDimensions.width < 768 ? 0 : pageCount}
           pageSize={pageSize}
           pageOptions={pageOptions}
           gotoPage={gotoPage}
@@ -124,7 +145,7 @@ const Table = ({ data, columns, customPageSize, generateXlsx }) => {
           setPageSize={setPageSize}
         />
         {generateXlsx && (
-          <div className="flex-fill text-end">
+          <div className="flex-fill text-end ms-2">
             <button
               className="btn btn-outline-success mt-auto mx-auto"
               onClick={(e) => {

@@ -70,6 +70,26 @@ const EditEventPanel = () => {
     }
   };
 
+  const deleteRegistration = async (id) => {
+    try {
+      const myHeaders = new Headers();
+      myHeaders.append("Content-Type", "application/json");
+      myHeaders.append("token", localStorage.token);
+
+      const response = await fetch(`/api/registrations/${id}`, {
+        method: "DELETE",
+        headers: myHeaders,
+      });
+      const parseResponse = await response.json();
+      console.log(parseResponse);
+      if (parseResponse.type === "success") {
+        setEvent({ ...event, registrations: event.registrations.filter((registration) => registration.registration_id !== id) });
+      }
+    } catch (err) {
+      console.log(err.message);
+    }
+  };
+
   useEffect(() => {
     const getEvent = async () => {
       setIsLoading(true);
@@ -246,6 +266,7 @@ const EditEventPanel = () => {
                   handleSubmit={handleSubmit}
                   errors={errors}
                   useFieldArray={useFieldArray}
+                  deleteRegistration={deleteRegistration}
                 />
               </div>
             </div>

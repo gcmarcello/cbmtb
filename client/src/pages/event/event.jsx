@@ -73,6 +73,8 @@ const EventPage = () => {
     return <LoadingScreen />;
   }
 
+  console.log(event.categories);
+
   return (
     <Fragment>
       <div className="container inner-page">
@@ -134,6 +136,12 @@ const EventPage = () => {
                             ) : (
                               <Fragment>
                                 <i className="bi bi-check-circle"></i> Inscreva-se
+                                {event.categories &&
+                                  (event.categories.sort((a, b) => a.category_price - b.category_price)[0].category_price === 0
+                                    ? " (Gratuito)"
+                                    : ` (à partir de R$${
+                                        event.categories.sort((a, b) => a.category_price - b.category_price)[0].category_price
+                                      },00)`)}
                               </Fragment>
                             )}
                           </button>
