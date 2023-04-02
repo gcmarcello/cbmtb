@@ -122,7 +122,7 @@ module.exports = class Email {
         email: "noreply@cbmtb.com",
       },
       subject: `Confirmação de cancelamento de inscrição no(a) ${eventName}`,
-      html: `<h1><strong>Confirma&ccedil;&atilde;o de Inscri&ccedil;&atilde;o</strong></h1>
+      html: `<h1><strong>Confirma&ccedil;&atilde;o de Cancelamento de Inscri&ccedil;&atilde;o</strong></h1>
 
       <p>Prezado(a) ${firstName},</p>
 

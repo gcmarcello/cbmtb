@@ -109,34 +109,15 @@ const Table = ({ data, columns, customPageSize, generateXlsx }) => {
     )
   );
 
-  const [windowDimensions, setWindowDimensions] = useState({
-    width: window.innerWidth,
-    height: window.innerHeight,
-  });
-
-  const handleResize = () => {
-    setWindowDimensions({
-      width: window.innerWidth,
-      height: window.innerHeight,
-    });
-  };
-
-  useEffect(() => {
-    window.addEventListener("resize", handleResize);
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
-
   return (
     <div className="table-responsive">
-      <div className={`d-flex ${pageCount > 3 && "flex-column"} my-2 mx-1 align-items-center`}>
+      <div className={`d-flex my-2 mx-1 align-items-center`}>
         <GlobalFilter globalFilter={globalFilter} setGlobalFilter={setGlobalFilter} />
         <Pagination
           canPreviousPage={canPreviousPage}
           canNextPage={canNextPage}
           pageIndex={pageIndex}
-          pageCount={windowDimensions.width < 768 ? 0 : pageCount}
+          pageCount={pageCount}
           pageSize={pageSize}
           pageOptions={pageOptions}
           gotoPage={gotoPage}
