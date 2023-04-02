@@ -112,4 +112,44 @@ module.exports = class Email {
         return { message: error.message, type: "error" };
       });
   }
+
+  async sendRegistrationCancellationEmail(firstName, eventName, eventLink) {
+    sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+    const msg = {
+      to: this.emails[0],
+      from: {
+        name: "CBMTB - Confederação Brasileira de Mountain Bike",
+        email: "noreply@cbmtb.com",
+      },
+      subject: `Confirmação de cancelamento de inscrição no(a) ${eventName}`,
+      html: `<h1><strong>Confirma&ccedil;&atilde;o de Inscri&ccedil;&atilde;o</strong></h1>
+
+      <p>Prezado(a) ${firstName},</p>
+
+      <p>
+          Lamentamos informar que sua inscrição no evento <strong><span style="font-size:16px">${eventName}</span></strong> foi
+          cancelada. Esperamos que você possa participar dos nossos próximos
+          eventos.
+        </p>
+
+        <p>
+          Se você cancelou sua inscrição por engano ou deseja obter mais informações, você pode acessar a página do evento e se inscrever novamente <a href="https://cbmtb.com.br/evento/${eventLink}">clicando aqui.</a>
+        </p>
+      
+      
+      
+        <p>Agradecemos sua compreensão.</p>
+        <p>Atenciosamente,</p>
+        <p>CBMTB - Confederação Brasileira de Mountain Bike</p>`,
+    };
+
+    sgMail
+      .send(msg)
+      .then(() => {
+        console.log("Email sent");
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }
 };

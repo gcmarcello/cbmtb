@@ -1,24 +1,11 @@
 import React from "react";
+
 import EventInfoModal from "./eventInfoModal";
 import PaymentModal from "./paymentModal";
 
-const UserRegistrations = ({ registrations }) => {
+const UserRegistrations = ({ registrations, deleteRegistration }) => {
   const dayjs = require("dayjs");
-  const deleteRegistration = async (id) => {
-    try {
-      const myHeaders = new Headers();
-      myHeaders.append("Content-Type", "application/json");
-      myHeaders.append("token", localStorage.token);
 
-      const response = await fetch(`/api/registrations/${id}`, {
-        method: "DELETE",
-        headers: myHeaders,
-      });
-      const parseResponse = await response.json();
-    } catch (err) {
-      console.log(err.message);
-    }
-  };
   return (
     <div className="row mt-2">
       <h3>Inscrições Confirmadas</h3>
@@ -29,7 +16,6 @@ const UserRegistrations = ({ registrations }) => {
             .map((registration) => (
               <div key={registration.registration_id} className="card m-3" style={{ width: "18rem" }}>
                 <img src={registration.event_image} className="card-img-top" alt="..." height={169.73} width={286} />
-
                 <hr className="my-0" />
                 <div className="card-body">
                   <h5 className="card-title">{registration.event_name}</h5>
@@ -38,9 +24,55 @@ const UserRegistrations = ({ registrations }) => {
                   <span className="fw-bold">Tamanho da Camisa:</span> {registration.registration_shirt.toUpperCase()}
                   <div className="d-flex">
                     <EventInfoModal registration={registration} />
-                    <button type="button" className="btn btn-danger form-control ms-2 mt-2 h-50" data-bs-toggle="modal" data-bs-target="#CancelModal">
+
+                    <button
+                      type="button"
+                      className="btn btn-danger form-control mt-2 h-50"
+                      data-bs-toggle="modal"
+                      data-bs-target="#removeRegistrationModal"
+                    >
                       Cancelar
                     </button>
+
+                    <div
+                      className="modal fade"
+                      id="removeRegistrationModal"
+                      tabIndex="-1"
+                      aria-labelledby="removeRegistrationModalLabel"
+                      aria-hidden="true"
+                    >
+                      <div className="modal-dialog">
+                        <form>
+                          <div className="modal-content">
+                            <div className="modal-header">
+                              <h5 className="modal-title" id="removeRegistrationModalLabel">
+                                Cancelar inscrição
+                              </h5>
+                              <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div className="modal-body">
+                              <p>
+                                Tem certeza que deseja cancelar esta inscrição? Você receberá um e-mail de confirmação do cancelamento. Caso você
+                                queira refazer a inscrição, ficará sujeito a disponibilidade no momento da reinscrição!
+                              </p>
+                            </div>
+                            <div className="modal-footer">
+                              <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">
+                                Voltar
+                              </button>
+                              <button
+                                type="button"
+                                className="btn btn-danger"
+                                onClick={() => deleteRegistration(registration.event_id, registration.registration_id)}
+                                data-bs-dismiss="modal"
+                              >
+                                Cancelar Inscrição
+                              </button>
+                            </div>
+                          </div>
+                        </form>
+                      </div>
+                    </div>
                   </div>
                 </div>
                 <div className="card-footer d-flex justify-content-between align-items-center">

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Fragment } from "react";
 import { useParams } from "react-router-dom";
+import { toast } from "react-toastify";
 
 import LoadingScreen from "../../utils/loadingScreen";
 import UserOptions from "./components/userOptions";
@@ -9,10 +10,32 @@ import UserRegistrations from "./components/userRegistrations";
 
 import { fetchRegistrations } from "./functions/fetchRegistrations";
 
-const UserPanel = ({ userAuthentication, userName }) => {
+const UserPanel = () => {
   const [registrations, setRegistrations] = useState([]);
   const { panel } = useParams();
   const [loading, setLoading] = useState(true);
+
+  console.log(registrations);
+
+  const deleteRegistration = async (eventId, registrationId) => {
+    try {
+      const myHeaders = new Headers();
+      myHeaders.append("Content-Type", "application/json");
+      myHeaders.append("token", localStorage.token);
+
+      const response = await fetch(`/api/registrations/${eventId}/${registrationId}`, {
+        method: "DELETE",
+        headers: myHeaders,
+      });
+      const parseResponse = await response.json();
+      if (parseResponse.type === "success") {
+        setRegistrations(registrations.filter((registration) => registration.registration_id !== registrationId));
+        toast.success(parseResponse.message, { theme: "colored" });
+      }
+    } catch (err) {
+      console.log(err.message);
+    }
+  };
 
   useEffect(() => {
     setLoading(true);
@@ -82,7 +105,7 @@ const UserPanel = ({ userAuthentication, userName }) => {
             role="tabpanel"
             aria-labelledby="registrations-tab"
           >
-            <UserRegistrations registrations={registrations} />
+            <UserRegistrations registrations={registrations} deleteRegistration={deleteRegistration} />
           </div>
           <div className={`tab-pane fade ${panel === "perfil" && "show active"}`} id="profile" role="tabpanel" aria-labelledby="profile-tab">
             <UserOptions />

@@ -76,14 +76,14 @@ const EditEventPanel = () => {
       myHeaders.append("Content-Type", "application/json");
       myHeaders.append("token", localStorage.token);
 
-      const response = await fetch(`/api/registrations/${id}`, {
+      const response = await fetch(`/api/registrations/${event.event_id}/${id}`, {
         method: "DELETE",
         headers: myHeaders,
       });
       const parseResponse = await response.json();
-      console.log(parseResponse);
       if (parseResponse.type === "success") {
         setEvent({ ...event, registrations: event.registrations.filter((registration) => registration.registration_id !== id) });
+        toast.success(parseResponse.message, { theme: "colored" });
       }
     } catch (err) {
       console.log(err.message);

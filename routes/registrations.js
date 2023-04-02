@@ -99,13 +99,20 @@ router.post("/:id", authorization, async (req, res) => {
 });
 
 // Delete Registrations (USER)
-router.delete("/:id", authorization, async (req, res) => {
+router.delete("/:eventId/:registrationId", authorization, async (req, res) => {
   try {
-    const { id } = req.params;
+    const { eventId, registrationId } = req.params;
     const userId = req.userId;
 
-    const deleteRegistration = await pool.query("DELETE FROM registrations WHERE registration_id = $1 AND user_id = $2 RETURNING *", [id, userId]);
-    console.log(deleteRegistration.rows[0]);
+    /* const deleteRegistration = await pool.query("DELETE FROM registrations WHERE registration_id = $1 AND user_id = $2 RETURNING *", [
+      registrationId,
+      userId,
+    ]);
+    const userInfo = (await pool.query("SELECT user_first_name, user_email FROM users WHERE user_id = $1", [userId])).rows[0];
+    const eventInfo = (await pool.query("SELECT event_name, event_link FROM events WHERE event_id = $1", [eventId])).rows[0];
+
+    const sgEmail = new Email([userInfo.user_email]);
+    sgEmail.sendRegistrationCancellationEmail(userInfo.user_first_name, eventInfo.event_name, eventInfo.event_link); */
 
     res.status(200).json({
       message: "Inscrição cancelada com sucesso.",
@@ -114,7 +121,7 @@ router.delete("/:id", authorization, async (req, res) => {
   } catch (err) {
     console.log(err.message);
     res.status(400).json({
-      message: `Inscrição cancelada com sucesso. ${err.message}`,
+      message: `Erro ao cancelar a inscrição. ${err.message}`,
       type: "error",
     });
   }
