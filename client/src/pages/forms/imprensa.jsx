@@ -6,6 +6,8 @@ import InputMask from "react-input-mask";
 import ReCAPTCHA from "react-google-recaptcha";
 import { siteConfigs } from "../../App.config.js";
 
+import config from "../../config";
+
 const Imprensa = () => {
   const navigate = useNavigate();
   const {
@@ -50,7 +52,7 @@ const Imprensa = () => {
       <p>
         Registre seu veículo de imprensa na confederação! Ao preencher o
         cadastro, você receberá automaticamente em seu email todas as notícias
-        da CBMTB em primeira mão.
+        da {config.entidade} em primeira mão.
       </p>
       <form
         onSubmit={handleSubmit(onSubmit)}
