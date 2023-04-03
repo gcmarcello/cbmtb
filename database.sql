@@ -74,7 +74,7 @@ CREATE TABLE registrations(
     event_id UUID NOT NULL,
     user_id UUID NOT NULL,
     category_id UUID NOT NULL,
-    payment_id UUID NOT NULL,
+    payment_id UUID,
     registration_shirt VARCHAR(255),
     registration_status VARCHAR(255) NOT NULL,
     registration_date TIMESTAMP WITH TIME ZONE NOT NULL,

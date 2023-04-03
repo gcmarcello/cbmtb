@@ -11,7 +11,13 @@ const UserNavigation = ({ userAuthentication, setUserAuthentication, userName, u
     <nav className="navbar navbar-expand-lg navbar-dark bg-light shadow-lg sticky-top userbar">
       <div className="container-fluid pb-2">
         <a href="/">
-          <img src="/logonotxt.png" className="img-fluid" alt="Logo da CBMTB" height={90} width={250} />
+          <img
+            src="https://cbmtb.s3.sa-east-1.amazonaws.com/assets/logonotxt.png"
+            className="img-fluid"
+            alt="Logo da CBMTB"
+            height={90}
+            width={250}
+          />
         </a>
         <button
           className="navbar-toggler"

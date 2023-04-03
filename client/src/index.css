@@ -123,7 +123,7 @@ code {
 
 .hero {
   background-color: #00a859;
-  background-image: url("../public/banner.jfif") !important;
+  background-image: url("https://cbmtb.s3.sa-east-1.amazonaws.com/assets/banner.jfif") !important;
   background-size: cover;
   background-position: 50% 10%;
 }

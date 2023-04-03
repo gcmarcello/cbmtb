@@ -6,7 +6,7 @@ const AdminNavigation = () => {
       <nav className="navbar navbar-expand-lg navbar-light shadow-sm">
         <div className="container-fluid">
           <a className="navbar-brand" href="/">
-            <img src="/logoconf_black.svg" alt="LOGO" className="img-fluid" height={100} width={150} />
+            <img src="https://cbmtb.s3.sa-east-1.amazonaws.com/assets/logoconf_black.svg" alt="LOGO" className="img-fluid" height={100} width={150} />
           </a>
           <button
             className="navbar-toggler"
