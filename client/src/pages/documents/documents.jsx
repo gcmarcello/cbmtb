@@ -1,6 +1,8 @@
 import React, { useState, Fragment } from "react";
 import { toast } from "react-toastify";
 
+import config from "../../config";
+
 const Documents = () => {
   const [documents, setDocuments] = useState([]); //eslint-disable-next-line
   const [isLoading, setIsLoading] = useState(false);
@@ -54,15 +56,23 @@ const Documents = () => {
         <h1>Transparência</h1>
         <div className="mx-2">
           <p className="text-justify">
-            Bem-vindo à página de Transparência da CBMTB! Aqui você poderá acessar nossos estatutos, regulamentos, atas de reuniões e outros
-            documentos importantes. Também fornecemos informações sobre nossa estrutura organizacional, incluindo os membros de nosso conselho e
-            equipe administrativa. Além disso, nossa página de Transparência oferece informações sobre nosso orçamento, finanças e investimentos.
+            Bem-vindo à página de Transparência da {config.entidade}! Aqui você
+            poderá acessar nossos estatutos, regulamentos, atas de reuniões e
+            outros documentos importantes. Também fornecemos informações sobre
+            nossa estrutura organizacional, incluindo os membros de nosso
+            conselho e equipe administrativa. Além disso, nossa página de
+            Transparência oferece informações sobre nosso orçamento, finanças e
+            investimentos.
           </p>
           <p className="text-justify">
-            Publicamos anualmente nossos balanços financeiros, demonstrações de resultados e relatórios de auditoria, para que nossos membros possam
-            acompanhar o desempenho financeiro de nossa entidade. Estamos comprometidos em manter um alto nível de integridade e ética em nossas
-            operações. Como tal, nossa página de Transparência e Documentação é atualizada regularmente e estamos sempre disponíveis para responder a
-            quaisquer dúvidas ou preocupações que nossos membros possam ter.
+            Publicamos anualmente nossos balanços financeiros, demonstrações de
+            resultados e relatórios de auditoria, para que nossos membros possam
+            acompanhar o desempenho financeiro de nossa entidade. Estamos
+            comprometidos em manter um alto nível de integridade e ética em
+            nossas operações. Como tal, nossa página de Transparência e
+            Documentação é atualizada regularmente e estamos sempre disponíveis
+            para responder a quaisquer dúvidas ou preocupações que nossos
+            membros possam ter.
           </p>
         </div>
 
@@ -80,9 +90,16 @@ const Documents = () => {
                 Documentação Geral
               </button>
             </h2>
-            <div id="collapseOne" className="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+            <div
+              id="collapseOne"
+              className="accordion-collapse collapse show"
+              aria-labelledby="headingOne"
+              data-bs-parent="#accordionExample"
+            >
               <div className="accordion-body">
-                {!documents.filter((document) => document.document_general === true).length && "Nada por aqui."}
+                {!documents.filter(
+                  (document) => document.document_general === true
+                ).length && "Nada por aqui."}
                 <div className="list-group">
                   {documents
                     .filter((document) => document.document_general === true)
@@ -91,7 +108,12 @@ const Documents = () => {
                         key={`${document.document_id}-general`}
                         className="list-group-item list-group-item-action"
                         aria-current="true"
-                        onClick={(e) => openDocument(e, document.document_link.split("/").pop())}
+                        onClick={(e) =>
+                          openDocument(
+                            e,
+                            document.document_link.split("/").pop()
+                          )
+                        }
                       >
                         <div className="d-flex w-100 justify-content-between">
                           <h5 className="mb-1">{document.document_title}</h5>
@@ -131,23 +153,40 @@ const Documents = () => {
                   data-bs-parent={`#accordion-years`}
                 >
                   <div className="accordion-body">
-                    {!documents.filter((document) => document.document_year === year && !document.document_general) && "Nada por aqui."}
+                    {!documents.filter(
+                      (document) =>
+                        document.document_year === year &&
+                        !document.document_general
+                    ) && "Nada por aqui."}
                     <div className="list-group">
                       {documents
-                        .filter((document) => document.document_year === year && !document.document_general)
+                        .filter(
+                          (document) =>
+                            document.document_year === year &&
+                            !document.document_general
+                        )
                         .map((document) => (
                           <button
                             key={document.document_id}
                             href="#"
                             className="list-group-item list-group-item-action"
                             aria-current="true"
-                            onClick={(e) => openDocument(e, document.document_link.split("/").pop())}
+                            onClick={(e) =>
+                              openDocument(
+                                e,
+                                document.document_link.split("/").pop()
+                              )
+                            }
                           >
                             <div className="d-flex w-100 justify-content-between">
-                              <h5 className="mb-1">{document.document_title}</h5>
+                              <h5 className="mb-1">
+                                {document.document_title}
+                              </h5>
                               {/* <small>3 days ago</small> */}
                             </div>
-                            <p className="mb-1">{document.document_description}</p>
+                            <p className="mb-1">
+                              {document.document_description}
+                            </p>
                             {/* <small>And some small print.</small> */}
                           </button>
                         ))}
