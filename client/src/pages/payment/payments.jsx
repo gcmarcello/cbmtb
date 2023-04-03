@@ -103,7 +103,7 @@ const Payments = ({ id, registration }) => {
         ) : (
           <div className="d-flex flex-column align-items-center justify-content-center inner-page" style={{ minHeight: "300px" }}>
             <p className="text-center">Carregando chave PIX...</p>
-            <img src="../logo-pix.png" alt="LOGO PIX" height={90} width={90} className="mb-3" />
+            <img src="https://cbmtb.s3.sa-east-1.amazonaws.com/assets/logo-pix.png" alt="LOGO PIX" height={90} width={90} className="mb-3" />
             <LoadingScreen />
           </div>
         )}

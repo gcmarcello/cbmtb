@@ -8,7 +8,7 @@ const Home = ({ userAuthentication, setUserAuthentication, userName, userAdmin }
     <Fragment>
       <div className="d-flex flex-column align-items-center justify-content-center vh-100 hero">
         <a href="#hero-anchor">
-          <img src="./logoconf_white.svg" alt="" className="img-fluid" />
+          <img src="https://cbmtb.s3.sa-east-1.amazonaws.com/assets/logoconf_white.svg" alt="" className="img-fluid" />
         </a>
       </div>
       <LatestNews />

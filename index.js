@@ -28,10 +28,28 @@ app.use("/api/registrations", require("./routes/registrations"));
 app.use("/api/users", require("./routes/users"));
 
 /* React Routes */
-// Serve react files
-app.use(express.static(path.join(__dirname, "client/build")));
-// Home Page
-app.use("/*", express.static(path.join(__dirname, "client/build")));
+if (process.env.NODE_ENV === "development") {
+  app.get(/^\/static\/js\/main\.[a-f0-9]{8}\.js\.map$/, (req, res) => {
+    const fileName = req.url.slice(1);
+    res.sendFile(path.join(__dirname, "client", "build", fileName));
+  });
+  app.get(/^\/static\/css\/main\.[a-f0-9]{8}\.css\.map$/, (req, res) => {
+    const fileName = req.url.slice(1);
+    res.sendFile(path.join(__dirname, "client", "build", fileName));
+  });
+}
+
+app.get(/^\/static\/js\/main\.[a-f0-9]{8}\.js$/, (req, res) => {
+  const fileName = req.url.slice(1);
+  res.sendFile(path.join(__dirname, "client", "build", fileName));
+});
+app.get(/^\/static\/css\/main\.[a-f0-9]{8}\.css$/, (req, res) => {
+  const fileName = req.url.slice(1);
+  res.sendFile(path.join(__dirname, "client", "build", fileName));
+});
+app.get("/**", (req, res) => {
+  res.sendFile(path.join(__dirname, "client", "build", "index.html"));
+});
 
 app.listen(port, () => {
   console.log(
