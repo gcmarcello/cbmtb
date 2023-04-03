@@ -1,6 +1,8 @@
 const sgMail = require("@sendgrid/mail");
 const dayjs = require("dayjs");
 
+const config = require("../config");
+
 module.exports = class Email {
   constructor(emails) {
     this.emails = emails;
@@ -10,12 +12,14 @@ module.exports = class Email {
     const msg = {
       to: this.emails[0],
       from: {
-        name: "CBMTB - Confederação Brasileira de Mountain Bike",
+        name: `${config.entidade} - ${config.entidade_fullName}`,
         email: "noreply@cbmtb.com",
       },
       subject: "Confirme sua conta na CBMTB",
       html: `<h2>Confirmação de Criação de Conta</h2><p>Prezado(a) ${firstName},</p><p>Obrigado por criar uma conta no sistema da CBMTB! Sua conta foi criada com sucesso e agora você pode aproveitar todos os recursos que oferecemos.</p><p>Para começar, por favor confirme o seu endereço de e-mail clicando no link abaixo:</p><p><a href='${
-        process.env.NODE_ENV === "production" ? "https://cbmtb.com.br" : "http://localhost:3000"
+        process.env.NODE_ENV === "production"
+          ? "https://cbmtb.com.br"
+          : "http://localhost:3000"
       }/confirmacao/${confirmationId}'>Confirmar Conta</a></p><p>Se você não criou esta conta, por favor, ignore este e-mail.</p><p>Obrigado mais uma vez por se inscrever em nosso site. Estamos ansiosos para vê-lo(a) lá!</p><br><p>Atenciosamente,</p><p> a CBMTB</p>`,
     };
 
@@ -28,12 +32,21 @@ module.exports = class Email {
         console.error(error);
       });
   }
-  async sendRegistrationEmail(firstName, eventName, dateStart, dateEnd, location, category, registrationID, eventLink) {
+  async sendRegistrationEmail(
+    firstName,
+    eventName,
+    dateStart,
+    dateEnd,
+    location,
+    category,
+    registrationID,
+    eventLink
+  ) {
     sgMail.setApiKey(process.env.SENDGRID_API_KEY);
     const msg = {
       to: this.emails[0],
       from: {
-        name: "CBMTB - Confederação Brasileira de Mountain Bike",
+        name: `${config.entidade} - ${config.entidade_fullName}`,
         email: "noreply@cbmtb.com",
       },
       subject: `Confirmação de inscrição no(a) ${eventName}`,
@@ -46,7 +59,9 @@ module.exports = class Email {
       <p>Aqui est&atilde;o as informa&ccedil;&otilde;es do evento e da sua inscri&ccedil;&atilde;o.&nbsp;Imprima este e-mail e leve ao evento para facilitar o check-in!</p>
       
       <ul>
-        <li><strong>Data:</strong>&nbsp;${dayjs(dateStart).format("DD/MM/YYYY HH:mm")} -&nbsp;${dayjs(dateEnd).format("DD/MM/YYYY HH:mm")}</li>
+        <li><strong>Data:</strong>&nbsp;${dayjs(dateStart).format(
+          "DD/MM/YYYY HH:mm"
+        )} -&nbsp;${dayjs(dateEnd).format("DD/MM/YYYY HH:mm")}</li>
         <li><strong>Local:</strong>&nbsp;${location}</li>
         <li><strong>Categoria:</strong>&nbsp;${category}</li>
         <li><strong>ID da inscri&ccedil;&atilde;o:</strong> ${registrationID}&nbsp;(Esse &eacute; apenas o n&uacute;mero de controle no sistema, seu n&uacute;mero de atleta&nbsp;ser&aacute; definido de forma aleat&oacute;ria no check-in do evento)</li>
@@ -88,7 +103,9 @@ module.exports = class Email {
       <p>Se foi voc&ecirc; quem solicitou, clique no link abaixo para ser direcionado para a p&aacute;gina de redefini&ccedil;&atilde;o de senha:</p>
       
       <p><a href="${
-        process.env.NODE_ENV === "production" ? "https://cbmtb.com.br" : "http://localhost:3000"
+        process.env.NODE_ENV === "production"
+          ? "https://cbmtb.com.br"
+          : "http://localhost:3000"
       }/senha/${passwordResetId}">Redefinir Senha</a></p>
       
       <p>Por quest&otilde;es de seguran&ccedil;a, o link acima expirar&aacute; em 2 horas. Certifique-se de concluir o processo de redefini&ccedil;&atilde;o de senha antes desse prazo.</p>
