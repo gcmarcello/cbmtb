@@ -48,17 +48,31 @@ const Imprensa = () => {
     <div className="container inner-page">
       <h1>Cadastro de Imprensa</h1>
       <p>
-        Registre seu veículo de imprensa na confederação! Ao preencher o cadastro, você receberá automaticamente em seu email todas as notícias da
-        CBMTB em primeira mão.
+        Registre seu veículo de imprensa na confederação! Ao preencher o
+        cadastro, você receberá automaticamente em seu email todas as notícias
+        da CBMTB em primeira mão.
       </p>
-      <form onSubmit={handleSubmit(onSubmit)} className="needs-validation" noValidate>
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="needs-validation"
+        noValidate
+      >
         <div className="row">
           <div className="col-12 col-lg-6">
             <label htmlFor="name">Nome Completo</label>
             <input
               id="fullName"
-              className={`form-control ${errors.fullName?.type ? "is-invalid" : getValues("fullName") ? "is-valid" : ""} mb-3`}
-              {...register("fullName", { required: true, pattern: /^([A-Za-z]+\s*){3,}$/i })}
+              className={`form-control ${
+                errors.fullName?.type
+                  ? "is-invalid"
+                  : getValues("fullName")
+                  ? "is-valid"
+                  : ""
+              } mb-3`}
+              {...register("fullName", {
+                required: true,
+                pattern: /^([A-Za-z]+\s*){3,}$/i,
+              })}
               aria-invalid={errors.fullName ? "true" : "false"}
             />
             {errors.fullName && (
@@ -71,13 +85,24 @@ const Imprensa = () => {
             <label htmlFor="email">Email</label>
             <input
               id="email"
-              className={`form-control ${errors.email?.type ? "is-invalid" : getValues("email") ? "is-valid" : ""} mb-3`}
-              {...register("email", { required: true, pattern: /^[\w-.]+@([\w-]+\.)+[\w-]{2,}$/ })}
+              className={`form-control ${
+                errors.email?.type
+                  ? "is-invalid"
+                  : getValues("email")
+                  ? "is-valid"
+                  : ""
+              } mb-3`}
+              {...register("email", {
+                required: true,
+                pattern: /^[\w-.]+@([\w-]+\.)+[\w-]{2,}$/,
+              })}
               aria-invalid={errors.email ? "true" : "false"}
             />
             {errors.email?.type && (
               <div className="alert alert-danger mt-2" role="alert">
-                {errors.email?.type === "server" ? errors.email.message : "Por favor, insira o seu email corretamente."}
+                {errors.email?.type === "server"
+                  ? errors.email.message
+                  : "Por favor, insira o seu email corretamente."}
               </div>
             )}
           </div>
@@ -96,7 +121,13 @@ const Imprensa = () => {
               render={({ field }) => (
                 <InputMask
                   mask="(99) 99999-9999"
-                  className={`form-control ${errors.phone ? "is-invalid" : getValues("phone") ? "is-valid" : ""} mb-3`}
+                  className={`form-control ${
+                    errors.phone
+                      ? "is-invalid"
+                      : getValues("phone")
+                      ? "is-valid"
+                      : ""
+                  } mb-3`}
                   maskChar=""
                   value={field.value}
                   onChange={field.onChange}
@@ -124,7 +155,13 @@ const Imprensa = () => {
               render={({ field }) => (
                 <InputMask
                   mask="999.999.999-99"
-                  className={`form-control ${errors.cpf ? "is-invalid" : getValues("cpf") ? "is-valid" : ""} mb-3`}
+                  className={`form-control ${
+                    errors.cpf
+                      ? "is-invalid"
+                      : getValues("cpf")
+                      ? "is-valid"
+                      : ""
+                  } mb-3`}
                   maskChar=""
                   value={field.value}
                   onChange={field.onChange}
@@ -135,7 +172,9 @@ const Imprensa = () => {
             />
             {errors.cpf?.type && (
               <div className="alert alert-danger mt-2" role="alert">
-                {errors.cpf?.type === "server" ? errors.cpf.message : "Por favor, insira o seu CPF corretamente."}
+                {errors.cpf?.type === "server"
+                  ? errors.cpf.message
+                  : "Por favor, insira o seu CPF corretamente."}
               </div>
             )}
           </div>
@@ -146,7 +185,9 @@ const Imprensa = () => {
             <select
               id="type"
               defaultValue=""
-              className={`form-select ${errors.type ? "is-invalid" : getValues("type") ? "is-valid" : ""} mb-3`}
+              className={`form-select ${
+                errors.type ? "is-invalid" : getValues("type") ? "is-valid" : ""
+              } mb-3`}
               {...register("type", { required: true })}
             >
               <option value="" disabled>
@@ -166,7 +207,13 @@ const Imprensa = () => {
             <label htmlFor="vehicle">Nome do Veículo de Imprensa</label>
             <input
               id="vehicle"
-              className={`form-control ${errors.vehicle ? "is-invalid" : getValues("vehicle") ? "is-valid" : ""} mb-3`}
+              className={`form-control ${
+                errors.vehicle
+                  ? "is-invalid"
+                  : getValues("vehicle")
+                  ? "is-valid"
+                  : ""
+              } mb-3`}
               {...register("vehicle", { required: true })}
             />
             {errors.vehicle && (
@@ -179,7 +226,11 @@ const Imprensa = () => {
         <div className="row">
           <div className="col-12">
             <label htmlFor="comments">Comentários</label>
-            <textarea id="comments" className={`form-control mb-3`} {...register("comments")} />
+            <textarea
+              id="comments"
+              className={`form-control mb-3`}
+              {...register("comments")}
+            />
           </div>
         </div>
 
@@ -208,7 +259,11 @@ const Imprensa = () => {
                 />
               </div>
               <div className="col-12 col-lg-6 d-flex justify-content-center justify-content-lg-end">
-                <input type="submit" className="btn btn-success my-2 px-5 btn-lg" disabled={!watch("reCaptcha")} />
+                <input
+                  type="submit"
+                  className="btn btn-success my-2 px-5 btn-lg"
+                  disabled={!watch("reCaptcha")}
+                />
               </div>
             </div>
           </div>
