@@ -31,7 +31,7 @@ const ConfirmRegistration = ({ name }) => {
         Parabéns! Sua conta está confirmada. Se você não recebeu o e-mail de
         confirmação, por favor, verifique sua pasta de spam ou lixo eletrônico.
         Se o e-mail não estiver lá, entre em contato conosco pelo e-mail
-        suporte@cbmtb.com para que possamos ajudá-lo.
+        {config.supportEmail} para que possamos ajudá-lo.
       </p>
 
       <p>Estamos ansiosos para vê-lo em breve em nossos eventos!</p>
