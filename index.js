@@ -28,11 +28,6 @@ app.use("/api/registrations", require("./routes/registrations"));
 app.use("/api/users", require("./routes/users"));
 
 /* React Routes */
-
-app.get("/manifest.json", (req, res) => {
-  res.sendFile(path.join(__dirname, "client", "build", "manifest.json"));
-});
-
 if (process.env.NODE_ENV === "development") {
   app.get(/^\/static\/js\/main\.[a-f0-9]{8}\.js\.map$/, (req, res) => {
     const fileName = req.url.slice(1);
