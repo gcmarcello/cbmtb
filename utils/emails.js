@@ -15,12 +15,16 @@ module.exports = class Email {
         name: `${config.entidade} - ${config.entidade_fullName}`,
         email: "noreply@cbmtb.com",
       },
-      subject: "Confirme sua conta na CBMTB",
-      html: `<h2>Confirmação de Criação de Conta</h2><p>Prezado(a) ${firstName},</p><p>Obrigado por criar uma conta no sistema da CBMTB! Sua conta foi criada com sucesso e agora você pode aproveitar todos os recursos que oferecemos.</p><p>Para começar, por favor confirme o seu endereço de e-mail clicando no link abaixo:</p><p><a href='${
+      subject: `Confirme sua conta na ${config.entidade}`,
+      html: `<h2>Confirmação de Criação de Conta</h2><p>Prezado(a) ${firstName},</p><p>Obrigado por criar uma conta no sistema da ${
+        config.entidade
+      }! Sua conta foi criada com sucesso e agora você pode aproveitar todos os recursos que oferecemos.</p><p>Para começar, por favor confirme o seu endereço de e-mail clicando no link abaixo:</p><p><a href='${
         process.env.NODE_ENV === "production"
           ? "https://cbmtb.com.br"
           : "http://localhost:3000"
-      }/confirmacao/${confirmationId}'>Confirmar Conta</a></p><p>Se você não criou esta conta, por favor, ignore este e-mail.</p><p>Obrigado mais uma vez por se inscrever em nosso site. Estamos ansiosos para vê-lo(a) lá!</p><br><p>Atenciosamente,</p><p> a CBMTB</p>`,
+      }/confirmacao/${confirmationId}'>Confirmar Conta</a></p><p>Se você não criou esta conta, por favor, ignore este e-mail.</p><p>Obrigado mais uma vez por se inscrever em nosso site. Estamos ansiosos para vê-lo(a) lá!</p><br><p>Atenciosamente,</p><p> a ${
+        config.entidade
+      }</p>`,
     };
 
     sgMail
@@ -71,7 +75,7 @@ module.exports = class Email {
       
       <p>Atenciosamente,</p>
       
-      <p>a CBMTB</p>`,
+      <p>a ${config.entidade}</p>`,
     };
 
     sgMail
@@ -90,11 +94,13 @@ module.exports = class Email {
     const msg = {
       to: this.emails[0],
       from: {
-        name: "CBMTB - Confederação Brasileira de Mountain Bike",
+        name: `${config.entidade} - ${config.entidade_fullName}`,
         email: "noreply@cbmtb.com",
       },
-      subject: "Redefinição de Senha CBMTB",
-      html: `<h2>Redefini&ccedil;&atilde;o de Senha no Sistema CBMTB</h2>
+      subject: `Redefinição de Senha ${config.entidade}`,
+      html: `<h2>Redefini&ccedil;&atilde;o de Senha no Sistema ${
+        config.entidade
+      }</h2>
 
       <p>Prezado(a) ${firstName},</p>
       
@@ -116,7 +122,7 @@ module.exports = class Email {
       
       <p>&nbsp;</p>
       
-      <p>a CBMTB</p>`,
+      <p>a ${config.entidade}</p>`,
     };
 
     return sgMail
@@ -135,7 +141,7 @@ module.exports = class Email {
     const msg = {
       to: this.emails[0],
       from: {
-        name: "CBMTB - Confederação Brasileira de Mountain Bike",
+        name: `${config.entidade} - ${config.entidade_fullName}`,
         email: "noreply@cbmtb.com",
       },
       subject: `Confirmação de cancelamento de inscrição no(a) ${eventName}`,
@@ -157,7 +163,7 @@ module.exports = class Email {
       
         <p>Agradecemos sua compreensão.</p>
         <p>Atenciosamente,</p>
-        <p>CBMTB - Confederação Brasileira de Mountain Bike</p>`,
+        <p>${config.entidade} - ${config.entidade_fullName}</p>`,
     };
 
     sgMail
