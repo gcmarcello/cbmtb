@@ -11,8 +11,8 @@
   --btn-primary-color-hover: #143880;
   --btn-primary-color-active: #1947a3;
   /* HOME PAGE */
-  --homepage-primary-bg: url("../public/banner.jfif");
-  --homepage-secondary-bg: url("../public/bgs/eventos-bg.png") !important;
+  --homepage-primary-bg: url("https://cbmtb.s3.sa-east-1.amazonaws.com/assets/banner.jfif");
+  --homepage-secondary-bg: url("https://cbmtb.s3.sa-east-1.amazonaws.com/assets/eventos-bg.png") !important;
 }
 
 body {
@@ -141,13 +141,8 @@ code {
 }
 
 .hero {
-<<<<<<< HEAD
   background-color: var(--primary-color);
   background-image: var(--homepage-primary-bg);
-=======
-  background-color: #00a859;
-  background-image: url("https://cbmtb.s3.sa-east-1.amazonaws.com/assets/banner.jfif") !important;
->>>>>>> 0d7d1719ea9254cdd4c9c3e9b4c7bc959a8b11f7
   background-size: cover;
   background-position: 50% 10%;
 }
@@ -215,11 +210,7 @@ footer .text-muted:hover {
 }
 
 #home-next-events {
-<<<<<<< HEAD
   background: var(--homepage-secondary-bg) no-repeat;
-=======
-  background: url("https://cbmtb.s3.sa-east-1.amazonaws.com/assets/eventos-bg.png") no-repeat;
->>>>>>> 0d7d1719ea9254cdd4c9c3e9b4c7bc959a8b11f7
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center center;
