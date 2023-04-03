@@ -1,6 +1,13 @@
 import React, { Fragment } from "react";
 
-const UserNavigation = ({ userAuthentication, setUserAuthentication, userName, userAdmin }) => {
+import config from "../config.js";
+
+const UserNavigation = ({
+  userAuthentication,
+  setUserAuthentication,
+  userName,
+  userAdmin,
+}) => {
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("settings");
@@ -11,7 +18,13 @@ const UserNavigation = ({ userAuthentication, setUserAuthentication, userName, u
     <nav className="navbar navbar-expand-lg navbar-dark bg-light shadow-lg sticky-top userbar">
       <div className="container-fluid pb-2">
         <a href="/">
-          <img src="/logonotxt.png" className="img-fluid" alt="Logo da CBMTB" height={90} width={250} />
+          <img
+            src={config.logoUrl}
+            className="img-fluid"
+            alt="Logo da CBMTB"
+            height={90}
+            width={250}
+          />
         </a>
         <button
           className="navbar-toggler"
@@ -24,7 +37,10 @@ const UserNavigation = ({ userAuthentication, setUserAuthentication, userName, u
         >
           <span className="navbar-toggler-icon"></span>
         </button>
-        <div className="collapse navbar-collapse justify-content-around" id="navbarSupportedContent">
+        <div
+          className="collapse navbar-collapse justify-content-around"
+          id="navbarSupportedContent"
+        >
           <ul className="navbar-nav me-auto me-lg-0 mb-2 mb-lg-0 navigation-list">
             <li className="d-block d-md-none">
               <hr />
@@ -50,7 +66,14 @@ const UserNavigation = ({ userAuthentication, setUserAuthentication, userName, u
               </a>
             </li>
             <li className="nav-item dropdown">
-              <a className="nav-link dropdown-toggle" href="/" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <a
+                className="nav-link dropdown-toggle"
+                href="/"
+                id="navbarDropdown"
+                role="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
                 Contato
               </a>
               <ul className="dropdown-menu" aria-labelledby="navbarDropdown">
@@ -79,7 +102,11 @@ const UserNavigation = ({ userAuthentication, setUserAuthentication, userName, u
                   data-bs-toggle="dropdown"
                   aria-expanded="false"
                 >
-                  <i className="bi bi-person-circle fs-3" style={{ verticalAlign: "middle" }}></i> <span className="fw-semibold p-2">{userName}</span>
+                  <i
+                    className="bi bi-person-circle fs-3"
+                    style={{ verticalAlign: "middle" }}
+                  ></i>{" "}
+                  <span className="fw-semibold p-2">{userName}</span>
                 </a>
 
                 <ul className="dropdown-menu" aria-labelledby="navbarDropdown">
@@ -120,10 +147,18 @@ const UserNavigation = ({ userAuthentication, setUserAuthentication, userName, u
               </li>
             ) : (
               <li className="nav-item d-flex justify-content-evenly align-items-center ">
-                <a className="btn btn-primary me-2 px-5 px-lg-3 fw-bold" aria-current="page" href="/login">
+                <a
+                  className="btn btn-primary me-2 px-5 px-lg-3 fw-bold"
+                  aria-current="page"
+                  href="/login"
+                >
                   Entrar
                 </a>
-                <a className="btn btn-warning ms-2 px-5 px-lg-3 fw-bold" aria-current="page" href="/cadastro">
+                <a
+                  className="btn btn-warning ms-2 px-5 px-lg-3 fw-bold"
+                  aria-current="page"
+                  href="/cadastro"
+                >
                   Cadastro
                 </a>
               </li>
