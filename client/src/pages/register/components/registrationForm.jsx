@@ -7,6 +7,7 @@ import { animateScroll } from "react-scroll";
 
 // import { properErrorNames } from "../functions/properNames";
 import { siteConfigs } from "../../../App.config";
+import RegisterAgreement from "./registerAgreement";
 const dayjs = require("dayjs");
 
 const RegistrationForm = ({
@@ -26,6 +27,8 @@ const RegistrationForm = ({
 
   const [showPassword, setShowPassword] = useState(false);
   const [cepLoading, setCepLoading] = useState(false);
+  const [agreementRead, setAgreementRead] = useState(false);
+  const [agreementAgreed, setAgreementAgreed] = useState(false);
 
   const handleCep = async () => {
     try {
@@ -389,9 +392,9 @@ const RegistrationForm = ({
         </div>
         <hr className="mt-4" />
         <div className="row justify-content-end">
-          <div className="col-12 col-lg-6 ">
-            <div className="row justify-content-between">
-              <div className="col-12 col-lg-6 d-flex justify-content-center">
+          <div className="col-12 col-lg-8 ">
+            <div className="row justify-content-end">
+              <div className="col-12 col-lg-7 d-flex justify-content-center justify-content-xl-end my-2 my-lg-0">
                 <Controller
                   name="reCaptcha"
                   control={control}
@@ -412,18 +415,24 @@ const RegistrationForm = ({
                   )}
                 />
               </div>
-              <div className="col-12 col-lg-4 d-flex align-items-center">
+              <div className="col-12 col-lg-5 d-flex justify-content-center flex-column">
                 <button
-                  className="btn btn-success form-control py-2 mt-2"
+                  className="btn btn-success form-control py-2"
                   onClick={() => {
                     clearErrors("root.serverError");
                     handleSubmit(onSubmit);
                     animateScroll.scrollToTop();
                   }}
-                  disabled={!watch("reCaptcha")}
+                  disabled={!watch("reCaptcha") || !agreementAgreed}
                 >
                   Cadastrar
                 </button>
+                <RegisterAgreement
+                  agreementRead={agreementRead}
+                  setAgreementRead={setAgreementRead}
+                  agreementAgreed={agreementAgreed}
+                  setAgreementAgreed={setAgreementAgreed}
+                />
               </div>
             </div>
           </div>
