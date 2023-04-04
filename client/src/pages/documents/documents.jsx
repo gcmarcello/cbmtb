@@ -56,9 +56,9 @@ const Documents = () => {
         <h1>Transparência</h1>
         <div className="mx-2">
           <p className="text-justify">
-            Bem-vindo à página de Transparência da {config.entidade}! Aqui você
-            poderá acessar nossos estatutos, regulamentos, atas de reuniões e
-            outros documentos importantes. Também fornecemos informações sobre
+            Bem-vindo à página de Transparência da {config.entidade.name}! Aqui
+            você poderá acessar nossos estatutos, regulamentos, atas de reuniões
+            e outros documentos importantes. Também fornecemos informações sobre
             nossa estrutura organizacional, incluindo os membros de nosso
             conselho e equipe administrativa. Além disso, nossa página de
             Transparência oferece informações sobre nosso orçamento, finanças e

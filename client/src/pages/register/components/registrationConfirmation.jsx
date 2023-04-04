@@ -8,13 +8,13 @@ const ConfirmRegistration = ({ name }) => {
       <h1>
         {" "}
         <i className="bi bi-check-circle-fill text-success"></i> Bem vindo(a) à
-        {config.entidade}!
+        {config.entidade.name}!
       </h1>
       <p>
         {name || "Usuário"}, obrigado por se cadastrar no sistema da{" "}
-        {config.entidade}! Para concluir seu cadastro, você precisa confirmar
-        sua conta. Por favor, siga as instruções abaixo para confirmar sua
-        conta:
+        {config.entidade.name}! Para concluir seu cadastro, você precisa
+        confirmar sua conta. Por favor, siga as instruções abaixo para confirmar
+        sua conta:
       </p>
       <ul>
         <li>
@@ -35,7 +35,7 @@ const ConfirmRegistration = ({ name }) => {
       </p>
 
       <p>Estamos ansiosos para vê-lo em breve em nossos eventos!</p>
-      <p>Atenciosamente, a equipe da {config.entidade}.</p>
+      <p>Atenciosamente, a equipe da {config.entidade.name}.</p>
     </div>
   );
 };

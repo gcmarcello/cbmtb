@@ -21,7 +21,7 @@ const UserNavigation = ({
           <img
             src={config.logoUrl}
             className="img-fluid"
-            alt="Logo da CBMTB"
+            alt={`Logo da ${config.entidade.name}`}
             height={90}
             width={250}
           />

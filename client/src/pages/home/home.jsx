@@ -3,12 +3,21 @@ import LatestNews from "./components/latestNews";
 
 import NextEvents from "./components/nextEvents";
 
-const Home = ({ userAuthentication, setUserAuthentication, userName, userAdmin }) => {
+const Home = ({
+  userAuthentication,
+  setUserAuthentication,
+  userName,
+  userAdmin,
+}) => {
   return (
     <Fragment>
       <div className="d-flex flex-column align-items-center justify-content-center vh-100 hero">
         <a href="#hero-anchor">
-          <img src="https://cbmtb.s3.sa-east-1.amazonaws.com/assets/logoconf_white.svg" alt="" className="img-fluid" />
+          <img
+            src={`${process.env.BUCKET_URL}/assets/logoconf_white.svg`}
+            alt=""
+            className="img-fluid"
+          />
         </a>
       </div>
       <LatestNews />

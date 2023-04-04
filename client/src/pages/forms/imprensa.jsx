@@ -50,9 +50,9 @@ const Imprensa = () => {
     <div className="container inner-page">
       <h1>Cadastro de Imprensa</h1>
       <p>
-        Registre seu veículo de imprensa na confederação! Ao preencher o
-        cadastro, você receberá automaticamente em seu email todas as notícias
-        da {config.entidade} em primeira mão.
+        Registre seu veículo de imprensa na {config.entidade.type}! Ao preencher
+        o cadastro, você receberá automaticamente em seu email todas as notícias
+        da {config.entidade.name} em primeira mão.
       </p>
       <form
         onSubmit={handleSubmit(onSubmit)}

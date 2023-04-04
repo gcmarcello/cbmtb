@@ -25,10 +25,24 @@ const Payments = ({ id, registration }) => {
         navigate("/");
         return;
       }
-      setExpirationTime(new Date(new Date(response.calendario.criacao).getTime() + response.calendario.expiracao * 1000));
+      setExpirationTime(
+        new Date(
+          new Date(response.calendario.criacao).getTime() +
+            response.calendario.expiracao * 1000
+        )
+      );
       setPayment(response);
-      if (new Date(new Date(response.calendario.criacao).getTime() + response.calendario.expiracao * 1000) - new Date().getTime() < 0) {
-        generateNewPayment(id || linkId).then((response) => setPayment(response));
+      if (
+        new Date(
+          new Date(response.calendario.criacao).getTime() +
+            response.calendario.expiracao * 1000
+        ) -
+          new Date().getTime() <
+        0
+      ) {
+        generateNewPayment(id || linkId).then((response) =>
+          setPayment(response)
+        );
       }
     });
   }, [id, linkId, navigate]);
@@ -37,28 +51,49 @@ const Payments = ({ id, registration }) => {
     <Fragment>
       <div className="">
         {payment ? (
-          <div className={` ${pageType === "pagamento" ? "w-50 mt-3 inner-page" : ""}`}>
+          <div
+            className={` ${
+              pageType === "pagamento" ? "w-50 mt-3 inner-page" : ""
+            }`}
+          >
             <p>
               {pageType ? (
                 <div>
-                  Nesse momento sua inscrição se encontra pendente. Uma vez que o seu pagamento seja processado, sua inscrição será confirmada! <br />
-                  Retorne à essa página a qualquer momento através do seu perfil, ou <a href="/usuario">clicando aqui.</a>
+                  Nesse momento sua inscrição se encontra pendente. Uma vez que
+                  o seu pagamento seja processado, sua inscrição será
+                  confirmada! <br />
+                  Retorne à essa página a qualquer momento através do seu
+                  perfil, ou <a href="/usuario">clicando aqui.</a>
                 </div>
               ) : (
                 ""
               )}
             </p>
             <h5 className="text-center">
-              Valor: <strong>{`R$${payment.valor.original.replace(/\./g, ",")}`}</strong>
+              Valor:{" "}
+              <strong>{`R$${payment.valor.original.replace(
+                /\./g,
+                ","
+              )}`}</strong>
             </h5>
             <h5>QR Code Pix</h5>
             <div className="d-flex justify-content-center">
-              <img className="img-fluid" src={payment.imagemQrcode} alt="Imagem do QRCode" />
+              <img
+                className="img-fluid"
+                src={payment.imagemQrcode}
+                alt="Imagem do QRCode"
+              />
             </div>
 
             <h5>Código Pix</h5>
             <div className="input-group">
-              <input type="text" className="form-control" id="event-link" defaultValue={payment.qrcode} disabled />
+              <input
+                type="text"
+                className="form-control"
+                id="event-link"
+                defaultValue={payment.qrcode}
+                disabled
+              />
               <button
                 className="btn btn-light border"
                 type="button"
@@ -66,7 +101,9 @@ const Payments = ({ id, registration }) => {
                 onClick={() => {
                   const eventLink = document.getElementById("event-link");
                   navigator.clipboard.writeText(eventLink.value);
-                  toast.success("Código copiado com sucesso!", { theme: "colored" });
+                  toast.success("Código copiado com sucesso!", {
+                    theme: "colored",
+                  });
                 }}
               >
                 <i className="bi bi-clipboard"></i>
@@ -74,13 +111,20 @@ const Payments = ({ id, registration }) => {
             </div>
             <div className="text-center mt-2">
               <span>Código válido até: </span>
-              <span className="fw-bolder">{`${expirationTime.getDate().toString()}/${expirationTime
+              <span className="fw-bolder">{`${expirationTime
+                .getDate()
+                .toString()}/${expirationTime
                 .getMonth()
                 .toString()
-                .padStart(2, "0")}/${expirationTime.getFullYear().toString()} - ${expirationTime
+                .padStart(2, "0")}/${expirationTime
+                .getFullYear()
+                .toString()} - ${expirationTime
                 .getHours()
                 .toString()
-                .padStart(2, "0")}:${expirationTime.getMinutes().toString().padStart(2, "0")}`}</span>
+                .padStart(2, "0")}:${expirationTime
+                .getMinutes()
+                .toString()
+                .padStart(2, "0")}`}</span>
             </div>
             <hr />
             <div className="d-flex justify-content-between">
@@ -93,7 +137,8 @@ const Payments = ({ id, registration }) => {
               />
 
               <p className="mb-0 text-end">
-                Esta cobrança foi gerada pela Efí. Abra a sua conta digital grátis e facilite a gestão financeira do seu negócio!{" "}
+                Esta cobrança foi gerada pela Efí. Abra a sua conta digital
+                grátis e facilite a gestão financeira do seu negócio!{" "}
                 <a href="gerencianet.com.br" target={"_blank"}>
                   Saiba Mais
                 </a>
@@ -101,9 +146,18 @@ const Payments = ({ id, registration }) => {
             </div>
           </div>
         ) : (
-          <div className="d-flex flex-column align-items-center justify-content-center inner-page" style={{ minHeight: "300px" }}>
+          <div
+            className="d-flex flex-column align-items-center justify-content-center inner-page"
+            style={{ minHeight: "300px" }}
+          >
             <p className="text-center">Carregando chave PIX...</p>
-            <img src="https://cbmtb.s3.sa-east-1.amazonaws.com/assets/logo-pix.png" alt="LOGO PIX" height={90} width={90} className="mb-3" />
+            <img
+              src={`${process.env.BUCKET_URL}/assets/logo-pix.png`}
+              alt="LOGO PIX"
+              height={90}
+              width={90}
+              className="mb-3"
+            />
             <LoadingScreen />
           </div>
         )}
