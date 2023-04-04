@@ -1,9 +1,17 @@
-const { uploadFileToS3, deleteFileFromS3, createPreSignedURL } = require("../apis/awsS3");
+const {
+  uploadFileToS3,
+  deleteFileFromS3,
+  createPreSignedURL,
+} = require("../apis/awsS3");
 const fs = require("fs");
 const path = require("path");
 
 async function upload_file(req, res) {
-  const url = await uploadFileToS3(req.file, "cbmtb", "public");
+  const url = await uploadFileToS3(
+    req.file,
+    process.env.MAIN_BUCKET_NAME,
+    "public"
+  );
 
   if (req.file) {
     const filePath = path.join(req.file.destination, req.file.filename);
