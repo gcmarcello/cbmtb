@@ -12,18 +12,18 @@ module.exports = class Email {
     const msg = {
       to: this.emails[0],
       from: {
-        name: `${config.entidade} - ${config.entidade_fullName}`,
+        name: `${config.entidade.name} - ${config.entidade.name}`,
         email: "noreply@cbmtb.com",
       },
-      subject: `Confirme sua conta na ${config.entidade}`,
+      subject: `Confirme sua conta na ${config.entidade.name}`,
       html: `<h2>Confirmação de Criação de Conta</h2><p>Prezado(a) ${firstName},</p><p>Obrigado por criar uma conta no sistema da ${
-        config.entidade
+        config.entidade.name
       }! Sua conta foi criada com sucesso e agora você pode aproveitar todos os recursos que oferecemos.</p><p>Para começar, por favor confirme o seu endereço de e-mail clicando no link abaixo:</p><p><a href='${
         process.env.NODE_ENV === "production"
           ? "https://cbmtb.com.br"
           : "http://localhost:3000"
       }/confirmacao/${confirmationId}'>Confirmar Conta</a></p><p>Se você não criou esta conta, por favor, ignore este e-mail.</p><p>Obrigado mais uma vez por se inscrever em nosso site. Estamos ansiosos para vê-lo(a) lá!</p><br><p>Atenciosamente,</p><p> a ${
-        config.entidade
+        config.entidade.name
       }</p>`,
     };
 
@@ -50,7 +50,7 @@ module.exports = class Email {
     const msg = {
       to: this.emails[0],
       from: {
-        name: `${config.entidade} - ${config.entidade_fullName}`,
+        name: `${config.entidade.name} - ${config.entidade.name}`,
         email: "noreply@cbmtb.com",
       },
       subject: `Confirmação de inscrição no(a) ${eventName}`,
@@ -75,7 +75,7 @@ module.exports = class Email {
       
       <p>Atenciosamente,</p>
       
-      <p>a ${config.entidade}</p>`,
+      <p>a ${config.entidade.name}</p>`,
     };
 
     sgMail
@@ -94,12 +94,12 @@ module.exports = class Email {
     const msg = {
       to: this.emails[0],
       from: {
-        name: `${config.entidade} - ${config.entidade_fullName}`,
+        name: `${config.entidade.name} - ${config.entidade.name}`,
         email: "noreply@cbmtb.com",
       },
-      subject: `Redefinição de Senha ${config.entidade}`,
+      subject: `Redefinição de Senha ${config.entidade.name}`,
       html: `<h2>Redefini&ccedil;&atilde;o de Senha no Sistema ${
-        config.entidade
+        config.entidade.name
       }</h2>
 
       <p>Prezado(a) ${firstName},</p>
@@ -122,7 +122,7 @@ module.exports = class Email {
       
       <p>&nbsp;</p>
       
-      <p>a ${config.entidade}</p>`,
+      <p>a ${config.entidade.name}</p>`,
     };
 
     return sgMail
@@ -141,7 +141,7 @@ module.exports = class Email {
     const msg = {
       to: this.emails[0],
       from: {
-        name: `${config.entidade} - ${config.entidade_fullName}`,
+        name: `${config.entidade.name} - ${config.entidade.name}`,
         email: "noreply@cbmtb.com",
       },
       subject: `Confirmação de cancelamento de inscrição no(a) ${eventName}`,
@@ -163,7 +163,7 @@ module.exports = class Email {
       
         <p>Agradecemos sua compreensão.</p>
         <p>Atenciosamente,</p>
-        <p>${config.entidade} - ${config.entidade_fullName}</p>`,
+        <p>${config.entidade.name} - ${config.entidade.name}</p>`,
     };
 
     sgMail
