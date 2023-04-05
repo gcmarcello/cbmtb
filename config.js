@@ -7,7 +7,7 @@ const config = {
     type: "Confederação",
   },
   contact: {
-    supportEmail: "suporte@cbmtb.com",
+    supportEmail: "ouvidoria@cbmtb.com",
   },
   redes: {
     twitter: "https://twitter.com/cbmtb",

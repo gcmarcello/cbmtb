@@ -25,6 +25,7 @@ app.use("/api/federations", require("./routes/federations"));
 app.use("/api/news", require("./routes/news"));
 app.use("/api/payments", require("./routes/payments"));
 app.use("/api/registrations", require("./routes/registrations"));
+app.use("/api/tickets", require("./routes/tickets"));
 app.use("/api/users", require("./routes/users"));
 
 /* React Routes */

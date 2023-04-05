@@ -19,9 +19,7 @@ module.exports = class Email {
       html: `<h2>Confirmação de Criação de Conta</h2><p>Prezado(a) ${firstName},</p><p>Obrigado por criar uma conta no sistema da ${
         config.entidade.name
       }! Sua conta foi criada com sucesso e agora você pode aproveitar todos os recursos que oferecemos.</p><p>Para começar, por favor confirme o seu endereço de e-mail clicando no link abaixo:</p><p><a href='${
-        process.env.NODE_ENV === "production"
-          ? "https://cbmtb.com.br"
-          : "http://localhost:3000"
+        process.env.NODE_ENV === "production" ? "https://cbmtb.com.br" : "http://localhost:3000"
       }/confirmacao/${confirmationId}'>Confirmar Conta</a></p><p>Se você não criou esta conta, por favor, ignore este e-mail.</p><p>Obrigado mais uma vez por se inscrever em nosso site. Estamos ansiosos para vê-lo(a) lá!</p><br><p>Atenciosamente,</p><p> a ${
         config.entidade.name
       }</p>`,
@@ -36,16 +34,7 @@ module.exports = class Email {
         console.error(error);
       });
   }
-  async sendRegistrationEmail(
-    firstName,
-    eventName,
-    dateStart,
-    dateEnd,
-    location,
-    category,
-    registrationID,
-    eventLink
-  ) {
+  async sendRegistrationEmail(firstName, eventName, dateStart, dateEnd, location, category, registrationID, eventLink) {
     sgMail.setApiKey(process.env.SENDGRID_API_KEY);
     const msg = {
       to: this.emails[0],
@@ -53,7 +42,7 @@ module.exports = class Email {
         name: `${config.entidade.name} - ${config.entidade.name}`,
         email: "noreply@cbmtb.com",
       },
-      subject: `Confirmação de inscrição no(a) ${eventName}`,
+      subject: `${config.entidade.name} - Confirmação de inscrição no(a) ${eventName}`,
       html: `<h1><strong>Confirma&ccedil;&atilde;o de Inscri&ccedil;&atilde;o</strong></h1>
 
       <p>Prezado(a) ${firstName},</p>
@@ -63,9 +52,7 @@ module.exports = class Email {
       <p>Aqui est&atilde;o as informa&ccedil;&otilde;es do evento e da sua inscri&ccedil;&atilde;o.&nbsp;Imprima este e-mail e leve ao evento para facilitar o check-in!</p>
       
       <ul>
-        <li><strong>Data:</strong>&nbsp;${dayjs(dateStart).format(
-          "DD/MM/YYYY HH:mm"
-        )} -&nbsp;${dayjs(dateEnd).format("DD/MM/YYYY HH:mm")}</li>
+        <li><strong>Data:</strong>&nbsp;${dayjs(dateStart).format("DD/MM/YYYY HH:mm")} -&nbsp;${dayjs(dateEnd).format("DD/MM/YYYY HH:mm")}</li>
         <li><strong>Local:</strong>&nbsp;${location}</li>
         <li><strong>Categoria:</strong>&nbsp;${category}</li>
         <li><strong>ID da inscri&ccedil;&atilde;o:</strong> ${registrationID}&nbsp;(Esse &eacute; apenas o n&uacute;mero de controle no sistema, seu n&uacute;mero de atleta&nbsp;ser&aacute; definido de forma aleat&oacute;ria no check-in do evento)</li>
@@ -97,10 +84,8 @@ module.exports = class Email {
         name: `${config.entidade.name} - ${config.entidade.name}`,
         email: "noreply@cbmtb.com",
       },
-      subject: `Redefinição de Senha ${config.entidade.name}`,
-      html: `<h2>Redefini&ccedil;&atilde;o de Senha no Sistema ${
-        config.entidade.name
-      }</h2>
+      subject: `${config.entidade.name} - Redefinição de Senha ${config.entidade.name}`,
+      html: `<h2>Redefini&ccedil;&atilde;o de Senha no Sistema ${config.entidade.name}</h2>
 
       <p>Prezado(a) ${firstName},</p>
       
@@ -109,9 +94,7 @@ module.exports = class Email {
       <p>Se foi voc&ecirc; quem solicitou, clique no link abaixo para ser direcionado para a p&aacute;gina de redefini&ccedil;&atilde;o de senha:</p>
       
       <p><a href="${
-        process.env.NODE_ENV === "production"
-          ? "https://cbmtb.com.br"
-          : "http://localhost:3000"
+        process.env.NODE_ENV === "production" ? "https://cbmtb.com.br" : "http://localhost:3000"
       }/senha/${passwordResetId}">Redefinir Senha</a></p>
       
       <p>Por quest&otilde;es de seguran&ccedil;a, o link acima expirar&aacute; em 2 horas. Certifique-se de concluir o processo de redefini&ccedil;&atilde;o de senha antes desse prazo.</p>
@@ -144,7 +127,7 @@ module.exports = class Email {
         name: `${config.entidade.name} - ${config.entidade.name}`,
         email: "noreply@cbmtb.com",
       },
-      subject: `Confirmação de cancelamento de inscrição no(a) ${eventName}`,
+      subject: `${config.entidade.name} - Confirmação de cancelamento de inscrição no(a) ${eventName}`,
       html: `<h1><strong>Confirma&ccedil;&atilde;o de Cancelamento de Inscri&ccedil;&atilde;o</strong></h1>
 
       <p>Prezado(a) ${firstName},</p>
@@ -164,6 +147,41 @@ module.exports = class Email {
         <p>Agradecemos sua compreensão.</p>
         <p>Atenciosamente,</p>
         <p>${config.entidade.name} - ${config.entidade.name}</p>`,
+    };
+
+    sgMail
+      .send(msg)
+      .then(() => {
+        console.log("Email sent");
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }
+
+  async sendTicketEmail(firstName, messageBody, ticketId) {
+    sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+    const msg = {
+      to: this.emails[0],
+      from: {
+        name: `${config.entidade.name} - ${config.entidade.name}`,
+        email: "ouvidoria@cbmtb.com",
+      },
+      subject: `${config.entidade.name} - Resposta ao Chamado ${ticketId}`,
+      html: `<h1><strong>Resposta ao Chamado&nbsp;${ticketId}</strong></h1>
+
+      <p>Prezado(a) ${firstName}, obrigado pela sua mensagem!</p>
+      
+      <p>${messageBody}</p>
+      
+      <hr />
+      <p>Por favor, n&atilde;o retorne esta mensagem. Caso voc&ecirc; tenha mais alguma d&uacute;vida, favor abrir um novo chamado <a href="https://cbmtb.com.br/ouvidoria" target="_blank">clicando aqui.</a></p>
+      
+      <p>Agradecemos sua compreens&atilde;o.</p>
+      
+      <p>Atenciosamente,</p>
+      
+      <p>A ${config.entidade.name}&nbsp;</p>`,
     };
 
     sgMail

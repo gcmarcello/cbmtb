@@ -27,7 +27,6 @@ const RegistrationForm = ({
 
   const [showPassword, setShowPassword] = useState(false);
   const [cepLoading, setCepLoading] = useState(false);
-  const [agreementRead, setAgreementRead] = useState(false);
   const [agreementAgreed, setAgreementAgreed] = useState(false);
 
   const handleCep = async () => {
@@ -416,6 +415,7 @@ const RegistrationForm = ({
                 />
               </div>
               <div className="col-12 col-lg-5 d-flex justify-content-center flex-column">
+                <RegisterAgreement agreementAgreed={agreementAgreed} setAgreementAgreed={setAgreementAgreed} />
                 <button
                   className="btn btn-success form-control py-2"
                   onClick={() => {
@@ -427,12 +427,6 @@ const RegistrationForm = ({
                 >
                   Cadastrar
                 </button>
-                <RegisterAgreement
-                  agreementRead={agreementRead}
-                  setAgreementRead={setAgreementRead}
-                  agreementAgreed={agreementAgreed}
-                  setAgreementAgreed={setAgreementAgreed}
-                />
               </div>
             </div>
           </div>

@@ -15,8 +15,6 @@ const UserPanel = () => {
   const { panel } = useParams();
   const [loading, setLoading] = useState(true);
 
-  console.log(registrations);
-
   const deleteRegistration = async (eventId, registrationId) => {
     try {
       const myHeaders = new Headers();

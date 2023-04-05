@@ -4,12 +4,14 @@ const RegisterAgreement = (props) => {
   return (
     <div class="form-check d-flex align-items-top justify-content-start mt-1">
       <input
+        id="agreementCheckbox"
         class="form-check-input"
         type="checkbox"
+        role="button"
         value={props.agreementAgreed}
-        id="flexCheckDefault"
-        disabled={!props.agreementRead}
-        onChange={() => props.setAgreementAgreed(!props.agreementAgreed)}
+        data-bs-toggle="modal"
+        data-bs-target="#termsModal"
+        onChange={() => props.setAgreementAgreed(true)}
       />
       <span className="ms-1">
         <span className="d-inline-block d-lg-none d-xl-inline-block">Aceito os </span>{" "}
@@ -18,7 +20,10 @@ const RegisterAgreement = (props) => {
           class="btn btn-link p-0 m-0 mb-1"
           data-bs-toggle="modal"
           data-bs-target="#termsModal"
-          onClick={() => props.setAgreementRead(true)}
+          onClick={() => {
+            props.setAgreementAgreed(true);
+            document.getElementById("agreementCheckbox").checked = true;
+          }}
         >
           Termos de Uso (leia para aceitar)
         </button>
@@ -33,7 +38,7 @@ const RegisterAgreement = (props) => {
               </h5>
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body overflow-auto" style={{ maxHeight: "450px" }}>
               <ol>
                 <li>
                   <p>

@@ -38,6 +38,9 @@ import AdminNavigation from "./pages/admin/components/adminNavigation";
 import ListDocuments from "./pages/admin/components/documents/listDocuments";
 import NewDocument from "./pages/admin/components/documents/createDocuments";
 import PasswordReset from "./pages/login/passwordReset";
+import ListTickets from "./pages/admin/components/tickets/listTickets";
+import AnswerTicket from "./pages/admin/components/tickets/answerTicket";
+import ListUsers from "./pages/admin/components/users/listUsers";
 
 function App() {
   const [userAuthentication, setUserAuthentication] = useState(false);
@@ -185,6 +188,33 @@ function App() {
             element={
               <PrivateRoute {...loginProps}>
                 <NewDocument />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            exact
+            path="/painel/ouvidoria/"
+            element={
+              <PrivateRoute {...loginProps}>
+                <ListTickets />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            exact
+            path="/painel/ouvidoria/:id"
+            element={
+              <PrivateRoute {...loginProps}>
+                <AnswerTicket />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            exact
+            path="/painel/usuarios"
+            element={
+              <PrivateRoute {...loginProps}>
+                <ListUsers />
               </PrivateRoute>
             }
           />

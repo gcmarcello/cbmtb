@@ -113,6 +113,7 @@ CREATE TABLE tickets(
     ticket_email VARCHAR(255) NOT NULL UNIQUE,
     ticket_phone VARCHAR(255) NOT NULL UNIQUE,
     ticket_message TEXT NOT NULL,
+    ticket_date TIMESTAMP WITH TIME ZONE,
     ticket_status VARCHAR(255) NOT NULL,
     PRIMARY KEY(ticket_id)
 );

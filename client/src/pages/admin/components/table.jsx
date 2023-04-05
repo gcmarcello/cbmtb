@@ -73,7 +73,7 @@ const Pagination = (props) => {
   );
 };
 
-const Table = ({ data, columns, customPageSize, generateXlsx }) => {
+const Table = ({ data, columns, customPageSize, sortByColumn, generateXlsx }) => {
   const memoData = useMemo(() => data, [data]);
   const memoColumns = useMemo(() => columns || Object.keys(data[0]).map((header) => ({ Header: header, accessor: header })), [columns, data]);
 
@@ -83,7 +83,7 @@ const Table = ({ data, columns, customPageSize, generateXlsx }) => {
     headerGroups,
     rows,
     prepareRow,
-    state: { globalFilter, pageIndex, pageSize },
+    state: { globalFilter, pageIndex, pageSize, sortBy },
     page,
     canPreviousPage,
     canNextPage,
@@ -94,8 +94,17 @@ const Table = ({ data, columns, customPageSize, generateXlsx }) => {
     previousPage,
     setPageSize,
     setGlobalFilter,
+    setSortBy,
   } = useTable(
-    { columns: memoColumns, data: memoData, initialState: { pageIndex: 0, pageSize: customPageSize || 10 } },
+    {
+      columns: memoColumns,
+      data: memoData,
+      initialState: {
+        pageIndex: 0,
+        pageSize: customPageSize || 10,
+        sortBy: sortByColumn || [],
+      },
+    },
     useGlobalFilter,
     useSortBy,
     usePagination

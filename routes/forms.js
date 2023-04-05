@@ -1,6 +1,7 @@
 const router = require("express").Router();
 const reCaptcha = require("../middlewares/reCaptcha");
 const pool = require("../database");
+const dayjs = require("dayjs");
 
 // Send Press Form
 router.post("/press", reCaptcha, async (req, res) => {
@@ -35,8 +36,8 @@ router.post("/ombudsman", reCaptcha, async (req, res) => {
     const { fullName, email, message, phone } = req.body;
 
     const newOmbudsmanTicket = await pool.query(
-      "INSERT INTO tickets (ticket_name,ticket_email,ticket_phone,ticket_message,ticket_status) VALUES ($1,$2,$3,$4,$5)",
-      [fullName, email, phone, message, "pending"]
+      "INSERT INTO tickets (ticket_name,ticket_email,ticket_phone,ticket_message,ticket_status,ticket_date) VALUES ($1,$2,$3,$4,$5,$6)",
+      [fullName, email, phone, message, "pending", dayjs()]
     );
 
     res.status(200).json({ message: "Mensagem enviada com sucesso.", type: "success" });

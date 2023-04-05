@@ -6,13 +6,7 @@ const AdminNavigation = () => {
       <nav className="navbar navbar-expand-lg navbar-light shadow-sm">
         <div className="container-fluid">
           <a className="navbar-brand" href="/">
-            <img
-              src={`${process.env.BUCKET_URL}/assets/logoconf_black.svg`}
-              alt="LOGO"
-              className="img-fluid"
-              height={100}
-              width={150}
-            />
+            <img src={`${process.env.REACT_APP_BUCKET_URL}/assets/logoconf_black.svg`} alt="LOGO" className="img-fluid" height={100} width={150} />
           </a>
           <button
             className="navbar-toggler"
@@ -26,16 +20,9 @@ const AdminNavigation = () => {
             <span className="navbar-toggler-icon"></span>
           </button>
           <div className="collapse navbar-collapse" id="navbarScroll">
-            <ul
-              className="navbar-nav me-auto my-2 my-lg-0"
-              style={{ "--bs-scroll-height": "100px" }}
-            >
+            <ul className="navbar-nav me-auto my-2 my-lg-0" style={{ "--bs-scroll-height": "100px" }}>
               <li className="nav-item">
-                <a
-                  className="nav-link active fw-bolder"
-                  aria-current="page"
-                  href="/painel"
-                >
+                <a className="nav-link active fw-bolder" aria-current="page" href="/painel">
                   Início
                 </a>
               </li>
@@ -50,10 +37,7 @@ const AdminNavigation = () => {
                 >
                   Eventos
                 </a>
-                <ul
-                  className="dropdown-menu"
-                  aria-labelledby="navbarScrollingDropdown"
-                >
+                <ul className="dropdown-menu" aria-labelledby="navbarScrollingDropdown">
                   <li>
                     <a href="/painel/eventos" className="dropdown-item">
                       Listar Eventos
@@ -77,10 +61,7 @@ const AdminNavigation = () => {
                 >
                   Notícias
                 </a>
-                <ul
-                  className="dropdown-menu"
-                  aria-labelledby="navbarScrollingDropdown"
-                >
+                <ul className="dropdown-menu" aria-labelledby="navbarScrollingDropdown">
                   <li>
                     <a href="/painel/noticias" className="dropdown-item">
                       Listar Notícias
@@ -94,13 +75,13 @@ const AdminNavigation = () => {
                 </ul>
               </li>
               <li className="nav-item">
-                <a
-                  href="/painel/documentos"
-                  className="nav-link"
-                  aria-current="page"
-                  style={{ border: "0", background: "none" }}
-                >
+                <a href="/painel/documentos" className="nav-link" aria-current="page" style={{ border: "0", background: "none" }}>
                   Documentos
+                </a>
+              </li>
+              <li className="nav-item">
+                <a href="/painel/ouvidoria" className="nav-link" aria-current="page" style={{ border: "0", background: "none" }}>
+                  Ouvidoria
                 </a>
               </li>
             </ul>

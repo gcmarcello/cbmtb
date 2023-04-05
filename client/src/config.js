@@ -1,5 +1,5 @@
 const config = {
-  siteUrl: "cbmtb.com",
+  siteUrl: "cbmtb.com.br",
   logoUrl: "https://cbmtb.s3.sa-east-1.amazonaws.com/assets/logonotxt.png",
   entidade: {
     abbreviation: "CBMTB",

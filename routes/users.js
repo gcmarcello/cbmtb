@@ -5,6 +5,7 @@ const dayjs = require("dayjs");
 
 const registrationValidation = require("../middlewares/registrationValidation");
 const authorization = require("../middlewares/authorization");
+const adminAuthorization = require("../middlewares/adminAuthorization");
 const reCaptcha = require("../middlewares/reCaptcha");
 
 const jwtGenerator = require("../utils/jwtGenerator");
@@ -65,6 +66,21 @@ router.put("/", authorization, async (req, res) => {
   }
 });
 
+// Update User Information
+router.put("/admin", adminAuthorization, async (req, res) => {
+  const { address, apartment, cep, city, email, firstName, lastName, number, phone, state, userId } = req.body;
+  try {
+    const userInfoUpdate = await pool.query(
+      "UPDATE users SET user_address = $1, user_apartment = $2, user_cep = $3, user_city = $4, user_email = $5, user_first_name = $6, user_last_name = $7, user_number = $8, user_phone = $9, user_state = $10 WHERE user_id = $11",
+      [address, apartment, cep, city, email, firstName, lastName, number, phone, state, userId]
+    );
+    return res.status(200).json({ message: "Informações atualizadas com sucesso!", type: "success" });
+  } catch (err) {
+    console.log(err.message);
+    res.status(500).json({ message: `Erro ao atualizar suas informações. ${err.message}`, type: "error" });
+  }
+});
+
 // Login Route
 router.post("/login", async (req, res) => {
   const { cpf, password } = req.body;
@@ -102,6 +118,19 @@ router.get("/self", authorization, async (req, res) => {
     );
     res.status(200).json(self.rows[0]);
   } catch (err) {
+    res.status(500).json("Server Error");
+  }
+});
+
+router.get("/list", adminAuthorization, async (req, res) => {
+  try {
+    const userList = await pool.query(
+      "SELECT user_id, user_email, user_first_name, user_last_name, user_gender, user_phone, user_cpf, user_birth_date, user_cep, user_state, user_city, user_address, user_number, user_apartment, user_role FROM users"
+    );
+    const myArrayString = JSON.stringify(userList.rows);
+    res.status(200).json(userList.rows);
+  } catch (err) {
+    console.log(err.message);
     res.status(500).json("Server Error");
   }
 });
