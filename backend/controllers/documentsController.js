@@ -12,7 +12,7 @@ async function read_document(req, res) {
   try {
     const { id } = req.params;
     const link = createPreSignedURL(
-      process.env.MAIN_BUCKET_NAME,
+      process.env.S3_BUCKET_NAME,
       "documents",
       `${id}`
     );
@@ -44,7 +44,7 @@ async function create_document(req, res) {
 
     const s3File = await uploadFileToS3(
       req.file,
-      process.env.MAIN_BUCKET_NAME,
+      process.env.S3_BUCKET_NAME,
       "documents",
       "private"
     );
@@ -86,7 +86,7 @@ async function delete_document(req, res) {
     const deleteDocumentLink = deleteDocument.rows[0].document_link;
 
     const deleteS3File = await deleteFileFromS3(
-      process.env.MAIN_BUCKET_NAME,
+      process.env.S3_BUCKET_NAME,
       "documents",
       deleteDocumentLink.split("/").pop()
     );

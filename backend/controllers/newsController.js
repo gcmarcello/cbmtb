@@ -9,7 +9,7 @@ async function create_news(req, res) {
     const user = req.userId;
     const S3Image = await uploadFileToS3(
       req.file,
-      process.env.MAIN_BUCKET_NAME,
+      process.env.S3_BUCKET_NAME,
       "news-main"
     );
     const link = req.body.title
@@ -149,16 +149,12 @@ async function update_news(req, res) {
     const { title, subtitle, body, imageOld } = req.body;
 
     const image = req.file
-      ? await uploadFileToS3(
-          req.file,
-          process.env.MAIN_BUCKET_NAME,
-          "news-main"
-        )
+      ? await uploadFileToS3(req.file, process.env.S3_BUCKET_NAME, "news-main")
       : imageOld;
 
     if (req.file && imageOld) {
       deleteS3Image = await deleteFileFromS3(
-        process.env.MAIN_BUCKET_NAME,
+        process.env.S3_BUCKET_NAME,
         "news-main",
         imageOld.split("/").pop()
       );
@@ -193,7 +189,7 @@ async function delete_news(req, res) {
     );
     const image = deleteNews.rows[0].news_image_link;
     const deleteS3Image = await deleteFileFromS3(
-      process.env.MAIN_BUCKET_NAME,
+      process.env.S3_BUCKET_NAME,
       "news-main",
       image.split("/").pop()
     );

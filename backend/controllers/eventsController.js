@@ -94,7 +94,7 @@ async function createEvent(req, res) {
 
     const S3Image = await uploadFileToS3(
       req.file,
-      process.env.MAIN_BUCKET_NAME,
+      process.env.S3_BUCKET_NAME,
       "event-main"
     );
 
@@ -218,11 +218,7 @@ async function updateEvent(req, res) {
     } = req.body;
 
     const image = req.file
-      ? await uploadFileToS3(
-          req.file,
-          process.env.MAIN_BUCKET_NAME,
-          "event-main"
-        )
+      ? await uploadFileToS3(req.file, process.env.S3_BUCKET_NAME, "event-main")
       : imageOld;
 
     console.log(dayjs(dateStart).format("YYYY-MM-DD HH:mm:ss.SSSSSSZ"));

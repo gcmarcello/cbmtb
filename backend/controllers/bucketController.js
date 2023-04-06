@@ -9,7 +9,7 @@ const path = require("path");
 async function upload_file(req, res) {
   const url = await uploadFileToS3(
     req.file,
-    process.env.MAIN_BUCKET_NAME,
+    process.env.S3_BUCKET_NAME,
     "public"
   );
 
