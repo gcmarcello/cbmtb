@@ -1,7 +1,7 @@
 import React, { useState, Fragment } from "react";
 import { toast } from "react-toastify";
 
-import config from "../../config";
+import config from "../../_config";
 
 const Documents = () => {
   const [documents, setDocuments] = useState([]); //eslint-disable-next-line

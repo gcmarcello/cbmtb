@@ -6,7 +6,7 @@ import InputMask from "react-input-mask";
 import ReCAPTCHA from "react-google-recaptcha";
 import { siteConfigs } from "../../App.config.js";
 
-import config from "../../config";
+import config from "../../_config";
 
 const Imprensa = () => {
   const navigate = useNavigate();

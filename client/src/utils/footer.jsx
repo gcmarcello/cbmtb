@@ -2,7 +2,7 @@ import React from "react";
 
 import { useForm } from "react-hook-form";
 
-import config from "../config";
+import config from "../_config";
 
 const Footer = ({ userAuthentication }) => {
   const {

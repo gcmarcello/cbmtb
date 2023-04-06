@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 
 import LoadingScreen from "../../utils/loadingScreen";
 
-import config from "../../config";
+import config from "../../_config";
 
 const dayjs = require("dayjs");
 

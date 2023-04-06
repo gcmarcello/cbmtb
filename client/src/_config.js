@@ -23,4 +23,4 @@ const _config = {
   },
 };
 
-module.exports = config;
+module.exports = _config;

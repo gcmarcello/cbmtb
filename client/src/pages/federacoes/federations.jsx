@@ -4,7 +4,7 @@ import LoadingScreen from "../../utils/loadingScreen";
 
 import { retrieveDemonym } from "./functions/demonym";
 
-import config from "../../config";
+import config from "../../_config";
 
 const FederationsPage = () => {
   const [federationsList, setFederationsList] = useState([]);

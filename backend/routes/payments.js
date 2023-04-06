@@ -4,7 +4,7 @@ const crypto = require("crypto");
 const pool = require("../database/database");
 const authorization = require("../middlewares/authorization");
 
-const config = require("../config");
+const config = require("../_config");
 
 router.get("/bill", async (req, res) => {
   const reqGN = await GNRequest({
