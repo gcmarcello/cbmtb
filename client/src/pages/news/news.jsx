@@ -2,7 +2,7 @@ import React, { useState, useEffect, Fragment } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
 import { parseDate } from "../../utils/functions/parseDate";
-
+import _config from "../../_config";
 import LoadingScreen from "../../utils/loadingScreen";
 
 const NewsPage = () => {
@@ -23,7 +23,10 @@ const NewsPage = () => {
         return;
       }
       parseResponse.formattedDate = parseDate(parseResponse.news_date);
-      parseResponse.formattedUpdate = parseDate(parseResponse.news_last_update, "complete");
+      parseResponse.formattedUpdate = parseDate(
+        parseResponse.news_last_update,
+        "complete"
+      );
       setNews(parseResponse);
       setIsLoading(false);
     } catch (err) {
@@ -49,19 +52,35 @@ const NewsPage = () => {
           <div className="d-flex justify-content-between align-items-center">
             <div>
               <p className="fw-normal mb-0">
-                <span className="d-none d-lg-inline-block">{news.formattedDate} · </span> Atualizado{" "}
+                <span className="d-none d-lg-inline-block">
+                  {news.formattedDate} ·{" "}
+                </span>{" "}
+                Atualizado{" "}
                 <span className="d-none d-lg-inline-block">por último em</span>
                 {` ${news.formattedUpdate}`}
               </p>
             </div>
 
             <div className="d-flex justify-content-evenly">
-              <i className="bi bi-facebook share-button fs-4 mx-2" id="facebook-share">
+              <i
+                className="bi bi-facebook share-button fs-4 mx-2"
+                id="facebook-share"
+              >
                 {" "}
               </i>
-              <i className="bi bi-twitter share-button fs-4 mx-2" id="twitter-share"></i>
-              <a href={`https://api.whatsapp.com/send?text=https://cbmtb.com/noticias/${news.news_link}`} target="_blank" rel="noreferrer">
-                <i className="bi bi-whatsapp share-button fs-4 mx-2 text-decoration-none" id="whatsapp-share"></i>
+              <i
+                className="bi bi-twitter share-button fs-4 mx-2"
+                id="twitter-share"
+              ></i>
+              <a
+                href={`https://api.whatsapp.com/send?text=https://${_config.siteUrl}/noticias/${news.news_link}`}
+                target="_blank"
+                rel="noreferrer"
+              >
+                <i
+                  className="bi bi-whatsapp share-button fs-4 mx-2 text-decoration-none"
+                  id="whatsapp-share"
+                ></i>
               </a>
             </div>
           </div>
@@ -69,8 +88,16 @@ const NewsPage = () => {
           <hr className="mt-2" />
         </div>
 
-        <img src={news.news_image_link} style={{ maxHeight: "475px" }} alt="Imagem da Notícia" className="img-fluid rounded mx-auto d-block"></img>
-        <div dangerouslySetInnerHTML={{ __html: news.news_text }} className="mt-3"></div>
+        <img
+          src={news.news_image_link}
+          style={{ maxHeight: "475px" }}
+          alt="Imagem da Notícia"
+          className="img-fluid rounded mx-auto d-block"
+        ></img>
+        <div
+          dangerouslySetInnerHTML={{ __html: news.news_text }}
+          className="mt-3"
+        ></div>
       </div>
     </Fragment>
   );

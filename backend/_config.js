@@ -1,14 +1,22 @@
-const config = {
-  siteUrl: "cbmtb.com",
-  logoUrl: "https://cbmtb.s3.sa-east-1.amazonaws.com/assets/logonotxt.png",
+const _config = {
+  siteUrl: "cbmtb.com.br",
+  images: {
+    primaryLogo:
+      "https://cbmtb.s3.sa-east-1.amazonaws.com/assets/logonotxt.png",
+    secondaryLogo: "",
+    dashboardLogo: "",
+  },
   entidade: {
     abbreviation: "CBMTB",
     name: "Confederação Brasileira de Mountain Bike",
     type: "Confederação",
   },
   contact: {
-    supportEmail: "ouvidoria@cbmtb.com",
+    supportEmail: "suporte@amer.esp.br",
+    noreply: "noreply@amer.esp.br",
+    ouvidoria: "ouvidoria@cbmtb.com",
   },
+  pages: {},
   redes: {
     twitter: "https://twitter.com/cbmtb",
     instagram: "https://www.instagram.com/cbmtb/",
