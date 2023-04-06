@@ -1,6 +1,6 @@
 const fs = require("fs");
 const path = require("path");
-const pool = require("../database");
+const pool = require("../database/database");
 const { uploadFileToS3, deleteFileFromS3 } = require("../apis/awsS3");
 
 async function create_news(req, res) {

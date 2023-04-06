@@ -1,4 +1,4 @@
-const pool = require("../database");
+const pool = require("../database/database");
 const {
   uploadFileToS3,
   deleteFileFromS3,

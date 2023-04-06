@@ -1,4 +1,4 @@
-const pool = require("../database");
+const pool = require("../database/database");
 const { uploadFileToS3 } = require("../apis/awsS3");
 
 const fs = require("fs");
@@ -156,20 +156,16 @@ async function toggleRegistrations(req, res) {
       "UPDATE events SET event_status = $1 WHERE event_id = $2 AND event_owner_id = $3",
       [boolean, id, req.userId]
     );
-    res
-      .status(200)
-      .json({
-        message:
-          boolean === "true" ? "Inscrições abertas!" : "Inscrições fechadas.",
-        type: "success",
-      });
+    res.status(200).json({
+      message:
+        boolean === "true" ? "Inscrições abertas!" : "Inscrições fechadas.",
+      type: "success",
+    });
   } catch (err) {
-    res
-      .status(400)
-      .json({
-        message: `Erro ao abrir/fechar inscrições. ${err.message}`,
-        type: "error",
-      });
+    res.status(400).json({
+      message: `Erro ao abrir/fechar inscrições. ${err.message}`,
+      type: "error",
+    });
     console.log(err.message);
   }
 }
@@ -309,12 +305,10 @@ async function updateEvent(req, res) {
       .json({ message: "Evento atualizado com sucesso!", type: "success" });
   } catch (err) {
     console.log(err.message);
-    res
-      .status(400)
-      .json({
-        message: `Erro ao atualizar o evento. ${err.message}`,
-        type: "error",
-      });
+    res.status(400).json({
+      message: `Erro ao atualizar o evento. ${err.message}`,
+      type: "error",
+    });
   }
 }
 

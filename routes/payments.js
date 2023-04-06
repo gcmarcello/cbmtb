@@ -1,7 +1,7 @@
 const router = require("express").Router();
 /* const GNRequest = require("../apis/gerenciaNet"); */
 const crypto = require("crypto");
-const pool = require("../database");
+const pool = require("../database/database");
 const authorization = require("../middlewares/authorization");
 
 const config = require("../config");
@@ -88,13 +88,10 @@ router.get("/pix/review/:id", authorization, async (req, res) => {
       [id, userId]
     );
     if (!fetchPayment.rows.length) {
-      return res
-        .status(404)
-        .json({
-          message:
-            "Esse pagamento não existe ou não é vinculado ao seu usuário.",
-          type: "error",
-        });
+      return res.status(404).json({
+        message: "Esse pagamento não existe ou não é vinculado ao seu usuário.",
+        type: "error",
+      });
     }
     const reqGN = await GNRequest({
       clientID: process.env.GN_CLIENT_ID,
