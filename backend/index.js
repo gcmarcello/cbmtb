@@ -29,27 +29,31 @@ app.use("/api/tickets", require("./routes/tickets"));
 app.use("/api/users", require("./routes/users"));
 
 /* React Routes */
+
+const clientPath = path.resolve(__dirname, "../client");
+const buildPath = path.join(clientPath, "build");
+
 if (process.env.NODE_ENV === "development") {
   app.get(/^\/static\/js\/main\.[a-f0-9]{8}\.js\.map$/, (req, res) => {
     const fileName = req.url.slice(1);
-    res.sendFile(path.join(__dirname, "client", "build", fileName));
+    res.sendFile(path.join(buildPath, fileName));
   });
   app.get(/^\/static\/css\/main\.[a-f0-9]{8}\.css\.map$/, (req, res) => {
     const fileName = req.url.slice(1);
-    res.sendFile(path.join(__dirname, "client", "build", fileName));
+    res.sendFile(path.join(buildPath, fileName));
   });
 }
 
 app.get(/^\/static\/js\/main\.[a-f0-9]{8}\.js$/, (req, res) => {
   const fileName = req.url.slice(1);
-  res.sendFile(path.join(__dirname, "client", "build", fileName));
+  res.sendFile(path.join(buildPath, fileName));
 });
 app.get(/^\/static\/css\/main\.[a-f0-9]{8}\.css$/, (req, res) => {
   const fileName = req.url.slice(1);
-  res.sendFile(path.join(__dirname, "client", "build", fileName));
+  res.sendFile(path.join(buildPath, fileName));
 });
 app.get("/**", (req, res) => {
-  res.sendFile(path.join(__dirname, "client", "build", "index.html"));
+  res.sendFile(path.join(buildPath, "index.html"));
 });
 
 app.listen(port, () => {
