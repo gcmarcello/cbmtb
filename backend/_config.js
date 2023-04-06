@@ -1,10 +1,12 @@
 const _config = {
-  siteUrl: "cbmtb.com.br",
+  siteUrl: "cbmtb.com",
   images: {
     primaryLogo:
       "https://cbmtb.s3.sa-east-1.amazonaws.com/assets/logonotxt.png",
-    secondaryLogo: "",
-    dashboardLogo: "",
+    secondaryLogo:
+      "https://cbmtb.s3.sa-east-1.amazonaws.com/assets/logoconf_white.svg",
+    dashboardLogo:
+      "https://cbmtb.s3.sa-east-1.amazonaws.com/assets/logoconf_black.svg",
   },
   entidade: {
     abbreviation: "CBMTB",
@@ -14,7 +16,6 @@ const _config = {
   contact: {
     supportEmail: "suporte@amer.esp.br",
     noreply: "noreply@amer.esp.br",
-    ouvidoria: "ouvidoria@cbmtb.com",
   },
   pages: {},
   redes: {
@@ -24,4 +25,4 @@ const _config = {
   },
 };
 
-module.exports = config;
+module.exports = _config;

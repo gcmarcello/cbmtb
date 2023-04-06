@@ -3,8 +3,10 @@ const _config = {
   images: {
     primaryLogo:
       "https://cbmtb.s3.sa-east-1.amazonaws.com/assets/logonotxt.png",
-    secondaryLogo: "",
-    dashboardLogo: "",
+    secondaryLogo:
+      "https://cbmtb.s3.sa-east-1.amazonaws.com/assets/logoconf_white.svg",
+    dashboardLogo:
+      "https://cbmtb.s3.sa-east-1.amazonaws.com/assets/logoconf_black.svg", //MUDAR PARA O PRETO
   },
   entidade: {
     abbreviation: "CBMTB",

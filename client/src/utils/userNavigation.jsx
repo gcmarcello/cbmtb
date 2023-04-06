@@ -19,7 +19,7 @@ const UserNavigation = ({
       <div className="container-fluid pb-2">
         <a href="/">
           <img
-            src={config.logoUrl}
+            src={config.images.primaryLogo}
             className="img-fluid"
             alt={`Logo da ${config.entidade.name}`}
             height={90}
