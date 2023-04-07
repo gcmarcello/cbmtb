@@ -14,8 +14,8 @@ const _config = {
     type: "Confederação",
   },
   contact: {
-    supportEmail: "suporte@amer.esp.br",
-    noreply: "noreply@amer.esp.br",
+    supportEmail: "suporte@cbmtb.com.br",
+    noreply: "noreply@cbmtb.com.br",
   },
   pages: {},
   redes: {
