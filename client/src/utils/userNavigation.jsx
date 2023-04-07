@@ -1,4 +1,5 @@
 import React, { Fragment } from "react";
+import _config from "../_config.js";
 
 import config from "../_config.js";
 
@@ -60,11 +61,14 @@ const UserNavigation = ({
                 Notícias
               </a>
             </li>
-            <li className="nav-item">
-              <a className="nav-link" aria-current="page" href="/federacoes">
-                Federações
-              </a>
-            </li>
+            {_config.pages.federacoes && (
+              <li className="nav-item">
+                <a className="nav-link" aria-current="page" href="/federacoes">
+                  Federações
+                </a>
+              </li>
+            )}
+
             <li className="nav-item dropdown">
               <a
                 className="nav-link dropdown-toggle"

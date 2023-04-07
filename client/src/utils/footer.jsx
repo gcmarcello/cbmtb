@@ -1,6 +1,7 @@
 import React from "react";
 
 import { useForm } from "react-hook-form";
+import _config from "../_config";
 
 import config from "../_config";
 
@@ -56,11 +57,13 @@ const Footer = ({ userAuthentication }) => {
                     Notícias
                   </a>
                 </li>
-                <li className="nav-item mb-2">
-                  <a href="/" className="nav-link p-0 text-muted">
-                    Federações
-                  </a>
-                </li>
+                {_config.pages.federacoes && (
+                  <li className="nav-item mb-2">
+                    <a href="/" className="nav-link p-0 text-muted">
+                      Federações
+                    </a>
+                  </li>
+                )}
               </ul>
             </div>
             {!userAuthentication ? (
