@@ -17,7 +17,9 @@ const _config = {
     supportEmail: "suporte@cbmtb.com.br",
     noreply: "noreply@cbmtb.com.br",
   },
-  pages: {},
+  pages: {
+    federacoes: true
+  },
   redes: {
     twitter: "https://twitter.com/cbmtb",
     instagram: "https://www.instagram.com/cbmtb/",
