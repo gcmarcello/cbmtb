@@ -73,7 +73,7 @@ const NewsPage = () => {
                 id="twitter-share"
               ></i>
               <a
-                href={`https://api.whatsapp.com/send?text=https://${_config.siteUrl}/noticias/${news.news_link}`}
+                href={`https://api.whatsapp.com/send?text=${_config.site.url}/noticias/${news.news_link}`}
                 target="_blank"
                 rel="noreferrer"
               >

@@ -16,15 +16,7 @@ module.exports = class Email {
         email: _config.contact.noreply,
       },
       subject: `Confirme sua conta na ${_config.entidade.name}`,
-      html: `<h2>Confirmação de Criação de Conta</h2><p>Prezado(a) ${firstName},</p><p>Obrigado por criar uma conta no sistema da ${
-        _config.entidade.name
-      }! Sua conta foi criada com sucesso e agora você pode aproveitar todos os recursos que oferecemos.</p><p>Para começar, por favor confirme o seu endereço de e-mail clicando no link abaixo:</p><p><a href='${
-        process.env.NODE_ENV === "production"
-          ? `https://${_config.siteUrl}`
-          : "http://localhost:3000"
-      }/confirmacao/${confirmationId}'>Confirmar Conta</a></p><p>Se você não criou esta conta, por favor, ignore este e-mail.</p><p>Obrigado mais uma vez por se inscrever em nosso site. Estamos ansiosos para vê-lo(a) lá!</p><br><p>Atenciosamente,</p><p> a ${
-        _config.entidade.name
-      }</p>`,
+      html: `<h2>Confirmação de Criação de Conta</h2><p>Prezado(a) ${firstName},</p><p>Obrigado por criar uma conta no sistema da ${_config.entidade.name}! Sua conta foi criada com sucesso e agora você pode aproveitar todos os recursos que oferecemos.</p><p>Para começar, por favor confirme o seu endereço de e-mail clicando no link abaixo:</p><p><a href='${_config.site.url}/confirmacao/${confirmationId}'>Confirmar Conta</a></p><p>Se você não criou esta conta, por favor, ignore este e-mail.</p><p>Obrigado mais uma vez por se inscrever em nosso site. Estamos ansiosos para vê-lo(a) lá!</p><br><p>Atenciosamente,</p><p> a ${_config.entidade.name}</p>`,
     };
 
     sgMail
@@ -72,7 +64,7 @@ module.exports = class Email {
       </ul>
       
       <p><a href="https://${
-        _config.siteUrl
+        _config.site.url
       }/evento/${eventLink}">Clique aqui</a> para acessar a p&aacute;gina do evento com todas as informa&ccedil;&otilde;es</p>
       
       <p>Atenciosamente,</p>
@@ -100,9 +92,7 @@ module.exports = class Email {
         email: _config.contact.noreply,
       },
       subject: `${_config.entidade.name} - Redefinição de Senha ${_config.entidade.name}`,
-      html: `<h2>Redefini&ccedil;&atilde;o de Senha no Sistema ${
-        _config.entidade.name
-      }</h2>
+      html: `<h2>Redefini&ccedil;&atilde;o de Senha no Sistema ${_config.entidade.name}</h2>
 
       <p>Prezado(a) ${firstName},</p>
       
@@ -110,11 +100,7 @@ module.exports = class Email {
       
       <p>Se foi voc&ecirc; quem solicitou, clique no link abaixo para ser direcionado para a p&aacute;gina de redefini&ccedil;&atilde;o de senha:</p>
       
-      <p><a href="${
-        process.env.NODE_ENV === "production"
-          ? `https://${_config.siteUrl}`
-          : "http://localhost:3000"
-      }/senha/${passwordResetId}">Redefinir Senha</a></p>
+      <p><a href="${_config.site.url}/senha/${passwordResetId}">Redefinir Senha</a></p>
       
       <p>Por quest&otilde;es de seguran&ccedil;a, o link acima expirar&aacute; em 2 horas. Certifique-se de concluir o processo de redefini&ccedil;&atilde;o de senha antes desse prazo.</p>
       
@@ -158,7 +144,7 @@ module.exports = class Email {
         </p>
 
         <p>
-          Se você cancelou sua inscrição por engano ou deseja obter mais informações, você pode acessar a página do evento e se inscrever novamente <a href="https://${_config.siteUrl}/evento/${eventLink}">clicando aqui.</a>
+          Se você cancelou sua inscrição por engano ou deseja obter mais informações, você pode acessar a página do evento e se inscrever novamente <a href="${_config.site.url}/evento/${eventLink}">clicando aqui.</a>
         </p>
       
       
@@ -194,7 +180,7 @@ module.exports = class Email {
       <p>${messageBody}</p>
       
       <hr />
-      <p>Por favor, n&atilde;o retorne esta mensagem. Caso voc&ecirc; tenha mais alguma d&uacute;vida, favor abrir um novo chamado <a href="https://${_config.siteUrl}/ouvidoria" target="_blank">clicando aqui.</a></p>
+      <p>Por favor, n&atilde;o retorne esta mensagem. Caso voc&ecirc; tenha mais alguma d&uacute;vida, favor abrir um novo chamado <a href="${_config.site.url}/ouvidoria" target="_blank">clicando aqui.</a></p>
       
       <p>Agradecemos sua compreens&atilde;o.</p>
       

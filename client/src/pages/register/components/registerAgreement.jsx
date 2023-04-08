@@ -241,7 +241,7 @@ const RegisterAgreement = (props) => {
                 ou solicita&ccedil;&otilde;es relacionadas &agrave;
                 prote&ccedil;&atilde;o de seus dados pessoais, entre em contato
                 conosco atrav&eacute;s do canal de ouvidoria em
-                {_config.siteUrl}/ouvidoria.
+                {_config.site.url}/ouvidoria.
               </p>
 
               <p>Data da &uacute;ltima atualiza&ccedil;&atilde;o: 03/04/2023</p>

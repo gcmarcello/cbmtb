@@ -1,5 +1,14 @@
 const _config = {
-  siteUrl: "cbmtb.com",
+  site: {
+    url:
+      process.env.NODE_ENV === "production"
+        ? "https://cbmtb.com.br"
+        : "http://localhost:3000",
+    reCaptchaSiteKey:
+      process.env.NODE_ENV === "production"
+        ? "6LeMSVslAAAAAIMjysMeMhlXvjiZfWEIxWqqDZN-"
+        : "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI",
+  },
   images: {
     primaryLogo:
       "https://cbmtb.s3.sa-east-1.amazonaws.com/assets/logonotxt.png",
@@ -14,10 +23,13 @@ const _config = {
     type: "Confederação",
   },
   contact: {
-    supportEmail: "suporte@amer.esp.br",
-    noreply: "noreply@amer.esp.br",
+    supportEmail: "suporte@cbmtb.com.br",
+    noreply: "noreply@cbmtb.com.br",
+    ouvidoria: "ouvidoria@cbmtb.com.br",
   },
-  pages: {},
+  pages: {
+    federacoes: true,
+  },
   redes: {
     twitter: "https://twitter.com/cbmtb",
     instagram: "https://www.instagram.com/cbmtb/",

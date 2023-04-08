@@ -4,9 +4,9 @@ import { toast } from "react-toastify";
 import { useForm, Controller } from "react-hook-form";
 import InputMask from "react-input-mask";
 import ReCAPTCHA from "react-google-recaptcha";
-import { siteConfigs } from "../../App.config.js";
 
 import config from "../../_config";
+import _config from "../../_config";
 
 const Ouvidoria = () => {
   const navigate = useNavigate();
@@ -196,7 +196,7 @@ const Ouvidoria = () => {
                   render={({ field: { onChange } }) => (
                     <ReCAPTCHA
                       ref={reCaptchaComponent}
-                      sitekey={siteConfigs.reCaptchaSiteKey}
+                      sitekey={_config.site.reCaptchaSiteKey}
                       onChange={onChange}
                       onExpired={(e) => {
                         setValue("reCaptcha", "");

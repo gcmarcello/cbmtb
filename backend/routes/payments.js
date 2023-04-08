@@ -4,7 +4,7 @@ const crypto = require("crypto");
 const pool = require("../database/database");
 const authorization = require("../middlewares/authorization");
 
-const config = require("../_config");
+const _config = require("../_config");
 
 router.get("/bill", async (req, res) => {
   const reqGN = await GNRequest({
@@ -58,7 +58,7 @@ router.get("/pix/:id", authorization, async (req, res) => {
         original: `${payment_value}.00`,
       },
       chave: "abbe6861-4ed1-4567-836f-59c8bc2b08ba",
-      solicitacaoPagador: `${config.entidade.name} - ${config.siteUrl}`,
+      solicitacaoPagador: `${_config.entidade.name} - ${_config.site.url}`,
     };
     const uuidTxid = crypto.randomUUID().replace(/-/g, "");
     const updatePayment = await pool.query(
