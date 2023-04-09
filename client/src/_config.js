@@ -23,9 +23,9 @@ const _config = {
     type: "Confederação",
   },
   contact: {
-    supportEmail: "suporte@cbmtb.com.br",
-    noreply: "noreply@cbmtb.com.br",
-    ouvidoria: "ouvidoria@cbmtb.com.br",
+    supportEmail: "suporte@cbmtb.com",
+    noreply: "suporte@cbmtb.com",
+    ouvidoria: "suporte@cbmtb.com",
   },
   pages: {
     federacoes: true,
