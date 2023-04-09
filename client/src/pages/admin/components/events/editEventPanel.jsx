@@ -70,16 +70,17 @@ const EditEventPanel = () => {
     }
   };
 
-  const deleteRegistration = async (id) => {
+  const deleteRegistration = async (id, admin) => {
     try {
       const myHeaders = new Headers();
       myHeaders.append("Content-Type", "application/json");
       myHeaders.append("token", localStorage.token);
 
-      const response = await fetch(`/api/registrations/${event.event_id}/${id}`, {
+      const response = await fetch(`/api/registrations/${admin && "admin/"}${event.event_id}/${id}`, {
         method: "DELETE",
         headers: myHeaders,
       });
+
       const parseResponse = await response.json();
       if (parseResponse.type === "success") {
         setEvent({ ...event, registrations: event.registrations.filter((registration) => registration.registration_id !== id) });

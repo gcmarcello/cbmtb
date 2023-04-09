@@ -3,6 +3,9 @@ import Table from "../table";
 import InputMask from "react-input-mask";
 import { useForm, Controller } from "react-hook-form";
 import { toast } from "react-toastify";
+import { Editor } from "@tinymce/tinymce-react";
+import tinyConfig from "../../config/tiny.config";
+import uploadImage from "../../functions/uploadImage";
 const dayjs = require("dayjs");
 const cepSearch = require("cep-promise");
 
@@ -11,6 +14,7 @@ const ListUsers = () => {
   const [cepLoading, setCepLoading] = useState(false);
   const [userListChange, setUserListChange] = useState(false);
   const {
+    watch,
     getValues,
     setValue,
     setError,
@@ -20,6 +24,17 @@ const ListUsers = () => {
     reset,
     formState: { errors },
   } = useForm({ mode: "onChange" });
+
+  const caseInsensitiveSort = (rowA, rowB, columnId) => {
+    const valueA = rowA.values[columnId];
+    const valueB = rowB.values[columnId];
+
+    // Convert the values to lowercase strings if they are strings, otherwise use the original values
+    const stringA = typeof valueA === "string" ? valueA.toLowerCase() : valueA;
+    const stringB = typeof valueB === "string" ? valueB.toLowerCase() : valueB;
+
+    return String(stringA).localeCompare(String(stringB));
+  };
 
   const columns = [
     {
@@ -33,14 +48,24 @@ const ListUsers = () => {
     {
       Header: "Email",
       accessor: "user_email",
+      className: "d-none d-lg-table-cell",
     },
     {
       Header: "Phone",
       accessor: "user_phone",
+      className: "d-none d-lg-table-cell",
+    },
+    {
+      Header: "Status",
+      accessor: "user_confirmed",
+      className: "d-none d-lg-table-cell",
+      Cell: ({ value }) => (value ? <span className="badge bg-success">Confirmado</span> : <span className="badge bg-danger">Pendente</span>),
+      sortType: caseInsensitiveSort,
     },
     {
       Header: "Cargo",
       accessor: "user_role",
+      className: "d-none d-lg-table-cell",
       Cell: ({ value }) => {
         switch (value) {
           case "user":
@@ -150,6 +175,7 @@ const ListUsers = () => {
       number: userInfo.user_number,
       apartment: userInfo.user_apartment,
       userId: userInfo.user_id,
+      userStatus: userInfo.user_confirmed,
     });
   };
 
@@ -430,15 +456,31 @@ const ListUsers = () => {
                           </div>
                         </div>
                       </div>
+                      <div className="row"></div>
                     </div>
                   </div>
-                  <div className="modal-footer">
-                    <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">
-                      Fechar
-                    </button>
-                    <button type="submit" className="btn btn-primary" data-bs-dismiss="modal">
-                      Salvar
-                    </button>
+                  <div className="modal-footer justify-content-between">
+                    <div className="">
+                      <button
+                        type="button"
+                        id="userStatus"
+                        className={`btn btn-${watch("userStatus") ? "success" : "danger"} me-2`}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          setValue("userStatus", !getValues("userStatus"));
+                        }}
+                      >
+                        {watch("userStatus") ? "Confirmado" : "Pendente"} (Clique para alterar)
+                      </button>
+                    </div>
+                    <div className="">
+                      <button type="button" className="btn btn-secondary me-2" data-bs-dismiss="modal">
+                        Cancelar
+                      </button>
+                      <button type="submit" className="btn btn-primary" data-bs-dismiss="modal">
+                        Salvar
+                      </button>
+                    </div>
                   </div>
                 </form>
               </div>

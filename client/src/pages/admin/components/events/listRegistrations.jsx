@@ -72,7 +72,7 @@ const ListRegistrations = (props) => {
                     <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">
                       Voltar
                     </button>
-                    <button type="button" className="btn btn-danger" onClick={() => props.deleteRegistration(value)} data-bs-dismiss="modal">
+                    <button type="button" className="btn btn-danger" onClick={() => props.deleteRegistration(value, true)} data-bs-dismiss="modal">
                       Cancelar Inscrição
                     </button>
                   </div>

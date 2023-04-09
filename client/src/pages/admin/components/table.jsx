@@ -94,7 +94,6 @@ const Table = ({ data, columns, customPageSize, sortByColumn, generateXlsx }) =>
     previousPage,
     setPageSize,
     setGlobalFilter,
-    setSortBy,
   } = useTable(
     {
       columns: memoColumns,

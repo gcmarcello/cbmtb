@@ -28,16 +28,7 @@ module.exports = class Email {
         console.error(error);
       });
   }
-  async sendRegistrationEmail(
-    firstName,
-    eventName,
-    dateStart,
-    dateEnd,
-    location,
-    category,
-    registrationID,
-    eventLink
-  ) {
+  async sendRegistrationEmail(firstName, eventName, dateStart, dateEnd, location, category, registrationID, eventLink) {
     sgMail.setApiKey(process.env.SENDGRID_API_KEY);
     const msg = {
       to: this.emails[0],
@@ -55,9 +46,7 @@ module.exports = class Email {
       <p>Aqui est&atilde;o as informa&ccedil;&otilde;es do evento e da sua inscri&ccedil;&atilde;o.&nbsp;Imprima este e-mail e leve ao evento para facilitar o check-in!</p>
       
       <ul>
-        <li><strong>Data:</strong>&nbsp;${dayjs(dateStart).format(
-          "DD/MM/YYYY HH:mm"
-        )} -&nbsp;${dayjs(dateEnd).format("DD/MM/YYYY HH:mm")}</li>
+        <li><strong>Data:</strong>&nbsp;${dayjs(dateStart).format("DD/MM/YYYY HH:mm")} -&nbsp;${dayjs(dateEnd).format("DD/MM/YYYY HH:mm")}</li>
         <li><strong>Local:</strong>&nbsp;${location}</li>
         <li><strong>Categoria:</strong>&nbsp;${category}</li>
         <li><strong>ID da inscri&ccedil;&atilde;o:</strong> ${registrationID}&nbsp;(Esse &eacute; apenas o n&uacute;mero de controle no sistema, seu n&uacute;mero de atleta&nbsp;ser&aacute; definido de forma aleat&oacute;ria no check-in do evento)</li>
@@ -183,6 +172,41 @@ module.exports = class Email {
       <p>Por favor, n&atilde;o retorne esta mensagem. Caso voc&ecirc; tenha mais alguma d&uacute;vida, favor abrir um novo chamado <a href="${_config.site.url}/ouvidoria" target="_blank">clicando aqui.</a></p>
       
       <p>Agradecemos sua compreens&atilde;o.</p>
+      
+      <p>Atenciosamente,</p>
+      
+      <p>A ${_config.entidade.name}&nbsp;</p>`,
+    };
+
+    sgMail
+      .send(msg)
+      .then(() => {
+        console.log("Email sent");
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }
+
+  async sendProfileChangeEmail(user) {
+    sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+    const msg = {
+      to: this.emails[0],
+      from: {
+        name: `${_config.entidade.name} - ${_config.entidade.name}`,
+        email: _config.contact.noreply,
+      },
+      subject: `${_config.entidade.name} - Alteração de Cadastro`,
+      html: `<h1><strong>Alteração de Cadastro</strong></h1>
+
+      <p>Prezado(a) ${user.firstName},</p>
+      
+      <p>Este e-mail tem como objetivo confirmar a alteração de seus dados cadastrais em nosso sistema. Agradecemos por nos informar as mudanças necessárias para manter suas informações atualizadas.</p>
+
+      <p>Para acessar o seu perfil e confirmar as novas informações, por favor <a href="${_config.site.url}/usuario/perfil">clique aqui</a>.</p>
+      
+      <hr />
+      <p>Por favor, n&atilde;o retorne esta mensagem. Caso voc&ecirc; tenha mais alguma d&uacute;vida, favor abrir um novo chamado <a href="${_config.site.url}/ouvidoria" target="_blank">clicando aqui.</a></p>
       
       <p>Atenciosamente,</p>
       

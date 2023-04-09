@@ -32,25 +32,16 @@ router.post("/:id", authorization, async (req, res) => {
     const { id } = req.params;
     const userId = req.userId;
     const { categoryId, registrationShirt } = req.body;
-    const checkForRegistration = await pool.query(
-      "SELECT * FROM registrations WHERE event_id = $1 AND user_id = $2",
-      [id, userId]
-    );
+    const checkForRegistration = await pool.query("SELECT * FROM registrations WHERE event_id = $1 AND user_id = $2", [id, userId]);
     let paymentInfo;
 
     if (checkForRegistration.rows[0]) {
-      res
-        .status(200)
-        .json({ message: "Você já se inscreveu neste evento!", type: "error" });
+      res.status(200).json({ message: "Você já se inscreveu neste evento!", type: "error" });
       return;
     }
 
-    const eventCost = await pool.query(
-      "SELECT category_price FROM event_categories WHERE category_id = $1",
-      [categoryId]
-    );
-    const paymentStatus =
-      eventCost.rows[0].category_price > 0 ? "pending" : "completed";
+    const eventCost = await pool.query("SELECT category_price FROM event_categories WHERE category_id = $1", [categoryId]);
+    const paymentStatus = eventCost.rows[0].category_price > 0 ? "pending" : "completed";
 
     if (eventCost.rows[0].category_price) {
       const txid = crypto.randomUUID().replace(/-/g, "");
@@ -63,32 +54,13 @@ router.post("/:id", authorization, async (req, res) => {
 
     const newRegistrations = await pool.query(
       `INSERT INTO registrations (event_id,user_id,category_id,registration_shirt, payment_id, registration_status, registration_date) VALUES ($1,$2,$3,$4,$5,$6,$7) RETURNING registration_id`,
-      [
-        id,
-        userId,
-        categoryId,
-        registrationShirt,
-        eventCost.rows[0].category_price
-          ? newPayment?.rows[0].payment_id
-          : null,
-        paymentStatus,
-        new Date(),
-      ]
+      [id, userId, categoryId, registrationShirt, eventCost.rows[0].category_price ? newPayment?.rows[0].payment_id : null, paymentStatus, new Date()]
     );
 
     if (paymentStatus === "completed") {
-      const userInfo = await pool.query(
-        "SELECT user_email, user_first_name FROM users WHERE user_id = $1",
-        [userId]
-      );
-      const eventInfo = await pool.query(
-        "SELECT * FROM events WHERE event_id = $1",
-        [id]
-      );
-      const categoryInfo = await pool.query(
-        "SELECT * FROM event_categories WHERE category_id = $1",
-        [categoryId]
-      );
+      const userInfo = await pool.query("SELECT user_email, user_first_name FROM users WHERE user_id = $1", [userId]);
+      const eventInfo = await pool.query("SELECT * FROM events WHERE event_id = $1", [id]);
+      const categoryInfo = await pool.query("SELECT * FROM event_categories WHERE category_id = $1", [categoryId]);
       const sgEmail = new Email([userInfo.rows[0].user_email]);
       sgEmail.sendRegistrationEmail(
         userInfo.rows[0].user_first_name,
@@ -132,29 +104,43 @@ router.delete("/:eventId/:registrationId", authorization, async (req, res) => {
     const { eventId, registrationId } = req.params;
     const userId = req.userId;
 
-    const deleteRegistration = await pool.query(
-      "DELETE FROM registrations WHERE registration_id = $1 AND user_id = $2 RETURNING *",
-      [registrationId, userId]
-    );
-    const userInfo = (
-      await pool.query(
-        "SELECT user_first_name, user_email FROM users WHERE user_id = $1",
-        [userId]
-      )
-    ).rows[0];
-    const eventInfo = (
-      await pool.query(
-        "SELECT event_name, event_link FROM events WHERE event_id = $1",
-        [eventId]
-      )
-    ).rows[0];
+    const deleteRegistration = await pool.query("DELETE FROM registrations WHERE registration_id = $1 AND user_id = $2 RETURNING *", [
+      registrationId,
+      userId,
+    ]);
+
+    const userInfo = (await pool.query("SELECT user_first_name, user_email FROM users WHERE user_id = $1", [userId])).rows[0];
+    const eventInfo = (await pool.query("SELECT event_name, event_link FROM events WHERE event_id = $1", [eventId])).rows[0];
 
     const sgEmail = new Email([userInfo.user_email]);
-    sgEmail.sendRegistrationCancellationEmail(
-      userInfo.user_first_name,
-      eventInfo.event_name,
-      eventInfo.event_link
-    );
+    sgEmail.sendRegistrationCancellationEmail(userInfo.user_first_name, eventInfo.event_name, eventInfo.event_link);
+
+    res.status(200).json({
+      message: "Inscrição cancelada com sucesso.",
+      type: "success",
+    });
+  } catch (err) {
+    console.log(err.message);
+    res.status(400).json({
+      message: `Erro ao cancelar a inscrição. ${err.message}`,
+      type: "error",
+    });
+  }
+});
+
+// Delete Registrations (USER)
+router.delete("/admin/:eventId/:registrationId", adminAuthorization, async (req, res) => {
+  try {
+    const { eventId, registrationId } = req.params;
+
+    const deleteRegistration = await pool.query("DELETE FROM registrations WHERE registration_id = $1 RETURNING *", [registrationId]);
+
+    const userInfo = (await pool.query("SELECT user_first_name, user_email FROM users WHERE user_id = $1", [deleteRegistration.rows[0].user_id]))
+      .rows[0];
+    const eventInfo = (await pool.query("SELECT event_name, event_link FROM events WHERE event_id = $1", [eventId])).rows[0];
+
+    const sgEmail = new Email([userInfo.user_email]);
+    sgEmail.sendRegistrationCancellationEmail(userInfo.user_first_name, eventInfo.event_name, eventInfo.event_link);
 
     res.status(200).json({
       message: "Inscrição cancelada com sucesso.",
@@ -174,60 +160,35 @@ router.get("/:id/checkreg", authorization, async (req, res) => {
   try {
     let { id } = req.params;
     const userId = req.userId;
-    const typeOfLink =
-      /^\b[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}\b$/.test(
-        id
-      );
+    const typeOfLink = /^\b[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}\b$/.test(id);
     if (!typeOfLink) {
-      const response = await pool.query(
-        "SELECT event_id FROM events WHERE event_link = $1",
-        [id]
-      );
+      const response = await pool.query("SELECT event_id FROM events WHERE event_link = $1", [id]);
       id = await response.rows[0].event_id;
     }
 
-    const checkForRegistration = await pool.query(
-      "SELECT * FROM registrations WHERE event_id = $1 AND user_id = $2",
-      [id, userId]
-    );
+    const checkForRegistration = await pool.query("SELECT * FROM registrations WHERE event_id = $1 AND user_id = $2", [id, userId]);
     const checkForAvailability = await pool.query(
       "SELECT event_registrations_start, event_registrations_end, event_status, event_current_attendees, event_max_attendees FROM events WHERE event_id = $1",
       [id]
     );
-    const checkForUser = await pool.query(
-      "SELECT * from users WHERE user_id = $1",
-      [userId]
-    );
+    const checkForUser = await pool.query("SELECT * from users WHERE user_id = $1", [userId]);
     const userAge = dayjs().diff(checkForUser.rows[0].user_birth_date, "years");
 
-    const registrationStarts = dayjs(
-      checkForAvailability.rows[0].event_registrations_start
-    );
-    const registrationEnds = dayjs(
-      checkForAvailability.rows[0].event_registrations_end
-    );
-    const currentAttendees =
-      checkForAvailability.rows[0].event_current_attendees;
+    const registrationStarts = dayjs(checkForAvailability.rows[0].event_registrations_start);
+    const registrationEnds = dayjs(checkForAvailability.rows[0].event_registrations_end);
+    const currentAttendees = checkForAvailability.rows[0].event_current_attendees;
     const maxAttendees = checkForAvailability.rows[0].event_max_attendees;
-    const periodVerification = dayjs().isBetween(
-      registrationStarts,
-      registrationEnds,
-      null,
-      []
-    );
+    const periodVerification = dayjs().isBetween(registrationStarts, registrationEnds, null, []);
 
     const listOfCategories = await pool.query(
       "SELECT * FROM event_categories WHERE (event_id = $1) AND (category_minage <= $2) AND (category_maxage >= $2) AND (category_gender = $3 OR category_gender = 'unisex') ORDER BY category_maxage ASC",
       [id, userAge, checkForUser.rows[0].user_gender]
     );
     if (!listOfCategories.rows[0]) {
-      return res
-        .status(200)
-        .json({
-          message:
-            "Esse evento não tem nenhuma categoria disponível para você.",
-          type: "error",
-        });
+      return res.status(200).json({
+        message: "Esse evento não tem nenhuma categoria disponível para você.",
+        type: "error",
+      });
     }
 
     // Checking if user is already registered
@@ -237,32 +198,24 @@ router.get("/:id/checkreg", authorization, async (req, res) => {
 
     // Checking for manual registration status
     if (!checkForAvailability.rows[0].event_status) {
-      return res
-        .status(200)
-        .json({ message: "Inscrições Indisponíveis", type: "error" });
+      return res.status(200).json({ message: "Inscrições Indisponíveis", type: "error" });
     }
 
     // Checking for number of registrations
     if (currentAttendees >= maxAttendees) {
-      return res
-        .status(200)
-        .json({ message: "Inscrições Esgotadas", type: "error" });
+      return res.status(200).json({ message: "Inscrições Esgotadas", type: "error" });
     }
 
     // Checking for registration period
     if (!periodVerification) {
-      return res
-        .status(200)
-        .json({ message: "Inscrições Encerradas", type: "error" });
+      return res.status(200).json({ message: "Inscrições Encerradas", type: "error" });
     }
 
-    return res
-      .status(200)
-      .json({
-        message: "Inscrições Disponíveis",
-        type: "success",
-        data: listOfCategories.rows,
-      });
+    return res.status(200).json({
+      message: "Inscrições Disponíveis",
+      type: "success",
+      data: listOfCategories.rows,
+    });
   } catch (err) {
     console.log(err.message);
   }
