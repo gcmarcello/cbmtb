@@ -51,11 +51,17 @@ const ListRegistrations = (props) => {
       disableSortBy: true,
       Cell: ({ value }) => (
         <Fragment>
-          <button type="button" className="btn btn-danger" data-bs-toggle="modal" data-bs-target="#removeRegistrationModal">
+          <button type="button" className="btn btn-danger" data-bs-toggle="modal" data-bs-target={`#removeRegistrationModal-${value}`}>
             <i className="bi bi-x-circle"></i>
           </button>
 
-          <div className="modal fade" id="removeRegistrationModal" tabIndex="-1" aria-labelledby="removeRegistrationModalLabel" aria-hidden="true">
+          <div
+            className="modal fade"
+            id={`removeRegistrationModal-${value}`}
+            tabIndex="-1"
+            aria-labelledby="removeRegistrationModalLabel"
+            aria-hidden="true"
+          >
             <div className="modal-dialog">
               <form>
                 <div className="modal-content">
@@ -72,9 +78,10 @@ const ListRegistrations = (props) => {
                     <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">
                       Voltar
                     </button>
-                    <button type="button" className="btn btn-danger" onClick={() => props.deleteRegistration(value, true)} data-bs-dismiss="modal">
+                    <button type="button" className="btn btn-danger" onClick={() => console.log(value)} data-bs-dismiss="modal">
                       Cancelar Inscrição
                     </button>
+                    {value}
                   </div>
                 </div>
               </form>
