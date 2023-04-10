@@ -7,7 +7,7 @@ const GlobalFilter = ({ globalFilter, setGlobalFilter }) => {
   return (
     <div>
       <input
-        className="form-control"
+        className="form-control mb-1"
         value={globalFilter || ""}
         onChange={(e) => setGlobalFilter(e.target.value || undefined)}
         placeholder="Procurar..."
@@ -18,7 +18,7 @@ const GlobalFilter = ({ globalFilter, setGlobalFilter }) => {
 
 const Pagination = (props) => {
   return (
-    <div className="pagination-container ms-2 d-flex">
+    <div className="pagination-container ms-2 mb-1 d-flex">
       <ul className="pagination mb-0">
         <li className={`page-item ${!props.canPreviousPage && `disabled`}`}>
           <button className={`page-link`} onClick={() => props.previousPage()} disabled={!props.canPreviousPage}>
@@ -216,6 +216,18 @@ const Table = ({ data, columns, customPageSize, sortByColumn, generateXlsx }) =>
           )}
         </tbody>
       </table>
+      <Pagination
+        canPreviousPage={canPreviousPage}
+        canNextPage={canNextPage}
+        pageIndex={pageIndex}
+        pageCount={pageCount}
+        pageSize={pageSize}
+        pageOptions={pageOptions}
+        gotoPage={gotoPage}
+        nextPage={nextPage}
+        previousPage={previousPage}
+        setPageSize={setPageSize}
+      />
     </div>
   );
 };
