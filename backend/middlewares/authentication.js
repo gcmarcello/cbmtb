@@ -8,7 +8,6 @@ module.exports = async (req, res, next) => {
     if (jwtToken === "undefined") {
       return next();
     }
-    console.log("------------------------------------------------------- TEST");
     const payload = jwt.verify(jwtToken, `${process.env.JWT_KEY}`);
 
     req.userId = payload.userId;

@@ -37,9 +37,6 @@ const EditEventPanel = () => {
     try {
       const formData = new FormData();
       const formValues = getValues();
-
-      console.log(data);
-
       Object.keys(formValues).forEach((key) => {
         if (key !== "category") {
           formData.append(key, formValues[key]);
@@ -258,6 +255,7 @@ const EditEventPanel = () => {
               >
                 <ListRegistrations
                   event={event}
+                  setEvent={setEvent}
                   getValues={getValues}
                   setValue={setValue}
                   reset={reset}

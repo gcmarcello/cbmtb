@@ -1,9 +1,23 @@
 import React, { Fragment } from "react";
 import Table from "../table";
 import xlsx from "json-as-xlsx";
+import { useForm } from "react-hook-form";
+import { toast } from "react-toastify";
 const dayjs = require("dayjs");
 
 const ListRegistrations = (props) => {
+  const {
+    watch,
+    getValues,
+    setValue,
+    setError,
+    control,
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm({ mode: "onChange" });
+
   const columns = [
     {
       Header: "Nome",
@@ -49,47 +63,35 @@ const ListRegistrations = (props) => {
       Header: "Opções",
       accessor: "registration_id",
       disableSortBy: true,
-      Cell: ({ value }) => (
+      Cell: ({ value, row }) => (
         <Fragment>
-          <button type="button" className="btn btn-danger" data-bs-toggle="modal" data-bs-target={`#removeRegistrationModal-${value}`}>
-            <i className="bi bi-x-circle"></i>
-          </button>
-
-          <div
-            className="modal fade"
-            id={`removeRegistrationModal-${value}`}
-            tabIndex="-1"
-            aria-labelledby="removeRegistrationModalLabel"
-            aria-hidden="true"
+          <button
+            type="button"
+            className="btn btn-danger"
+            data-bs-toggle="modal"
+            data-bs-target={`#updateRegistrationModal`}
+            onClick={() => onOpenModal(row.original)}
           >
-            <div className="modal-dialog">
-              <form>
-                <div className="modal-content">
-                  <div className="modal-header">
-                    <h5 className="modal-title" id="removeRegistrationModalLabel">
-                      Cancelar inscrição
-                    </h5>
-                    <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                  </div>
-                  <div className="modal-body">
-                    Tem certeza que deseja cancelar esta inscrição? O inscrito receberá um email com a confirmação do cancelamento.
-                  </div>
-                  <div className="modal-footer">
-                    <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">
-                      Voltar
-                    </button>
-                    <button type="button" className="btn btn-danger" onClick={() => props.deleteRegistration(value, true)} data-bs-dismiss="modal">
-                      Cancelar Inscrição
-                    </button>
-                  </div>
-                </div>
-              </form>
-            </div>
-          </div>
+            <i className="bi bi-pencil"></i>
+          </button>
         </Fragment>
       ),
     },
   ];
+
+  const onOpenModal = (userInfo) => {
+    reset({
+      registrationId: userInfo.registration_id,
+      registrationFirstName: userInfo.user_first_name,
+      registrationLastName: userInfo.user_last_name,
+      registrationEmail: userInfo.user_email,
+      registrationCategory: userInfo.category_id,
+      registrationDate: userInfo.registration_date,
+      registrationPhone: userInfo.user_phone,
+      registrationBirthDate: userInfo.user_birth_date,
+      registrationShirt: userInfo.registration_shirt,
+    });
+  };
 
   function formatText(text) {
     let words = text.split("_");
@@ -126,9 +128,147 @@ const ListRegistrations = (props) => {
     xlsx(data, settings);
   };
 
+  const onSubmit = async (data) => {
+    try {
+      const myHeaders = new Headers();
+      myHeaders.append("Content-Type", "application/json");
+      myHeaders.append("token", localStorage.token);
+
+      const response = await fetch(`/api/registrations/`, {
+        method: "PUT",
+        headers: myHeaders,
+        body: JSON.stringify(data),
+      });
+      const parseResponse = await response.json();
+      toast[parseResponse.type](parseResponse.message, { theme: "colored" });
+      /* if (parseResponse.type === "success") {
+        const index = props.event.registrations.findIndex((registration) => registration.registration_id === data.registrationId);
+        const updatedRegistration = { props.event[registrations], registration_shirt: data.registrationShirt, category_id: data.registrationCategory };
+        console.log(updatedRegistration);
+        props.setEvent({
+          ...props.event,
+          registrations: [...props.event.registrations.slice(0, index), updatedRegistration, ...props.event.registrations.slice(index + 1)],
+        });
+      } */
+    } catch (err) {
+      console.log(err.message);
+    } finally {
+      reset();
+    }
+  };
+
   return (
     <div className="p-lg-3">
       <Table data={props.event.registrations} columns={columns} generateXlsx={generateXlsx} customPageSize={50} />
+
+      <div className="modal fade" id={`updateRegistrationModal`} tabIndex="-1" aria-labelledby="updateRegistrationModalLabel" aria-hidden="true">
+        <form onSubmit={handleSubmit(onSubmit)} className="needs-validation mt-2 px-2" noValidate>
+          <div className="modal-dialog">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title" id="updateRegistrationModalLabel">
+                  Atualizar Inscrição - {props.event.event_name}
+                </h5>
+                <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div className="modal-body">
+                <ul className="list-group mb-2">
+                  <li className="list-group-item">
+                    Nome: {getValues("registrationFirstName")} {getValues("registrationLastName")}
+                  </li>
+                  <li className="list-group-item">Email: {getValues("registrationEmail")}</li>
+                  <li className="list-group-item">Telefone: {getValues("registrationPhone")}</li>
+                  <li className="list-group-item">Data de Nascimento: {dayjs(getValues("registrationBirthDate")).format("DD/MM/YYYY")}</li>
+                  <li className="list-group-item">Data da Inscrição: {dayjs(getValues("registrationDate")).format("DD/MM/YYYY HH:mm")}</li>
+                </ul>
+                <label htmlFor="gender">Categoria</label>
+                <select
+                  id="gender"
+                  defaultValue=""
+                  className={`form-select ${errors.gender?.type ? "is-invalid" : ""} mb-1`}
+                  {...register("registrationCategory", { required: true })}
+                >
+                  {props.event.categories.map((category) => (
+                    <option key={category.category_id} value={category.category_id}>
+                      {category.category_name}
+                    </option>
+                  ))}
+                </select>
+
+                <label htmlFor="gender">Tamanho da Camisa</label>
+                <select
+                  id="gender"
+                  defaultValue=""
+                  className={`form-select ${errors.gender?.type ? "is-invalid" : ""} mb-1`}
+                  {...register("registrationShirt", { required: true })}
+                >
+                  <option value="p">P</option>
+                  <option value="m">M</option>
+                  <option value="g">G</option>
+                  <option value="gg">GG</option>
+                  <option value="xgg">XGG</option>
+                </select>
+              </div>
+              <small className="text-muted mx-3 mb-1">ID: {getValues("registrationId")}</small>
+              <div className="modal-footer justify-content-between">
+                <button
+                  type="button"
+                  className="btn btn-danger"
+                  data-bs-toggle="modal"
+                  data-bs-target={`#removeRegistrationModal`}
+                  data-bs-dismiss="modal"
+                >
+                  Cancelar Inscrição
+                </button>
+                <div>
+                  <button type="button" className="btn btn-secondary me-2" data-bs-dismiss="modal">
+                    Voltar
+                  </button>
+                  <button type="submit" className="btn btn-success" data-bs-dismiss="modal">
+                    Salvar
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <div className="modal fade" id={`removeRegistrationModal`} tabIndex="-1" aria-labelledby="removeRegistrationModalLabel" aria-hidden="true">
+        <div className="modal-dialog">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title" id="removeRegistrationModalLabel">
+                Cancelar inscrição
+              </h5>
+              <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div className="modal-body">
+              Tem certeza que deseja cancelar esta inscrição? O inscrito receberá um email com a confirmação do cancelamento.
+            </div>
+            <small className="text-muted mx-3 mb-1">ID: {getValues("registrationId")}</small>
+            <div className="modal-footer">
+              <button
+                type="button"
+                className="btn btn-secondary"
+                data-bs-toggle="modal"
+                data-bs-target="#updateRegistrationModal"
+                data-bs-dismiss="modal"
+              >
+                Voltar
+              </button>
+              <button
+                type="button"
+                className="btn btn-danger"
+                onClick={() => props.deleteRegistration(watch("registrationId"), true)}
+                data-bs-dismiss="modal"
+              >
+                Cancelar Inscrição
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

@@ -13,21 +13,6 @@ const isBetween = require("dayjs/plugin/isBetween");
 const registrationAvailability = require("../middlewares/registrationAvailability");
 dayjs.extend(isBetween);
 
-// Read User Registrations (USER)
-router.get("/user/", authorization, async (req, res) => {
-  try {
-    const userId = req.userId;
-    const registrations = await pool.query(
-      "SELECT r.registration_status, r.registration_shirt, r.registration_id, r.payment_id, c.category_name, e.event_id, e.event_name, e.event_description, e.event_rules, e.event_location, e.event_date_start, e.event_image FROM registrations AS r LEFT JOIN users AS u ON r.user_id = u.user_id LEFT JOIN event_categories AS c ON r.category_id = c.category_id LEFT JOIN events AS e ON c.event_id = e.event_id WHERE u.user_id = $1",
-      [userId]
-    );
-
-    res.status(200).json(registrations.rows);
-  } catch (err) {
-    console.log(err.message);
-  }
-});
-
 // Create Registrations (USER)
 router.post("/:id", [authorization, registrationAvailability], async (req, res) => {
   try {
@@ -97,6 +82,37 @@ router.post("/:id", [authorization, registrationAvailability], async (req, res) 
     ); */
   } catch (err) {
     console.log(err.message);
+  }
+});
+
+// Read User Registrations (USER)
+router.get("/user/", authorization, async (req, res) => {
+  try {
+    const userId = req.userId;
+    const registrations = await pool.query(
+      "SELECT r.registration_status, r.registration_shirt, r.registration_id, r.payment_id, c.category_name, e.event_id, e.event_name, e.event_description, e.event_rules, e.event_location, e.event_date_start, e.event_image FROM registrations AS r LEFT JOIN users AS u ON r.user_id = u.user_id LEFT JOIN event_categories AS c ON r.category_id = c.category_id LEFT JOIN events AS e ON c.event_id = e.event_id WHERE u.user_id = $1",
+      [userId]
+    );
+
+    res.status(200).json(registrations.rows);
+  } catch (err) {
+    console.log(err.message);
+  }
+});
+
+router.put("/", adminAuthorization, async (req, res) => {
+  try {
+    const { registrationShirt, registrationCategory, registrationId } = req.body;
+
+    const updateRegistration = await pool.query(
+      "UPDATE registrations SET registration_shirt = $1, category_id = $2 WHERE registration_id = $3 RETURNING *",
+      [registrationShirt, registrationCategory, registrationId]
+    );
+
+    res.status(200).json({ message: "Inscrição atualizada com sucesso!", type: "success", data: updateRegistration.rows[0] });
+  } catch (err) {
+    console.log(err.message);
+    res.status(400).json({ message: `Erro ao alterar inscrição. ${err.message}`, type: "success" });
   }
 });
 
@@ -174,10 +190,14 @@ router.get("/:id/checkreg", authentication, async (req, res) => {
       [id]
     );
 
+    let checkForRegistration;
+    let checkForUser;
+    let userAge;
+
     if (req.userId) {
-      const checkForRegistration = await pool.query("SELECT * FROM registrations WHERE event_id = $1 AND user_id = $2", [id, userId]);
-      const checkForUser = await pool.query("SELECT * from users WHERE user_id = $1", [userId]);
-      const userAge = dayjs().diff(checkForUser.rows[0].user_birth_date, "years");
+      checkForRegistration = await pool.query("SELECT * FROM registrations WHERE event_id = $1 AND user_id = $2", [id, userId]);
+      checkForUser = await pool.query("SELECT * from users WHERE user_id = $1", [userId]);
+      userAge = dayjs().diff(checkForUser.rows[0].user_birth_date, "years");
     }
 
     const registrationStarts = dayjs(checkForAvailability.rows[0].event_registrations_start);
@@ -205,7 +225,6 @@ router.get("/:id/checkreg", authentication, async (req, res) => {
     if (checkForRegistration.rows[0]) {
       return res.status(200).json({ message: "Inscrito!", type: "error" });
     }
-
     const listOfCategories = await pool.query(
       "SELECT * FROM event_categories WHERE (event_id = $1) AND (category_minage <= $2) AND (category_maxage >= $2) AND (category_gender = $3 OR category_gender = 'unisex') ORDER BY category_maxage ASC",
       [id, userAge, checkForUser.rows[0].user_gender]
@@ -221,7 +240,7 @@ router.get("/:id/checkreg", authentication, async (req, res) => {
     return res.status(200).json({
       message: "Inscrições Disponíveis",
       type: "success",
-      data: listOfCategories.rows,
+      data: listOfCategories ? listOfCategories.rows : [],
     });
   } catch (err) {
     console.log(err.message);
