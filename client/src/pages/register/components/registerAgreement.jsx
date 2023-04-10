@@ -4,10 +4,10 @@ import _config from "../../../_config";
 
 const RegisterAgreement = (props) => {
   return (
-    <div class="form-check d-flex align-items-top justify-content-start mt-1">
+    <div className="form-check d-flex align-items-top justify-content-start mt-1">
       <input
         id="agreementCheckbox"
-        class="form-check-input"
+        className="form-check-input"
         type="checkbox"
         role="button"
         value={props.agreementAgreed}
@@ -16,12 +16,10 @@ const RegisterAgreement = (props) => {
         onChange={() => props.setAgreementAgreed(true)}
       />
       <span className="ms-1">
-        <span className="d-inline-block d-lg-none d-xl-inline-block">
-          Aceito os
-        </span>
+        <span className="d-inline-block d-lg-none d-xl-inline-block">Aceito os</span>
         <button
           type="button"
-          class="btn btn-link p-0 m-0 mb-1"
+          className="btn btn-link p-0 m-0 mb-1"
           data-bs-toggle="modal"
           data-bs-target="#termsModal"
           onClick={() => {
@@ -33,30 +31,16 @@ const RegisterAgreement = (props) => {
         </button>
       </span>
 
-      <div
-        class="modal fade"
-        id="termsModal"
-        tabindex="-1"
-        aria-labelledby="exampleModalLabel"
-        aria-hidden="true"
-      >
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalLabel">
+      <div className="modal fade" id="termsModal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div className="modal-dialog">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title" id="exampleModalLabel">
                 Termos de Uso de Dados (LGPD)
               </h5>
-              <button
-                type="button"
-                class="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-              ></button>
+              <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div
-              class="modal-body overflow-auto"
-              style={{ maxHeight: "450px" }}
-            >
+            <div className="modal-body overflow-auto" style={{ maxHeight: "450px" }}>
               <ol>
                 <li>
                   <p>
@@ -68,12 +52,10 @@ const RegisterAgreement = (props) => {
               </ol>
 
               <p>
-                Estes Termos de Privacidade t&ecirc;m como objetivo informar a
-                voc&ecirc;, titular dos dados pessoais, sobre como a{" "}
+                Estes Termos de Privacidade t&ecirc;m como objetivo informar a voc&ecirc;, titular dos dados pessoais, sobre como a{" "}
                 {_config.entidade.abbreviation}
-                coleta, utiliza, armazena e protege seus dados pessoais, de
-                acordo com a Lei Geral de Prote&ccedil;&atilde;o de Dados (LGPD)
-                do Brasil.
+                coleta, utiliza, armazena e protege seus dados pessoais, de acordo com a Lei Geral de Prote&ccedil;&atilde;o de Dados (LGPD) do
+                Brasil.
               </p>
 
               <ol start="2">
@@ -108,14 +90,8 @@ const RegisterAgreement = (props) => {
               <ul>
                 <li>Fornecer e gerenciar os servi&ccedil;os contratados;</li>
                 <li>Realizar processos de cobran&ccedil;a e pagamento;</li>
-                <li>
-                  Fins de marketing e comunica&ccedil;&atilde;o, com seu
-                  consentimento;
-                </li>
-                <li>
-                  Atender a obriga&ccedil;&otilde;es legais e
-                  regulat&oacute;rias.
-                </li>
+                <li>Fins de marketing e comunica&ccedil;&atilde;o, com seu consentimento;</li>
+                <li>Atender a obriga&ccedil;&otilde;es legais e regulat&oacute;rias.</li>
               </ul>
 
               <ol start="4">
@@ -127,10 +103,8 @@ const RegisterAgreement = (props) => {
               </ol>
 
               <p>
-                Ao utilizar nossos servi&ccedil;os e fornecer seus dados
-                pessoais, voc&ecirc; concorda com os termos aqui estabelecidos.
-                Voc&ecirc; tem o direito de revogar seu consentimento a qualquer
-                momento, entrando em contato conosco.
+                Ao utilizar nossos servi&ccedil;os e fornecer seus dados pessoais, voc&ecirc; concorda com os termos aqui estabelecidos. Voc&ecirc;
+                tem o direito de revogar seu consentimento a qualquer momento, entrando em contato conosco.
               </p>
 
               <ol start="5">
@@ -147,37 +121,27 @@ const RegisterAgreement = (props) => {
                 <li>Acessar seus dados pessoais;</li>
                 <li>Corrigir dados incompletos, inexatos ou desatualizados;</li>
                 <li>
-                  Solicitar a anonimiza&ccedil;&atilde;o, bloqueio ou
-                  elimina&ccedil;&atilde;o de dados desnecess&aacute;rios,
-                  excessivos ou tratados em desconformidade com a LGPD;
+                  Solicitar a anonimiza&ccedil;&atilde;o, bloqueio ou elimina&ccedil;&atilde;o de dados desnecess&aacute;rios, excessivos ou tratados
+                  em desconformidade com a LGPD;
                 </li>
                 <li>
-                  Solicitar a portabilidade dos dados a outro fornecedor de
-                  servi&ccedil;o ou produto, mediante requisi&ccedil;&atilde;o
-                  expressa;
+                  Solicitar a portabilidade dos dados a outro fornecedor de servi&ccedil;o ou produto, mediante requisi&ccedil;&atilde;o expressa;
                 </li>
-                <li>
-                  Ser informado sobre as entidades p&uacute;blicas e privadas
-                  com as quais compartilhamos seus dados;
-                </li>
+                <li>Ser informado sobre as entidades p&uacute;blicas e privadas com as quais compartilhamos seus dados;</li>
                 <li>Revogar o consentimento a qualquer momento.</li>
               </ul>
 
               <ol start="6">
                 <li>
                   <strong>
-                    <span style={{ fontSize: "20px" }}>
-                      Seguran&ccedil;a dos dados
-                    </span>
+                    <span style={{ fontSize: "20px" }}>Seguran&ccedil;a dos dados</span>
                   </strong>
                 </li>
               </ol>
 
               <p>
-                N&oacute;s adotamos medidas de seguran&ccedil;a apropriadas para
-                proteger seus dados pessoais contra perda, uso indevido, acesso
-                n&atilde;o autorizado, divulga&ccedil;&atilde;o,
-                altera&ccedil;&atilde;o e destrui&ccedil;&atilde;o.
+                N&oacute;s adotamos medidas de seguran&ccedil;a apropriadas para proteger seus dados pessoais contra perda, uso indevido, acesso
+                n&atilde;o autorizado, divulga&ccedil;&atilde;o, altera&ccedil;&atilde;o e destrui&ccedil;&atilde;o.
               </p>
 
               <ol start="7">
@@ -189,10 +153,8 @@ const RegisterAgreement = (props) => {
               </ol>
 
               <p>
-                Armazenamos seus dados pessoais pelo tempo necess&aacute;rio
-                para cumprir com as finalidades descritas nestes Termos de
-                Privacidade e conforme exigido pelas leis e regulamentos
-                aplic&aacute;veis.
+                Armazenamos seus dados pessoais pelo tempo necess&aacute;rio para cumprir com as finalidades descritas nestes Termos de Privacidade e
+                conforme exigido pelas leis e regulamentos aplic&aacute;veis.
               </p>
 
               <ol start="8">
@@ -204,28 +166,22 @@ const RegisterAgreement = (props) => {
               </ol>
 
               <p>
-                Compartilhamos seus dados pessoais somente com parceiros e
-                fornecedores autorizados, necess&aacute;rios para a
-                presta&ccedil;&atilde;o dos servi&ccedil;os contratados e em
-                conformidade com a LGPD.
+                Compartilhamos seus dados pessoais somente com parceiros e fornecedores autorizados, necess&aacute;rios para a presta&ccedil;&atilde;o
+                dos servi&ccedil;os contratados e em conformidade com a LGPD.
               </p>
 
               <ol start="9">
                 <li>
                   <span style={{ fontSize: "20px" }}>
-                    <strong>
-                      Altera&ccedil;&otilde;es nos Termos de Privacidade
-                    </strong>
+                    <strong>Altera&ccedil;&otilde;es nos Termos de Privacidade</strong>
                   </span>
                 </li>
               </ol>
 
               <p>
-                Reservamo-nos o direito de alterar estes Termos de Privacidade a
-                qualquer momento. As altera&ccedil;&otilde;es entrar&atilde;o em
-                vigor imediatamente ap&oacute;s a publica&ccedil;&atilde;o.
-                Recomendamos que voc&ecirc; revise periodicamente nossos Termos
-                de Privacidade para se manter atualizado.
+                Reservamo-nos o direito de alterar estes Termos de Privacidade a qualquer momento. As altera&ccedil;&otilde;es entrar&atilde;o em
+                vigor imediatamente ap&oacute;s a publica&ccedil;&atilde;o. Recomendamos que voc&ecirc; revise periodicamente nossos Termos de
+                Privacidade para se manter atualizado.
               </p>
 
               <ol start="10">
@@ -237,21 +193,15 @@ const RegisterAgreement = (props) => {
               </ol>
 
               <p>
-                Se voc&ecirc; tiver d&uacute;vidas, preocupa&ccedil;&otilde;es
-                ou solicita&ccedil;&otilde;es relacionadas &agrave;
-                prote&ccedil;&atilde;o de seus dados pessoais, entre em contato
-                conosco atrav&eacute;s do canal de ouvidoria em
+                Se voc&ecirc; tiver d&uacute;vidas, preocupa&ccedil;&otilde;es ou solicita&ccedil;&otilde;es relacionadas &agrave;
+                prote&ccedil;&atilde;o de seus dados pessoais, entre em contato conosco atrav&eacute;s do canal de ouvidoria em
                 {_config.site.url}/ouvidoria.
               </p>
 
               <p>Data da &uacute;ltima atualiza&ccedil;&atilde;o: 03/04/2023</p>
             </div>
-            <div class="modal-footer">
-              <button
-                type="button"
-                class="btn btn-secondary"
-                data-bs-dismiss="modal"
-              >
+            <div className="modal-footer">
+              <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">
                 Fechar
               </button>
             </div>
