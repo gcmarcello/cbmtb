@@ -9,6 +9,7 @@ const Email = require("../utils/emails");
 
 const dayjs = require("dayjs");
 const isBetween = require("dayjs/plugin/isBetween");
+const registrationAvailability = require("../middlewares/registrationAvailability");
 dayjs.extend(isBetween);
 
 // Read User Registrations (USER)
@@ -27,7 +28,7 @@ router.get("/user/", authorization, async (req, res) => {
 });
 
 // Create Registrations (USER)
-router.post("/:id", authorization, async (req, res) => {
+router.post("/:id", [authorization, registrationAvailability], async (req, res) => {
   try {
     const { id } = req.params;
     const userId = req.userId;
