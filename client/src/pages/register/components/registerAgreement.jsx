@@ -13,7 +13,7 @@ const RegisterAgreement = (props) => {
         value={props.agreementAgreed}
         data-bs-toggle="modal"
         data-bs-target="#termsModal"
-        onChange={() => props.setAgreementAgreed(true)}
+        onChange={() => props.setAgreementAgreed(!props.agreementAgreed)}
       />
       <span className="ms-1">
         <span className="d-inline-block d-lg-none d-xl-inline-block">Aceito os</span>
