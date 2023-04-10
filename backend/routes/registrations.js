@@ -214,11 +214,6 @@ router.get("/:id/checkreg", authentication, async (req, res) => {
           type: "error",
         });
       }
-      return res.status(200).json({
-        message: "Inscrições Disponíveis",
-        type: "success",
-        data: listOfCategories.rows,
-      });
     }
 
     const registrationStarts = dayjs(checkForAvailability.rows[0].event_registrations_start);
