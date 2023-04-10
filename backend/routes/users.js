@@ -80,15 +80,14 @@ router.put("/", authorization, async (req, res) => {
 
 // Update User Information
 router.put("/admin", adminAuthorization, async (req, res) => {
-  const { address, apartment, cep, city, email, firstName, lastName, number, phone, state, userId, userStatus } = req.body;
+  const { address, apartment, cep, city, email, firstName, lastName, number, phone, state, userId, userStatus, birthDate } = req.body;
   try {
     const userInfoUpdate = await pool.query(
-      "UPDATE users SET user_address = $1, user_apartment = $2, user_cep = $3, user_city = $4, user_email = $5, user_first_name = $6, user_last_name = $7, user_number = $8, user_phone = $9, user_state = $10, user_confirmed = $12 WHERE user_id = $11 RETURNING *",
-      [address, apartment, cep, city, email, firstName, lastName, number, phone, state, userId, userStatus]
+      "UPDATE users SET user_address = $1, user_apartment = $2, user_cep = $3, user_city = $4, user_email = $5, user_first_name = $6, user_last_name = $7, user_number = $8, user_phone = $9, user_state = $10, user_confirmed = $12, user_birth_date = $13 WHERE user_id = $11 RETURNING *",
+      [address, apartment, cep, city, email, firstName, lastName, number, phone, state, userId, userStatus, birthDate]
     );
+    console.log(userInfoUpdate.rows[0]);
     if (userInfoUpdate.rows[0]) {
-      const sgEmail = new Email([email]);
-      sgEmail.sendProfileChangeEmail(req.body);
       return res.status(200).json({
         message: "Informações atualizadas com sucesso!",
         type: "success",
@@ -154,7 +153,6 @@ router.get("/list", adminAuthorization, async (req, res) => {
     const userList = await pool.query(
       "SELECT user_id, user_email, user_first_name, user_last_name, user_gender, user_phone, user_cpf, user_birth_date, user_cep, user_state, user_city, user_address, user_number, user_apartment, user_role, user_confirmed FROM users"
     );
-    const myArrayString = JSON.stringify(userList.rows);
     res.status(200).json(userList.rows);
   } catch (err) {
     console.log(err.message);
