@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useState } from "react";
 import Table from "../table";
 import xlsx from "json-as-xlsx";
 import { useForm } from "react-hook-form";
@@ -17,6 +17,7 @@ const ListRegistrations = (props) => {
     reset,
     formState: { errors },
   } = useForm({ mode: "onChange" });
+  const [eventChange, setEventChange] = useState(false);
 
   const columns = [
     {
@@ -67,7 +68,7 @@ const ListRegistrations = (props) => {
         <Fragment>
           <button
             type="button"
-            className="btn btn-danger"
+            className="btn btn-primary"
             data-bs-toggle="modal"
             data-bs-target={`#updateRegistrationModal`}
             onClick={() => onOpenModal(row.original)}
@@ -86,6 +87,7 @@ const ListRegistrations = (props) => {
       registrationLastName: userInfo.user_last_name,
       registrationEmail: userInfo.user_email,
       registrationCategory: userInfo.category_id,
+      registrationCategoryName: userInfo.category_name,
       registrationDate: userInfo.registration_date,
       registrationPhone: userInfo.user_phone,
       registrationBirthDate: userInfo.user_birth_date,
@@ -139,17 +141,22 @@ const ListRegistrations = (props) => {
         headers: myHeaders,
         body: JSON.stringify(data),
       });
+      console.log(data);
       const parseResponse = await response.json();
       toast[parseResponse.type](parseResponse.message, { theme: "colored" });
-      /* if (parseResponse.type === "success") {
+      if (parseResponse.type === "success") {
         const index = props.event.registrations.findIndex((registration) => registration.registration_id === data.registrationId);
-        const updatedRegistration = { props.event[registrations], registration_shirt: data.registrationShirt, category_id: data.registrationCategory };
-        console.log(updatedRegistration);
+        const updatedRegistration = {
+          ...props.event.registrations[index],
+          registration_shirt: data.registrationShirt,
+          category_id: data.registrationCategory,
+          category_name: props.event.categories.filter((category) => category.category_id === data.registrationCategory)[0].category_name,
+        };
         props.setEvent({
           ...props.event,
           registrations: [...props.event.registrations.slice(0, index), updatedRegistration, ...props.event.registrations.slice(index + 1)],
         });
-      } */
+      }
     } catch (err) {
       console.log(err.message);
     } finally {
@@ -174,12 +181,20 @@ const ListRegistrations = (props) => {
               <div className="modal-body">
                 <ul className="list-group mb-2">
                   <li className="list-group-item">
-                    Nome: {getValues("registrationFirstName")} {getValues("registrationLastName")}
+                    <strong>Nome:</strong> {getValues("registrationFirstName")} {getValues("registrationLastName")}
                   </li>
-                  <li className="list-group-item">Email: {getValues("registrationEmail")}</li>
-                  <li className="list-group-item">Telefone: {getValues("registrationPhone")}</li>
-                  <li className="list-group-item">Data de Nascimento: {dayjs(getValues("registrationBirthDate")).format("DD/MM/YYYY")}</li>
-                  <li className="list-group-item">Data da Inscrição: {dayjs(getValues("registrationDate")).format("DD/MM/YYYY HH:mm")}</li>
+                  <li className="list-group-item">
+                    <strong>Email:</strong> {getValues("registrationEmail")}
+                  </li>
+                  <li className="list-group-item">
+                    <strong>Telefone:</strong> {getValues("registrationPhone")}
+                  </li>
+                  <li className="list-group-item">
+                    <strong>Data de Nascimento:</strong> {dayjs(getValues("registrationBirthDate")).format("DD/MM/YYYY")}
+                  </li>
+                  <li className="list-group-item">
+                    <strong>Data da Inscrição:</strong> {dayjs(getValues("registrationDate")).format("DD/MM/YYYY HH:mm")}
+                  </li>
                 </ul>
                 <label htmlFor="gender">Categoria</label>
                 <select
