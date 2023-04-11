@@ -14,7 +14,7 @@ const PrivateRoute = (props) => {
 
   return (
     <Fragment>
-      {props.isAdmin && isPanel ? (
+      {props.userAdmin && isPanel ? (
         props.userAuthentication ? (
           props.children
         ) : loginComponent ? (
