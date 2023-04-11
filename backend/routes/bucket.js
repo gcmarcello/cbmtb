@@ -1,5 +1,5 @@
 const router = require("express").Router();
-const adminAuthorization = require("../middlewares/authorization");
+const adminAuthorization = require("../middlewares/adminAuthorization");
 const bucketController = require("../controllers/bucketController");
 
 const multer = require("multer");

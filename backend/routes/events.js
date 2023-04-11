@@ -1,5 +1,5 @@
 const router = require("express").Router();
-const adminAuthorization = require("../middlewares/authorization");
+const adminAuthorization = require("../middlewares/adminAuthorization");
 
 const multer = require("multer");
 var upload = multer({ dest: "uploads/" });

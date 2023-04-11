@@ -4,7 +4,7 @@ const crypto = require("crypto");
 const pool = require("../database/database");
 const authentication = require("../middlewares/authentication");
 const authorization = require("../middlewares/authorization");
-const adminAuthorization = require("../middlewares/authorization");
+const adminAuthorization = require("../middlewares/adminAuthorization");
 
 const Email = require("../utils/emails");
 

@@ -70,6 +70,7 @@ function App() {
         method: "GET",
         headers: myHeaders,
       });
+
       const parseData = await res.json();
       setUserName(parseData.givenName);
       parseData.authentication === true ? setUserAuthentication(true) : setUserAuthentication(false);

@@ -5,25 +5,32 @@ import Login from "../../pages/login/login";
 
 const PrivateRoute = (props) => {
   let loginComponent;
-  if (props.children.type.name === "Dashboard") {
+  let isPanel;
+
+  if (window.location.pathname.split("/")[1] === "painel") {
+    isPanel = true;
     loginComponent = true;
   }
 
   return (
     <Fragment>
-      {props.userAuthentication ? (
-        props.children
-      ) : loginComponent ? (
-        <Login
-          userAuthentication={props.userAuthentication}
-          setUserAuthentication={props.setUserAuthentication}
-          setUserAdmin={props.setUserAdmin}
-          userAdmin={props.userAdmin}
-          setUserName={props.setUserName}
-          userName={props.userName}
-        />
+      {props.isAdmin && isPanel ? (
+        props.userAuthentication ? (
+          props.children
+        ) : loginComponent ? (
+          <Login
+            userAuthentication={props.userAuthentication}
+            setUserAuthentication={props.setUserAuthentication}
+            setUserAdmin={props.setUserAdmin}
+            userAdmin={props.userAdmin}
+            setUserName={props.setUserName}
+            userName={props.userName}
+          />
+        ) : (
+          <Navigate to="/login" replace />
+        )
       ) : (
-        <Navigate to="/login" replace />
+        <Navigate to="/" replace />
       )}
     </Fragment>
   );

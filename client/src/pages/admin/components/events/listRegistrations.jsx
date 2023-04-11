@@ -102,42 +102,41 @@ const ListRegistrations = (props) => {
   }
 
   const generateXlsx = () => {
-    const data = props.event.categories
-      .map((category) => ({
-        sheet: category.category_name,
-        columns: Object.keys(props.event.registrations[0]).map((column) => ({
-          label: formatText(column),
-          value: column,
-        })),
-        content: props.event.registrations
-          .filter((registration) => registration.category_name === category.category_name)
-          .map(function (registration) {
-            let registrationDate = dayjs(registration.registration_date).format("DD/MM/YYYY HH:mm");
-            let birthDate = dayjs(registration.user_birth_date).format("DD/MM/YYYY");
-            registration.registration_date = registrationDate;
-            registration.user_birth_date = birthDate;
-            registration.age = dayjs().diff(registration.user_birth_date, "year");
+    let data = props.event.categories.map((category) => ({
+      sheet: category.category_name,
+      columns: Object.keys(props.event.registrations[0]).map((column) => ({
+        label: formatText(column),
+        value: column,
+      })),
+      content: props.event.registrations
+        .filter((registration) => registration.category_name === category.category_name)
+        .map(function (registration) {
+          let registrationDate = dayjs(registration.registration_date).format("DD/MM/YYYY HH:mm");
+          let birthDate = dayjs(registration.user_birth_date).format("DD/MM/YYYY");
+          registration.registration_date = registrationDate;
+          registration.user_birth_date = birthDate;
+          registration.age = dayjs().diff(registration.user_birth_date, "year");
 
-            return registration;
-          }),
-      }))
-      .push({
-        sheet: "Geral",
-        columns: Object.keys(props.event.registrations[0]).map((column) => ({
-          label: formatText(column),
-          value: column,
-          content: props.event.registrations.map(function (registration) {
-            let registrationDate = dayjs(registration.registration_date).format("DD/MM/YYYY HH:mm");
-            let birthDate = dayjs(registration.user_birth_date).format("DD/MM/YYYY");
-            registration.registration_date = registrationDate;
-            registration.user_birth_date = birthDate;
-            registration.age = dayjs().diff(registration.user_birth_date, "year");
+          return registration;
+        }),
+    }));
 
-            return registration;
-          }),
-        })),
-      });
-    console.log(data);
+    data.push({
+      sheet: "Geral",
+      columns: Object.keys(props.event.registrations[0]).map((column) => ({
+        label: formatText(column),
+        value: column,
+      })),
+      content: props.event.registrations.map(function (registration) {
+        let registrationDate = dayjs(registration.registration_date).format("DD/MM/YYYY HH:mm");
+        let birthDate = dayjs(registration.user_birth_date).format("DD/MM/YYYY");
+        registration.registration_date = registrationDate;
+        registration.user_birth_date = birthDate;
+        registration.age = dayjs().diff(registration.user_birth_date, "year");
+
+        return registration;
+      }),
+    });
     const settings = {
       fileName: `${props.event.event_name} - Inscritos (${dayjs().format("DD-MM-YYYY")})`, // Name of the resulting spreadsheet
       extraLength: 3, // A bigger number means that columns will be wider
@@ -145,7 +144,7 @@ const ListRegistrations = (props) => {
       writeOptions: {}, // Style options from https://docs.sheetjs.com/docs/api/write-options
       RTL: false, // Display the columns from right-to-left (the default value is false)
     };
-    xlsx(data, settings);
+    /* xlsx(data, settings); */
   };
 
   const onSubmit = async (data) => {
