@@ -174,8 +174,6 @@ async function updateEvent(req, res) {
 
     const image = req.file ? await uploadFileToS3(req.file, process.env.S3_BUCKET_NAME, "event-main") : imageOld;
 
-    console.log(dayjs(dateStart).format("YYYY-MM-DD HH:mm:ss.SSSSSSZ"));
-
     const updateEvent = await pool.query(
       `UPDATE events SET event_link = $1, event_owner_id = $2, event_name= $3, event_location = $4, event_image = $5, event_description = $6, event_rules = $7, event_details = $8, event_max_attendees = $9, event_external = $10, event_date_start = $11, event_date_end = $12, event_registrations_start = $13, event_registrations_end = $14 WHERE event_id = $15`,
       [
