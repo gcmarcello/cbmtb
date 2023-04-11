@@ -14,23 +14,27 @@ const PrivateRoute = (props) => {
 
   return (
     <Fragment>
-      {props.userAdmin && isPanel ? (
-        props.userAuthentication ? (
-          props.children
-        ) : loginComponent ? (
-          <Login
-            userAuthentication={props.userAuthentication}
-            setUserAuthentication={props.setUserAuthentication}
-            setUserAdmin={props.setUserAdmin}
-            userAdmin={props.userAdmin}
-            setUserName={props.setUserName}
-            userName={props.userName}
-          />
+      {props.userAuthentication ? (
+        isPanel ? (
+          props.userAdmin ? (
+            props.children
+          ) : (
+            <Navigate to="/" replace />
+          )
         ) : (
-          <Navigate to="/login" replace />
+          props.children
         )
+      ) : loginComponent ? (
+        <Login
+          userAuthentication={props.userAuthentication}
+          setUserAuthentication={props.setUserAuthentication}
+          setUserAdmin={props.setUserAdmin}
+          userAdmin={props.userAdmin}
+          setUserName={props.setUserName}
+          userName={props.userName}
+        />
       ) : (
-        <Navigate to="/" replace />
+        <Navigate to="/login" replace />
       )}
     </Fragment>
   );
