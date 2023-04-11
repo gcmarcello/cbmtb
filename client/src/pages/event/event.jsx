@@ -49,7 +49,7 @@ const EventPage = () => {
       });
 
       const parseResponse = await response.json();
-      if (typeof parseResponse === "string") {
+      if (parseResponse.type === "error") {
         navigate("/404");
         return;
       }

@@ -2,7 +2,7 @@ import React from "react";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
-const StageButtons = ({ stage, setStage, userRegistration, id }) => {
+const StageButtons = ({ stage, setStage, userRegistration, registrationInfo, id, coupon }) => {
   const navigate = useNavigate();
 
   const createRegistration = async () => {
@@ -15,7 +15,7 @@ const StageButtons = ({ stage, setStage, userRegistration, id }) => {
       const registrationShirt = userRegistration.shirt;
 
       const body = { categoryId, registrationShirt };
-      const response = await fetch(`/api/registrations/${id}`, {
+      const response = await fetch(`/api/registrations/${registrationInfo.event.event_id}/${coupon ? coupon : ""}`, {
         method: "POST",
         headers: myHeaders,
         body: JSON.stringify(body),

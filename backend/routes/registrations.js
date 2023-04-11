@@ -14,13 +14,14 @@ const registrationAvailability = require("../middlewares/registrationAvailabilit
 dayjs.extend(isBetween);
 
 // Create Registrations (USER)
-router.post("/:id", [authorization, registrationAvailability], async (req, res) => {
+router.post("/:id/:coupon?", [authorization, registrationAvailability], async (req, res) => {
   try {
     const { id } = req.params;
+    console.log(req.couponId);
+
     const userId = req.userId;
     const { categoryId, registrationShirt } = req.body;
     const checkForRegistration = await pool.query("SELECT * FROM registrations WHERE event_id = $1 AND user_id = $2", [id, userId]);
-    let paymentInfo;
 
     if (checkForRegistration.rows[0]) {
       res.status(200).json({ message: "Você já se inscreveu neste evento!", type: "error" });
@@ -40,8 +41,17 @@ router.post("/:id", [authorization, registrationAvailability], async (req, res) 
     }
 
     const newRegistrations = await pool.query(
-      `INSERT INTO registrations (event_id,user_id,category_id,registration_shirt, payment_id, registration_status, registration_date) VALUES ($1,$2,$3,$4,$5,$6,$7) RETURNING registration_id`,
-      [id, userId, categoryId, registrationShirt, eventCost.rows[0].category_price ? newPayment?.rows[0].payment_id : null, paymentStatus, new Date()]
+      `INSERT INTO registrations (event_id,user_id,category_id,registration_shirt, payment_id, registration_status, registration_date, coupon_id) VALUES ($1,$2,$3,$4,$5,$6,$7,$8) RETURNING registration_id`,
+      [
+        id,
+        userId,
+        categoryId,
+        registrationShirt,
+        eventCost.rows[0].category_price ? newPayment?.rows[0].payment_id : null,
+        paymentStatus,
+        new Date(),
+        req.couponId || null,
+      ]
     );
 
     if (paymentStatus === "completed") {
@@ -174,15 +184,19 @@ router.delete("/admin/:eventId/:registrationId", adminAuthorization, async (req,
 });
 
 // Check if user is registered (USER)
-router.get("/:id/checkreg", authentication, async (req, res) => {
+router.get("/:id/checkreg/:coupon?", authentication, async (req, res) => {
   try {
-    let { id } = req.params;
+    let { id, coupon } = req.params;
     const userId = req.userId;
     const typeOfLink = /^\b[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}\b$/.test(id);
 
     if (!typeOfLink) {
       const response = await pool.query("SELECT event_id FROM events WHERE event_link = $1", [id]);
-      id = await response.rows[0].event_id;
+      if (response.rows[0]) {
+        id = await response.rows[0].event_id;
+      } else {
+        return res.status(404).json({ message: "Evento não existe", type: "error" });
+      }
     }
 
     const checkForAvailability = await pool.query(
@@ -214,6 +228,24 @@ router.get("/:id/checkreg", authentication, async (req, res) => {
           type: "error",
         });
       }
+
+      if (coupon) {
+        const validateCoupon = await pool.query("SELECT * FROM event_coupons WHERE event_id = $1 AND coupon_link = $2", [id, coupon]);
+        if (!validateCoupon.rows[0]) {
+          return res.status(200).json({ message: "Página não encontrada.", type: "error" });
+        }
+        const verifyAvailability = await pool.query(
+          "SELECT * FROM registrations AS r LEFT JOIN event_coupons AS ec ON r.coupon_id = ec.coupon_id WHERE r.event_id = $1 AND ec.coupon_link = $2",
+          [id, coupon]
+        );
+        if (verifyAvailability.rows.length >= validateCoupon.rows[0].coupon_uses) {
+          return res.status(200).json({ message: "Cupom Esgotado.", type: "error" });
+        }
+        return res.status(200).json({
+          message: "Cupom Disponível!",
+          type: "success",
+        });
+      }
     }
 
     const registrationStarts = dayjs(checkForAvailability.rows[0].event_registrations_start);
@@ -224,21 +256,21 @@ router.get("/:id/checkreg", authentication, async (req, res) => {
 
     // Checking for manual registration status
     if (!checkForAvailability.rows[0].event_status) {
-      return res.status(200).json({ message: "Inscrições Indisponíveis", type: "error" });
+      return res.status(200).json({ message: "Inscrições Indisponíveis.", type: "error" });
     }
 
     // Checking for number of registrations
     if (currentAttendees >= maxAttendees) {
-      return res.status(200).json({ message: "Inscrições Esgotadas", type: "error" });
+      return res.status(200).json({ message: "Inscrições Esgotadas.", type: "error" });
     }
 
     // Checking for registration period
     if (!periodVerification) {
-      return res.status(200).json({ message: "Inscrições Encerradas", type: "error" });
+      return res.status(200).json({ message: "Inscrições Encerradas.", type: "error" });
     }
 
     return res.status(200).json({
-      message: "Inscrições Disponíveis",
+      message: "Inscrições Disponíveis!",
       type: "success",
     });
   } catch (err) {

@@ -15,7 +15,7 @@ import Payments from "../payment/payments";
 
 const Registration = ({ userAuthentication, setUserAuthentication, userAdmin, userName }) => {
   const navigate = useNavigate();
-  const { id } = useParams();
+  const { id, coupon } = useParams();
   const [registrationInfo, setRegistrationInfo] = useState({
     user: {},
     event: {},
@@ -37,7 +37,7 @@ const Registration = ({ userAuthentication, setUserAuthentication, userAdmin, us
       myHeaders.append("Content-Type", "application/json");
       myHeaders.append("token", localStorage.token);
       try {
-        const response = await fetch(`/api/registrations/${id}/checkreg`, {
+        const response = await fetch(`/api/registrations/${id}/checkreg/${coupon ? coupon : ""}`, {
           method: "GET",
           headers: myHeaders,
         });
@@ -129,7 +129,14 @@ const Registration = ({ userAuthentication, setUserAuthentication, userAdmin, us
         ) : (
           <Payments id={event.event_id} />
         )}
-        <StageButtons stage={stage} setStage={setStage} userRegistration={userRegistration} id={id} />
+        <StageButtons
+          stage={stage}
+          setStage={setStage}
+          userRegistration={userRegistration}
+          registrationInfo={registrationInfo}
+          id={id}
+          coupon={coupon}
+        />
       </div>
     </Fragment>
   );

@@ -72,9 +72,7 @@ function App() {
       });
       const parseData = await res.json();
       setUserName(parseData.givenName);
-      parseData.authentication === true
-        ? setUserAuthentication(true)
-        : setUserAuthentication(false);
+      parseData.authentication === true ? setUserAuthentication(true) : setUserAuthentication(false);
       parseData.role === "admin" ? setUserAdmin(true) : setUserAdmin(false);
       setLoading(false);
     } catch (err) {
@@ -105,40 +103,14 @@ function App() {
         theme="light"
       />
       {!(page === "painel") ? (
-        <UserNavigation
-          userAuthentication={userAuthentication}
-          userName={userName}
-          userAdmin={userAdmin}
-          setUserAdmin={setUserAdmin}
-        />
+        <UserNavigation userAuthentication={userAuthentication} userName={userName} userAdmin={userAdmin} setUserAdmin={setUserAdmin} />
       ) : (
-        <AdminNavigation
-          userAuthentication={userAuthentication}
-          userName={userName}
-          userAdmin={userAdmin}
-          setUserAdmin={setUserAdmin}
-        />
+        <AdminNavigation userAuthentication={userAuthentication} userName={userName} userAdmin={userAdmin} setUserAdmin={setUserAdmin} />
       )}
       <main>
         <Routes>
-          <Route
-            exact
-            path="/cadastro"
-            element={
-              !userAuthentication ? <Register /> : <Navigate to="/usuario" />
-            }
-          />
-          <Route
-            exact
-            path="/login"
-            element={
-              !userAuthentication ? (
-                <Login {...loginProps} />
-              ) : (
-                <Navigate to="/usuario" />
-              )
-            }
-          />
+          <Route exact path="/cadastro" element={!userAuthentication ? <Register /> : <Navigate to="/usuario" />} />
+          <Route exact path="/login" element={!userAuthentication ? <Login {...loginProps} /> : <Navigate to="/usuario" />} />
           <Route
             exact
             path="/painel/"
@@ -252,17 +224,13 @@ function App() {
             path="/usuario/:panel?"
             element={
               <PrivateRoute userAuthentication={userAuthentication}>
-                <UserPanel
-                  userAuthentication={userAuthentication}
-                  setUserAuthentication={setUserAuthentication}
-                  userName={userName}
-                />
+                <UserPanel userAuthentication={userAuthentication} setUserAuthentication={setUserAuthentication} userName={userName} />
               </PrivateRoute>
             }
           />
           <Route
             exact
-            path="/inscricao/:id"
+            path="/inscricao/:id/:coupon?"
             element={
               <PrivateRoute userAuthentication={userAuthentication}>
                 <Registration userAdmin={userAdmin} userName={userName} />
@@ -271,32 +239,20 @@ function App() {
           />
           <Route exact path="/" element={<Home />} />
           <Route exact path="/pagamento/:linkId" element={<Payments />} />
-          <Route
-            exact
-            path="/confirmacao/:id"
-            element={<ConfirmationPage {...loginProps} />}
-          />
+          <Route exact path="/confirmacao/:id" element={<ConfirmationPage {...loginProps} />} />
           <Route exact path="/evento/:id" element={<EventPage />} />
           <Route exact path="/eventos/" element={<AllEvents />} />
-          {_config.pages.federacoes && (
-            <Route exact path="/federacoes/" element={<Federations />} />
-          )}
+          {_config.pages.federacoes && <Route exact path="/federacoes/" element={<Federations />} />}
           <Route exact path="/imprensa/" element={<Imprensa />} />
           <Route exact path="/noticias/" element={<AllNews />} />
           <Route exact path="/noticias/:title" element={<NewsPage />} />
-          <Route
-            exact
-            path="/senha/:requestId"
-            element={<PasswordReset {...loginProps} />}
-          />
+          <Route exact path="/senha/:requestId" element={<PasswordReset {...loginProps} />} />
           <Route exact path="/ouvidoria/" element={<Ouvidoria />} />
           <Route exact path="/transparencia/" element={<Documents />} />
           <Route path="*" element={<Page404 />} />
         </Routes>
       </main>
-      {!(page === "cadastro" || page === "painel" || page === "senha") && (
-        <Footer userAuthentication={userAuthentication} userName={userName} />
-      )}
+      {!(page === "cadastro" || page === "painel" || page === "senha") && <Footer userAuthentication={userAuthentication} userName={userName} />}
     </Fragment>
   );
 }
