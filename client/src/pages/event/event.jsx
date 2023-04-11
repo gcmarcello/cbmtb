@@ -7,8 +7,6 @@ import LoadingScreen from "../../utils/loadingScreen";
 import config from "../../_config";
 
 const dayjs = require("dayjs");
-const utc = require("dayjs/plugin/utc");
-const timezone = require("dayjs/plugin/timezone");
 
 const EventPage = () => {
   const { id } = useParams();

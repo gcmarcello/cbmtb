@@ -1,11 +1,8 @@
-import { Fragment, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Table from "../table";
 import InputMask from "react-input-mask";
 import { useForm, Controller } from "react-hook-form";
 import { toast } from "react-toastify";
-import { Editor } from "@tinymce/tinymce-react";
-import tinyConfig from "../../config/tiny.config";
-import uploadImage from "../../functions/uploadImage";
 const dayjs = require("dayjs");
 const cepSearch = require("cep-promise");
 

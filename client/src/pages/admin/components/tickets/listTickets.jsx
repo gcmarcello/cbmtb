@@ -21,6 +21,15 @@ const ListTickets = () => {
       accessor: "ticket_phone",
     },
     {
+      Header: "Mensagem",
+      accessor: "ticket_message",
+      Cell: ({ value }) => (
+        <span class="d-inline-block text-truncate" style={{ maxWidth: "200px" }}>
+          {value}
+        </span>
+      ),
+    },
+    {
       Header: "Data",
       accessor: "ticket_date",
       Cell: ({ value }) => {
@@ -44,7 +53,7 @@ const ListTickets = () => {
     },
     {
       Header: "Responder",
-      accessor: "ticket_message",
+      accessor: "accessor",
       Cell: ({ row }) => {
         return (
           <a href={`/painel/ouvidoria/${row.original.ticket_id}`} className="btn btn-primary" rel="noreferrer">

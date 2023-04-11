@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment } from "react";
 import Table from "../table";
 import xlsx from "json-as-xlsx";
 import { useForm } from "react-hook-form";
@@ -9,15 +9,11 @@ const ListRegistrations = (props) => {
   const {
     watch,
     getValues,
-    setValue,
-    setError,
-    control,
     register,
     handleSubmit,
     reset,
     formState: { errors },
   } = useForm({ mode: "onChange" });
-  const [eventChange, setEventChange] = useState(false);
 
   const columns = [
     {

@@ -1,6 +1,4 @@
 import React, { useMemo } from "react";
-import { useEffect } from "react";
-import { useState } from "react";
 import { useTable, useGlobalFilter, usePagination, useSortBy } from "react-table";
 
 const GlobalFilter = ({ globalFilter, setGlobalFilter }) => {
@@ -83,7 +81,7 @@ const Table = ({ data, columns, customPageSize, sortByColumn, generateXlsx }) =>
     headerGroups,
     rows,
     prepareRow,
-    state: { globalFilter, pageIndex, pageSize, sortBy },
+    state: { globalFilter, pageIndex, pageSize },
     page,
     canPreviousPage,
     canNextPage,

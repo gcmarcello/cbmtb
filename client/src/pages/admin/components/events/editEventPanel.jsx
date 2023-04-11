@@ -1,7 +1,7 @@
 import React, { Fragment, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
-import { useForm, Controller, useFieldArray } from "react-hook-form";
+import { useForm, useFieldArray } from "react-hook-form";
 import { toast } from "react-toastify";
 
 import EditEvent from "./components/editEvent";
