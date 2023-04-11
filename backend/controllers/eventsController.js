@@ -119,7 +119,6 @@ async function toggleRegistrations(req, res) {
       id,
       req.userId,
     ]);
-    console.log(toggleEvent.rows);
     res.status(200).json({
       message: boolean ? "Inscrições abertas!" : "Inscrições fechadas.",
       type: "success",
