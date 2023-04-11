@@ -113,13 +113,15 @@ async function createEvent(req, res) {
 async function toggleRegistrations(req, res) {
   try {
     const { id, boolean } = req.params;
-    const toggleEvent = await pool.query("UPDATE events SET event_status = $1 WHERE event_id = $2 AND event_owner_id = $3", [
-      boolean,
+    const state = JSON.parse(boolean);
+    const toggleEvent = await pool.query("UPDATE events SET event_status = $1 WHERE event_id = $2 AND event_owner_id = $3 RETURNING *", [
+      state,
       id,
       req.userId,
     ]);
+    console.log(toggleEvent.rows);
     res.status(200).json({
-      message: boolean === "true" ? "Inscrições abertas!" : "Inscrições fechadas.",
+      message: boolean ? "Inscrições abertas!" : "Inscrições fechadas.",
       type: "success",
     });
   } catch (err) {
