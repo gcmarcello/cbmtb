@@ -2,6 +2,7 @@ const AWS = require("aws-sdk");
 const fs = require("fs");
 const path = require("path");
 const crypto = require("crypto");
+require("aws-sdk/lib/maintenance_mode_message").suppress = true;
 
 const s3 = new AWS.S3({
   accessKeyId: process.env.S3_ACCESS_KEY,
