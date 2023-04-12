@@ -1,11 +1,12 @@
 import React, { Fragment, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, Link } from "react-router-dom";
 
 import { useForm, useFieldArray } from "react-hook-form";
 import { toast } from "react-toastify";
 
 import EditEvent from "./components/editEvent";
 import EditKits from "./components/editKits";
+import EditCoupons from "./components/editCoupons";
 import LoadingScreen from "../../../../utils/loadingScreen";
 import { isoTimezone } from "./functions/isoDateTimezone";
 import { useEffect } from "react";
@@ -38,10 +39,14 @@ const EditEventPanel = () => {
       const formData = new FormData();
       const formValues = getValues();
       Object.keys(formValues).forEach((key) => {
-        if (key !== "category") {
+        if (key !== "category" && key !== "coupon") {
           formData.append(key, formValues[key]);
-        } else {
+        }
+        if (key === "category") {
           formData.append("categories", JSON.stringify(data.category));
+        }
+        if (key === "coupon") {
+          formData.append("coupons", JSON.stringify(data.coupon));
         }
       });
 
@@ -143,9 +148,9 @@ const EditEventPanel = () => {
             <div className="d-flex flex-column flex-lg-row justify-content-between">
               <h2 className="text-center">{event.event_name}</h2>
               <div className="d-flex flex-lg-row flex-column">
-                <a role="button" href="../" className="btn btn-secondary my-1 w-100">
+                <Link to="/painel" className="btn btn-secondary my-1 w-100">
                   Voltar
-                </a>
+                </Link>
                 <button className="btn btn-success ms-lg-2 my-1 w-100" onClick={handleSubmit(onSubmit)}>
                   Salvar
                 </button>
@@ -198,6 +203,20 @@ const EditEventPanel = () => {
               </li>
               <li className="nav-item" role="presentation">
                 <button
+                  className={`nav-link ${tab === "cupons" && "active"} `}
+                  id="cupons-tab"
+                  data-bs-toggle="tab"
+                  data-bs-target="#cupons"
+                  type="button"
+                  role="tab"
+                  aria-controls="cupons"
+                  aria-selected="false"
+                >
+                  Cupons
+                </button>
+              </li>
+              <li className="nav-item" role="presentation">
+                <button
                   className={`nav-link ${tab === "inscritos" && "active"} `}
                   id="inscritos-tab"
                   data-bs-toggle="tab"
@@ -243,6 +262,9 @@ const EditEventPanel = () => {
                   handleSubmit={handleSubmit}
                   errors={errors}
                 />
+              </div>
+              <div className={`tab-pane fade ${tab === "cupons" && "show active"}`} id="cupons" role="tabpanel" aria-labelledby="cupons-tab">
+                <EditCoupons event={event} control={control} register={register} errors={errors} />
               </div>
               <div className={`tab-pane fade ${tab === "kits" && "show active"}`} id="kits" role="tabpanel" aria-labelledby="kits-tab">
                 <EditKits />

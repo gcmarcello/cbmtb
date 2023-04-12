@@ -51,14 +51,14 @@ const EditCategories = (props) => {
               {...props.register(`category.${index}.category_id`, { required: false })}
             />
             <label htmlFor="categoryName" className="form-label">
-              Nome da Categoria {index}
+              Nome da Categoria
             </label>
             <input
               type="text"
               name={`category[${index}].category_name`}
               id={`category[${index}].category_name`}
               defaultValue={field.category_name}
-              className={`form-control ${props.errors.category && props.errors.category[index]?.name ? "is-invalid" : ""}`}
+              className={`form-control ${props.errors.category && props.errors.category[index]?.category_name ? "is-invalid" : ""}`}
               onChange={(e) => console.log(e)}
               {...props.register(`category.${index}.category_name`, { required: true })}
             />
@@ -72,7 +72,7 @@ const EditCategories = (props) => {
               name={`category[${index}].category_minage`}
               id={`category[${index}].category_minage`}
               defaultValue={field.category_minage}
-              className={`form-control ${props.errors.category && props.errors.category[index]?.minAge ? "is-invalid" : ""}`}
+              className={`form-control ${props.errors.category && props.errors.category[index]?.category_minAge ? "is-invalid" : ""}`}
               {...props.register(`category.${index}.category_minAge`, { required: true })}
             />
           </div>
@@ -85,7 +85,7 @@ const EditCategories = (props) => {
               name={`category[${index}].category_maxage`}
               id={`category[${index}].category_maxage`}
               defaultValue={field.category_maxage}
-              className={`form-control ${props.errors.category && props.errors.category[index]?.maxAge ? "is-invalid" : ""}`}
+              className={`form-control ${props.errors.category && props.errors.category[index]?.category_maxAge ? "is-invalid" : ""}`}
               {...props.register(`category.${index}.category_maxAge`, { required: true })}
             />
           </div>
@@ -94,8 +94,8 @@ const EditCategories = (props) => {
               Sexo
             </label>
             <select
-              defaultValue={field.category_gender}
-              className={`form-select ${props.errors.category && props.errors.category[index]?.gender ? "is-invalid" : ""}`}
+              defaultValue={field.category_gender || ""}
+              className={`form-select ${props.errors.category && props.errors.category[index]?.category_gender ? "is-invalid" : ""}`}
               aria-label="Default select example"
               id={`category[${index}].category_gender`}
               name={`category[${index}].category_gender`}
@@ -122,7 +122,7 @@ const EditCategories = (props) => {
                 name={`category[${index}].category_price`}
                 id={`category[${index}].category_price`}
                 defaultValue={field.category_price}
-                className={`form-control ${props.errors.category && props.errors.category[index]?.price ? "is-invalid" : ""}`}
+                className={`form-control ${props.errors.category && props.errors.category[index]?.category_price ? "is-invalid" : ""}`}
                 {...props.register(`category.${index}.category_price`, { required: true })}
               />
             </div>

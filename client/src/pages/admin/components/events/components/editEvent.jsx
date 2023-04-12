@@ -8,9 +8,7 @@ import tinyConfig from "../../../config/tiny.config";
 import uploadImage from "../../../functions/uploadImage";
 
 const EditEvent = (props) => {
-  const [externalRegistration, setExternalRegistration] = useState(
-    props.event.event_external
-  );
+  const [externalRegistration, setExternalRegistration] = useState(props.event.event_external);
   const [fileSize, setFileSize] = useState(false);
   const [fileUrl, setFileUrl] = useState(null);
 
@@ -24,26 +22,16 @@ const EditEvent = (props) => {
     }
   };
 
-  useEffect(() => {
-    props.setFocus("name", { shouldSelect: true });
-  }, []);
-
   return (
     <Fragment>
       <div className="p-lg-3">
-        <form
-          onSubmit={props.handleSubmit(props.onSubmit)}
-          className="needs-validation"
-          noValidate
-        >
-          <div className="row mb-3">
+        <form onSubmit={props.handleSubmit(props.onSubmit)} className="needs-validation" noValidate>
+          <div className="row mb-2">
             <div className="col-12 col-lg-6">
               <label htmlFor="name">Nome do Evento</label>
               <input
                 id="name"
-                className={`form-control ${
-                  props.errors.name?.type ? "is-invalid" : ""
-                }`}
+                className={`form-control ${props.errors.name?.type ? "is-invalid" : ""}`}
                 {...props.register("name", {
                   required: true,
                   pattern: /.{2,}/,
@@ -62,9 +50,7 @@ const EditEvent = (props) => {
                   id="attendees"
                   name="attendees"
                   type="number"
-                  className={`form-control ${
-                    props.errors.attendees?.type ? "is-invalid" : ""
-                  }`}
+                  className={`form-control ${props.errors.attendees?.type ? "is-invalid" : ""}`}
                   {...props.register("attendees", { required: true, min: 2 })}
                   aria-invalid={props.errors.attendees ? "true" : "false"}
                   placeholder="(ex. 1000)"
@@ -72,14 +58,12 @@ const EditEvent = (props) => {
               </div>
             </div>
           </div>
-          <div className="row">
+          <div className="row mb-2">
             <div className="col-12">
               <label htmlFor="location">Local do Evento</label>
               <input
                 id="location"
-                className={`form-control ${
-                  props.errors.location?.type ? "is-invalid" : ""
-                }`}
+                className={`form-control ${props.errors.location?.type ? "is-invalid" : ""}`}
                 {...props.register("location", {
                   required: true,
                   pattern: /.{2,}/,
@@ -89,7 +73,7 @@ const EditEvent = (props) => {
             </div>
           </div>
 
-          <div className="row my-3">
+          <div className="row mb-2">
             <div className="col-12 col-lg-6">
               <label htmlFor="price">Link do evento</label>
               <div className="input-group">
@@ -98,9 +82,7 @@ const EditEvent = (props) => {
                 </span>
                 <input
                   id="link"
-                  className={`form-control ${
-                    props.errors.link?.type ? "is-invalid" : ""
-                  }`}
+                  className={`form-control ${props.errors.link?.type ? "is-invalid" : ""}`}
                   {...props.register("link", {
                     required: true,
                     pattern: /^[a-z0-9]{2,20}$/,
@@ -121,10 +103,7 @@ const EditEvent = (props) => {
                       checked={externalRegistration}
                       onChange={(e) => onCheckboxToggle(e)}
                     />
-                    <label
-                      className="form-check-label"
-                      htmlFor="flexSwitchCheckDefault"
-                    >
+                    <label className="form-check-label" htmlFor="flexSwitchCheckDefault">
                       Habilitar
                     </label>
                   </div>
@@ -132,17 +111,10 @@ const EditEvent = (props) => {
                 <input
                   id="external"
                   name="external"
-                  className={`form-control ${
-                    props.externalRegistration
-                      ? props.errors.external?.type
-                        ? "is-invalid"
-                        : ""
-                      : ""
-                  }`}
+                  className={`form-control ${props.externalRegistration ? (props.errors.external?.type ? "is-invalid" : "") : ""}`}
                   {...props.register("external", {
                     required: externalRegistration,
-                    pattern:
-                      /^(https?:\/\/)?[a-z0-9-]+(\.[a-z0-9-]+)*\.[a-z]+(\/[^\s]*)?$/,
+                    pattern: /^(https?:\/\/)?[a-z0-9-]+(\.[a-z0-9-]+)*\.[a-z]+(\/[^\s]*)?$/,
                   })}
                   aria-invalid={props.errors.external ? "true" : "false"}
                   disabled={!externalRegistration}
@@ -152,7 +124,7 @@ const EditEvent = (props) => {
           </div>
 
           <div className="row">
-            <div className="col-12 my-3">
+            <div className="col-12">
               <label htmlFor="location">Imagem Principal do Evento</label>
               <br />
 
@@ -174,60 +146,31 @@ const EditEvent = (props) => {
                         setFileUrl(URL.createObjectURL(e.target.files[0]));
                         setFileSize(e.target.files[0]?.size);
                       }}
-                      className={`form-control ${
-                        props.errors.image?.type ? "is-invalid" : ""
-                      }`}
+                      className={`form-control ${props.errors.image?.type ? "is-invalid" : ""}`}
                       aria-invalid={props.errors.image ? "true" : "false"}
                     />
                   )}
                 />
 
-                <button
-                  type="button"
-                  className="btn btn-outline-secondary"
-                  data-bs-toggle="modal"
-                  data-bs-target="#eventImageModal"
-                >
+                <button type="button" className="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#eventImageModal">
                   <i className="bi bi-zoom-in"></i>
                 </button>
               </div>
-              <div
-                className="modal fade"
-                id="eventImageModal"
-                tabIndex="-1"
-                aria-labelledby="eventImageModalLabel"
-                aria-hidden="true"
-              >
+              <div className="modal fade" id="eventImageModal" tabIndex="-1" aria-labelledby="eventImageModalLabel" aria-hidden="true">
                 <div className="modal-dialog">
                   <div className="modal-content">
                     <div className="modal-header">
                       <h5 className="modal-title" id="eventImageModalLabel">
                         Imagem do Evento
                       </h5>
-                      <button
-                        type="button"
-                        className="btn-close"
-                        data-bs-dismiss="modal"
-                        aria-label="Close"
-                      ></button>
+                      <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div className="modal-body">
-                      <img
-                        src={fileUrl || props.getValues("imageOld")}
-                        className="img-fluid rounded mx-auto d-block my-2"
-                        alt=""
-                      />
+                      <img src={fileUrl || props.getValues("imageOld")} className="img-fluid rounded mx-auto d-block my-2" alt="" />
                     </div>
                     <div className="modal-footer">
-                      <button
-                        type="button"
-                        className="btn btn-secondary"
-                        data-bs-dismiss="modal"
-                      >
-                        Close
-                      </button>
-                      <button type="button" className="btn btn-primary">
-                        Save changes
+                      <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">
+                        Fechar
                       </button>
                     </div>
                   </div>
@@ -252,9 +195,7 @@ const EditEvent = (props) => {
                 type="datetime-local"
                 id="dateStart"
                 name="dateStart"
-                className={`form-control ${
-                  props.errors.dateStart?.type ? "is-invalid" : ""
-                }`}
+                className={`form-control ${props.errors.dateStart?.type ? "is-invalid" : ""}`}
                 {...props.register("dateStart", { required: true })}
               />
             </div>
@@ -264,9 +205,7 @@ const EditEvent = (props) => {
                 type="datetime-local"
                 id="dateEnd"
                 name="dateEnd"
-                className={`form-control ${
-                  props.errors.dateEnd?.type ? "is-invalid" : ""
-                }`}
+                className={`form-control ${props.errors.dateEnd?.type ? "is-invalid" : ""}`}
                 {...props.register("dateEnd", { required: true })}
               />
             </div>
@@ -278,9 +217,7 @@ const EditEvent = (props) => {
                 type="datetime-local"
                 id="registrationStart"
                 name="registrationStart"
-                className={`form-control ${
-                  props.errors.registrationStart?.type ? "is-invalid" : ""
-                }`}
+                className={`form-control ${props.errors.registrationStart?.type ? "is-invalid" : ""}`}
                 {...props.register("registrationStart", { required: true })}
               />
             </div>
@@ -290,9 +227,7 @@ const EditEvent = (props) => {
                 type="datetime-local"
                 id="registrationEnd"
                 name="registrationEnd"
-                className={`form-control ${
-                  props.errors.registrationEnd?.type ? "is-invalid" : ""
-                }`}
+                className={`form-control ${props.errors.registrationEnd?.type ? "is-invalid" : ""}`}
                 {...props.register("registrationEnd", { required: true })}
               />
             </div>
@@ -314,11 +249,7 @@ const EditEvent = (props) => {
                   <Editor
                     value={value}
                     ref={ref}
-                    apiKey={
-                      process.env.REACT_APP_REACT_ENV === "production"
-                        ? process.env.REACT_APP_TINYMCE_KEY
-                        : ""
-                    }
+                    apiKey={process.env.REACT_APP_REACT_ENV === "production" ? process.env.REACT_APP_TINYMCE_KEY : ""}
                     onEditorChange={(content) => onChange(content)}
                     init={{
                       language: "pt_BR",
@@ -354,11 +285,7 @@ const EditEvent = (props) => {
                   <Editor
                     value={value}
                     ref={ref}
-                    apiKey={
-                      process.env.REACT_APP_REACT_ENV === "production"
-                        ? process.env.REACT_APP_TINYMCE_KEY
-                        : ""
-                    }
+                    apiKey={process.env.REACT_APP_REACT_ENV === "production" ? process.env.REACT_APP_TINYMCE_KEY : ""}
                     onEditorChange={(content) => onChange(content)}
                     init={{
                       language: "pt_BR",
@@ -394,11 +321,7 @@ const EditEvent = (props) => {
                   <Editor
                     value={value}
                     ref={ref}
-                    apiKey={
-                      process.env.REACT_APP_REACT_ENV === "production"
-                        ? process.env.REACT_APP_TINYMCE_KEY
-                        : ""
-                    }
+                    apiKey={process.env.REACT_APP_REACT_ENV === "production" ? process.env.REACT_APP_TINYMCE_KEY : ""}
                     onEditorChange={(content) => onChange(content)}
                     init={{
                       language: "pt_BR",
