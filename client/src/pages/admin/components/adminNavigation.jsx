@@ -7,7 +7,7 @@ const AdminNavigation = () => {
     <Fragment>
       <nav className="navbar navbar-expand-lg navbar-light shadow-sm">
         <div className="container-fluid">
-          <a className="navbar-brand" href="/">
+          <a className="navbar-brand" href="/painel">
             <img src={_config.images.dashboardLogo} alt="LOGO" className="img-fluid" height={100} width={150} />
           </a>
           <button
@@ -23,15 +23,10 @@ const AdminNavigation = () => {
           </button>
           <div className="collapse navbar-collapse" id="navbarScroll">
             <ul className="navbar-nav me-auto my-2 my-lg-0" style={{ "--bs-scroll-height": "100px" }}>
-              <li className="nav-item">
-                <a className="nav-link active fw-bolder" aria-current="page" href="/painel">
-                  Início
-                </a>
-              </li>
               <li className="nav-item dropdown">
                 <a
                   className="nav-link dropdown-toggle"
-                  href="/"
+                  href="/painel/eventos"
                   id="navbarScrollingDropdown"
                   role="button"
                   data-bs-toggle="dropdown"

@@ -137,13 +137,14 @@ async function retrieveEventInformation(req, res) {
     const { id } = req.params;
     const event = (await pool.query("SELECT * FROM events WHERE event_id = $1", [id])).rows[0];
     const categories = (await pool.query("SELECT * FROM event_categories WHERE event_id = $1", [id])).rows;
+    const coupons = (await pool.query("SELECT * FROM event_coupons WHERE event_id = $1", [id])).rows;
     const registrations = (
       await pool.query(
         "SELECT r.registration_id,r.registration_shirt,r.registration_status,r.registration_date,u.user_email,u.user_first_name,u.user_last_name,u.user_cpf, u.user_phone, u.user_birth_date, c.category_id, c.category_name, ec.coupon_link FROM registrations AS r LEFT JOIN users AS u ON r.user_id = u.user_id LEFT JOIN event_categories AS c ON r.category_id = c.category_id LEFT JOIN event_coupons AS ec ON r.coupon_id = ec.coupon_id WHERE r.event_id = $1",
         [id]
       )
     ).rows;
-    res.status(200).json({ ...event, categories, registrations });
+    res.status(200).json({ ...event, categories, coupons, registrations });
   } catch (err) {
     res.status(400).json({ message: `Erro ao encontrar o evento. ${err}`, type: "error" });
     console.log(err.message);
@@ -153,6 +154,7 @@ async function retrieveEventInformation(req, res) {
 async function updateEvent(req, res) {
   try {
     const { id } = req.params;
+    const coupons = JSON.parse(req.body.coupons);
     const categories = JSON.parse(req.body.categories);
 
     const {
@@ -193,6 +195,35 @@ async function updateEvent(req, res) {
         id,
       ]
     );
+
+    const existingCoupons = coupons.filter((coupon) => coupon.coupon_id);
+
+    if (existingCoupons.length) {
+      const existingCouponsSQL = existingCoupons
+        .map((coupon) => `('${coupon.coupon_id}'::uuid, '${id}'::uuid, '${coupon.coupon_link}', '${coupon.coupon_uses}'::integer)`)
+        .join(",");
+
+      const updateExistingCoupons = await pool.query(
+        `UPDATE event_coupons AS ec SET
+          coupon_id = t.coupon_id,
+          coupon_link = t.coupon_link,
+          event_id = t.event_id,
+          coupon_uses = t.coupon_uses
+        FROM (VALUES ${existingCouponsSQL}) AS t(coupon_id, event_id, coupon_link, coupon_uses)
+        WHERE t.coupon_id = ec.coupon_id`
+      );
+    }
+
+    const newCoupons = coupons.filter((coupon) => !coupon.coupon_id);
+
+    if (newCoupons.length) {
+      const newCouponsSQL = coupons
+        .filter((coupon) => coupon.coupon_id.length < 1)
+        .map((coupon) => `('${id}'::uuid, '${coupon.coupon_link}', '${coupon.coupon_uses}'::integer)`)
+        .join(",");
+
+      const createNewCoupons = await pool.query(`INSERT INTO event_coupons (event_id,coupon_link,coupon_uses) VALUES ${newCouponsSQL}`);
+    }
 
     const existingCategories = categories.filter((category) => category.category_id);
 

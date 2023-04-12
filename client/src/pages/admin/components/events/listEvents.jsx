@@ -1,5 +1,5 @@
 import React, { Fragment, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import Table from "../table";
 
@@ -12,6 +12,7 @@ const ListEvents = () => {
     {
       Header: "Nome",
       accessor: "event_name",
+      Cell: ({ row }) => <Link to={`/painel/eventos/${row.original.event_id}/`}>{row.original.event_name}</Link>,
     },
     {
       accessor: "event_status",
@@ -53,6 +54,7 @@ const ListEvents = () => {
       Header: "Inscritos",
       accessor: "event_current_attendees",
       className: "d-none d-lg-table-cell",
+      Cell: ({ value, row }) => `${value} / ${row.original.event_max_attendees}`,
     },
     {
       Header: "Data",
@@ -65,12 +67,12 @@ const ListEvents = () => {
       disableSortBy: true,
       Cell: ({ value }) => (
         <div>
-          <a href={`/painel/eventos/${value}/`} className="btn btn-dark mx-1">
+          <Link to={`/painel/eventos/${value}/`} className="btn btn-dark mx-1">
             <i className="bi bi-gear-fill"></i>
-          </a>
-          <a href={`/painel/eventos/${value}/inscritos`} className="btn btn-primary mx-1 d-none d-lg-inline-block">
+          </Link>
+          <Link to={`/painel/eventos/${value}/inscritos`} className="btn btn-primary mx-1 d-none d-lg-inline-block">
             <i className="bi bi-people-fill"></i>
-          </a>
+          </Link>
         </div>
       ),
     },
@@ -136,9 +138,9 @@ const ListEvents = () => {
             <Table data={eventsList} columns={columns} />
 
             <div className="d-flex justify-content-end">
-              <a href="/painel/eventos/novo/" className="btn btn-success">
+              <Link to="/painel/eventos/novo/" className="btn btn-success">
                 Novo Evento
-              </a>
+              </Link>
             </div>
           </div>
         </div>

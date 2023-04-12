@@ -137,6 +137,7 @@ const ListRegistrations = (props) => {
         return registration;
       }),
     });
+
     const settings = {
       fileName: `${props.event.event_name} - Inscritos (${dayjs().format("DD-MM-YYYY")})`, // Name of the resulting spreadsheet
       extraLength: 3, // A bigger number means that columns will be wider
@@ -144,7 +145,7 @@ const ListRegistrations = (props) => {
       writeOptions: {}, // Style options from https://docs.sheetjs.com/docs/api/write-options
       RTL: false, // Display the columns from right-to-left (the default value is false)
     };
-    /* xlsx(data, settings); */
+    xlsx(data, settings);
   };
 
   const onSubmit = async (data) => {
@@ -234,12 +235,12 @@ const ListRegistrations = (props) => {
                   className={`form-select ${errors.gender?.type ? "is-invalid" : ""} mb-1`}
                   {...register("registrationShirt", { required: true })}
                 >
-                  <option value="pp">PP</option>
-                  <option value="p">P</option>
-                  <option value="m">M</option>
-                  <option value="g">G</option>
-                  <option value="gg">GG</option>
-                  <option value="xgg">XGG</option>
+                  <option value={"pp"}>PP</option>
+                  <option value={"p"}>P</option>
+                  <option value={"m"}>M</option>
+                  <option value={"g"}>G</option>
+                  <option value={"gg"}>GG</option>
+                  <option value={"exg"}>EXG</option>
                 </select>
               </div>
               <small className="text-muted mx-3 mb-1">ID: {getValues("registrationId")}</small>
