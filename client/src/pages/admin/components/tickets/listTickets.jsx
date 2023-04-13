@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 
 import Table from "../table";
+import { Link } from "react-router-dom";
 
 const dayjs = require("dayjs");
 
@@ -24,7 +25,10 @@ const ListTickets = () => {
       Header: "Mensagem",
       accessor: "ticket_message",
       Cell: ({ value }) => (
-        <span class="d-inline-block text-truncate" style={{ maxWidth: "200px" }}>
+        <span
+          class="d-inline-block text-truncate"
+          style={{ maxWidth: "200px" }}
+        >
           {value}
         </span>
       ),
@@ -44,7 +48,11 @@ const ListTickets = () => {
           case "completed":
             return <span className="badge bg-success">Finalizado</span>;
           case "awaiting user":
-            return <span className="badge bg-warning text-dark">Aguardando Usuário</span>;
+            return (
+              <span className="badge bg-warning text-dark">
+                Aguardando Usuário
+              </span>
+            );
           case "pending":
             return <span className="badge bg-danger">Pendente</span>;
           default:
@@ -56,9 +64,13 @@ const ListTickets = () => {
       accessor: "accessor",
       Cell: ({ row }) => {
         return (
-          <a href={`/painel/ouvidoria/${row.original.ticket_id}`} className="btn btn-primary" rel="noreferrer">
+          <Link
+            to={`/painel/ouvidoria/${row.original.ticket_id}`}
+            className="btn btn-primary"
+            rel="noreferrer"
+          >
             Responder
-          </a>
+          </Link>
         );
       },
     },
@@ -91,7 +103,11 @@ const ListTickets = () => {
         <div className="p-3 bg-white rounded rounded-2 shadow">
           <h1>Lista de Chamados</h1>
           <hr />
-          <Table data={ticketList} columns={columns} sortByColumn={[{ id: "ticket_status", desc: true }]} />
+          <Table
+            data={ticketList}
+            columns={columns}
+            sortByColumn={[{ id: "ticket_status", desc: true }]}
+          />
         </div>
       </div>
     </div>

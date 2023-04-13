@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import LoadingScreen from "../../../../utils/loadingScreen";
 
 import { Editor } from "@tinymce/tinymce-react";
@@ -41,7 +41,6 @@ const AnswerTicket = () => {
       const parseResponse = await response.json();
       setTicket(parseResponse.data.ticket);
       setMessages(parseResponse.data.messages);
-      console.log(parseResponse.data.messages);
       setValue("firstName", parseResponse.data.ticket.ticket_name);
       setValue("email", parseResponse.data.ticket.ticket_email);
     } catch (err) {
@@ -88,14 +87,21 @@ const AnswerTicket = () => {
     return <LoadingScreen />;
   }
 
-  console.log(messages);
-
   return (
     <div className="bg-light">
       <div className="px-lg-5 py-lg-5">
         <div className="p-3 bg-white rounded rounded-2 shadow px-5">
-          <span className="h1">Chamado </span>{" "}
-          <span className="text-muted">({ticket?.ticket_id})</span>
+          <div className="d-flex justify-content-between align-items-end">
+            <div>
+              <span className="h1">Chamado </span>
+              <span className="text-muted">({ticket?.ticket_id})</span>
+            </div>
+            <div>
+              <Link to="/painel/ouvidoria" className="btn btn-secondary  px-3 ">
+                Voltar
+              </Link>
+            </div>
+          </div>
           <hr />
           <div className="row">
             <div className="row">
@@ -166,12 +172,6 @@ const AnswerTicket = () => {
                   )}
                 />
                 <div className="d-flex justify-content-between mt-3">
-                  <a
-                    href="/painel/ouvidoria"
-                    className="btn btn-secondary me-3 px-3 py-2"
-                  >
-                    Voltar
-                  </a>
                   <input
                     type="submit"
                     className="btn btn-success px-5 py-2"
@@ -187,18 +187,25 @@ const AnswerTicket = () => {
             >
               {messages?.map((message) => (
                 <div className="card mb-3" style={{ width: "100%" }}>
-                  <div className="card-header">
+                  <div className="card-header d-flex justify-content-between">
                     <div>
                       <img
-                        src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
+                        src={
+                          !message.user_id
+                            ? "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
+                            : _config.images.primaryLogo
+                        }
                         alt=""
                         height={30}
+                        width={30}
                         className="rounded-circle me-2"
                       />
                       {message?.user_id
                         ? _config.entidade.abbreviation
                         : ticket.ticket_name.split(" ")[0]}{" "}
-                      - {dayjs(message.message_date).format("DD/MM/YYYY HH:mm")}
+                    </div>
+                    <div>
+                      {dayjs(message.message_date).format("DD/MM/YYYY HH:mm")}
                     </div>
                   </div>
 
