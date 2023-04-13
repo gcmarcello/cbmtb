@@ -52,9 +52,11 @@ app.get(/^\/static\/css\/main\.[a-f0-9]{8}\.css$/, (req, res) => {
   const fileName = req.url.slice(1);
   res.sendFile(path.join(buildPath, fileName));
 });
-app.get("/**", (req, res) => {
-  res.sendFile(path.join(buildPath, "index.html"));
-});
+
+process.env.NODE_ENV === "production" &&
+  app.get("/**", (req, res) => {
+    res.sendFile(path.join(buildPath, "index.html"));
+  });
 
 app.listen(port, () => {
   console.log(

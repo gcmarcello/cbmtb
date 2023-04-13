@@ -1,16 +1,15 @@
 const pool = require("../database/database");
 const Email = require("../utils/emails");
+const dayjs = require("dayjs");
 
 async function list_tickets(req, res) {
   try {
     const listTickets = (await pool.query(`SELECT * FROM tickets`)).rows;
-    res
-      .status(200)
-      .json({
-        message: "Chamados encontrados com sucesso.",
-        type: "success",
-        data: listTickets,
-      });
+    res.status(200).json({
+      message: "Chamados encontrados com sucesso.",
+      type: "success",
+      data: listTickets,
+    });
   } catch (err) {
     console.log(err.message);
     res
@@ -26,42 +25,90 @@ async function fetch_ticket(req, res) {
     const ticket = (
       await pool.query(`SELECT * FROM tickets WHERE ticket_id = $1`, [id])
     ).rows[0];
-    res
-      .status(200)
-      .json({
-        message: "Categoria criada com sucesso!",
-        type: "success",
-        data: ticket,
-      });
+    const messages = (
+      await pool.query(
+        "SELECT * FROM ticket_messages WHERE ticket_id = $1 ORDER BY message_date DESC",
+        [id]
+      )
+    ).rows;
+
+    res.status(200).json({
+      message: "Categoria criada com sucesso!",
+      type: "success",
+      data: { ticket, messages },
+    });
   } catch (err) {
     console.log(err.message);
   }
 }
 
-async function answer_ticket(req, res) {
+async function answer_ticket_admin(req, res) {
   try {
     const { id } = req.params;
-    const { messageBody, firstName, email } = req.body;
+    const userId = req.userId;
+    const { messageBody } = req.body;
 
-    const sgEmail = new Email([email]);
-    sgEmail.sendTicketEmail(firstName, messageBody, id);
+    const response = await pool.query(
+      "INSERT INTO ticket_messages (ticket_id,user_id,message_body,message_date) VALUES ($1,$2,$3,$4) RETURNING *",
+      [id, userId, messageBody, dayjs()]
+    );
 
     const ticket = await pool.query(
-      `UPDATE tickets SET ticket_status = $1 WHERE ticket_id = $2`,
-      ["completed", id]
+      `UPDATE tickets SET ticket_status = $1 WHERE ticket_id = $2 RETURNING *`,
+      ["awaiting", id]
     );
-    res
-      .status(200)
-      .json({ message: "Chamado respondido com sucesso!", type: "success" });
+
+    const sgEmail = new Email([ticket.rows[0].ticket_email.split(" ")[0]]);
+    sgEmail.answerTicketEmail(
+      ticket.rows[0].ticket_name.split(" ")[0],
+      messageBody,
+      id
+    );
+
+    res.status(200).json({
+      message: "Chamado respondido com sucesso!",
+      type: "success",
+      data: response.rows[0],
+    });
   } catch (err) {
     console.log(err.message);
-    res
-      .status(400)
-      .json({
-        message: `Erro ao responder chamado. ${err.message}`,
-        type: "error",
-      });
+    res.status(400).json({
+      message: `Erro ao responder chamado. ${err.message}`,
+      type: "error",
+    });
   }
 }
 
-module.exports = { list_tickets, fetch_ticket, answer_ticket };
+// Send Press Form
+async function create_ticket(req, res) {
+  try {
+    const { fullName, email, phone, message } = req.body;
+
+    const newTicket = await pool.query(
+      "INSERT INTO tickets (ticket_name,ticket_email,ticket_phone,ticket_status,ticket_date) VALUES ($1,$2,$3,$4,$5) RETURNING *",
+      [fullName, email, phone, "pending", dayjs()]
+    );
+
+    const newTicketMessage = await pool.query(
+      "INSERT INTO ticket_messages (ticket_id, message_body, message_date) VALUES ($1,$2,$3)",
+      [newTicket.rows[0].ticket_id, message, dayjs()]
+    );
+
+    res
+      .status(200)
+      .json({ message: "Mensagem enviada com sucesso.", type: "success" });
+  } catch (err) {
+    res.status(400).json({
+      message: `Erro ao enviar mensagem. ${err.message}`,
+      type: "error",
+    });
+    console.log(err.message);
+  }
+}
+
+module.exports = {
+  list_tickets,
+  fetch_ticket,
+  answer_ticket_admin,
+  create_ticket,
+};

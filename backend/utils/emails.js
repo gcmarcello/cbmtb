@@ -28,7 +28,16 @@ module.exports = class Email {
         console.error(error);
       });
   }
-  async sendRegistrationEmail(firstName, eventName, dateStart, dateEnd, location, category, registrationID, eventLink) {
+  async sendRegistrationEmail(
+    firstName,
+    eventName,
+    dateStart,
+    dateEnd,
+    location,
+    category,
+    registrationID,
+    eventLink
+  ) {
     sgMail.setApiKey(process.env.SENDGRID_API_KEY);
     const msg = {
       to: this.emails[0],
@@ -46,7 +55,9 @@ module.exports = class Email {
       <p>Aqui est&atilde;o as informa&ccedil;&otilde;es do evento e da sua inscri&ccedil;&atilde;o.&nbsp;Imprima este e-mail e leve ao evento para facilitar o check-in!</p>
       
       <ul>
-        <li><strong>Data:</strong>&nbsp;${dayjs(dateStart).format("DD/MM/YYYY HH:mm")} -&nbsp;${dayjs(dateEnd).format("DD/MM/YYYY HH:mm")}</li>
+        <li><strong>Data:</strong>&nbsp;${dayjs(dateStart).format(
+          "DD/MM/YYYY HH:mm"
+        )} -&nbsp;${dayjs(dateEnd).format("DD/MM/YYYY HH:mm")}</li>
         <li><strong>Local:</strong>&nbsp;${location}</li>
         <li><strong>Categoria:</strong>&nbsp;${category}</li>
         <li><strong>ID da inscri&ccedil;&atilde;o:</strong> ${registrationID}&nbsp;(Esse &eacute; apenas o n&uacute;mero de controle no sistema, seu n&uacute;mero de atleta&nbsp;ser&aacute; definido de forma aleat&oacute;ria no check-in do evento)</li>
@@ -153,7 +164,7 @@ module.exports = class Email {
       });
   }
 
-  async sendTicketEmail(firstName, messageBody, ticketId) {
+  async answerTicketEmail(firstName, messageBody, ticketId) {
     sgMail.setApiKey(process.env.SENDGRID_API_KEY);
     const msg = {
       to: this.emails[0],
@@ -164,9 +175,9 @@ module.exports = class Email {
       subject: `${_config.entidade.name} - Resposta ao Chamado ${ticketId}`,
       html: `<h1><strong>Resposta ao Chamado&nbsp;${ticketId}</strong></h1>
 
-      <p>Prezado(a) ${firstName}, obrigado pela sua mensagem!</p>
+      <p>Prezado(a) ${firstName},</p>
       
-      <p>${messageBody}</p>
+      <p>Seu chamado teve uma resposta. Acesse o chamado clicando aqui.</p>
       
       <hr />
       <p>Por favor, n&atilde;o retorne esta mensagem. Caso voc&ecirc; tenha mais alguma d&uacute;vida, favor abrir um novo chamado <a href="${_config.site.url}/ouvidoria" target="_blank">clicando aqui.</a></p>

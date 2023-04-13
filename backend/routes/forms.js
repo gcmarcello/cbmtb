@@ -17,23 +17,19 @@ router.post("/press", reCaptcha, async (req, res) => {
     );
 
     if (verifyEmail.rows.length) {
-      return res
-        .status(400)
-        .json({
-          message: "Email já registrado no sistema!",
-          type: "error",
-          field: "email",
-        });
+      return res.status(400).json({
+        message: "Email já registrado no sistema!",
+        type: "error",
+        field: "email",
+      });
     }
 
     if (verifyCPF.rows.length) {
-      return res
-        .status(400)
-        .json({
-          message: "CPF já registrado no sistema!",
-          type: "error",
-          field: "cpf",
-        });
+      return res.status(400).json({
+        message: "CPF já registrado no sistema!",
+        type: "error",
+        field: "cpf",
+      });
     }
 
     const newPressVehicle = await pool.query(
@@ -41,43 +37,15 @@ router.post("/press", reCaptcha, async (req, res) => {
       [fullName, email, phone, cpf, type, vehicle, comments]
     );
 
-    res
-      .status(200)
-      .json({
-        message: "Cadastro de imprensa realizado com sucesso!",
-        type: "success",
-      });
+    res.status(200).json({
+      message: "Cadastro de imprensa realizado com sucesso!",
+      type: "success",
+    });
   } catch (err) {
-    res
-      .status(400)
-      .json({
-        message: `Erro ao realizar o cadastro. ${err.message}`,
-        type: "error",
-      });
-    console.log(err.message);
-  }
-});
-
-// Send Press Form
-router.post("/ombudsman", reCaptcha, async (req, res) => {
-  try {
-    const { fullName, email, message, phone } = req.body;
-
-    const newOmbudsmanTicket = await pool.query(
-      "INSERT INTO tickets (ticket_name,ticket_email,ticket_phone,ticket_message,ticket_status,ticket_date) VALUES ($1,$2,$3,$4,$5,$6)",
-      [fullName, email, phone, message, "pending", dayjs()]
-    );
-
-    res
-      .status(200)
-      .json({ message: "Mensagem enviada com sucesso.", type: "success" });
-  } catch (err) {
-    res
-      .status(400)
-      .json({
-        message: `Erro ao enviar mensagem. ${err.message}`,
-        type: "error",
-      });
+    res.status(400).json({
+      message: `Erro ao realizar o cadastro. ${err.message}`,
+      type: "error",
+    });
     console.log(err.message);
   }
 });

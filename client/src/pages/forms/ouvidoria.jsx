@@ -23,9 +23,10 @@ const Ouvidoria = () => {
   const reCaptchaComponent = useRef(null);
 
   const onSubmit = async (data) => {
+    console.log(data);
     try {
       const body = data;
-      const response = await fetch(`/api/forms/ombudsman/`, {
+      const response = await fetch(`/api/tickets/`, {
         method: "POST",
         headers: { "Content-type": "application/json" },
         body: JSON.stringify(body),
@@ -39,6 +40,7 @@ const Ouvidoria = () => {
           message: parseResponse.message,
         });
       }
+
       toast[parseResponse.type](parseResponse.message, { theme: "colored" });
     } catch (error) {
       console.log(error.message);
@@ -145,11 +147,11 @@ const Ouvidoria = () => {
                   defaultValue=""
                   rules={{
                     required: true,
-                    pattern: /^\(\d{2}\)\s\d{5}-\d{4}$/,
+                    pattern: /^\d{2}\s\d{5}-\d{4}$/,
                   }}
                   render={({ field }) => (
                     <InputMask
-                      mask="(99) 99999-9999"
+                      mask="99 99999-9999"
                       className={`form-control ${
                         errors.phone
                           ? "is-invalid"

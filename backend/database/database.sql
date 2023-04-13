@@ -45,6 +45,16 @@ CREATE TABLE events(
   FOREIGN KEY (event_owner_id) REFERENCES users(user_id)
 );
 
+CREATE TABLE event_coupons(
+ coupon_id UUID DEFAULT UUID_generate_v4(),
+ event_id UUID NOT NULL,
+ coupon_link VARCHAR(30) NOT NULL,
+ coupon_discount REAL,
+ coupon_uses INTEGER,
+ PRIMARY KEY (coupon_id),
+ FOREIGN KEY (event_id) REFERENCES events(event_id)
+);
+
 CREATE TABLE event_categories(
   category_id UUID DEFAULT UUID_generate_v4(),
   event_id UUID NOT NULL,
@@ -120,6 +130,17 @@ CREATE TABLE tickets(
   PRIMARY KEY(ticket_id)
 );
 
+CREATE TABLE ticket_messages(
+  message_id UUID DEFAULT UUID_generate_v4(),
+  ticket_id UUID NOT NULL,
+  user_id UUID,
+  message_body TEXT NOT NULL,
+  message_date TIMESTAMP WITH TIME ZONE,
+  PRIMARY KEY(message_id),
+  FOREIGN KEY (ticket_id) REFERENCES tickets(ticket_id),
+  FOREIGN KEY(user_id) REFERENCES users(user_id)
+)
+
 CREATE TABLE clubs(
   club_id UUID DEFAULT UUID_generate_v4(),
   federation_state VARCHAR(2) NOT NULL UNIQUE,
@@ -190,15 +211,7 @@ CREATE TABLE password_resets(
  FOREIGN KEY(reset_user_id) REFERENCES users(user_id)
 );
 
-CREATE TABLE event_coupons(
- coupon_id UUID DEFAULT UUID_generate_v4(),
- event_id UUID NOT NULL,
- coupon_link VARCHAR(30) NOT NULL,
- coupon_discount REAL,
- coupon_uses INTEGER,
- PRIMARY KEY (category_id),
- FOREIGN KEY (event_id) REFERENCES events(event_id)
-);
+
 
 
 CREATE OR REPLACE FUNCTION update_num_attendees() RETURNS TRIGGER AS $$

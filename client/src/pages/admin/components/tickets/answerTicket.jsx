@@ -7,17 +7,20 @@ import { Editor } from "@tinymce/tinymce-react";
 import tinyConfig from "../../config/tiny.config";
 import uploadImage from "../../functions/uploadImage";
 import { toast } from "react-toastify";
+import _config from "../../../../_config";
 
 const dayjs = require("dayjs");
 
 const AnswerTicket = () => {
   const { id } = useParams();
   const [ticket, setTicket] = useState(null);
+  const [messages, setMessages] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const {
     setValue,
     watch,
+    reset,
     control,
     handleSubmit,
     formState: { errors },
@@ -36,9 +39,11 @@ const AnswerTicket = () => {
       });
 
       const parseResponse = await response.json();
-      setTicket(parseResponse.data);
-      setValue("firstName", parseResponse.data.ticket_name);
-      setValue("email", parseResponse.data.ticket_email);
+      setTicket(parseResponse.data.ticket);
+      setMessages(parseResponse.data.messages);
+      console.log(parseResponse.data.messages);
+      setValue("firstName", parseResponse.data.ticket.ticket_name);
+      setValue("email", parseResponse.data.ticket.ticket_email);
     } catch (err) {
       console.log(err);
     } finally {
@@ -54,8 +59,8 @@ const AnswerTicket = () => {
       myHeaders.append("token", localStorage.token);
       myHeaders.append("Content-type", "application/json");
 
-      const response = await fetch(`/api/tickets/${ticket.ticket_id}`, {
-        method: "PUT",
+      const response = await fetch(`/api/tickets/admin/${ticket.ticket_id}`, {
+        method: "POST",
         headers: myHeaders,
         body: JSON.stringify(data),
       });
@@ -63,7 +68,9 @@ const AnswerTicket = () => {
       const parseResponse = await response.json();
       if (parseResponse.type === "success") {
         toast.success(parseResponse.message, { theme: "colored" });
-        navigate("/painel/ouvidoria");
+        reset();
+        setMessages(...messages.unshift(parseResponse.data));
+        /* navigate("/painel/ouvidoria"); */
       } else {
         toast.error(parseResponse.message, { theme: "colored" });
       }
@@ -81,40 +88,47 @@ const AnswerTicket = () => {
     return <LoadingScreen />;
   }
 
+  console.log(messages);
+
   return (
     <div className="bg-light">
       <div className="px-lg-5 py-lg-5">
         <div className="p-3 bg-white rounded rounded-2 shadow px-5">
-          <h1>Chamado ({ticket?.ticket_id})</h1>
+          <span className="h1">Chamado </span>{" "}
+          <span className="text-muted">({ticket?.ticket_id})</span>
           <hr />
           <div className="row">
-            <div className="col-12 col-lg-3 mb-3 mb-lg-0">
-              <div>
-                <div className="card">
-                  <div className="card-header">Informações do Chamado:</div>
-                  <ul className="list-group list-group-flush">
+            <div className="row">
+              <div className="col-12 mb-3 mb-lg-3">
+                <div className="d-flex justify-content-center">
+                  <ul className="list-group list-group-horizontal-lg">
                     <li className="list-group-item">
-                      <i className="bi bi-person-circle"></i> {ticket?.ticket_name}
+                      <i className="bi bi-person-circle"></i>{" "}
+                      {ticket?.ticket_name}
                     </li>
                     <li className="list-group-item">
-                      <i className="bi bi-envelope-at-fill"></i> {ticket?.ticket_email}
+                      <i className="bi bi-envelope-at-fill"></i>{" "}
+                      {ticket?.ticket_email}
                     </li>
                     <li className="list-group-item">
-                      <i className="bi bi-telephone-fill"></i> {ticket?.ticket_phone}
+                      <i className="bi bi-telephone-fill"></i>{" "}
+                      {ticket?.ticket_phone}
                     </li>
                     <li className="list-group-item">
-                      <i className="bi bi-calendar-fill"></i> {dayjs(ticket?.ticket_date).format("DD/MM/YYYY HH:mm")}
+                      <i className="bi bi-calendar-fill"></i>{" "}
+                      {dayjs(ticket?.ticket_date).format("DD/MM/YYYY HH:mm")}
+                    </li>
+                    <li className="list-group-item">
+                      <i className="bi bi-flag-fill"></i>{" "}
+                      {ticket?.ticket_status}
                     </li>
                   </ul>
                 </div>
-                <ul className="list-group"></ul>
-              </div>
-              <div className="card mt-3">
-                <div className="card-header">Mensagem:</div>
-                <div className="card-body">{ticket?.ticket_message}</div>
               </div>
             </div>
-            <div className="col-12 col-lg-9">
+          </div>
+          <div className="row flex-column-reverse flex-lg-row">
+            <div className="col-12 col-lg-6">
               <form onSubmit={handleSubmit(onSubmit)}>
                 <label htmlFor="news-text">Corpo do email</label>
                 <Controller
@@ -127,7 +141,11 @@ const AnswerTicket = () => {
                     <Editor
                       value={value}
                       ref={ref}
-                      apiKey={process.env.REACT_APP_REACT_ENV === "production" ? process.env.REACT_APP_TINYMCE_KEY : ""}
+                      apiKey={
+                        process.env.REACT_APP_REACT_ENV === "production"
+                          ? process.env.REACT_APP_TINYMCE_KEY
+                          : ""
+                      }
                       onEditorChange={(content) => onChange(content)}
                       init={{
                         language: "pt_BR",
@@ -148,12 +166,48 @@ const AnswerTicket = () => {
                   )}
                 />
                 <div className="d-flex justify-content-between mt-3">
-                  <a href="/painel/ouvidoria" className="btn btn-secondary me-3 px-3 py-2">
+                  <a
+                    href="/painel/ouvidoria"
+                    className="btn btn-secondary me-3 px-3 py-2"
+                  >
                     Voltar
                   </a>
-                  <input type="submit" className="btn btn-success px-5 py-2" defaultValue="Enviar" disabled={!watch("messageBody")} />
+                  <input
+                    type="submit"
+                    className="btn btn-success px-5 py-2"
+                    defaultValue="Enviar"
+                    disabled={!watch("messageBody")}
+                  />
                 </div>
               </form>
+            </div>
+            <div
+              className="col-12 col-lg-6 overflow-auto mt-4"
+              style={{ maxHeight: "500px" }}
+            >
+              {messages?.map((message) => (
+                <div className="card mb-3" style={{ width: "100%" }}>
+                  <div className="card-header">
+                    <div>
+                      <img
+                        src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
+                        alt=""
+                        height={30}
+                        className="rounded-circle me-2"
+                      />
+                      {message?.user_id
+                        ? _config.entidade.abbreviation
+                        : ticket.ticket_name.split(" ")[0]}{" "}
+                      - {dayjs(message.message_date).format("DD/MM/YYYY HH:mm")}
+                    </div>
+                  </div>
+
+                  <div
+                    className="card-body"
+                    dangerouslySetInnerHTML={{ __html: message.message_body }}
+                  ></div>
+                </div>
+              ))}
             </div>
           </div>
         </div>
