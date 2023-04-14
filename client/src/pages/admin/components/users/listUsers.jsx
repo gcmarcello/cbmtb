@@ -48,8 +48,8 @@ const ListUsers = () => {
       className: "d-none d-lg-table-cell",
     },
     {
-      Header: "Phone",
-      accessor: "user_phone",
+      Header: "CPF",
+      accessor: "user_cpf",
       className: "d-none d-lg-table-cell",
     },
     {
