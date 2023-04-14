@@ -51,7 +51,6 @@ const AnswerTicket = () => {
   };
 
   const onSubmit = async (data) => {
-    console.log(data);
     try {
       setIsLoading(true);
       const myHeaders = new Headers();
@@ -68,8 +67,34 @@ const AnswerTicket = () => {
       if (parseResponse.type === "success") {
         toast.success(parseResponse.message, { theme: "colored" });
         reset();
-        setMessages(...messages.unshift(parseResponse.data));
+        setMessages([parseResponse.data, ...messages]);
+        setTicket({ ...ticket, ticket_status: "awaiting" });
         /* navigate("/painel/ouvidoria"); */
+      } else {
+        toast.error(parseResponse.message, { theme: "colored" });
+      }
+    } catch (err) {
+      console.log(err);
+    }
+    setIsLoading(false);
+  };
+
+  const resolveTicket = async () => {
+    try {
+      setIsLoading(true);
+      const myHeaders = new Headers();
+      myHeaders.append("token", localStorage.token);
+      myHeaders.append("Content-type", "application/json");
+
+      const response = await fetch(`/api/tickets/${ticket.ticket_id}`, {
+        method: "PUT",
+        headers: myHeaders,
+      });
+
+      const parseResponse = await response.json();
+      if (parseResponse.type === "success") {
+        toast.success(parseResponse.message, { theme: "colored" });
+        navigate("/painel/ouvidoria");
       } else {
         toast.error(parseResponse.message, { theme: "colored" });
       }
@@ -109,24 +134,26 @@ const AnswerTicket = () => {
                 <div className="d-flex justify-content-center">
                   <ul className="list-group list-group-horizontal-lg">
                     <li className="list-group-item">
-                      <i className="bi bi-person-circle"></i>{" "}
-                      {ticket?.ticket_name}
+                      <i className="bi bi-person-circle"></i> {ticket?.ticket_name}
                     </li>
                     <li className="list-group-item">
-                      <i className="bi bi-envelope-at-fill"></i>{" "}
-                      {ticket?.ticket_email}
+                      <i className="bi bi-envelope-at-fill"></i> {ticket?.ticket_email}
                     </li>
                     <li className="list-group-item">
-                      <i className="bi bi-telephone-fill"></i>{" "}
-                      {ticket?.ticket_phone}
+                      <i className="bi bi-telephone-fill"></i> {ticket?.ticket_phone}
                     </li>
                     <li className="list-group-item">
-                      <i className="bi bi-calendar-fill"></i>{" "}
-                      {dayjs(ticket?.ticket_date).format("DD/MM/YYYY HH:mm")}
+                      <i className="bi bi-calendar-fill"></i> {dayjs(ticket?.ticket_date).format("DD/MM/YYYY HH:mm")}
                     </li>
                     <li className="list-group-item">
                       <i className="bi bi-flag-fill"></i>{" "}
-                      {ticket?.ticket_status}
+                      {ticket?.ticket_status === "pending" ? (
+                        <span className="badge bg-danger">Pendente</span>
+                      ) : ticket?.ticket_status === "awaiting" ? (
+                        <span className="badge bg-warning text-dark">Aguardando Resposta</span>
+                      ) : (
+                        <span className="badge bg-success">Finalizado</span>
+                      )}
                     </li>
                   </ul>
                 </div>
@@ -147,11 +174,7 @@ const AnswerTicket = () => {
                     <Editor
                       value={value}
                       ref={ref}
-                      apiKey={
-                        process.env.REACT_APP_REACT_ENV === "production"
-                          ? process.env.REACT_APP_TINYMCE_KEY
-                          : ""
-                      }
+                      apiKey={process.env.REACT_APP_REACT_ENV === "production" ? process.env.REACT_APP_TINYMCE_KEY : ""}
                       onEditorChange={(content) => onChange(content)}
                       init={{
                         language: "pt_BR",
@@ -172,22 +195,46 @@ const AnswerTicket = () => {
                   )}
                 />
                 <div className="d-flex justify-content-between mt-3">
-                  <input
-                    type="submit"
-                    className="btn btn-success px-5 py-2"
-                    defaultValue="Enviar"
-                    disabled={!watch("messageBody")}
-                  />
+                  <button className="btn btn-outline-success px-5 py-2  mt-2 mt-lg-0" data-bs-toggle="modal" data-bs-target="#resolveModal">
+                    Marcar como resolvido
+                  </button>
+
+                  <div class="modal fade" id="resolveModal" tabindex="-1" aria-labelledby="resolveModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title" id="exampleModalLabel">
+                            Confirmar Resolução
+                          </h5>
+                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">Deseja resolver esse chamado?</div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            Cancelar
+                          </button>
+                          <button
+                            type="button"
+                            class="btn btn-success"
+                            data-bs-dismiss="modal"
+                            onClick={(e) => {
+                              resolveTicket();
+                            }}
+                          >
+                            Resolvido
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <input type="submit" className="btn btn-success px-5 py-2" defaultValue="Enviar" disabled={!watch("messageBody")} />
                 </div>
               </form>
             </div>
-            <div
-              className="col-12 col-lg-6 overflow-auto mt-4"
-              style={{ maxHeight: "500px" }}
-            >
-              {messages?.map((message) => (
-                <div className="card mb-3" style={{ width: "100%" }}>
-                  <div className="card-header d-flex justify-content-between">
+            <div className="col-12 col-lg-6 overflow-auto mt-4" style={{ maxHeight: "500px" }}>
+              {messages?.map((message, index) => (
+                <div key={`message-${index}`} className="card mb-3" style={{ width: "100%" }}>
+                  <div className={`card-header d-flex justify-content-between flex-row${!message.user_id && "-reverse"}`}>
                     <div>
                       <img
                         src={
@@ -200,19 +247,12 @@ const AnswerTicket = () => {
                         width={30}
                         className="rounded-circle me-2"
                       />
-                      {message?.user_id
-                        ? _config.entidade.abbreviation
-                        : ticket.ticket_name.split(" ")[0]}{" "}
+                      {message?.user_id ? _config.entidade.abbreviation : ticket.ticket_name.split(" ")[0]}{" "}
                     </div>
-                    <div>
-                      {dayjs(message.message_date).format("DD/MM/YYYY HH:mm")}
-                    </div>
+                    <div>{dayjs(message.message_date).format("DD/MM/YYYY HH:mm")}</div>
                   </div>
 
-                  <div
-                    className="card-body"
-                    dangerouslySetInnerHTML={{ __html: message.message_body }}
-                  ></div>
+                  <div className="card-body" dangerouslySetInnerHTML={{ __html: message.message_body }}></div>
                 </div>
               ))}
             </div>

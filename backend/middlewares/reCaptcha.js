@@ -14,10 +14,7 @@ module.exports = async (req, res, next) => {
       "https://www.google.com/recaptcha/api/siteverify",
       {
         response: body.reCaptcha,
-        secret:
-          process.env.NODE_ENV === "production"
-            ? process.env.GOOGLE_RECAPTCHA_SECRET_KEY
-            : "6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe",
+        secret: process.env.NODE_ENV === "production" ? process.env.GOOGLE_RECAPTCHA_SECRET_KEY : "6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe",
       },
       { headers: { "Content-Type": "application/x-www-form-urlencoded" } }
     )

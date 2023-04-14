@@ -53,53 +53,34 @@ const Ouvidoria = () => {
       <div className="row">
         <div className="col-12 col-lg-6">
           <p className="text-justify">
-            A Ouvidoria da {config.entidade.name} – {config.entidade.name} é o
-            canal de comunicação e relacionamento direto com as Federações,
+            A Ouvidoria da {config.entidade.name} – {config.entidade.name} é o canal de comunicação e relacionamento direto com as Federações,
             Treinadores, Atletas, Colaboradores e a Sociedade Civil.
           </p>
           <p className="text-justify">
-            A Ouvidoria foi criada com o objetivo de oferecer à comunidade do
-            Ciclismo (atletas, técnicos, árbitros, comissões técnicas,
-            dirigentes esportivos) e à sociedade, um canal de relacionamento
-            direto com a {config.entidade.name} para informações, sugestões,
-            elogios, reclamações e denúncias relativas às atividades e/ou ao
-            desempenho institucional da {config.entidade.name} e levá-las aos
-            órgãos competentes desta {config.entidade.type}.
+            A Ouvidoria foi criada com o objetivo de oferecer à comunidade do Ciclismo (atletas, técnicos, árbitros, comissões técnicas, dirigentes
+            esportivos) e à sociedade, um canal de relacionamento direto com a {config.entidade.name} para informações, sugestões, elogios,
+            reclamações e denúncias relativas às atividades e/ou ao desempenho institucional da {config.entidade.name} e levá-las aos órgãos
+            competentes desta {config.entidade.type}.
           </p>
           <p className="text-justify">
-            A Ouvidoria da {config.entidade.name} reflete a sua administração
-            transparente, tendo como objetivo contribuir para uma melhoria
-            continua dos serviços prestados, bem como, atender os anseios dos
-            órgãos públicos e da sociedade. É um órgão de natureza mediadora,
-            sem caráter deliberativo, não substituindo os tradicionais canais de
-            relacionamento entre as Federações do Mountain Bike e esta{" "}
-            {config.entidade.type}.
+            A Ouvidoria da {config.entidade.name} reflete a sua administração transparente, tendo como objetivo contribuir para uma melhoria continua
+            dos serviços prestados, bem como, atender os anseios dos órgãos públicos e da sociedade. É um órgão de natureza mediadora, sem caráter
+            deliberativo, não substituindo os tradicionais canais de relacionamento entre as Federações do Mountain Bike e esta {config.entidade.type}
+            .
           </p>
           <p className="text-justify">
-            A Ouvidoria realiza atendimento eletrônico, via e-mail e/ou por
-            correspondência convencional. A {config.entidade.name} não
-            desconsidera demandas anônimas, mas recomenda que as solicitações
-            enviadas seja de forma clara e objetiva.
+            A Ouvidoria realiza atendimento eletrônico, via e-mail e/ou por correspondência convencional. A {config.entidade.name} não desconsidera
+            demandas anônimas, mas recomenda que as solicitações enviadas seja de forma clara e objetiva.
           </p>
         </div>
         <div className="col-12 col-lg-6">
-          <form
-            onSubmit={handleSubmit(onSubmit)}
-            className="needs-validation"
-            noValidate
-          >
+          <form onSubmit={handleSubmit(onSubmit)} className="needs-validation" noValidate>
             <div className="row">
               <div className="col-12">
                 <label htmlFor="name">Nome Completo</label>
                 <input
                   id="fullName"
-                  className={`form-control ${
-                    errors.fullName?.type
-                      ? "is-invalid"
-                      : getValues("fullName")
-                      ? "is-valid"
-                      : ""
-                  } mb-3`}
+                  className={`form-control ${errors.fullName?.type ? "is-invalid" : getValues("fullName") ? "is-valid" : ""} mb-3`}
                   {...register("fullName", {
                     required: true,
                     pattern: /^([A-Za-z]+\s*){3,}$/i,
@@ -116,13 +97,7 @@ const Ouvidoria = () => {
                 <label htmlFor="email">Email</label>
                 <input
                   id="email"
-                  className={`form-control ${
-                    errors.email?.type
-                      ? "is-invalid"
-                      : getValues("email")
-                      ? "is-valid"
-                      : ""
-                  } mb-3`}
+                  className={`form-control ${errors.email?.type ? "is-invalid" : getValues("email") ? "is-valid" : ""} mb-3`}
                   {...register("email", {
                     required: true,
                     pattern: /^[\w-.]+@([\w-]+\.)+[\w-]{2,}$/,
@@ -131,9 +106,7 @@ const Ouvidoria = () => {
                 />
                 {errors.email?.type && (
                   <div className="alert alert-danger mt-2" role="alert">
-                    {errors.email?.type === "server"
-                      ? errors.email.message
-                      : "Por favor, insira o seu email corretamente."}
+                    {errors.email?.type === "server" ? errors.email.message : "Por favor, insira o seu email corretamente."}
                   </div>
                 )}
               </div>
@@ -152,13 +125,7 @@ const Ouvidoria = () => {
                   render={({ field }) => (
                     <InputMask
                       mask="99 99999-9999"
-                      className={`form-control ${
-                        errors.phone
-                          ? "is-invalid"
-                          : getValues("phone")
-                          ? "is-valid"
-                          : ""
-                      } mb-3`}
+                      className={`form-control ${errors.phone ? "is-invalid" : getValues("phone") ? "is-valid" : ""} mb-3`}
                       maskChar=""
                       value={field.value}
                       onChange={field.onChange}
@@ -180,8 +147,8 @@ const Ouvidoria = () => {
                 <label htmlFor="message">Mensagem</label>
                 <textarea
                   id="message"
-                  className={`form-control mb-3`}
-                  {...register("message")}
+                  className={`form-control ${errors.message?.type ? "is-invalid" : getValues("message") ? "is-valid" : ""} mb-3`}
+                  {...register("message", { required: true })}
                 />
               </div>
             </div>
@@ -209,11 +176,7 @@ const Ouvidoria = () => {
                 />
               </div>
               <div className="col-12 col-lg-6 text-end">
-                <input
-                  type="submit"
-                  className="btn btn-success my-2 px-5 btn-lg"
-                  disabled={!watch("reCaptcha")}
-                />
+                <input type="submit" className="btn btn-success my-2 px-5 btn-lg" disabled={!watch("reCaptcha")} />
               </div>
             </div>
           </form>

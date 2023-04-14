@@ -22,18 +22,6 @@ const ListTickets = () => {
       accessor: "ticket_phone",
     },
     {
-      Header: "Mensagem",
-      accessor: "ticket_message",
-      Cell: ({ value }) => (
-        <span
-          class="d-inline-block text-truncate"
-          style={{ maxWidth: "200px" }}
-        >
-          {value}
-        </span>
-      ),
-    },
-    {
       Header: "Data",
       accessor: "ticket_date",
       Cell: ({ value }) => {
@@ -47,12 +35,8 @@ const ListTickets = () => {
         switch (value) {
           case "completed":
             return <span className="badge bg-success">Finalizado</span>;
-          case "awaiting user":
-            return (
-              <span className="badge bg-warning text-dark">
-                Aguardando Usuário
-              </span>
-            );
+          case "awaiting":
+            return <span className="badge bg-warning text-dark">Aguardando Resposta</span>;
           case "pending":
             return <span className="badge bg-danger">Pendente</span>;
           default:
@@ -64,11 +48,7 @@ const ListTickets = () => {
       accessor: "accessor",
       Cell: ({ row }) => {
         return (
-          <Link
-            to={`/painel/ouvidoria/${row.original.ticket_id}`}
-            className="btn btn-primary"
-            rel="noreferrer"
-          >
+          <Link to={`/painel/ouvidoria/${row.original.ticket_id}`} className="btn btn-primary" rel="noreferrer">
             Responder
           </Link>
         );
@@ -103,11 +83,7 @@ const ListTickets = () => {
         <div className="p-3 bg-white rounded rounded-2 shadow">
           <h1>Lista de Chamados</h1>
           <hr />
-          <Table
-            data={ticketList}
-            columns={columns}
-            sortByColumn={[{ id: "ticket_status", desc: true }]}
-          />
+          <Table data={ticketList} columns={columns} sortByColumn={[{ id: "ticket_status", desc: true }]} />
         </div>
       </div>
     </div>

@@ -5,13 +5,13 @@ const reCaptcha = require("../middlewares/reCaptcha");
 
 router.get("/", adminAuthorization, ticketController.list_tickets);
 
-router.get("/:id", adminAuthorization, ticketController.fetch_ticket);
+router.get("/:id", ticketController.fetch_ticket);
 
-router.post(
-  "/admin/:id/",
-  adminAuthorization,
-  ticketController.answer_ticket_admin
-);
+router.post("/admin/:id/", adminAuthorization, ticketController.answer_ticket_admin);
+
+router.post("/public/:id/", reCaptcha, ticketController.answer_ticket_public);
+
+router.put("/:id/", adminAuthorization, ticketController.resolve_ticket);
 
 router.post("/", reCaptcha, ticketController.create_ticket);
 

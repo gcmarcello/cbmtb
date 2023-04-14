@@ -42,6 +42,7 @@ import ListTickets from "./pages/admin/components/tickets/listTickets";
 import AnswerTicket from "./pages/admin/components/tickets/answerTicket";
 import ListUsers from "./pages/admin/components/users/listUsers";
 import _config from "./_config";
+import TicketPanel from "./pages/forms/ticketPanel";
 
 function App() {
   const [userAuthentication, setUserAuthentication] = useState(false);
@@ -106,7 +107,9 @@ function App() {
       {!(page === "painel") ? (
         <UserNavigation userAuthentication={userAuthentication} userName={userName} userAdmin={userAdmin} setUserAdmin={setUserAdmin} />
       ) : (
-        <AdminNavigation userAuthentication={userAuthentication} userName={userName} userAdmin={userAdmin} setUserAdmin={setUserAdmin} />
+        userAuthentication && (
+          <AdminNavigation userAuthentication={userAuthentication} userName={userName} userAdmin={userAdmin} setUserAdmin={setUserAdmin} />
+        )
       )}
       <main>
         <Routes>
@@ -249,6 +252,7 @@ function App() {
           <Route exact path="/noticias/:title" element={<NewsPage />} />
           <Route exact path="/senha/:requestId" element={<PasswordReset {...loginProps} />} />
           <Route exact path="/ouvidoria/" element={<Ouvidoria />} />
+          <Route exact path="/ouvidoria/:id" element={<TicketPanel />} />
           <Route exact path="/transparencia/" element={<Documents />} />
           <Route path="*" element={<Page404 />} />
         </Routes>
