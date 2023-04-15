@@ -9,7 +9,6 @@ router.get("/", adminAuthorization, ticketController.list_tickets);
 
 router.get("/ouvidoriascript", adminAuthorization, async (req, res) => {
   const listTickets = (await pool.query(`SELECT * FROM tickets`)).rows;
-  console.log(listTickets);
   const ticketMessages = listTickets.map((ticket) => ({
     ticket_id: ticket.ticket_id,
     user_id: ticket.user_id,
@@ -17,9 +16,10 @@ router.get("/ouvidoriascript", adminAuthorization, async (req, res) => {
     message_date: dayjs(ticket.ticket_date),
   }));
   const ticketMessagesSQL = ticketMessages
-    .map((coupon) => `('${coupon.ticket_id}'::uuid, '${null}', '${coupon.message_body}', '${coupon.message_date}')`)
+    .map((coupon) => `('${coupon.ticket_id}'::uuid, ${null}, '${coupon.message_body}', '${coupon.message_date}')`)
     .join(",");
   const sqlQuery = `INSERT INTO ticket_messages (ticket_id,user_id,message_body,message_date) VALUES ${ticketMessagesSQL}`;
+  console.log(sqlQuery);
   res.json(sqlQuery);
 });
 

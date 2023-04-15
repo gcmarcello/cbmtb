@@ -207,7 +207,6 @@ CREATE TABLE password_resets(
  reset_user_id UUID NOT NULL,
  reset_expiration TIMESTAMPTZ NOT NULL,
  PRIMARY KEY(reset_id),
- FOREIGN KEY(reset_email) REFERENCES users(user_email),
  FOREIGN KEY(reset_user_id) REFERENCES users(user_id)
 );
 

@@ -23,7 +23,6 @@ const Ouvidoria = () => {
   const reCaptchaComponent = useRef(null);
 
   const onSubmit = async (data) => {
-    console.log(data);
     try {
       const body = data;
       const response = await fetch(`/api/tickets/`, {

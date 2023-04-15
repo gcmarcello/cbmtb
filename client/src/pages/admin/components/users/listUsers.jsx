@@ -235,7 +235,11 @@ const ListUsers = () => {
                           {...register("email", { required: true, pattern: /^[\w-.]+@([\w-]+\.)+[\w-]{2,}$/ })}
                           aria-invalid={errors.email ? "true" : "false"}
                         />
+                        <small id="couponLink" className="form-text text-muted">
+                          O usuário terá de confirmar o novo e-mail antes de fazer login novamente.
+                        </small>
                       </div>
+
                       <div className="col-12 col-lg-6">
                         <label htmlFor="name">
                           CPF<span className="text-danger">*</span>
@@ -262,6 +266,7 @@ const ListUsers = () => {
                         />
                       </div>
                     </div>
+                    <hr />
                     <div className="row">
                       <div className="col-12 col-lg-6">
                         <label htmlFor="phone">Telefone</label>

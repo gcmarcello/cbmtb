@@ -82,11 +82,23 @@ router.put("/", authorization, async (req, res) => {
 router.put("/admin", adminAuthorization, async (req, res) => {
   const { address, apartment, cep, city, email, firstName, lastName, number, phone, state, userId, userStatus, birthDate } = req.body;
   try {
+    const userInfoEmail = (await pool.query("SELECT user_email FROM users WHERE user_id = $1", [userId])).rows[0];
+
     const userInfoUpdate = await pool.query(
       "UPDATE users SET user_address = $1, user_apartment = $2, user_cep = $3, user_city = $4, user_email = $5, user_first_name = $6, user_last_name = $7, user_number = $8, user_phone = $9, user_state = $10, user_confirmed = $12, user_birth_date = $13 WHERE user_id = $11 RETURNING *",
       [address, apartment, cep, city, email, firstName, lastName, number, phone, state, userId, userStatus, birthDate]
     );
-    console.log(userInfoUpdate.rows[0]);
+
+    if (userInfoEmail.user_email !== email) {
+      const deactivateAccount = await pool.query("UPDATE users SET user_confirmed = $1 WHERE user_id = $2", [false, userId]);
+      const newConfirmation = await pool.query(
+        "INSERT INTO email_confirmations (register_date,user_id,confirmation_status) VALUES ($1,$2,$3) RETURNING *",
+        [new Date(), userId, false]
+      );
+      const sgEmail = new Email([email]);
+      sgEmail.sendConfirmationEmail(firstName, newConfirmation.rows[0].confirmation_id);
+    }
+
     if (userInfoUpdate.rows[0]) {
       return res.status(200).json({
         message: "Informações atualizadas com sucesso!",

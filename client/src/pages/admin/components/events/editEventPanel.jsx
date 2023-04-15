@@ -23,6 +23,7 @@ const EditEventPanel = () => {
     getValues,
     setValue,
     reset,
+    watch,
     trigger,
     setFocus,
     control,
@@ -264,7 +265,16 @@ const EditEventPanel = () => {
                 />
               </div>
               <div className={`tab-pane fade ${tab === "cupons" && "show active"}`} id="cupons" role="tabpanel" aria-labelledby="cupons-tab">
-                <EditCoupons event={event} control={control} register={register} errors={errors} />
+                <EditCoupons
+                  event={event}
+                  control={control}
+                  register={register}
+                  getValues={getValues}
+                  watch={watch}
+                  errors={errors}
+                  isLoading={isLoading}
+                  setIsLoading={setIsLoading}
+                />
               </div>
               <div className={`tab-pane fade ${tab === "kits" && "show active"}`} id="kits" role="tabpanel" aria-labelledby="kits-tab">
                 <EditKits />
