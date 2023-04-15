@@ -140,11 +140,13 @@ const EditCoupons = (props) => {
                       </div>
 
                       <div className="modal-body">
-                        {props.event.registrations.map((registration) => (
-                          <p>
-                            {registration.user_first_name} {registration.user_last_name}
-                          </p>
-                        ))}
+                        {props.event.registrations
+                          .filter((registration) => registration.coupon_link === field.coupon_link)
+                          .map((registration) => (
+                            <p>
+                              {registration.user_first_name} {registration.user_last_name}
+                            </p>
+                          ))}
                       </div>
                       <div className="modal-footer">
                         <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">
