@@ -31,7 +31,24 @@ router.post("/register", [reCaptcha, registrationValidation], async (req, res) =
     // Inserting user into DB
     const newUser = await pool.query(
       "INSERT INTO users (user_email, user_password, user_first_name, user_last_name, user_cpf, user_gender, user_phone, user_birth_date, user_cep, user_state, user_city, user_address, user_number, user_apartment, user_role, user_confirmed) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16) RETURNING *",
-      [email, bcryptPassword, firstName, lastName, cpf, gender, phone, birthDate, cep, state, city, address, number, apartment, "user", false]
+      [
+        email.toLowerCase(),
+        bcryptPassword,
+        firstName,
+        lastName,
+        cpf,
+        gender,
+        phone,
+        birthDate,
+        cep,
+        state,
+        city,
+        address,
+        number,
+        apartment,
+        "user",
+        false,
+      ]
     );
 
     const newConfirmation = await pool.query(
@@ -53,7 +70,7 @@ router.post("/register", [reCaptcha, registrationValidation], async (req, res) =
 });
 
 // Update User Information
-router.put("/", authorization, async (req, res) => {
+router.put("/", [authorization, registrationValidation], async (req, res) => {
   const userId = req.userId;
   const { address, apartment, cep, city, email, firstName, lastName, number, password, phone, state } = req.body;
   const userInfo = await pool.query("SELECT * FROM users WHERE user_id = $1", [userId]);
@@ -63,7 +80,7 @@ router.put("/", authorization, async (req, res) => {
     }
     const userInfoUpdate = await pool.query(
       "UPDATE users SET user_address = $1, user_apartment = $2, user_cep = $3, user_city = $4, user_email = $5, user_first_name = $6, user_last_name = $7, user_number = $8, user_phone = $9, user_state = $10 WHERE user_id = $11",
-      [address, apartment, cep, city, email, firstName, lastName, number, phone, state, userId]
+      [address, apartment, cep, city, email.toLowerCase(), firstName, lastName, number, phone, state, userId]
     );
     return res.status(200).json({
       message: "Informações atualizadas com sucesso!",
@@ -86,7 +103,7 @@ router.put("/admin", adminAuthorization, async (req, res) => {
 
     const userInfoUpdate = await pool.query(
       "UPDATE users SET user_address = $1, user_apartment = $2, user_cep = $3, user_city = $4, user_email = $5, user_first_name = $6, user_last_name = $7, user_number = $8, user_phone = $9, user_state = $10, user_confirmed = $12, user_birth_date = $13 WHERE user_id = $11 RETURNING *",
-      [address, apartment, cep, city, email, firstName, lastName, number, phone, state, userId, userStatus, birthDate]
+      [address, apartment, cep, city, email.toLowerCase(), firstName, lastName, number, phone, state, userId, userStatus, birthDate]
     );
 
     if (userInfoEmail.user_email !== email) {
