@@ -1,19 +1,11 @@
 const router = require("express").Router();
-const axios = require("axios");
-const crypto = require("crypto");
-const pool = require("../database/database");
+
 const authentication = require("../middlewares/authentication");
 const authorization = require("../middlewares/authorization");
 const adminAuthorization = require("../middlewares/adminAuthorization");
+const registrationAvailability = require("../middlewares/registrationAvailability");
 
 const registrationsController = require("../controllers/registrationsController");
-
-const Email = require("../utils/emails");
-
-const dayjs = require("dayjs");
-const isBetween = require("dayjs/plugin/isBetween");
-const registrationAvailability = require("../middlewares/registrationAvailability");
-dayjs.extend(isBetween);
 
 // Create Registrations (USER)
 router.post("/:id/:coupon?", [authorization, registrationAvailability], registrationsController.create_registration);
