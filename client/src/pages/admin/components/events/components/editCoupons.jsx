@@ -107,7 +107,7 @@ const EditCoupons = (props) => {
                 <div className="col-6 col-lg-4 mt-3 mt-lg-0 d-flex align-items-end">
                   <button
                     type="button"
-                    className="btn btn-danger me-2"
+                    className="btn btn-danger me-2 flex-fill"
                     onClick={(e) => {
                       e.preventDefault();
                       remove(index);
@@ -115,11 +115,22 @@ const EditCoupons = (props) => {
                   >
                     <i className="bi bi-x-circle"></i>
                   </button>
-                  <button type="button" className="btn btn-primary" data-bs-toggle="modal" data-bs-target={`#couponModal-${index}`}>
-                    <div className="d-flex">
+                  <button type="button" className="btn btn-primary flex-fill" data-bs-toggle="modal" data-bs-target={`#couponModal-${index}`}>
+                    <div className="d-flex justify-content-center">
                       <i className="bi bi-people-fill me-2"></i>
                       {props.event.registrations.filter((registration) => registration.coupon_link === field.coupon_link).length}
                     </div>
+                  </button>
+                  <button
+                    className="btn btn-secondary ms-2 flex-fill"
+                    onClick={() => {
+                      navigator.clipboard.writeText(
+                        `${window.location.origin.split("//")[1]}/inscricao/${props.event.event_link}/${field.coupon_link}`
+                      );
+                      toast.success("Link Copiado com Sucesso!", { theme: "colored" });
+                    }}
+                  >
+                    <i class="bi bi-clipboard"></i>
                   </button>
                 </div>
 
@@ -150,10 +161,7 @@ const EditCoupons = (props) => {
                       </div>
                       <div className="modal-footer">
                         <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">
-                          Close
-                        </button>
-                        <button type="button" className="btn btn-primary">
-                          Save changes
+                          Fechar
                         </button>
                       </div>
                     </div>
