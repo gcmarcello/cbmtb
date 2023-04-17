@@ -3,6 +3,8 @@ import Table from "../table";
 import InputMask from "react-input-mask";
 import { useForm, Controller } from "react-hook-form";
 import { toast } from "react-toastify";
+import _config from "../../../../_config";
+import xlsx from "json-as-xlsx";
 const dayjs = require("dayjs");
 const cepSearch = require("cep-promise");
 
@@ -92,6 +94,42 @@ const ListUsers = () => {
       },
     },
   ];
+
+  function formatText(text) {
+    let words = text.split("_");
+    words = words.map((word) => word.charAt(0).toUpperCase() + word.slice(1));
+    return words.join(" ");
+  }
+
+  const generateXlsx = () => {
+    try {
+      let data = [
+        {
+          sheet: "Usuários",
+          columns: Object.keys(userList[0]).map((column) => ({
+            label: formatText(column),
+            value: column,
+          })),
+          content: userList.map(function (user) {
+            let birthDate = dayjs(user.user_birth_date).format("DD/MM/YYYY");
+            user.user_birth_date = birthDate;
+            user.age = dayjs().diff(dayjs(user.user_birth_date, "DD/MM/YYYY"), "year");
+            return user;
+          }),
+        },
+      ];
+      const settings = {
+        fileName: `${_config.entidade.abbreviation} - Usuários (${dayjs().format("DD-MM-YYYY")})`, // Name of the resulting spreadsheet
+        extraLength: 3, // A bigger number means that columns will be wider
+        writeMode: "writeFile", // The available parameters are 'WriteFile' and 'write'. This setting is optional. Useful in such cases https://docs.sheetjs.com/docs/solutions/output#example-remote-file
+        writeOptions: {}, // Style options from https://docs.sheetjs.com/docs/api/write-options
+        RTL: false, // Display the columns from right-to-left (the default value is false)
+      };
+      xlsx(data, settings);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const handleCep = async () => {
     try {
@@ -188,7 +226,13 @@ const ListUsers = () => {
         <div className="p-3 bg-white rounded rounded-2 shadow">
           <h1>Lista de Usuários</h1>
           <hr />
-          <Table data={userList} columns={columns} customPageSize={100} sortByColumn={[{ id: "user_first_name", desc: false }]} />
+          <Table
+            data={userList}
+            generateXlsx={generateXlsx}
+            columns={columns}
+            customPageSize={100}
+            sortByColumn={[{ id: "user_first_name", desc: false }]}
+          />
           <div className="modal fade" id="exampleModal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div className="modal-dialog modal-xl">
               <div className="modal-content">

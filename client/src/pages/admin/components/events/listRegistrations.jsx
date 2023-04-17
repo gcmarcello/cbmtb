@@ -1,11 +1,14 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useState } from "react";
 import Table from "../table";
 import xlsx from "json-as-xlsx";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
+
+import LoadingScreen from "../../../../utils/loadingScreen";
 const dayjs = require("dayjs");
 
 const ListRegistrations = (props) => {
+  const [isLoading, setIsLoading] = useState(null);
   const {
     watch,
     getValues,
@@ -102,22 +105,29 @@ const ListRegistrations = (props) => {
   }
 
   const generateXlsx = () => {
-    let data = props.event.categories.map((category) => ({
+    setIsLoading(true);
+    let categoriesToExcel = [...props.event.categories];
+    let registrationsToExcel = [...props.event.registrations];
+
+    let data = categoriesToExcel.map((category) => ({
       sheet: category.category_name,
       columns: Object.keys(props.event.registrations[0]).map((column) => ({
         label: formatText(column),
         value: column,
       })),
-      content: props.event.registrations
+      content: registrationsToExcel
         .filter((registration) => registration.category_name === category.category_name)
         .map(function (registration) {
           let registrationDate = dayjs(registration.registration_date).format("DD/MM/YYYY HH:mm");
+          let age = dayjs().diff(dayjs(registration.user_birth_date), "year");
           let birthDate = dayjs(registration.user_birth_date).format("DD/MM/YYYY");
-          registration.registration_date = registrationDate;
-          registration.user_birth_date = birthDate;
-          registration.age = dayjs().diff(registration.user_birth_date, "year");
 
-          return registration;
+          return {
+            ...registration,
+            registration_date: registrationDate,
+            user_birth_date: birthDate,
+            age: age,
+          };
         }),
     }));
 
@@ -127,14 +137,18 @@ const ListRegistrations = (props) => {
         label: formatText(column),
         value: column,
       })),
-      content: props.event.registrations.map(function (registration) {
-        let registrationDate = dayjs(registration.registration_date).format("DD/MM/YYYY HH:mm");
-        let birthDate = dayjs(registration.user_birth_date).format("DD/MM/YYYY");
-        registration.registration_date = registrationDate;
-        registration.user_birth_date = birthDate;
-        registration.age = dayjs().diff(registration.user_birth_date, "year");
 
-        return registration;
+      content: registrationsToExcel.map(function (registration) {
+        let registrationDate = dayjs(registration.registration_date).format("DD/MM/YYYY HH:mm");
+        let age = dayjs().diff(dayjs(registration.user_birth_date), "year");
+        let birthDate = dayjs(registration.user_birth_date).format("DD/MM/YYYY");
+
+        return {
+          ...registration,
+          registration_date: registrationDate,
+          user_birth_date: birthDate,
+          age: age,
+        };
       }),
     });
 
@@ -146,6 +160,7 @@ const ListRegistrations = (props) => {
       RTL: false, // Display the columns from right-to-left (the default value is false)
     };
     xlsx(data, settings);
+    setIsLoading(false);
   };
 
   const onSubmit = async (data) => {
@@ -181,6 +196,10 @@ const ListRegistrations = (props) => {
       reset();
     }
   };
+
+  if (isLoading) {
+    setIsLoading(true);
+  }
 
   return (
     <div className="p-lg-3">

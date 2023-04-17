@@ -130,7 +130,7 @@ const EditCoupons = (props) => {
                       toast.success("Link Copiado com Sucesso!", { theme: "colored" });
                     }}
                   >
-                    <i class="bi bi-clipboard"></i>
+                    <i className="bi bi-clipboard"></i>
                   </button>
                 </div>
 
@@ -161,7 +161,7 @@ const EditCoupons = (props) => {
                       </div>
                       <div className="modal-footer">
                         <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">
-                          Fechar
+                          Close
                         </button>
                       </div>
                     </div>
