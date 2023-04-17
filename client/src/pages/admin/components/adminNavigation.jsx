@@ -1,8 +1,32 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 
 import _config from "../../../_config";
+import LoadingScreen from "../../../utils/loadingScreen";
 
 const AdminNavigation = () => {
+  const [openTicketNumber, setOpenTicketNumber] = useState(null);
+
+  const listTickets = async () => {
+    try {
+      const myHeaders = new Headers();
+      myHeaders.append("Content-Type", "application/json");
+      myHeaders.append("token", localStorage.token);
+
+      const response = await fetch(`/api/tickets/`, {
+        method: "GET",
+        headers: myHeaders,
+      }); // eslint-disable-next-line
+      const parseResponse = await response.json();
+      setOpenTicketNumber(parseResponse.data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    listTickets();
+  }, []);
+
   return (
     <Fragment>
       <nav className="navbar navbar-expand-lg navbar-light shadow-sm">
@@ -77,13 +101,16 @@ const AdminNavigation = () => {
                 </a>
               </li>
               <li className="nav-item">
-                <a href="/painel/ouvidoria" className="nav-link" aria-current="page" style={{ border: "0", background: "none" }}>
-                  Ouvidoria
+                <a href="/painel/usuarios" className="nav-link" aria-current="page" style={{ border: "0", background: "none" }}>
+                  Usuários
                 </a>
               </li>
               <li className="nav-item">
-                <a href="/painel/usuarios" className="nav-link" aria-current="page" style={{ border: "0", background: "none" }}>
-                  Usuários
+                <a href="/painel/ouvidoria" className="nav-link position-relative" aria-current="page" style={{ border: "0", background: "none" }}>
+                  Ouvidoria{" "}
+                  <span className="position-absolute translate-middle badge rounded-pill bg-danger" style={{ top: 5, left: 85 }}>
+                    {openTicketNumber?.length > 0 && openTicketNumber.filter((ticket) => ticket.ticket_status === "pending").length}
+                  </span>
                 </a>
               </li>
             </ul>
