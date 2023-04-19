@@ -9,6 +9,7 @@ import UserOptions from "./components/userOptions";
 import UserRegistrations from "./components/userRegistrations";
 
 import { fetchRegistrations } from "./functions/fetchRegistrations";
+import __config from "../../_config";
 
 const UserPanel = () => {
   const [registrations, setRegistrations] = useState([]);
@@ -41,6 +42,10 @@ const UserPanel = () => {
       .then((response) => setRegistrations(response))
       .finally(setLoading(false));
     setLoading(false);
+  }, []);
+
+  useEffect(() => {
+    document.title = `${__config.entidade.abbreviation} - Painel do Usuário`;
   }, []);
 
   if (loading) {

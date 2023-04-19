@@ -2,6 +2,7 @@ const AWS = require("aws-sdk");
 const fs = require("fs");
 const path = require("path");
 const crypto = require("crypto");
+const __config = require("../_config");
 require("aws-sdk/lib/maintenance_mode_message").suppress = true;
 
 const s3 = new AWS.S3({
@@ -66,4 +67,24 @@ function createPreSignedURL(bucketName, folder, file) {
   return url;
 }
 
-module.exports = { uploadFileToS3, deleteFileFromS3, createPreSignedURL };
+async function listFilesInFolder(bucketName, folder) {
+  const params = {
+    Bucket: bucketName,
+    Prefix: folder,
+  };
+  const filesArray = s3
+    .listObjectsV2(params)
+    .promise()
+    .then((data) => {
+      return data.Contents.filter((file) => file.Size > 0).map((file) => ({
+        link: `https://${__config.entidade.abbreviation.toLowerCase()}.s3.${process.env.AWS_DEFAULT_REGION}.amazonaws.com/${file.Key}`,
+        size: file.Size,
+      }));
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+  return filesArray;
+}
+
+module.exports = { uploadFileToS3, deleteFileFromS3, createPreSignedURL, listFilesInFolder };

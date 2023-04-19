@@ -4,6 +4,8 @@ import ReactPaginate from "react-paginate";
 import { parseDate } from "../../utils/functions/parseDate";
 
 import LoadingScreen from "../../utils/loadingScreen";
+import __config from "../../_config";
+import { Link } from "react-router-dom";
 
 const dayjs = require("dayjs");
 
@@ -37,9 +39,9 @@ const AllEvents = () => {
         {currentItems &&
           currentItems.map((event) => (
             <div key={event.event_id} className="card main-page-card m-3 shadow-lg" style={{ width: "18rem" }}>
-              <a className="stretched-link" href={`/evento/${event.event_link}`}>
+              <Link className="stretched-link" to={`/eventos/${event.event_link}`}>
                 <img src={event.event_image} className="card-img-top" alt="..." height={169.73} width={286} />
-              </a>
+              </Link>
               <hr className="my-0" />
               <div className="card-body">
                 <h5 className="card-title">{event.event_name}</h5>
@@ -109,6 +111,10 @@ const AllEvents = () => {
 
   useEffect(() => {
     fetchAllEvents();
+  }, []);
+
+  useEffect(() => {
+    document.title = `${__config.entidade.abbreviation} - Eventos`;
   }, []);
 
   if (isLoading) {

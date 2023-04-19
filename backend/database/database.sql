@@ -210,6 +210,14 @@ CREATE TABLE password_resets(
  FOREIGN KEY(reset_user_id) REFERENCES users(user_id)
 );
 
+CREATE TABLE event_records(
+  record_id UUID DEFAULT UUID_generate_v4(),
+  event_id UUID,
+  record_bucket VARCHAR(255) NOT NULL,
+  PRIMARY KEY(record_id),
+  FOREIGN KEY(event_id) REFERENCES events(event_id)
+)
+
 
 
 

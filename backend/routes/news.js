@@ -13,7 +13,7 @@ router.post("/", [adminAuthorization, upload.single("image")], newsController.cr
 router.get("/", adminAuthorization, newsController.list_news_admin);
 
 // List News (PUBLIC)
-router.get("/public/", newsController.list_news_public);
+router.get("/public/:category?", newsController.list_news_public);
 
 // List All News (PUBLIC)
 router.get("/public/all", newsController.list_all_news_public);

@@ -43,6 +43,8 @@ import AnswerTicket from "./pages/admin/components/tickets/answerTicket";
 import ListUsers from "./pages/admin/components/users/listUsers";
 import _config from "./_config";
 import TicketPanel from "./pages/forms/ticketPanel";
+import PedalHome from "./pages/pedal/pedalHome";
+import PedalEdition from "./pages/pedal/pedalEdition";
 
 function App() {
   const [userAuthentication, setUserAuthentication] = useState(false);
@@ -244,10 +246,12 @@ function App() {
           <Route exact path="/" element={<Home />} />
           <Route exact path="/pagamento/:linkId" element={<Payments />} />
           <Route exact path="/confirmacao/:id" element={<ConfirmationPage {...loginProps} />} />
-          <Route exact path="/evento/:id" element={<EventPage />} />
+          <Route exact path="/eventos/:id" element={<EventPage />} />
           <Route exact path="/eventos/" element={<AllEvents />} />
           {_config.pages.federacoes && <Route exact path="/federacoes/" element={<Federations />} />}
           <Route exact path="/imprensa/" element={<Imprensa />} />
+          <Route exact path="/pedalparatodos/" element={<PedalHome />} />
+          <Route exact path="/eventos/:eventLink/fotos" element={<PedalEdition />} />
           <Route exact path="/noticias/" element={<AllNews />} />
           <Route exact path="/noticias/:title" element={<NewsPage />} />
           <Route exact path="/senha/:requestId" element={<PasswordReset {...loginProps} />} />

@@ -47,6 +47,7 @@ async function listEventsPublic(req, res) {
 async function readEventPage(req, res) {
   try {
     const { id } = req.params;
+    console.log(id);
     const typeOfLink = /^\b[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}\b$/.test(id);
     const eventInfo = typeOfLink
       ? await pool.query("SELECT * FROM events WHERE event_id = $1", [id])

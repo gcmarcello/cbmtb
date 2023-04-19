@@ -2,12 +2,12 @@ import React, { Fragment, useState } from "react";
 import { useEffect } from "react";
 const dayjs = require("dayjs");
 
-const NextEvents = () => {
+const NextEvents = ({ event }) => {
   const [eventsList, setEventsList] = useState([]);
 
   const getEvents = async (e) => {
     try {
-      const response = await fetch("/api/events/public/", {
+      const response = await fetch(`/api/events/public/${event ? event : ""}`, {
         method: "GET",
       });
       const parseResponse = await response.json();

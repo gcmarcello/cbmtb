@@ -1,22 +1,16 @@
 import React, { Fragment, useState } from "react";
 import { useEffect } from "react";
+const dayjs = require("dayjs");
 
-const LatestNews = () => {
+const LatestNews = ({ category }) => {
   const [newsList, setNewsList] = useState([]);
 
   const getNews = async (e) => {
     try {
-      const response = await fetch("/api/news/public/", {
+      const response = await fetch(`/api/news/public/${category && category}`, {
         method: "GET",
       });
       const parseResponse = await response.json();
-      for (let i = 0; i < parseResponse.length; i++) {
-        let dateToParse = new Date(parseResponse[i].news_date);
-        let dateToParseDay = String(dateToParse.getDate()).padStart(2, 0);
-        let dateToParseMonth = String(dateToParse.getMonth() + 1).padStart(2, 0);
-        let dateToParseYear = String(dateToParse.getFullYear());
-        parseResponse[i].formattedDate = `${dateToParseDay}/${dateToParseMonth}/${dateToParseYear}`;
-      }
       setNewsList(parseResponse);
     } catch (err) {
       console.log(err);
@@ -53,7 +47,7 @@ const LatestNews = () => {
                         <i className="bi bi-tag-fill"></i> {news.news_category}
                       </small>
                       <small className="text-muted">
-                        <i className="bi bi-calendar-fill"></i> {news.formattedDate}
+                        <i className="bi bi-calendar-fill"></i> {dayjs(news.news_date).format("DD/MM/YYYY")}
                       </small>
                     </div>
                   </div>
