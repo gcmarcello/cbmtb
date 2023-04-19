@@ -1,5 +1,5 @@
 const pool = require("../database/database");
-const { uploadFileToS3 } = require("../apis/awsS3");
+const { uploadFileToS3, listFilesInFolder } = require("../apis/awsS3");
 
 const fs = require("fs");
 const path = require("path");
@@ -8,10 +8,12 @@ const dayjs = require("dayjs");
 const isBetween = require("dayjs/plugin/isBetween");
 dayjs.extend(isBetween);
 
+const __config = require("../_config");
+
 async function listEventsAdmin(req, res) {
   try {
     const listOfEvents = await pool.query(
-      "SELECT event_id,event_name, event_date_start, event_status, event_current_attendees, event_max_attendees FROM events ORDER BY event_date_start ASC"
+      "SELECT event_id,event_name, event_date_start, event_status, event_current_attendees, event_max_attendees FROM events ORDER BY event_date_start DESC"
     );
     res.json(listOfEvents.rows);
   } catch (err) {
@@ -20,8 +22,15 @@ async function listEventsAdmin(req, res) {
 }
 
 async function listEventsPublic(req, res) {
+  let listOfEvents;
   try {
-    const listOfEvents = await pool.query("SELECT * FROM events WHERE event_status = $1 ORDER BY event_date_start ASC", [true]);
+    const { event } = req.params;
+
+    if (event) {
+      listOfEvents = await pool.query("SELECT * FROM events WHERE event_name LIKE $1 ORDER BY event_date_start ASC", [`%${event}%`]);
+    } else {
+      listOfEvents = await pool.query("SELECT * FROM events WHERE event_status = $1 ORDER BY event_date_start ASC", [true]);
+    }
 
     const checkForAvailability = (registrationStartDate, registrationEndDate) => {
       const registrationStarts = dayjs(registrationStartDate);
@@ -154,7 +163,7 @@ async function retrieveEventInformation(req, res) {
 async function updateEvent(req, res) {
   try {
     const { id } = req.params;
-    const coupons = JSON.parse(req.body.coupons);
+
     const categories = JSON.parse(req.body.categories);
 
     const {
@@ -196,33 +205,36 @@ async function updateEvent(req, res) {
       ]
     );
 
-    const existingCoupons = coupons.filter((coupon) => coupon.coupon_id);
+    if (req.body.coupons) {
+      const coupons = JSON.parse(req.body.coupons);
+      const existingCoupons = coupons.filter((coupon) => coupon.coupon_id);
 
-    if (existingCoupons.length) {
-      const existingCouponsSQL = existingCoupons
-        .map((coupon) => `('${coupon.coupon_id}'::uuid, '${id}'::uuid, '${coupon.coupon_link}', '${coupon.coupon_uses}'::integer)`)
-        .join(",");
+      if (existingCoupons.length) {
+        const existingCouponsSQL = existingCoupons
+          .map((coupon) => `('${coupon.coupon_id}'::uuid, '${id}'::uuid, '${coupon.coupon_link}', '${coupon.coupon_uses}'::integer)`)
+          .join(",");
 
-      const updateExistingCoupons = await pool.query(
-        `UPDATE event_coupons AS ec SET
+        const updateExistingCoupons = await pool.query(
+          `UPDATE event_coupons AS ec SET
           coupon_id = t.coupon_id,
           coupon_link = t.coupon_link,
           event_id = t.event_id,
           coupon_uses = t.coupon_uses
         FROM (VALUES ${existingCouponsSQL}) AS t(coupon_id, event_id, coupon_link, coupon_uses)
         WHERE t.coupon_id = ec.coupon_id`
-      );
-    }
+        );
+      }
 
-    const newCoupons = coupons.filter((coupon) => !coupon.coupon_id);
+      const newCoupons = coupons.filter((coupon) => !coupon.coupon_id);
 
-    if (newCoupons.length) {
-      const newCouponsSQL = coupons
-        .filter((coupon) => coupon.coupon_id.length < 1)
-        .map((coupon) => `('${id}'::uuid, '${coupon.coupon_link}', '${coupon.coupon_uses}'::integer)`)
-        .join(",");
+      if (newCoupons.length) {
+        const newCouponsSQL = coupons
+          .filter((coupon) => coupon.coupon_id.length < 1)
+          .map((coupon) => `('${id}'::uuid, '${coupon.coupon_link}', '${coupon.coupon_uses}'::integer)`)
+          .join(",");
 
-      const createNewCoupons = await pool.query(`INSERT INTO event_coupons (event_id,coupon_link,coupon_uses) VALUES ${newCouponsSQL}`);
+        const createNewCoupons = await pool.query(`INSERT INTO event_coupons (event_id,coupon_link,coupon_uses) VALUES ${newCouponsSQL}`);
+      }
     }
 
     const existingCategories = categories.filter((category) => category.category_id);
@@ -294,6 +306,45 @@ async function deleteEvent(req, res) {
   }
 }
 
+async function listRecords(req, res) {
+  try {
+    const { type } = req.params;
+
+    let fetchEvent;
+
+    if (type) {
+      fetchEvent = await pool.query(
+        "SELECT event_name, event_link, event_image, e.event_id FROM events AS e LEFT JOIN event_records AS er ON e.event_id = er.event_id WHERE e.event_name LIKE $1",
+        [`%${type}%`]
+      );
+    } else {
+      fetchEvent = await pool.query(
+        "SELECT event_name, event_link, event_image, e.event_id FROM events AS e LEFT JOIN event_records AS er ON e.event_id = er.event_id"
+      );
+    }
+
+    res.status(200).json(fetchEvent.rows);
+  } catch (error) {
+    console.log(error);
+    res.status(400).json({ message: "Evento não encontrado.", type: "error" });
+  }
+}
+
+async function listEventRecords(req, res) {
+  try {
+    const { eventLink } = req.params;
+    const fetchEventBucket = await pool.query(
+      "SELECT event_name, event_link, record_bucket, e.event_id FROM events AS e LEFT JOIN event_records AS er ON e.event_id = er.event_id WHERE e.event_link = $1",
+      [eventLink]
+    );
+    const fileList = await listFilesInFolder(__config.entidade.abbreviation.toLowerCase(), `events/${fetchEventBucket.rows[0].record_bucket}`);
+    res.status(200).json({ event: fetchEventBucket.rows[0], data: fileList });
+  } catch (error) {
+    console.log(error);
+    res.status(400).json({ message: "Evento não encontrado.", type: "error" });
+  }
+}
+
 module.exports = {
   listEventsAdmin,
   listEventsPublic,
@@ -303,4 +354,6 @@ module.exports = {
   updateEvent,
   deleteEvent,
   retrieveEventInformation,
+  listEventRecords,
+  listRecords,
 };
