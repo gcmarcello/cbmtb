@@ -15,4 +15,6 @@
   /* HOME PAGE */
   --homepage-primary-bg: url("https://cbmtb.s3.sa-east-1.amazonaws.com/assets/banner.jfif");
   --homepage-secondary-bg: url("https://cbmtb.s3.sa-east-1.amazonaws.com/assets/eventos-bg.png") !important;
+  /* PEDAL HOME */
+  --pedal-primary-bg: url("https://cbmtb.s3.sa-east-1.amazonaws.com/assets/pedal-bg.jpg");
 }

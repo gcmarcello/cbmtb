@@ -128,6 +128,11 @@ code {
   background-position: 50% 10%;
 }
 
+.pedal {
+  background-image: var(--pedal-primary-bg) !important;
+  background-position: 50% 100%;
+}
+
 footer {
   background-color: var(--secondary-color);
 }
@@ -266,7 +271,7 @@ input[type="number"] {
 
   #hero-anchor {
     position: relative;
-    top: -120px;
+    top: -130px;
   }
 }
 
