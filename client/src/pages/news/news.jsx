@@ -9,6 +9,7 @@ const NewsPage = () => {
   const { title } = useParams();
   const navigate = useNavigate();
   const [news, setNews] = useState({});
+  const [categories, setCategories] = useState({});
   const [isLoading, setIsLoading] = useState(false);
 
   const fetchNews = async () => {
@@ -18,15 +19,13 @@ const NewsPage = () => {
         method: "GET",
       });
       const parseResponse = await response.json();
+      console.log(parseResponse);
       if (parseResponse.type === "error") {
         navigate("/404");
         return;
       }
       parseResponse.formattedDate = parseDate(parseResponse.news_date);
-      parseResponse.formattedUpdate = parseDate(
-        parseResponse.news_last_update,
-        "complete"
-      );
+      parseResponse.formattedUpdate = parseDate(parseResponse.news_last_update, "complete");
       setNews(parseResponse);
       setIsLoading(false);
     } catch (err) {
@@ -52,35 +51,19 @@ const NewsPage = () => {
           <div className="d-flex justify-content-between align-items-center">
             <div>
               <p className="fw-normal mb-0">
-                <span className="d-none d-lg-inline-block">
-                  {news.formattedDate} ·{" "}
-                </span>{" "}
-                Atualizado{" "}
+                <span className="d-none d-lg-inline-block">{news.formattedDate} · </span> Atualizado{" "}
                 <span className="d-none d-lg-inline-block">por último em</span>
                 {` ${news.formattedUpdate}`}
               </p>
             </div>
 
             <div className="d-flex justify-content-evenly">
-              <i
-                className="bi bi-facebook share-button fs-4 mx-2"
-                id="facebook-share"
-              >
+              <i className="bi bi-facebook share-button fs-4 mx-2" id="facebook-share">
                 {" "}
               </i>
-              <i
-                className="bi bi-twitter share-button fs-4 mx-2"
-                id="twitter-share"
-              ></i>
-              <a
-                href={`https://api.whatsapp.com/send?text=${_config.site.url}/noticias/${news.news_link}`}
-                target="_blank"
-                rel="noreferrer"
-              >
-                <i
-                  className="bi bi-whatsapp share-button fs-4 mx-2 text-decoration-none"
-                  id="whatsapp-share"
-                ></i>
+              <i className="bi bi-twitter share-button fs-4 mx-2" id="twitter-share"></i>
+              <a href={`https://api.whatsapp.com/send?text=${_config.site.url}/noticias/${news.news_link}`} target="_blank" rel="noreferrer">
+                <i className="bi bi-whatsapp share-button fs-4 mx-2 text-decoration-none" id="whatsapp-share"></i>
               </a>
             </div>
           </div>
@@ -88,16 +71,8 @@ const NewsPage = () => {
           <hr className="mt-2" />
         </div>
 
-        <img
-          src={news.news_image_link}
-          style={{ maxHeight: "475px" }}
-          alt="Imagem da Notícia"
-          className="img-fluid rounded mx-auto d-block"
-        ></img>
-        <div
-          dangerouslySetInnerHTML={{ __html: news.news_text }}
-          className="mt-3"
-        ></div>
+        <img src={news.news_image_link} style={{ maxHeight: "475px" }} alt="Imagem da Notícia" className="img-fluid rounded mx-auto d-block"></img>
+        <div dangerouslySetInnerHTML={{ __html: news.news_text }} className="mt-3"></div>
       </div>
     </Fragment>
   );

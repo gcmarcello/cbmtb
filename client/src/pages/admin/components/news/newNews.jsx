@@ -8,6 +8,9 @@ import { Editor } from "@tinymce/tinymce-react";
 
 import tinyConfig from "../../config/tiny.config";
 import uploadImage from "../../functions/uploadImage";
+import LoadingScreen from "../../../../utils/loadingScreen";
+import { useState } from "react";
+import { useEffect } from "react";
 
 const NewNews = () => {
   const navigate = useNavigate();
@@ -19,9 +22,30 @@ const NewNews = () => {
     reset,
     formState: { errors },
   } = useForm({ mode: "onChange" });
+  const [categories, setCategories] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const fetchCategories = async () => {
+    try {
+      setIsLoading(true);
+      const myHeaders = new Headers();
+      myHeaders.append("token", localStorage.token);
+      const response = await fetch(`/api/news/categories`, {
+        method: "GET",
+        headers: myHeaders,
+      });
+      const parseResponse = await response.json();
+      setCategories(parseResponse);
+    } catch (err) {
+      console.log(err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const onSubmit = async (data) => {
     try {
+      setIsLoading(true);
       const myHeaders = new Headers();
       myHeaders.append("token", localStorage.token);
 
@@ -43,8 +67,18 @@ const NewNews = () => {
       toast[parseResponse.type](parseResponse.message, { theme: "colored" });
     } catch (error) {
       console.log(error);
+    } finally {
+      setIsLoading(false);
     }
   };
+
+  useEffect(() => {
+    fetchCategories();
+  }, []);
+
+  if (isLoading) {
+    return <LoadingScreen />;
+  }
 
   return (
     <div className="bg-light">
@@ -106,17 +140,41 @@ const NewNews = () => {
                   </div>
                 </div>
               </div>
-              <label htmlFor="title" className="form-label">
-                Sub-Título da Notícia
-              </label>
+              <div className="row mt-2">
+                <div className="col-12 col-lg-6">
+                  <label htmlFor="title" className="form-label">
+                    Sub-Título da Notícia
+                  </label>
 
-              <input
-                type="text"
-                id="subtitle"
-                name="subtitle"
-                className={`form-control ${errors.subtitle?.type ? "is-invalid" : ""}`}
-                {...register("subtitle", { required: true, pattern: /.{2,}/ })}
-              />
+                  <input
+                    type="text"
+                    id="subtitle"
+                    name="subtitle"
+                    className={`form-control ${errors.subtitle?.type ? "is-invalid" : ""}`}
+                    {...register("subtitle", { required: true, pattern: /.{2,}/ })}
+                  />
+                </div>
+                <div className="col-12 col-lg-6">
+                  <label htmlFor="category" className="form-label">
+                    Categoria
+                  </label>
+                  <select
+                    id="category"
+                    defaultValue=""
+                    className={`form-select ${errors.gender?.type ? "is-invalid" : getValues("gender") ? "is-valid" : ""}`}
+                    {...register("category", { required: true })}
+                  >
+                    <option value="" disabled>
+                      Selecionar
+                    </option>
+                    {categories.map((category) => (
+                      <option key={`category-${category.category_id}`} value={category.category_name}>
+                        {category.category_name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
 
               <label htmlFor="news-text" className="mt-3">
                 Corpo da Notícia
