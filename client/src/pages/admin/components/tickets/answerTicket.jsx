@@ -114,8 +114,8 @@ const AnswerTicket = () => {
 
   return (
     <div className="bg-light">
-      <div className="px-lg-5 py-lg-5">
-        <div className="p-3 bg-white rounded rounded-2 shadow px-5">
+      <div className="px-0 px-lg-5 py-lg-5">
+        <div className="p-3 bg-white rounded rounded-2 shadow px-lg-5">
           <div className="d-flex justify-content-between align-items-end">
             <div>
               <span className="h1">Chamado </span>
@@ -130,7 +130,7 @@ const AnswerTicket = () => {
           <hr />
           <div className="row">
             <div className="row">
-              <div className="col-12 mb-3 mb-lg-3">
+              <div className="col-12 mb-lg-3">
                 <div className="d-flex justify-content-center">
                   <ul className="list-group list-group-horizontal-lg">
                     <li className="list-group-item">
@@ -163,7 +163,7 @@ const AnswerTicket = () => {
           <div className="row flex-column-reverse flex-lg-row">
             <div className="col-12 col-lg-6">
               <form onSubmit={handleSubmit(onSubmit)}>
-                <label htmlFor="news-text">Corpo do email</label>
+                <label htmlFor="news-text">Corpo da mensagem</label>
                 <Controller
                   name="messageBody"
                   control={control}
@@ -195,8 +195,8 @@ const AnswerTicket = () => {
                   )}
                 />
                 <div className="d-flex justify-content-between mt-3">
-                  <button className="btn btn-outline-success px-5 py-2  mt-2 mt-lg-0" data-bs-toggle="modal" data-bs-target="#resolveModal">
-                    Marcar como resolvido
+                  <button className="btn btn-outline-success px-5 py-2 mt-lg-0" data-bs-toggle="modal" data-bs-target="#resolveModal">
+                    Resolvido
                   </button>
 
                   <div class="modal fade" id="resolveModal" tabindex="-1" aria-labelledby="resolveModalLabel" aria-hidden="true">
@@ -231,7 +231,9 @@ const AnswerTicket = () => {
                 </div>
               </form>
             </div>
-            <div className="col-12 col-lg-6 overflow-auto mt-4" style={{ maxHeight: "500px" }}>
+
+            <div className="col-12 col-lg-6 overflow-auto " style={{ maxHeight: "500px" }}>
+              <label htmlFor="news-text">Histórico de Mensagens</label>
               {messages?.map((message, index) => (
                 <div key={`message-${index}`} className="card mb-3" style={{ width: "100%" }}>
                   <div className={`card-header d-flex justify-content-between flex-row${!message.user_id && "-reverse"}`}>
