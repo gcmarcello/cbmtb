@@ -54,7 +54,7 @@ module.exports = class Email {
       
       <p><a href="https://${
         _config.site.url
-      }/evento/${eventLink}">Clique aqui</a> para acessar a p&aacute;gina do evento com todas as informa&ccedil;&otilde;es</p>
+      }/eventos/${eventLink}">Clique aqui</a> para acessar a p&aacute;gina do evento com todas as informa&ccedil;&otilde;es</p>
       
       <p>Atenciosamente,</p>
       
@@ -133,7 +133,7 @@ module.exports = class Email {
         </p>
 
         <p>
-          Se você cancelou sua inscrição por engano ou deseja obter mais informações, você pode acessar a página do evento e se inscrever novamente <a href="${_config.site.url}/evento/${eventLink}">clicando aqui.</a>
+          Se você cancelou sua inscrição por engano ou deseja obter mais informações, você pode acessar a página do evento e se inscrever novamente <a href="${_config.site.url}/eventos/${eventLink}">clicando aqui.</a>
         </p>
       
       

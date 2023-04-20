@@ -115,7 +115,7 @@ const EventPage = () => {
                         type="text"
                         className="form-control"
                         id="event-link"
-                        defaultValue={`${window.location.origin}/evento/${event.event_link}`}
+                        defaultValue={`${window.location.origin}/eventos/${event.event_link}`}
                         disabled
                       />
                       <button

@@ -1,5 +1,6 @@
 import React, { Fragment, useState } from "react";
 import { useEffect } from "react";
+import { Link } from "react-router-dom";
 const dayjs = require("dayjs");
 
 const NextEvents = ({ event }) => {
@@ -34,7 +35,7 @@ const NextEvents = ({ event }) => {
               ) : (
                 eventsList.map((event) => (
                   <div key={event.event_id} className="card main-page-card m-3 shadow-lg" style={{ width: "18rem" }}>
-                    <a href={`/evento/${event.event_link}`} className="stretched-link">
+                    <Link to={`/eventos/${event.event_link}`} className="stretched-link">
                       <img
                         src={event.event_image}
                         className="card-img-top"
@@ -42,7 +43,7 @@ const NextEvents = ({ event }) => {
                         height={169.73}
                         width={286}
                       />
-                    </a>
+                    </Link>
                     <hr className="my-0" />
                     <div className="card-body">
                       <h5 className="card-title">{event.event_name}</h5>
@@ -55,7 +56,7 @@ const NextEvents = ({ event }) => {
                         <i className="bi bi-calendar-fill"></i> {dayjs(event.event_date_start).format("DD/MM/YYYY")}
                       </small>
                     </div>
-                    {/* <a href={`/evento/${event.event_link}`} className="btn btn-primary">
+                    {/* <a href={`/eventos/${event.event_link}`} className="btn btn-primary">
                       Inscrições
                     </a> */}
                   </div>

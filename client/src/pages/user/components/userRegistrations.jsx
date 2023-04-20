@@ -117,7 +117,7 @@ const UserRegistrations = ({ registrations, deleteRegistration }) => {
                     <i className="bi bi-calendar-fill"></i> {dayjs(registration.event_date_start).format("DD/MM/YYYY")}
                   </small>
                 </div>
-                {/* <a href={`/evento/${event.event_link}`} className="btn btn-primary">
+                {/* <a href={`/eventos/${event.event_link}`} className="btn btn-primary">
                     Inscrições
                   </a> */}
               </div>

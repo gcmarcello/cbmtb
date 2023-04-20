@@ -44,7 +44,7 @@ const Registration = ({ userAuthentication, setUserAuthentication, userAdmin, us
         const parseResponse = await response.json();
         if (parseResponse.type === "error") {
           toast.error(parseResponse.message, { theme: "colored" });
-          navigate(`/evento/${id}`);
+          navigate(`/eventos/${id}`);
         }
       } catch (error) {
         console.log(error);
