@@ -19,7 +19,7 @@ router.put("/toggle/:id/:boolean", adminAuthorization, eventsController.toggleRe
 // GET Info to Update Event (ADMIN)
 router.get("/update/:id", adminAuthorization, eventsController.retrieveEventInformation);
 // GET Event Record
-router.get("/records/event/:eventLink", eventsController.listEventRecords);
+router.get("/records/event/:eventLink/:type?", eventsController.listEventRecords);
 // GET Event Record
 router.get("/records/:type", eventsController.listRecords);
 // Update Event (ADMIN)

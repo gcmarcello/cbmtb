@@ -1,5 +1,5 @@
 import React, { Fragment, useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import { toast } from "react-toastify";
 
 import LoadingScreen from "../../utils/loadingScreen";
@@ -12,6 +12,7 @@ const EventPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [event, setEvent] = useState({});
+  const [records, setRecords] = useState(null);
   const [registrationError, setRegistrationError] = useState(null);
   const [loading, setLoading] = useState(false);
 
@@ -49,6 +50,15 @@ const EventPage = () => {
       });
 
       const parseResponse = await response.json();
+
+      const eventRecord = await fetch(`/api/events/records/event/${id}/mini`, {
+        method: "GET",
+        headers: myHeaders,
+      });
+
+      const parseEventRecords = await eventRecord.json();
+      setRecords(parseEventRecords.records.record_bucket);
+
       if (parseResponse.type === "error") {
         navigate("/404");
         return;
@@ -68,7 +78,7 @@ const EventPage = () => {
   }, []);
 
   useEffect(() => {
-    document.title = `${config.entidade.name} ${event.event_name ? `- ${event.event_name}` : ""}`;
+    document.title = `${config.entidade.abbreviation} ${event.event_name ? `- ${event.event_name}` : ""}`;
   }, [event]);
 
   if (loading === true) {
@@ -153,6 +163,11 @@ const EventPage = () => {
                               </Fragment>
                             )}
                           </button>
+                          {records && (
+                            <Link to={`/eventos/${event.event_link}/fotos`}>
+                              <button className="btn btn-primary btn-lg form-control mt-3">Fotos do Evento</button>
+                            </Link>
+                          )}
                         </div>
                       </div>
                     </div>

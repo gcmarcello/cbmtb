@@ -47,7 +47,6 @@ async function listEventsPublic(req, res) {
 async function readEventPage(req, res) {
   try {
     const { id } = req.params;
-    console.log(id);
     const typeOfLink = /^\b[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}\b$/.test(id);
     const eventInfo = typeOfLink
       ? await pool.query("SELECT * FROM events WHERE event_id = $1", [id])
@@ -333,12 +332,16 @@ async function listRecords(req, res) {
 
 async function listEventRecords(req, res) {
   try {
-    const { eventLink } = req.params;
+    const { eventLink, type } = req.params;
     const fetchEventBucket = await pool.query(
       "SELECT event_name, event_link, record_bucket, e.event_id FROM events AS e LEFT JOIN event_records AS er ON e.event_id = er.event_id WHERE e.event_link = $1",
       [eventLink]
     );
     const fileList = await listFilesInFolder(__config.entidade.abbreviation.toLowerCase(), `events/${fetchEventBucket.rows[0].record_bucket}`);
+
+    if (type === "mini") {
+      return res.status(200).json({ records: fetchEventBucket.rows[0] });
+    }
     res.status(200).json({ event: fetchEventBucket.rows[0], data: fileList });
   } catch (error) {
     console.log(error);

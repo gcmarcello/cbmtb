@@ -44,7 +44,7 @@ import ListUsers from "./pages/admin/components/users/listUsers";
 import _config from "./_config";
 import TicketPanel from "./pages/forms/ticketPanel";
 import PedalHome from "./pages/pedal/pedalHome";
-import PedalEdition from "./pages/pedal/pedalEdition";
+import PedalEdition from "./pages/event/eventRecord";
 
 function App() {
   const [userAuthentication, setUserAuthentication] = useState(false);
