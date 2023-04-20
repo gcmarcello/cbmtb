@@ -194,6 +194,23 @@ const ListUsers = () => {
     }
   };
 
+  const resendConfirmation = async (userId) => {
+    try {
+      const myHeaders = new Headers();
+      myHeaders.append("Content-Type", "application/json");
+      myHeaders.append("token", localStorage.token);
+
+      const response = await fetch(`/api/confirmations/${userId}`, {
+        method: "POST",
+        headers: myHeaders,
+      });
+      const parseResponse = await response.json();
+      toast[parseResponse.type](parseResponse.message, { theme: "colored" });
+    } catch (err) {
+      console.log(err.message);
+    }
+  };
+
   const onOpenModal = (userInfo) => {
     reset({
       firstName: userInfo.user_first_name,
@@ -273,12 +290,25 @@ const ListUsers = () => {
                         <label htmlFor="email">
                           Email<span className="text-danger">*</span>
                         </label>
-                        <input
-                          id="email"
-                          className={`form-control ${errors.email?.type ? "is-invalid" : ""}`}
-                          {...register("email", { required: true, pattern: /^[\w-.]+@([\w-]+\.)+[\w-]{2,}$/ })}
-                          aria-invalid={errors.email ? "true" : "false"}
-                        />
+                        <div className="input-group">
+                          <input
+                            id="email"
+                            className={`form-control ${errors.email?.type ? "is-invalid" : ""}`}
+                            {...register("email", { required: true, pattern: /^[\w-.]+@([\w-]+\.)+[\w-]{2,}$/ })}
+                            aria-invalid={errors.email ? "true" : "false"}
+                          />
+                          <button
+                            className="input-group-text"
+                            id="button-addon1"
+                            type="button"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              resendConfirmation(getValues("userId"));
+                            }}
+                          >
+                            Reenviar
+                          </button>
+                        </div>
                         <small id="couponLink" className="form-text text-muted">
                           O usuário terá de confirmar o novo e-mail antes de fazer login novamente.
                         </small>
