@@ -247,6 +247,13 @@ input[type="number"] {
   margin-bottom: 0;
 }
 
+.custom-html table {
+  display: block;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  max-width: 100%;
+}
+
 @media (min-width: 768px) {
   .userbar {
     background-size: cover;

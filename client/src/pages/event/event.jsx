@@ -196,6 +196,7 @@ const EventPage = () => {
                   <div className="accordion-body">
                     {event.event_description ? (
                       <div
+                        className="custom-html"
                         dangerouslySetInnerHTML={{
                           __html: event.event_description,
                         }}
@@ -221,7 +222,11 @@ const EventPage = () => {
                 </h2>
                 <div id="collapseTwo" className="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
                   <div className="accordion-body">
-                    {event.event_rules ? <div dangerouslySetInnerHTML={{ __html: event.event_rules }}></div> : <span>Nada por aqui.</span>}
+                    {event.event_rules ? (
+                      <div className="custom-html" dangerouslySetInnerHTML={{ __html: event.event_rules }}></div>
+                    ) : (
+                      <span>Nada por aqui.</span>
+                    )}
                   </div>
                 </div>
               </div>
@@ -242,6 +247,7 @@ const EventPage = () => {
                   <div className="accordion-body">
                     {event.event_details ? (
                       <div
+                        className="custom-html"
                         dangerouslySetInnerHTML={{
                           __html: event.event_details,
                         }}
