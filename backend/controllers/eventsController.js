@@ -409,10 +409,16 @@ async function listRecords(req, res) {
 async function listEventRecords(req, res) {
   try {
     const { eventLink, type } = req.params;
+
     const fetchEventBucket = await pool.query(
       "SELECT event_name, event_link, record_bucket, e.event_id FROM events AS e LEFT JOIN event_records AS er ON e.event_id = er.event_id WHERE e.event_link = $1",
       [eventLink]
     );
+
+    if (type === "mini") {
+      return res.status(200).json({ records: fetchEventBucket.rows[0] });
+    }
+
     const fileList = await listFilesInFolder(
       __config.entidade.abbreviation.toLowerCase(),
       `events/${fetchEventBucket.rows[0].record_bucket}`
@@ -422,10 +428,6 @@ async function listEventRecords(req, res) {
       return res
         .status(404)
         .json({ message: "Mídias não encontradas.", type: "error" });
-    }
-
-    if (type === "mini") {
-      return res.status(200).json({ records: fetchEventBucket.rows[0] });
     }
 
     res.status(200).json({ event: fetchEventBucket.rows[0], data: fileList });
