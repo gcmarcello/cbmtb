@@ -44,7 +44,7 @@ import ListUsers from "./pages/admin/components/users/listUsers";
 import _config from "./_config";
 import TicketPanel from "./pages/forms/ticketPanel";
 import PedalHome from "./pages/pedal/pedalHome";
-import PedalEdition from "./pages/event/eventRecord";
+import EventRecords from "./pages/event/eventRecord";
 
 function App() {
   const [userAuthentication, setUserAuthentication] = useState(false);
@@ -283,7 +283,7 @@ function App() {
             element={<ConfirmationPage {...loginProps} />}
           />
           <Route exact path="/evento/:id" element={<EventPage />} />
-          <Route exact path="/evento/" element={<AllEvents />} />
+          <Route exact path="/eventos/" element={<AllEvents />} />
           {_config.pages.federacoes && (
             <Route exact path="/federacoes/" element={<Federations />} />
           )}
@@ -292,7 +292,7 @@ function App() {
           <Route
             exact
             path="/evento/:eventLink/fotos"
-            element={<PedalEdition />}
+            element={<EventRecords />}
           />
           <Route exact path="/noticias/" element={<AllNews />} />
           <Route exact path="/noticias/:title" element={<NewsPage />} />
