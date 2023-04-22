@@ -24,18 +24,32 @@ const NextEvents = ({ event }) => {
 
   return (
     <Fragment>
-      <div className="container-fluid d-flex flex-column pt-3" id="home-next-events">
+      <div
+        className="container-fluid d-flex flex-column pt-3"
+        id="home-next-events"
+      >
         <div id="hero-anchor"></div>
         <div className="row">
           <div className="col-12">
             <h1>Próximos Eventos</h1>
-            <div className={`d-flex flex-wrap justify-content-${eventsList > 2 ? "evenly" : "center"}`}>
+            <div
+              className={`d-flex flex-wrap justify-content-${
+                eventsList > 2 ? "evenly" : "center"
+              }`}
+            >
               {eventsList < 1 ? (
                 <h3>Em breve, mais eventos!</h3>
               ) : (
                 eventsList.map((event) => (
-                  <div key={event.event_id} className="card main-page-card m-3 shadow-lg" style={{ width: "18rem" }}>
-                    <Link to={`/eventos/${event.event_link}`} className="stretched-link">
+                  <div
+                    key={event.event_id}
+                    className="card main-page-card m-3 shadow-lg"
+                    style={{ width: "18rem" }}
+                  >
+                    <Link
+                      to={`/evento/${event.event_link}`}
+                      className="stretched-link"
+                    >
                       <img
                         src={event.event_image}
                         className="card-img-top"
@@ -50,13 +64,15 @@ const NextEvents = ({ event }) => {
                     </div>
                     <div className="card-footer d-flex justify-content-between align-items-center">
                       <small className="text-muted">
-                        <i className="bi bi-geo-alt-fill"></i> {event.event_location}
+                        <i className="bi bi-geo-alt-fill"></i>{" "}
+                        {event.event_location}
                       </small>
                       <small className="text-muted">
-                        <i className="bi bi-calendar-fill"></i> {dayjs(event.event_date_start).format("DD/MM/YYYY")}
+                        <i className="bi bi-calendar-fill"></i>{" "}
+                        {dayjs(event.event_date_start).format("DD/MM/YYYY")}
                       </small>
                     </div>
-                    {/* <a href={`/eventos/${event.event_link}`} className="btn btn-primary">
+                    {/* <a href={`/evento/${event.event_link}`} className="btn btn-primary">
                       Inscrições
                     </a> */}
                   </div>

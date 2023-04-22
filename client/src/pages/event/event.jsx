@@ -130,7 +130,7 @@ const EventPage = () => {
                         type="text"
                         className="form-control"
                         id="event-link"
-                        defaultValue={`${window.location.origin}/eventos/${event.event_link}`}
+                        defaultValue={`${window.location.origin}/evento/${event.event_link}`}
                         disabled
                       />
                       <button
@@ -194,7 +194,7 @@ const EventPage = () => {
                             )}
                           </button>
                           {records && (
-                            <Link to={`/eventos/${event.event_link}/fotos`}>
+                            <Link to={`/evento/${event.event_link}/fotos`}>
                               <button className="btn btn-primary btn-lg form-control mt-3">
                                 Fotos do Evento
                               </button>

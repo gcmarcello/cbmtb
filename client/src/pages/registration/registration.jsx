@@ -13,7 +13,12 @@ import EventInfo from "./components/eventInfo";
 import StageButtons from "./components/stageButtons";
 import Payments from "../payment/payments";
 
-const Registration = ({ userAuthentication, setUserAuthentication, userAdmin, userName }) => {
+const Registration = ({
+  userAuthentication,
+  setUserAuthentication,
+  userAdmin,
+  userName,
+}) => {
   const navigate = useNavigate();
   const { id, coupon } = useParams();
   const [registrationInfo, setRegistrationInfo] = useState({
@@ -37,14 +42,17 @@ const Registration = ({ userAuthentication, setUserAuthentication, userAdmin, us
       myHeaders.append("Content-Type", "application/json");
       myHeaders.append("token", localStorage.token);
       try {
-        const response = await fetch(`/api/registrations/${id}/checkreg/${coupon ? coupon : ""}`, {
-          method: "GET",
-          headers: myHeaders,
-        });
+        const response = await fetch(
+          `/api/registrations/${id}/checkreg/${coupon ? coupon : ""}`,
+          {
+            method: "GET",
+            headers: myHeaders,
+          }
+        );
         const parseResponse = await response.json();
         if (parseResponse.type === "error") {
           toast.error(parseResponse.message, { theme: "colored" });
-          navigate(`/eventos/${id}`);
+          navigate(`/evento/${id}`);
         }
       } catch (error) {
         console.log(error);
@@ -58,7 +66,9 @@ const Registration = ({ userAuthentication, setUserAuthentication, userAdmin, us
   }, [id, navigate]);
 
   if (registrationInfo.event.event_status === false) {
-    toast.error("As inscrições para este evento não estão abertas.", { theme: "colored" });
+    toast.error("As inscrições para este evento não estão abertas.", {
+      theme: "colored",
+    });
     return <Navigate to="/" />;
   }
 
@@ -110,12 +120,22 @@ const Registration = ({ userAuthentication, setUserAuthentication, userAdmin, us
               aria-valuemin="0"
               aria-valuemax="100"
             >
-              <h4>{stage === 1 ? "Atleta" : stage === 2 ? "Inscrição" : "Pesquisa"}</h4>
+              <h4>
+                {stage === 1
+                  ? "Atleta"
+                  : stage === 2
+                  ? "Inscrição"
+                  : "Pesquisa"}
+              </h4>
             </div>
           </div>
         </div>
         {stage === 1 ? (
-          <UserInfo user={user} registrationInfo={registrationInfo} setRegistrationInfo={setRegistrationInfo} />
+          <UserInfo
+            user={user}
+            registrationInfo={registrationInfo}
+            setRegistrationInfo={setRegistrationInfo}
+          />
         ) : stage === 2 ? (
           <EventInfo
             user={user}

@@ -28,7 +28,16 @@ module.exports = class Email {
         console.error(error);
       });
   }
-  async sendRegistrationEmail(firstName, eventName, dateStart, dateEnd, location, category, registrationID, eventLink) {
+  async sendRegistrationEmail(
+    firstName,
+    eventName,
+    dateStart,
+    dateEnd,
+    location,
+    category,
+    registrationID,
+    eventLink
+  ) {
     sgMail.setApiKey(process.env.SENDGRID_API_KEY);
     const msg = {
       to: this.emails[0],
@@ -46,7 +55,9 @@ module.exports = class Email {
       <p>Aqui est&atilde;o as informa&ccedil;&otilde;es do evento e da sua inscri&ccedil;&atilde;o.&nbsp;Imprima este e-mail e leve ao evento para facilitar o check-in!</p>
       
       <ul>
-        <li><strong>Data:</strong>&nbsp;${dayjs(dateStart).format("DD/MM/YYYY HH:mm")} -&nbsp;${dayjs(dateEnd).format("DD/MM/YYYY HH:mm")}</li>
+        <li><strong>Data:</strong>&nbsp;${dayjs(dateStart).format(
+          "DD/MM/YYYY HH:mm"
+        )} -&nbsp;${dayjs(dateEnd).format("DD/MM/YYYY HH:mm")}</li>
         <li><strong>Local:</strong>&nbsp;${location}</li>
         <li><strong>Categoria:</strong>&nbsp;${category}</li>
         <li><strong>ID da inscri&ccedil;&atilde;o:</strong> ${registrationID}&nbsp;(Esse &eacute; apenas o n&uacute;mero de controle no sistema, seu n&uacute;mero de atleta&nbsp;ser&aacute; definido de forma aleat&oacute;ria no check-in do evento)</li>
@@ -54,7 +65,7 @@ module.exports = class Email {
       
       <p><a href="https://${
         _config.site.url
-      }/eventos/${eventLink}">Clique aqui</a> para acessar a p&aacute;gina do evento com todas as informa&ccedil;&otilde;es</p>
+      }/evento/${eventLink}">Clique aqui</a> para acessar a p&aacute;gina do evento com todas as informa&ccedil;&otilde;es</p>
       
       <p>Atenciosamente,</p>
       
@@ -133,7 +144,7 @@ module.exports = class Email {
         </p>
 
         <p>
-          Se você cancelou sua inscrição por engano ou deseja obter mais informações, você pode acessar a página do evento e se inscrever novamente <a href="${_config.site.url}/eventos/${eventLink}">clicando aqui.</a>
+          Se você cancelou sua inscrição por engano ou deseja obter mais informações, você pode acessar a página do evento e se inscrever novamente <a href="${_config.site.url}/evento/${eventLink}">clicando aqui.</a>
         </p>
       
       

@@ -22,7 +22,10 @@ const AllEvents = () => {
       const parseResponse = await response.json();
       for (let i = 0; i < parseResponse.length; i++) {
         parseResponse[i].formattedDate = parseDate(parseResponse[i].event_date);
-        parseResponse[i].date = parseDate(parseResponse[i].event_date, "calendar");
+        parseResponse[i].date = parseDate(
+          parseResponse[i].event_date,
+          "calendar"
+        );
         parseResponse[i].title = parseResponse[i].event_name;
       }
       setAllEvents(parseResponse);
@@ -38,21 +41,37 @@ const AllEvents = () => {
       <>
         {currentItems &&
           currentItems.map((event) => (
-            <div key={event.event_id} className="card main-page-card m-3 shadow-lg" style={{ width: "18rem" }}>
-              <Link className="stretched-link" to={`/eventos/${event.event_link}`}>
-                <img src={event.event_image} className="card-img-top" alt="..." height={169.73} width={286} />
+            <div
+              key={event.event_id}
+              className="card main-page-card m-3 shadow-lg"
+              style={{ width: "18rem" }}
+            >
+              <Link
+                className="stretched-link"
+                to={`/evento/${event.event_link}`}
+              >
+                <img
+                  src={event.event_image}
+                  className="card-img-top"
+                  alt="..."
+                  height={169.73}
+                  width={286}
+                />
               </Link>
               <hr className="my-0" />
               <div className="card-body">
                 <h5 className="card-title">{event.event_name}</h5>
                 <p>{event.news_subtitle}</p>
               </div>
-              <div className={`card-footer d-flex justify-content-between align-items-center`}>
+              <div
+                className={`card-footer d-flex justify-content-between align-items-center`}
+              >
                 <small className="text-muted">
                   <i className="bi bi-geo-alt-fill"></i> {event.event_location}
                 </small>
                 <small className="text-muted">
-                  <i className="bi bi-calendar-fill"></i> {dayjs(event.event_date_start).format("DD/MM/YYYY")}
+                  <i className="bi bi-calendar-fill"></i>{" "}
+                  {dayjs(event.event_date_start).format("DD/MM/YYYY")}
                 </small>
               </div>
             </div>
