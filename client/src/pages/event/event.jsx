@@ -57,12 +57,15 @@ const EventPage = () => {
       });
 
       const parseEventRecords = await eventRecord.json();
-      setRecords(parseEventRecords.records.record_bucket);
+      if (parseEventRecords.records) {
+        setRecords(parseEventRecords?.records.record_bucket);
+      }
 
       if (parseResponse.type === "error") {
         navigate("/404");
         return;
       }
+
       const date = new Date(parseResponse.event_date);
       parseResponse.formattedDate = date.toLocaleString("pt-BR");
       setEvent(parseResponse);

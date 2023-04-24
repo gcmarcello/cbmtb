@@ -45,8 +45,6 @@ const EventRecords = () => {
     fetchPhotos();
   }, []);
 
-  console.log(photos);
-
   if (isLoading) {
     return <LoadingScreen />;
   }
