@@ -22,10 +22,7 @@ const ListRegistrations = (props) => {
     {
       Header: "Nome",
       accessor: "user_first_name",
-    },
-    {
-      Header: "Sobrenome",
-      accessor: "user_last_name",
+      Cell: ({ row, value }) => `${value} ${row.original.user_last_name}`,
     },
     {
       Header: "Categoria",
