@@ -9,9 +9,8 @@ dayjs.extend(isBetween);
 async function create_registration(req, res) {
   try {
     const { id } = req.params;
-    console.log(req.couponId);
 
-    const userId = req.userId;
+    /* const userId = req.userId;
     const { categoryId, registrationShirt } = req.body;
     const checkForRegistration = await pool.query("SELECT * FROM registrations WHERE event_id = $1 AND user_id = $2", [id, userId]);
 
@@ -61,29 +60,18 @@ async function create_registration(req, res) {
         newRegistrations.rows[0].registration_id,
         eventInfo.rows[0].event_link
       );
-    }
+    }*/
 
     res.status(200).json({
       message: "Inscrição realizada com sucesso.",
       type: "success",
     });
-
-    /* axios({
-        method: "GET",
-        headers: {
-          token: `${req.header("token")}`,
-          "Content-Type": "application/json",
-        },
-        url: `http://localhost:3000/api/payments/pix/${newPayment.rows[0].payment_id}`,
-      }).then((response) =>
-        res.status(200).json({
-          message: "Inscrição realizada com sucesso.",
-          type: "success",
-          paymentId: eventCost.rows[0].event_price > 0 ? newPayment.rows[0].payment_id : 0,
-        })
-      ); */
   } catch (err) {
     console.log(err.message);
+    res.status(400).json({
+      message: "Erro ao finalizar inscrição.",
+      type: "error",
+    });
   }
 }
 

@@ -33,7 +33,7 @@ const Footer = ({ userAuthentication }) => {
   };
 
   return (
-    <footer className="footer">
+    <footer className="footer ">
       <div className="container">
         <footer className="pt-5 pb-1">
           <div className="row">
@@ -70,28 +70,16 @@ const Footer = ({ userAuthentication }) => {
               <div className="col-md-7 offset-md-1 mb-3">
                 <form onSubmit={handleSubmit(onSubmit)}>
                   <h5>Inscreva-se na nossa Newsletter!</h5>
-                  <p>
-                    Receba as novidades e notícias da Confederação no seu
-                    e-mail.
-                  </p>
+                  <p>Receba as novidades e notícias da Confederação no seu e-mail.</p>
                   <div className="container">
                     <div className="row align-items-center">
                       <div className="col-12 col-lg-8 p-0 mx-1 my-1">
-                        <label
-                          htmlFor="newsletter1"
-                          className="visually-hidden"
-                        >
+                        <label htmlFor="newsletter1" className="visually-hidden">
                           Endereço de Email
                         </label>
                         <input
                           id="email"
-                          className={`form-control ${
-                            errors.email?.type
-                              ? "is-invalid"
-                              : getValues("email")
-                              ? "is-valid"
-                              : ""
-                          }`}
+                          className={`form-control ${errors.email?.type ? "is-invalid" : getValues("email") ? "is-valid" : ""}`}
                           {...register("email", {
                             required: true,
                             pattern: /^[\w-.]+@([\w-]+\.)+[\w-]{2,}$/,
@@ -106,11 +94,7 @@ const Footer = ({ userAuthentication }) => {
                         )}
                       </div>
                       <div className="col-12 col-lg-2 p-0 mx-1">
-                        <input
-                          type="submit"
-                          className="btn btn-success my-2 px-5"
-                          value={"Inscreva-se"}
-                        />
+                        <input type="submit" className="btn btn-success my-2 px-5" value={"Inscreva-se"} />
                       </div>
                     </div>
                   </div>

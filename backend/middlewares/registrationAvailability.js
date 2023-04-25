@@ -35,8 +35,9 @@ module.exports = async (req, res, next) => {
     "SELECT * FROM event_categories WHERE (event_id = $1) AND (category_minage <= $2) AND (category_maxage >= $2) AND (category_gender = $3 OR category_gender = 'unisex') ORDER BY category_maxage ASC",
     [id, userAge, checkForUser.rows[0].user_gender]
   );
+
   if (!listOfCategories.rows[0]) {
-    return res.status(200).json({
+    return res.status(400).json({
       message: "Esse evento não tem nenhuma categoria disponível para você.",
       type: "error",
     });

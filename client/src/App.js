@@ -261,7 +261,9 @@ function App() {
           <Route path="*" element={<Page404 />} />
         </Routes>
       </main>
-      {!(page === "cadastro" || page === "painel" || page === "senha") && <Footer userAuthentication={userAuthentication} userName={userName} />}
+      {!(page === "cadastro" || page === "painel" || page === "senha" || page === "inscricao") && (
+        <Footer userAuthentication={userAuthentication} userName={userName} />
+      )}
     </Fragment>
   );
 }

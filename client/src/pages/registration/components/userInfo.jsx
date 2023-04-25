@@ -54,10 +54,13 @@ const UserInfo = (props) => {
 
   return (
     <Fragment>
-      <p className="text-justify">
-        Verifique suas informações de cadastro antes de se inscrever na prova. Se alguma alteração for necessária, por favor edite os campos e clique
-        em avançar para seguir com a inscrição.
-      </p>
+      <div className="position-sticky top-0">
+        <p>
+          Verifique suas informações de cadastro antes de se inscrever na prova. Se alguma alteração for necessária, por favor edite os campos e
+          clique em avançar para seguir com a inscrição.
+        </p>
+      </div>
+
       <div className="row">
         <div className="col-12 col-lg-6">
           <label htmlFor="user_given_name">Nome</label>

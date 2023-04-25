@@ -4,11 +4,12 @@ const authentication = require("../middlewares/authentication");
 const authorization = require("../middlewares/authorization");
 const adminAuthorization = require("../middlewares/adminAuthorization");
 const registrationAvailability = require("../middlewares/registrationAvailability");
+const updateUser = require("../middlewares/updateUser");
 
 const registrationsController = require("../controllers/registrationsController");
 
 // Create Registrations (USER)
-router.post("/:id/:coupon?", [authorization, registrationAvailability], registrationsController.create_registration);
+router.post("/:id/:coupon?", [authorization, registrationAvailability, updateUser], registrationsController.create_registration);
 
 // Read User Registrations (USER)
 router.get("/user/", authorization, registrationsController.read_user_registrations);
