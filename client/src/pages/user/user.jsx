@@ -7,14 +7,13 @@ import LoadingScreen from "../../utils/loadingScreen";
 import UserOptions from "./components/userOptions";
 
 import UserRegistrations from "./components/userRegistrations";
-
-import { fetchRegistrations } from "./functions/fetchRegistrations";
 import __config from "../../_config";
 
 const UserPanel = () => {
   const [registrations, setRegistrations] = useState([]);
   const { panel } = useParams();
-  const [loading, setLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
+  const [userInfo, setUserInfo] = useState(null);
 
   const deleteRegistration = async (eventId, registrationId) => {
     try {
@@ -22,13 +21,20 @@ const UserPanel = () => {
       myHeaders.append("Content-Type", "application/json");
       myHeaders.append("token", localStorage.token);
 
-      const response = await fetch(`/api/registrations/${eventId}/${registrationId}`, {
-        method: "DELETE",
-        headers: myHeaders,
-      });
+      const response = await fetch(
+        `/api/registrations/${eventId}/${registrationId}`,
+        {
+          method: "DELETE",
+          headers: myHeaders,
+        }
+      );
       const parseResponse = await response.json();
       if (parseResponse.type === "success") {
-        setRegistrations(registrations.filter((registration) => registration.registration_id !== registrationId));
+        setRegistrations(
+          registrations.filter(
+            (registration) => registration.registration_id !== registrationId
+          )
+        );
         toast.success(parseResponse.message, { theme: "colored" });
       }
     } catch (err) {
@@ -36,19 +42,55 @@ const UserPanel = () => {
     }
   };
 
+  const getUser = async () => {
+    setIsLoading(true);
+    try {
+      const myHeaders = new Headers();
+      myHeaders.append("Content-Type", "application/json");
+      myHeaders.append("token", localStorage.token);
+
+      const response = await fetch(`/api/users/self`, {
+        method: "GET",
+        headers: myHeaders,
+      });
+      const parseResponse = await response.json();
+      setUserInfo(parseResponse);
+    } catch (err) {
+      console.log(err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const fetchRegistrations = async (type) => {
+    try {
+      setIsLoading(true);
+      const myHeaders = new Headers();
+      myHeaders.append("Content-Type", "application/json");
+      myHeaders.append("token", localStorage.token);
+      const response = await fetch(`/api/registrations/user/`, {
+        method: "GET",
+        headers: myHeaders,
+      });
+      const parseResponse = await response.json();
+      setRegistrations(parseResponse);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   useEffect(() => {
-    setLoading(true);
-    fetchRegistrations()
-      .then((response) => setRegistrations(response))
-      .finally(setLoading(false));
-    setLoading(false);
+    getUser();
+    fetchRegistrations();
   }, []);
 
   useEffect(() => {
     document.title = `${__config.entidade.abbreviation} - Painel do Usuário`;
   }, []);
 
-  if (loading) {
+  if (isLoading) {
     return <LoadingScreen />;
   }
 
@@ -60,7 +102,9 @@ const UserPanel = () => {
         <ul className="nav nav-tabs" id="myTab" role="tablist">
           <li className="nav-item" role="presentation">
             <button
-              className={`nav-link ${(panel === "inscricoes" || panel === undefined) && "active"}`}
+              className={`nav-link ${
+                (panel === "inscricoes" || panel === undefined) && "active"
+              }`}
               id="registrations-tab"
               data-bs-toggle="tab"
               data-bs-target="#registrations"
@@ -103,17 +147,33 @@ const UserPanel = () => {
         </ul>
         <div className="tab-content" id="myTabContent">
           <div
-            className={`tab-pane fade ${(panel === "inscricoes" || panel === undefined) && "show active"}`}
+            className={`tab-pane fade ${
+              (panel === "inscricoes" || panel === undefined) && "show active"
+            }`}
             id="registrations"
             role="tabpanel"
             aria-labelledby="registrations-tab"
           >
-            <UserRegistrations registrations={registrations} deleteRegistration={deleteRegistration} />
+            <UserRegistrations
+              registrations={registrations}
+              deleteRegistration={deleteRegistration}
+              userInfo={userInfo}
+            />
           </div>
-          <div className={`tab-pane fade ${panel === "perfil" && "show active"}`} id="profile" role="tabpanel" aria-labelledby="profile-tab">
-            <UserOptions />
+          <div
+            className={`tab-pane fade ${panel === "perfil" && "show active"}`}
+            id="profile"
+            role="tabpanel"
+            aria-labelledby="profile-tab"
+          >
+            <UserOptions setIsLoading={setIsLoading} userInfo={userInfo} />
           </div>
-          <div className={`tab-pane fade ${panel === "filiacao" && "show active"}`} id="membership" role="tabpanel" aria-labelledby="membership-tab">
+          <div
+            className={`tab-pane fade ${panel === "filiacao" && "show active"}`}
+            id="membership"
+            role="tabpanel"
+            aria-labelledby="membership-tab"
+          >
             <div className="container inner-page">
               <h2>Em Breve...</h2>
             </div>
