@@ -10,26 +10,6 @@ const dayjs = require("dayjs");
 const UserInfo = (props) => {
   const [cepLoading, setCepLoading] = useState(false);
 
-  useEffect(() => {
-    props.setIsLoading(true);
-    if (props.user) {
-      props.setValue("firstName", props.user.user_first_name);
-      props.setValue("lastName", props.user.user_last_name);
-      props.setValue("email", props.user.user_email);
-      props.setValue("cpf", props.user.user_cpf);
-      props.setValue("phone", props.user.user_phone);
-      props.setValue("gender", props.user.user_gender);
-      props.setValue("birthDate", dayjs(props.user.user_birth_date).format("YYYY-MM-DD"));
-      props.setValue("cep", props.user.user_cep);
-      props.setValue("state", props.user.user_state);
-      props.setValue("city", props.user.user_city);
-      props.setValue("address", props.user.user_address);
-      props.setValue("number", props.user.user_number);
-      props.setValue("apartment", props.user.user_apartment);
-    }
-    props.setIsLoading(false);
-  }, [props.user]);
-
   const handleCep = async () => {
     try {
       setCepLoading(true);
@@ -69,7 +49,7 @@ const UserInfo = (props) => {
             id="user_given_name"
             name="user_given_name"
             className="form-control"
-            {...props.register("firstName", { required: true, pattern: /^([A-Za-z]+\s*){3,}$/i })}
+            {...props.register("firstName", { required: true, pattern: /^([A-Za-z]+\s*){1,}$/i })}
           />
           <label htmlFor="user_last_name">Sobrenome</label>
           <input
@@ -77,7 +57,7 @@ const UserInfo = (props) => {
             id="user_last_name"
             name="user_last_name"
             className="form-control"
-            {...props.register("lastName", { required: true, pattern: /^([A-Za-z]+\s*){3,}$/i })}
+            {...props.register("lastName", { required: true, pattern: /^([A-Za-z]+\s*){1,}$/i })}
           />
           <div className="row">
             <div className="col-12 col-lg-6">

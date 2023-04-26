@@ -9,10 +9,9 @@ import LoadingScreen from "../../utils/loadingScreen";
 // Page Components
 import UserInfo from "./components/userInfo";
 import EventInfo from "./components/eventInfo";
-import StageButtons from "./components/stageButtons";
-import Payments from "../payment/payments";
 import { useForm } from "react-hook-form";
 import ProgressBar from "./components/progressBar";
+import ConfirmationPayment from "./components/confirmationPayment";
 
 const dayjs = require("dayjs");
 
@@ -116,6 +115,26 @@ const Registration = () => {
     fetchUser();
   }, []);
 
+  useEffect(() => {
+    setIsLoading(true);
+    if (user) {
+      setValue("firstName", user.user_first_name);
+      setValue("lastName", user.user_last_name);
+      setValue("email", user.user_email);
+      setValue("cpf", user.user_cpf);
+      setValue("phone", user.user_phone);
+      setValue("gender", user.user_gender);
+      setValue("birthDate", dayjs(user.user_birth_date).format("YYYY-MM-DD"));
+      setValue("cep", user.user_cep);
+      setValue("state", user.user_state);
+      setValue("city", user.user_city);
+      setValue("address", user.user_address);
+      setValue("number", user.user_number);
+      setValue("apartment", user.user_apartment);
+    }
+    setIsLoading(false);
+  }, [user]);
+
   if (isLoading) {
     return <LoadingScreen />;
   }
@@ -137,6 +156,8 @@ const Registration = () => {
         );
       case 2:
         return <EventInfo event={event} user={user} watch={watch} register={register} />;
+      case 3:
+        return <ConfirmationPayment event={event} user={user} watch={watch} register={register} />;
       default:
         <UserInfo
           user={user}
@@ -158,16 +179,35 @@ const Registration = () => {
           Inscrição - <br className="d-block d-lg-none" />
           {event?.event_name}
         </h1>
-        <ProgressBar stage={stage} setStage={setStage} />
-        <form onSubmit={handleSubmit(onSubmit)} className="pb-5">
+        <hr />
+        <form onSubmit={handleSubmit(onSubmit)}>
           <StepPanel />
-          <button className="btn btn-success">Finalizar</button>
         </form>
-        <StageButtons stage={stage} setStage={setStage} />
       </div>
-      <div className="text-white shadow-lg" style={{ position: "fixed", height: "80px", bottom: "0", width: "100%", backgroundColor: "#00a859" }}>
-        {event?.categories.filter((category) => category.category_id === watch("category"))[0]?.category_price}
-      </div>
+      {
+        <div
+          className="text-white shadow-lg sticky-bottom d-flex flex-column"
+          style={{ height: "120px", bottom: "0", width: "100%", backgroundColor: "#00a859" }}
+        >
+          <ProgressBar stage={stage} setStage={setStage} watch={watch} />
+          {/* <div
+            className="text-white shadow-lg d-flex justify-content-center align-items-center sticky-bottom"
+            style={{ height: "80px", bottom: "0", width: "100%", backgroundColor: "#00a859" }}
+          >
+            <h1>
+              Valor:{" "}
+              {event?.categories.filter((category) => category.category_id === watch("category"))[0]?.category_price
+                ? `R$ ${event?.categories.filter((category) => category.category_id === watch("category"))[0]?.category_price}`
+                : "Gratuito"}
+            </h1>
+          </div> */}
+          <div className="d-flex justify-content-end">
+            <span id="accessibilityWidget" className="btn text-white btn-link mt-3" tabIndex="0">
+              Acessibilidade
+            </span>
+          </div>
+        </div>
+      }
     </Fragment>
   );
 };

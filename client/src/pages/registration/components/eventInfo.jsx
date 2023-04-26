@@ -4,8 +4,12 @@ const EventInfo = (props) => {
   return (
     <Fragment>
       <div className="container">
+        <p>
+          Selecione a sua categoria e o tamanho da camiseta do kit. Lembrando que você pode apenas se inscrever nas categorias disponíveis para a sua
+          idade.
+        </p>
         <div className="row align-items-start mb-3">
-          <div className="col-12 col-lg-6">
+          <div className="col-12 col-lg-6 mb-3 mb-lg-0">
             <label htmlFor="registrationCategory">Categoria</label>
             <select
               type="text"
@@ -19,13 +23,21 @@ const EventInfo = (props) => {
                 Selecione a Categoria
               </option>
               {props.event?.categories?.map((category) => (
-                <option value={category.category_id} key={category.category_id} disabled={Boolean(category.category_name === "Selecione")}>
+                <option value={category.category_id} key={category.category_id}>
                   {category.category_name}
                 </option>
               ))}
             </select>
             <label htmlFor="registrationShirt">Tamanho da Camiseta</label>
-            <select type="text" id="registrationShirt" name="shirt" defaultValue={""} className="form-select">
+
+            <select
+              type="text"
+              id="registrationShirt"
+              name="shirt"
+              defaultValue={""}
+              className="form-select"
+              {...props.register("registrationShirt", { required: true })}
+            >
               <option value="" disabled={true}>
                 Selecione o Tamanho
               </option>

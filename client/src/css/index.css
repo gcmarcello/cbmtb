@@ -255,6 +255,11 @@ input[type="number"] {
 }
 
 @media (min-width: 768px) {
+  .sticky-bottom {
+    position: fixed;
+    bottom: 0;
+  }
+
   .userbar {
     background-size: cover;
     background-repeat: no-repeat;

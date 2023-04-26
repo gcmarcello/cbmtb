@@ -9,6 +9,7 @@ dayjs.extend(isBetween);
 async function create_registration(req, res) {
   try {
     const { id } = req.params;
+    console.log(req.body);
 
     /* const userId = req.userId;
     const { categoryId, registrationShirt } = req.body;
