@@ -8,7 +8,11 @@ const Home = () => {
     <Fragment>
       <div className="d-flex flex-column align-items-center justify-content-center vh-100 hero">
         <a href="#hero-anchor">
-          <img src={_config.images.secondaryLogo} alt="" className="img-fluid" />
+          <img
+            src={_config.images.secondaryLogo}
+            alt=""
+            className="img-fluid"
+          />
         </a>
       </div>
       <LatestNews />

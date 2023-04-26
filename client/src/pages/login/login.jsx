@@ -26,7 +26,9 @@ const Login = (props) => {
         localStorage.setItem("token", parseData.token);
         props.setUserName(parseData.givenName);
         props.setUserAuthentication(true);
-        parseData.role === "admin" ? props.setUserAdmin(true) : props.setUserAdmin(false);
+        parseData.role === "admin"
+          ? props.setUserAdmin(true)
+          : props.setUserAdmin(false);
       } else {
         setError("root.serverError", {
           type: "server",
@@ -75,7 +77,9 @@ const Login = (props) => {
                 <input
                   id="password"
                   type={showPassword ? "text" : "password"}
-                  className={`form-control ${errors.password ? "is-invalid" : ""}`}
+                  className={`form-control ${
+                    errors.password ? "is-invalid" : ""
+                  }`}
                   {...register("password", { required: true })}
                   aria-invalid={errors.password ? "true" : "false"}
                 />
@@ -88,12 +92,17 @@ const Login = (props) => {
                     setShowPassword(!showPassword);
                   }}
                 >
-                  <i className={`bi bi-eye${showPassword ? "-slash-" : "-"}fill`}></i>
+                  <i
+                    className={`bi bi-eye${showPassword ? "-slash-" : "-"}fill`}
+                  ></i>
                 </button>
               </div>
               <hr className="d-none d-lg-block" />
 
-              <button className="btn btn-success mt-auto form-control" onClick={handleSubmit(onSubmit)}>
+              <button
+                className="btn btn-success mt-3 mt-lg-auto form-control"
+                onClick={handleSubmit(onSubmit)}
+              >
                 Login
               </button>
             </form>
@@ -103,7 +112,8 @@ const Login = (props) => {
 
             {errors.root?.serverError.type && (
               <div className="alert alert-danger mt-3" role="alert">
-                <i className="bi bi-exclamation-triangle-fill me-2"></i> {errors.root.serverError.message}
+                <i className="bi bi-exclamation-triangle-fill me-2"></i>{" "}
+                {errors.root.serverError.message}
               </div>
             )}
             {/* {(errors.password || errors.cpf) && (
@@ -118,8 +128,14 @@ const Login = (props) => {
           <div className="col-10 col-lg-5">
             <hr className="d-block d-lg-none" />
             <div className="d-flex flex-column justify-content-start justify-content-lg-center align-items-center h-100">
-              <p className="text-justify">Ainda não tem cadastro? Clique no botão abaixo!</p>
-              <a href="/cadastro" role={"button"} className="btn btn-success form-control">
+              <p className="text-justify">
+                Ainda não tem cadastro? Clique no botão abaixo!
+              </p>
+              <a
+                href="/cadastro"
+                role={"button"}
+                className="btn btn-success form-control"
+              >
                 Cadastrar-se
               </a>
             </div>

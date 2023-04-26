@@ -9,7 +9,6 @@ const PrivateRoute = (props) => {
 
   if (window.location.pathname.split("/")[1] === "painel") {
     isPanel = true;
-    loginComponent = true;
   }
 
   return (
@@ -24,7 +23,7 @@ const PrivateRoute = (props) => {
         ) : (
           props.children
         )
-      ) : loginComponent ? (
+      ) : (
         <Login
           userAuthentication={props.userAuthentication}
           setUserAuthentication={props.setUserAuthentication}
@@ -33,8 +32,6 @@ const PrivateRoute = (props) => {
           setUserName={props.setUserName}
           userName={props.userName}
         />
-      ) : (
-        <Navigate to="/login" replace />
       )}
     </Fragment>
   );
