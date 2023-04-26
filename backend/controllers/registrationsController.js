@@ -9,7 +9,6 @@ dayjs.extend(isBetween);
 async function create_registration(req, res) {
   try {
     const { id } = req.params;
-    console.log(req.body);
     const userId = req.userId;
     const { category, registrationShirt } = req.body;
     const checkForRegistration = await pool.query(
@@ -28,7 +27,6 @@ async function create_registration(req, res) {
       "SELECT category_price FROM event_categories WHERE category_id = $1",
       [category]
     );
-    console.log(eventCost.rows);
     const paymentStatus =
       eventCost.rows[0].category_price > 0 ? "pending" : "completed";
 
