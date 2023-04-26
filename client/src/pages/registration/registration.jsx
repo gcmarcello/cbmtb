@@ -75,10 +75,13 @@ const Registration = () => {
     myHeaders.append("Content-Type", "application/json");
     myHeaders.append("token", localStorage.token);
     try {
-      const response = await fetch(`/api/registrations/${id}/checkreg/${coupon ? coupon : ""}`, {
-        method: "GET",
-        headers: myHeaders,
-      });
+      const response = await fetch(
+        `/api/registrations/${id}/checkreg/${coupon ? coupon : ""}`,
+        {
+          method: "GET",
+          headers: myHeaders,
+        }
+      );
       const parseResponse = await response.json();
       if (parseResponse.type === "error") {
         toast.error(parseResponse.message, { theme: "colored" });
@@ -94,16 +97,21 @@ const Registration = () => {
     myHeaders.append("Content-Type", "application/json");
     myHeaders.append("token", localStorage.token);
     try {
-      const response = await fetch(`/api/registrations/${id}/${coupon ? coupon : ""}`, {
-        method: "POST",
-        headers: myHeaders,
-        body: JSON.stringify(data),
-      });
+      const response = await fetch(
+        `/api/registrations/${id}/${coupon ? coupon : ""}`,
+        {
+          method: "POST",
+          headers: myHeaders,
+          body: JSON.stringify(data),
+        }
+      );
       const parseResponse = await response.json();
       if (parseResponse.type === "error") {
-        toast.error(parseResponse.message, { theme: "colored" });
         navigate(`/eventos/${id}`);
+      } else {
+        navigate("/usuario");
       }
+      toast[parseResponse.type](parseResponse.message, { theme: "colored" });
     } catch (error) {
       console.log(error);
     }
@@ -155,9 +163,23 @@ const Registration = () => {
           />
         );
       case 2:
-        return <EventInfo event={event} user={user} watch={watch} register={register} />;
+        return (
+          <EventInfo
+            event={event}
+            user={user}
+            watch={watch}
+            register={register}
+          />
+        );
       case 3:
-        return <ConfirmationPayment event={event} user={user} watch={watch} register={register} />;
+        return (
+          <ConfirmationPayment
+            event={event}
+            user={user}
+            watch={watch}
+            register={register}
+          />
+        );
       default:
         <UserInfo
           user={user}
@@ -187,7 +209,12 @@ const Registration = () => {
       {
         <div
           className="text-white shadow-lg sticky-bottom d-flex flex-column"
-          style={{ height: "120px", bottom: "0", width: "100%", backgroundColor: "#00a859" }}
+          style={{
+            height: "100px",
+            bottom: "0",
+            width: "100%",
+            backgroundColor: "#00a859",
+          }}
         >
           <ProgressBar stage={stage} setStage={setStage} watch={watch} />
           {/* <div
@@ -202,7 +229,11 @@ const Registration = () => {
             </h1>
           </div> */}
           <div className="d-flex justify-content-end">
-            <span id="accessibilityWidget" className="btn text-white btn-link mt-3" tabIndex="0">
+            <span
+              id="accessibilityWidget"
+              className="btn text-white btn-link mt-3"
+              tabIndex="0"
+            >
               Acessibilidade
             </span>
           </div>

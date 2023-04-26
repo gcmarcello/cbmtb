@@ -10,18 +10,27 @@ async function create_registration(req, res) {
   try {
     const { id } = req.params;
     console.log(req.body);
-
-    /* const userId = req.userId;
-    const { categoryId, registrationShirt } = req.body;
-    const checkForRegistration = await pool.query("SELECT * FROM registrations WHERE event_id = $1 AND user_id = $2", [id, userId]);
+    const userId = req.userId;
+    const { category, registrationShirt } = req.body;
+    const checkForRegistration = await pool.query(
+      "SELECT * FROM registrations WHERE event_id = $1 AND user_id = $2",
+      [id, userId]
+    );
 
     if (checkForRegistration.rows[0]) {
-      res.status(200).json({ message: "Você já se inscreveu neste evento!", type: "error" });
+      res
+        .status(200)
+        .json({ message: "Você já se inscreveu neste evento!", type: "error" });
       return;
     }
 
-    const eventCost = await pool.query("SELECT category_price FROM event_categories WHERE category_id = $1", [categoryId]);
-    const paymentStatus = eventCost.rows[0].category_price > 0 ? "pending" : "completed";
+    const eventCost = await pool.query(
+      "SELECT category_price FROM event_categories WHERE category_id = $1",
+      [category]
+    );
+    console.log(eventCost.rows);
+    const paymentStatus =
+      eventCost.rows[0].category_price > 0 ? "pending" : "completed";
 
     if (eventCost.rows[0].category_price) {
       const txid = crypto.randomUUID().replace(/-/g, "");
@@ -37,9 +46,11 @@ async function create_registration(req, res) {
       [
         id,
         userId,
-        categoryId,
+        category,
         registrationShirt,
-        eventCost.rows[0].category_price ? newPayment?.rows[0].payment_id : null,
+        eventCost.rows[0].category_price
+          ? newPayment?.rows[0].payment_id
+          : null,
         paymentStatus,
         new Date(),
         req.couponId || null,
@@ -47,9 +58,18 @@ async function create_registration(req, res) {
     );
 
     if (paymentStatus === "completed") {
-      const userInfo = await pool.query("SELECT user_email, user_first_name FROM users WHERE user_id = $1", [userId]);
-      const eventInfo = await pool.query("SELECT * FROM events WHERE event_id = $1", [id]);
-      const categoryInfo = await pool.query("SELECT * FROM event_categories WHERE category_id = $1", [categoryId]);
+      const userInfo = await pool.query(
+        "SELECT user_email, user_first_name FROM users WHERE user_id = $1",
+        [userId]
+      );
+      const eventInfo = await pool.query(
+        "SELECT * FROM events WHERE event_id = $1",
+        [id]
+      );
+      const categoryInfo = await pool.query(
+        "SELECT * FROM event_categories WHERE category_id = $1",
+        [category]
+      );
       const sgEmail = new Email([userInfo.rows[0].user_email]);
       sgEmail.sendRegistrationEmail(
         userInfo.rows[0].user_first_name,
@@ -61,7 +81,7 @@ async function create_registration(req, res) {
         newRegistrations.rows[0].registration_id,
         eventInfo.rows[0].event_link
       );
-    }*/
+    }
 
     res.status(200).json({
       message: "Inscrição realizada com sucesso.",
@@ -92,17 +112,25 @@ async function read_user_registrations(req, res) {
 
 async function update_registration(req, res) {
   try {
-    const { registrationShirt, registrationCategory, registrationId } = req.body;
+    const { registrationShirt, registrationCategory, registrationId } =
+      req.body;
 
     const updateRegistration = await pool.query(
       "UPDATE registrations SET registration_shirt = $1, category_id = $2 WHERE registration_id = $3 RETURNING *",
       [registrationShirt, registrationCategory, registrationId]
     );
 
-    res.status(200).json({ message: "Inscrição atualizada com sucesso!", type: "success", data: updateRegistration.rows[0] });
+    res.status(200).json({
+      message: "Inscrição atualizada com sucesso!",
+      type: "success",
+      data: updateRegistration.rows[0],
+    });
   } catch (err) {
     console.log(err.message);
-    res.status(400).json({ message: `Erro ao alterar inscrição. ${err.message}`, type: "success" });
+    res.status(400).json({
+      message: `Erro ao alterar inscrição. ${err.message}`,
+      type: "success",
+    });
   }
 }
 
@@ -111,16 +139,30 @@ async function delete_registration(req, res) {
     const { eventId, registrationId } = req.params;
     const userId = req.userId;
 
-    const deleteRegistration = await pool.query("DELETE FROM registrations WHERE registration_id = $1 AND user_id = $2 RETURNING *", [
-      registrationId,
-      userId,
-    ]);
+    const deleteRegistration = await pool.query(
+      "DELETE FROM registrations WHERE registration_id = $1 AND user_id = $2 RETURNING *",
+      [registrationId, userId]
+    );
 
-    const userInfo = (await pool.query("SELECT user_first_name, user_email FROM users WHERE user_id = $1", [userId])).rows[0];
-    const eventInfo = (await pool.query("SELECT event_name, event_link FROM events WHERE event_id = $1", [eventId])).rows[0];
+    const userInfo = (
+      await pool.query(
+        "SELECT user_first_name, user_email FROM users WHERE user_id = $1",
+        [userId]
+      )
+    ).rows[0];
+    const eventInfo = (
+      await pool.query(
+        "SELECT event_name, event_link FROM events WHERE event_id = $1",
+        [eventId]
+      )
+    ).rows[0];
 
     const sgEmail = new Email([userInfo.user_email]);
-    sgEmail.sendRegistrationCancellationEmail(userInfo.user_first_name, eventInfo.event_name, eventInfo.event_link);
+    sgEmail.sendRegistrationCancellationEmail(
+      userInfo.user_first_name,
+      eventInfo.event_name,
+      eventInfo.event_link
+    );
 
     res.status(200).json({
       message: "Inscrição cancelada com sucesso.",
@@ -139,14 +181,30 @@ async function delete_registration_admin(req, res) {
   try {
     const { eventId, registrationId } = req.params;
 
-    const deleteRegistration = await pool.query("DELETE FROM registrations WHERE registration_id = $1 RETURNING *", [registrationId]);
+    const deleteRegistration = await pool.query(
+      "DELETE FROM registrations WHERE registration_id = $1 RETURNING *",
+      [registrationId]
+    );
 
-    const userInfo = (await pool.query("SELECT user_first_name, user_email FROM users WHERE user_id = $1", [deleteRegistration.rows[0].user_id]))
-      .rows[0];
-    const eventInfo = (await pool.query("SELECT event_name, event_link FROM events WHERE event_id = $1", [eventId])).rows[0];
+    const userInfo = (
+      await pool.query(
+        "SELECT user_first_name, user_email FROM users WHERE user_id = $1",
+        [deleteRegistration.rows[0].user_id]
+      )
+    ).rows[0];
+    const eventInfo = (
+      await pool.query(
+        "SELECT event_name, event_link FROM events WHERE event_id = $1",
+        [eventId]
+      )
+    ).rows[0];
 
     const sgEmail = new Email([userInfo.user_email]);
-    sgEmail.sendRegistrationCancellationEmail(userInfo.user_first_name, eventInfo.event_name, eventInfo.event_link);
+    sgEmail.sendRegistrationCancellationEmail(
+      userInfo.user_first_name,
+      eventInfo.event_name,
+      eventInfo.event_link
+    );
 
     res.status(200).json({
       message: "Inscrição cancelada com sucesso.",
@@ -165,14 +223,22 @@ async function check_registration(req, res) {
   try {
     let { id, coupon } = req.params;
     const userId = req.userId;
-    const typeOfLink = /^\b[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}\b$/.test(id);
+    const typeOfLink =
+      /^\b[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}\b$/.test(
+        id
+      );
 
     if (!typeOfLink) {
-      const response = await pool.query("SELECT event_id FROM events WHERE event_link = $1", [id]);
+      const response = await pool.query(
+        "SELECT event_id FROM events WHERE event_link = $1",
+        [id]
+      );
       if (response.rows[0]) {
         id = await response.rows[0].event_id;
       } else {
-        return res.status(404).json({ message: "Evento não existe", type: "error" });
+        return res
+          .status(404)
+          .json({ message: "Evento não existe", type: "error" });
       }
     }
 
@@ -186,8 +252,14 @@ async function check_registration(req, res) {
     let userAge;
 
     if (req.userId) {
-      checkForRegistration = await pool.query("SELECT * FROM registrations WHERE event_id = $1 AND user_id = $2", [id, userId]);
-      checkForUser = await pool.query("SELECT * from users WHERE user_id = $1", [userId]);
+      checkForRegistration = await pool.query(
+        "SELECT * FROM registrations WHERE event_id = $1 AND user_id = $2",
+        [id, userId]
+      );
+      checkForUser = await pool.query(
+        "SELECT * from users WHERE user_id = $1",
+        [userId]
+      );
       userAge = dayjs().diff(checkForUser.rows[0].user_birth_date, "years");
 
       // Checking if user is already registered
@@ -201,22 +273,32 @@ async function check_registration(req, res) {
 
       if (!listOfCategories.rows[0]) {
         return res.status(200).json({
-          message: "Esse evento não tem nenhuma categoria disponível para você.",
+          message:
+            "Esse evento não tem nenhuma categoria disponível para você.",
           type: "error",
         });
       }
 
       if (coupon) {
-        const validateCoupon = await pool.query("SELECT * FROM event_coupons WHERE event_id = $1 AND coupon_link = $2", [id, coupon]);
+        const validateCoupon = await pool.query(
+          "SELECT * FROM event_coupons WHERE event_id = $1 AND coupon_link = $2",
+          [id, coupon]
+        );
         if (!validateCoupon.rows[0]) {
-          return res.status(200).json({ message: "Página não encontrada.", type: "error" });
+          return res
+            .status(200)
+            .json({ message: "Página não encontrada.", type: "error" });
         }
         const verifyAvailability = await pool.query(
           "SELECT * FROM registrations AS r LEFT JOIN event_coupons AS ec ON r.coupon_id = ec.coupon_id WHERE r.event_id = $1 AND ec.coupon_link = $2",
           [id, coupon]
         );
-        if (verifyAvailability.rows.length >= validateCoupon.rows[0].coupon_uses) {
-          return res.status(200).json({ message: "Cupom Esgotado.", type: "error" });
+        if (
+          verifyAvailability.rows.length >= validateCoupon.rows[0].coupon_uses
+        ) {
+          return res
+            .status(200)
+            .json({ message: "Cupom Esgotado.", type: "error" });
         }
         return res.status(200).json({
           message: "Cupom Disponível!",
@@ -225,25 +307,41 @@ async function check_registration(req, res) {
       }
     }
 
-    const registrationStarts = dayjs(checkForAvailability.rows[0].event_registrations_start);
-    const registrationEnds = dayjs(checkForAvailability.rows[0].event_registrations_end);
-    const currentAttendees = checkForAvailability.rows[0].event_current_attendees;
+    const registrationStarts = dayjs(
+      checkForAvailability.rows[0].event_registrations_start
+    );
+    const registrationEnds = dayjs(
+      checkForAvailability.rows[0].event_registrations_end
+    );
+    const currentAttendees =
+      checkForAvailability.rows[0].event_current_attendees;
     const maxAttendees = checkForAvailability.rows[0].event_max_attendees;
-    const periodVerification = dayjs().isBetween(registrationStarts, registrationEnds, null, []);
+    const periodVerification = dayjs().isBetween(
+      registrationStarts,
+      registrationEnds,
+      null,
+      []
+    );
 
     // Checking for manual registration status
     if (!checkForAvailability.rows[0].event_status) {
-      return res.status(200).json({ message: "Inscrições Indisponíveis.", type: "error" });
+      return res
+        .status(200)
+        .json({ message: "Inscrições Indisponíveis.", type: "error" });
     }
 
     // Checking for number of registrations
     if (currentAttendees >= maxAttendees) {
-      return res.status(200).json({ message: "Inscrições Esgotadas.", type: "error" });
+      return res
+        .status(200)
+        .json({ message: "Inscrições Esgotadas.", type: "error" });
     }
 
     // Checking for registration period
     if (!periodVerification) {
-      return res.status(200).json({ message: "Inscrições Encerradas.", type: "error" });
+      return res
+        .status(200)
+        .json({ message: "Inscrições Encerradas.", type: "error" });
     }
 
     return res.status(200).json({
