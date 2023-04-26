@@ -228,15 +228,6 @@ const Registration = () => {
                 : "Gratuito"}
             </h1>
           </div> */}
-          <div className="d-flex justify-content-end">
-            <span
-              id="accessibilityWidget"
-              className="btn text-white btn-link mt-3"
-              tabIndex="0"
-            >
-              Acessibilidade
-            </span>
-          </div>
         </div>
       }
     </Fragment>
