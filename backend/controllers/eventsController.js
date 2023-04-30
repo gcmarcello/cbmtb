@@ -322,13 +322,27 @@ async function deleteEvent(req, res) {
   }
 }
 
+async function listFlagships(req, res) {
+  try {
+    const flagship = await pool.query("SELECT * FROM flagships");
+    res.status(200).json({ data: flagship.rows, type: "success" });
+  } catch (err) {
+    console.log(err.message);
+    res.status(400).json({ message: "Erro ao encontrar os eventos.", type: "error" });
+  }
+}
+
 async function fetchFlagship(req, res) {
   try {
-    const { link } = req.params;
-    const flagship = await pool.query("SELECT * FROM flagships WHERE flagship_link = $1", [link]);
+    const { id } = req.params;
+    const typeOfLink = /^\b[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}\b$/.test(id);
+    const flagship = typeOfLink
+      ? await pool.query("SELECT * FROM flagships WHERE flagship_id = $1", [id])
+      : await pool.query("SELECT * FROM flagships WHERE flagship_link = $1", [id]);
     if (!flagship.rows.length) {
       return res.status(404).json({ message: "Erro ao encontrar o evento", type: "error" });
     }
+
     res.status(200).json({ data: flagship.rows[0], type: "success" });
   } catch (err) {
     console.log(err.message);
@@ -346,5 +360,6 @@ module.exports = {
   deleteEvent,
   retrieveEventInformation,
   listNextEvents,
+  listFlagships,
   fetchFlagship,
 };

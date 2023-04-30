@@ -16,7 +16,7 @@ const FlagshipHome = () => {
     const fetchFlagship = async (e) => {
       try {
         setIsLoading(true);
-        const response = await fetch(`/api/events/flagship/${flagshipLink}`, {
+        const response = await fetch(`/api/events/flagships/${flagshipLink}`, {
           method: "GET",
         });
         const parseResponse = await response.json();

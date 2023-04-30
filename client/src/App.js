@@ -46,6 +46,8 @@ import TicketPanel from "./pages/forms/ticketPanel";
 import FlagshipHome from "./pages/flagships/flagshipHome";
 import PedalEdition from "./pages/event/eventRecord";
 import UserWay from "./components/userWay";
+import ListFlagships from "./pages/admin/components/flagships/listFlagships";
+import UpdateFlagship from "./pages/admin/components/flagships/updateFlagship";
 
 function App() {
   const [userAuthentication, setUserAuthentication] = useState(false);
@@ -229,6 +231,24 @@ function App() {
           />
           <Route
             exact
+            path="/painel/flagships"
+            element={
+              <PrivateRoute {...loginProps}>
+                <ListFlagships />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            exact
+            path="/painel/flagships/:id"
+            element={
+              <PrivateRoute {...loginProps}>
+                <UpdateFlagship />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            exact
             path="/usuario/:panel?"
             element={
               <PrivateRoute userAuthentication={userAuthentication}>
@@ -253,7 +273,7 @@ function App() {
           <Route exact path="/eventos/" element={<AllEvents />} />
           {_config.pages.federacoes && <Route exact path="/federacoes/" element={<Federations />} />}
           <Route exact path="/imprensa/" element={<Imprensa />} />
-          <Route exact path="/eventos/:eventLink/fotos" element={<PedalEdition />} />
+          <Route exact path="/eventos/:eventLink/midias" element={<PedalEdition />} />
           <Route exact path="/noticias/" element={<AllNews />} />
           <Route exact path="/noticias/:title" element={<NewsPage />} />
           <Route exact path="/senha/:requestId" element={<PasswordReset {...loginProps} />} />

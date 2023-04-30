@@ -6,6 +6,10 @@ var upload = multer({ dest: "uploads/" });
 
 const eventsController = require("../controllers/eventsController");
 
+// GET List Flagship Events
+router.get("/flagships", eventsController.listFlagships);
+// GET Flagship Event Info
+router.get("/flagships/:id", eventsController.fetchFlagship);
 // List Events (ADMIN)
 router.get("/", adminAuthorization, eventsController.listEventsAdmin);
 // List Next Events (PUBLIC)
@@ -20,8 +24,6 @@ router.post("/", [adminAuthorization, upload.single("image")], eventsController.
 router.put("/toggle/:id/:boolean", adminAuthorization, eventsController.toggleRegistrations);
 // GET Info to Update Event (ADMIN)
 router.get("/update/:id", adminAuthorization, eventsController.retrieveEventInformation);
-// GET Info to Update Event (ADMIN)
-router.get("/flagship/:link", eventsController.fetchFlagship);
 // Update Event (ADMIN)
 router.put("/:id", [adminAuthorization, upload.single("image")], eventsController.updateEvent);
 // Delete Event (ADMIN)
