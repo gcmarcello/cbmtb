@@ -43,7 +43,7 @@ import AnswerTicket from "./pages/admin/components/tickets/answerTicket";
 import ListUsers from "./pages/admin/components/users/listUsers";
 import _config from "./_config";
 import TicketPanel from "./pages/forms/ticketPanel";
-import PedalHome from "./pages/pedal/pedalHome";
+import FlagshipHome from "./pages/flagships/flagshipHome";
 import PedalEdition from "./pages/event/eventRecord";
 import UserWay from "./components/userWay";
 
@@ -77,9 +77,7 @@ function App() {
 
       const parseData = await res.json();
       setUserName(parseData.givenName);
-      parseData.authentication === true
-        ? setUserAuthentication(true)
-        : setUserAuthentication(false);
+      parseData.authentication === true ? setUserAuthentication(true) : setUserAuthentication(false);
       parseData.role === "admin" ? setUserAdmin(true) : setUserAdmin(false);
       setLoading(false);
     } catch (err) {
@@ -111,42 +109,16 @@ function App() {
         theme="light"
       />
       {!(page === "painel") ? (
-        <UserNavigation
-          userAuthentication={userAuthentication}
-          userName={userName}
-          userAdmin={userAdmin}
-          setUserAdmin={setUserAdmin}
-        />
+        <UserNavigation userAuthentication={userAuthentication} userName={userName} userAdmin={userAdmin} setUserAdmin={setUserAdmin} />
       ) : (
         userAuthentication && (
-          <AdminNavigation
-            userAuthentication={userAuthentication}
-            userName={userName}
-            userAdmin={userAdmin}
-            setUserAdmin={setUserAdmin}
-          />
+          <AdminNavigation userAuthentication={userAuthentication} userName={userName} userAdmin={userAdmin} setUserAdmin={setUserAdmin} />
         )
       )}
       <main>
         <Routes>
-          <Route
-            exact
-            path="/cadastro"
-            element={
-              !userAuthentication ? <Register /> : <Navigate to="/usuario" />
-            }
-          />
-          <Route
-            exact
-            path="/login"
-            element={
-              !userAuthentication ? (
-                <Login {...loginProps} />
-              ) : (
-                <Navigate to="/usuario" />
-              )
-            }
-          />
+          <Route exact path="/cadastro" element={!userAuthentication ? <Register /> : <Navigate to="/usuario" />} />
+          <Route exact path="/login" element={!userAuthentication ? <Login {...loginProps} /> : <Navigate to="/usuario" />} />
           <Route
             exact
             path="/painel/"
@@ -260,11 +232,7 @@ function App() {
             path="/usuario/:panel?"
             element={
               <PrivateRoute userAuthentication={userAuthentication}>
-                <UserPanel
-                  userAuthentication={userAuthentication}
-                  setUserAuthentication={setUserAuthentication}
-                  userName={userName}
-                />
+                <UserPanel userAuthentication={userAuthentication} setUserAuthentication={setUserAuthentication} userName={userName} />
               </PrivateRoute>
             }
           />
@@ -278,43 +246,24 @@ function App() {
             }
           />
           <Route exact path="/" element={<Home />} />
+          <Route exact path="/:flagshipLink/" element={<FlagshipHome />} />
           <Route exact path="/pagamento/:linkId" element={<Payments />} />
-          <Route
-            exact
-            path="/confirmacao/:id"
-            element={<ConfirmationPage {...loginProps} />}
-          />
+          <Route exact path="/confirmacao/:id" element={<ConfirmationPage {...loginProps} />} />
           <Route exact path="/eventos/:id" element={<EventPage />} />
           <Route exact path="/eventos/" element={<AllEvents />} />
-          {_config.pages.federacoes && (
-            <Route exact path="/federacoes/" element={<Federations />} />
-          )}
+          {_config.pages.federacoes && <Route exact path="/federacoes/" element={<Federations />} />}
           <Route exact path="/imprensa/" element={<Imprensa />} />
-          <Route exact path="/pedalparatodos/" element={<PedalHome />} />
-          <Route
-            exact
-            path="/eventos/:eventLink/fotos"
-            element={<PedalEdition />}
-          />
+          <Route exact path="/eventos/:eventLink/fotos" element={<PedalEdition />} />
           <Route exact path="/noticias/" element={<AllNews />} />
           <Route exact path="/noticias/:title" element={<NewsPage />} />
-          <Route
-            exact
-            path="/senha/:requestId"
-            element={<PasswordReset {...loginProps} />}
-          />
+          <Route exact path="/senha/:requestId" element={<PasswordReset {...loginProps} />} />
           <Route exact path="/ouvidoria/" element={<Ouvidoria />} />
           <Route exact path="/ouvidoria/:id" element={<TicketPanel />} />
           <Route exact path="/transparencia/" element={<Documents />} />
           <Route path="*" element={<Page404 />} />
         </Routes>
       </main>
-      {!(
-        page === "cadastro" ||
-        page === "painel" ||
-        page === "senha" ||
-        page === "inscricao"
-      ) && (
+      {!(page === "cadastro" || page === "painel" || page === "senha" || page === "inscricao") && (
         <Footer userAuthentication={userAuthentication} userName={userName} />
       )}
     </Fragment>

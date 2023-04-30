@@ -8,7 +8,7 @@ const NextEvents = ({ event }) => {
 
   const getEvents = async (e) => {
     try {
-      const response = await fetch(`/api/events/public/${event ? event : ""}`, {
+      const response = await fetch(`/api/events/next`, {
         method: "GET",
       });
       const parseResponse = await response.json();

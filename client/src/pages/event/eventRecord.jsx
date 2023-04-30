@@ -29,7 +29,7 @@ const EventRecords = () => {
       });
       const parseResponse = await response.json();
       if (parseResponse.type === "error") {
-        navigate("/404");
+        navigate("/pagina/404");
         return;
       }
       setEvent(parseResponse.event);

@@ -128,11 +128,6 @@ code {
   background-position: 50% 10%;
 }
 
-.pedal {
-  background-image: var(--pedal-primary-bg) !important;
-  background-position: 50% 100%;
-}
-
 footer {
   background-color: var(--secondary-color);
 }

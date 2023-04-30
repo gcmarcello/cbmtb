@@ -217,6 +217,14 @@ CREATE TABLE event_records(
   FOREIGN KEY(event_id) REFERENCES events(event_id)
 )
 
+CREATE TABLE flagships(
+	flagship_id UUID DEFAULT UUID_generate_v4(),
+	flagship_name VARCHAR(255) NOT NULL,
+	flagship_link VARCHAR(255) NOT NULL,
+	flagship_logo VARCHAR(255) NOT NULL,
+	flagship_bg VARCHAR(255) NOT NULL,
+  PRIMARY KEY(flagship_id)
+)
 
 
 

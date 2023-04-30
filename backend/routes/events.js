@@ -8,6 +8,8 @@ const eventsController = require("../controllers/eventsController");
 
 // List Events (ADMIN)
 router.get("/", adminAuthorization, eventsController.listEventsAdmin);
+// List Next Events (PUBLIC)
+router.get("/next", eventsController.listNextEvents);
 // List Events (PUBLIC)
 router.get("/public/:event?", eventsController.listEventsPublic);
 // View Event (PUBLIC)
@@ -18,10 +20,8 @@ router.post("/", [adminAuthorization, upload.single("image")], eventsController.
 router.put("/toggle/:id/:boolean", adminAuthorization, eventsController.toggleRegistrations);
 // GET Info to Update Event (ADMIN)
 router.get("/update/:id", adminAuthorization, eventsController.retrieveEventInformation);
-// GET Event Record
-router.get("/records/event/:eventLink/:type?", eventsController.listEventRecords);
-// GET Event Record
-router.get("/records/:type", eventsController.listRecords);
+// GET Info to Update Event (ADMIN)
+router.get("/flagship/:link", eventsController.fetchFlagship);
 // Update Event (ADMIN)
 router.put("/:id", [adminAuthorization, upload.single("image")], eventsController.updateEvent);
 // Delete Event (ADMIN)

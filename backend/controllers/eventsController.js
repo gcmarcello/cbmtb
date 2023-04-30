@@ -21,15 +21,32 @@ async function listEventsAdmin(req, res) {
   }
 }
 
+async function listNextEvents(req, res) {
+  let listOfEvents;
+  try {
+    listOfEvents = await pool.query("SELECT * FROM events WHERE event_status = $1 ORDER BY event_date_start DESC", [true]);
+
+    const checkForAvailability = (registrationStartDate, registrationEndDate) => {
+      const registrationStarts = dayjs(registrationStartDate);
+      const registrationEnds = dayjs(registrationEndDate);
+      return dayjs().isBetween(registrationStarts, registrationEnds, null, []);
+    };
+
+    return res.json(listOfEvents.rows.filter((event) => checkForAvailability(event.event_registrations_start, event.event_registrations_end)));
+  } catch (err) {
+    console.log(err.message);
+  }
+}
+
 async function listEventsPublic(req, res) {
   let listOfEvents;
   try {
-    const { event } = req.params;
+    const { event, home } = req.params;
 
     if (event) {
-      listOfEvents = await pool.query("SELECT * FROM events WHERE event_name LIKE $1 ORDER BY event_date_start ASC", [`%${event}%`]);
+      listOfEvents = await pool.query("SELECT * FROM events WHERE event_name LIKE $1 ORDER BY event_date_start DESC", [`%${event}%`]);
     } else {
-      listOfEvents = await pool.query("SELECT * FROM events WHERE event_status = $1 ORDER BY event_date_start ASC", [true]);
+      listOfEvents = await pool.query("SELECT * FROM events WHERE event_status = $1 ORDER BY event_date_start DESC", [true]);
     }
 
     const checkForAvailability = (registrationStartDate, registrationEndDate) => {
@@ -38,7 +55,7 @@ async function listEventsPublic(req, res) {
       return dayjs().isBetween(registrationStarts, registrationEnds, null, []);
     };
 
-    res.json(listOfEvents.rows.filter((event) => checkForAvailability(event.event_registrations_start, event.event_registrations_end)));
+    return res.json(listOfEvents.rows);
   } catch (err) {
     console.log(err.message);
   }
@@ -305,47 +322,17 @@ async function deleteEvent(req, res) {
   }
 }
 
-async function listEventRecords(req, res) {
+async function fetchFlagship(req, res) {
   try {
-    const { eventLink, type } = req.params;
-    const fetchEventBucket = await pool.query(
-      "SELECT event_name, event_link, record_bucket, e.event_id FROM events AS e LEFT JOIN event_records AS er ON e.event_id = er.event_id WHERE e.event_link = $1",
-      [eventLink]
-    );
-    const fileList = await listFilesInFolder(__config.entidade.abbreviation.toLowerCase(), `events/${fetchEventBucket.rows[0]?.record_bucket}`);
-
-    if (type === "mini") {
-      return res.status(200).json({ records: fetchEventBucket.rows[0] });
+    const { link } = req.params;
+    const flagship = await pool.query("SELECT * FROM flagships WHERE flagship_link = $1", [link]);
+    if (!flagship.rows.length) {
+      return res.status(404).json({ message: "Erro ao encontrar o evento", type: "error" });
     }
-
-    res.status(200).json({ event: fetchEventBucket.rows[0], data: fileList });
-  } catch (error) {
-    console.log(error);
-    res.status(400).json({ message: "Evento não encontrado.", type: "error" });
-  }
-}
-
-async function listRecords(req, res) {
-  try {
-    const { type } = req.params;
-
-    let fetchEvent;
-
-    if (type) {
-      fetchEvent = await pool.query(
-        "SELECT event_name, event_link, event_image, e.event_id FROM events AS e LEFT JOIN event_records AS er ON e.event_id = er.event_id WHERE e.event_name LIKE $1",
-        [`%${type}%`]
-      );
-    } else {
-      fetchEvent = await pool.query(
-        "SELECT event_name, event_link, event_image, e.event_id FROM events AS e LEFT JOIN event_records AS er ON e.event_id = er.event_id"
-      );
-    }
-
-    res.status(200).json(fetchEvent.rows);
-  } catch (error) {
-    console.log(error);
-    res.status(400).json({ message: "Evento não encontrado.", type: "error" });
+    res.status(200).json({ data: flagship.rows[0], type: "success" });
+  } catch (err) {
+    console.log(err.message);
+    res.status(400).json({ message: "Erro ao encontrar evento.", type: "error" });
   }
 }
 
@@ -358,6 +345,6 @@ module.exports = {
   updateEvent,
   deleteEvent,
   retrieveEventInformation,
-  listEventRecords,
-  listRecords,
+  listNextEvents,
+  fetchFlagship,
 };

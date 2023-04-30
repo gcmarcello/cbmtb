@@ -51,18 +51,8 @@ const EventPage = () => {
 
       const parseResponse = await response.json();
 
-      const eventRecord = await fetch(`/api/events/records/event/${id}/mini`, {
-        method: "GET",
-        headers: myHeaders,
-      });
-
-      const parseEventRecords = await eventRecord.json();
-      if (parseEventRecords.records) {
-        setRecords(parseEventRecords?.records.record_bucket);
-      }
-
       if (parseResponse.type === "error") {
-        navigate("/404");
+        navigate("/pagina/404");
         return;
       }
 
@@ -81,9 +71,7 @@ const EventPage = () => {
   }, []);
 
   useEffect(() => {
-    document.title = `${config.entidade.abbreviation} ${
-      event.event_name ? `- ${event.event_name}` : ""
-    }`;
+    document.title = `${config.entidade.abbreviation} ${event.event_name ? `- ${event.event_name}` : ""}`;
   }, [event]);
 
   if (loading === true) {
@@ -97,11 +85,7 @@ const EventPage = () => {
           <h1 className="mb-3">{event.event_name}</h1>
           <div className="row align-items-top">
             <div className="col-12 col-lg-7">
-              <img
-                src={event.event_image}
-                className="img-fluid rounded"
-                alt="Imagem do Evento"
-              />
+              <img src={event.event_image} className="img-fluid rounded" alt="Imagem do Evento" />
             </div>
 
             <div className="col-12 col-lg-5 mt-3 mt-lg-0">
@@ -110,24 +94,15 @@ const EventPage = () => {
                   <h5 className="card-title">Informações do Evento</h5>
                   <ul className="list-group">
                     <li className="list-group-item">
-                      <i className="bi bi-calendar-fill fs-4"></i>{" "}
-                      <span className="h6">Data:</span> <span></span>{" "}
-                      {dayjs(event.event_date_start).format(
-                        "DD/MM/YYYY - HH:mm"
-                      )}{" "}
-                      à{" "}
-                      {dayjs(event.event_date_end).format("DD/MM/YYYY - HH:mm")}
+                      <i className="bi bi-calendar-fill fs-4"></i> <span className="h6">Data:</span> <span></span>{" "}
+                      {dayjs(event.event_date_start).format("DD/MM/YYYY - HH:mm")} à {dayjs(event.event_date_end).format("DD/MM/YYYY - HH:mm")}
                     </li>
                     <li className="list-group-item">
-                      <i className="bi bi-geo-alt-fill fs-4"></i>{" "}
-                      <span className="h6">Local:</span> <span></span>{" "}
-                      {event.event_location}
+                      <i className="bi bi-geo-alt-fill fs-4"></i> <span className="h6">Local:</span> <span></span> {event.event_location}
                     </li>
                   </ul>
                   <div className="mt-3">
-                    <h6 className="text-center">
-                      Compartilhe nas Redes Sociais!
-                    </h6>
+                    <h6 className="text-center">Compartilhe nas Redes Sociais!</h6>
                     <div className="input-group my-3">
                       <input
                         type="text"
@@ -141,8 +116,7 @@ const EventPage = () => {
                         type="button"
                         id="button-addon1"
                         onClick={() => {
-                          const eventLink =
-                            document.getElementById("event-link");
+                          const eventLink = document.getElementById("event-link");
                           navigator.clipboard.writeText(eventLink.value);
                           toast.success("Link copiado com sucesso!", {
                             theme: "colored",
@@ -160,47 +134,31 @@ const EventPage = () => {
                         <div className="flex-fill">
                           <button
                             type="button"
-                            className={`btn ${
-                              registrationError?.type === "error"
-                                ? "btn-danger"
-                                : "btn-success"
-                            } btn-lg form-control`}
+                            className={`btn ${registrationError?.type === "error" ? "btn-danger" : "btn-success"} btn-lg form-control`}
                             disabled={registrationError}
                             onClick={() =>
-                              event.event_external
-                                ? (window.location = `https://${event.event_external}`)
-                                : navigate(`/inscricao/${event.event_id}`)
+                              event.event_external ? (window.location = `https://${event.event_external}`) : navigate(`/inscricao/${event.event_id}`)
                             }
                           >
                             {registrationError?.type === "error" ? (
                               <Fragment>
-                                <i className="bi bi-x-circle"></i>{" "}
-                                {registrationError.message}
+                                <i className="bi bi-x-circle"></i> {registrationError.message}
                               </Fragment>
                             ) : (
                               <Fragment>
-                                <i className="bi bi-check-circle"></i>{" "}
-                                Inscreva-se
+                                <i className="bi bi-check-circle"></i> Inscreva-se
                                 {event.categories &&
-                                  (event.categories.sort(
-                                    (a, b) =>
-                                      a.category_price - b.category_price
-                                  )[0].category_price === 0
+                                  (event.categories.sort((a, b) => a.category_price - b.category_price)[0].category_price === 0
                                     ? " (Gratuito)"
                                     : ` (à partir de R$${
-                                        event.categories.sort(
-                                          (a, b) =>
-                                            a.category_price - b.category_price
-                                        )[0].category_price
+                                        event.categories.sort((a, b) => a.category_price - b.category_price)[0].category_price
                                       },00)`)}
                               </Fragment>
                             )}
                           </button>
                           {records && (
                             <Link to={`/eventos/${event.event_link}/fotos`}>
-                              <button className="btn btn-primary btn-lg form-control mt-3">
-                                Fotos do Evento
-                              </button>
+                              <button className="btn btn-primary btn-lg form-control mt-3">Fotos do Evento</button>
                             </Link>
                           )}
                         </div>
@@ -227,12 +185,7 @@ const EventPage = () => {
                     Descrição do Evento
                   </button>
                 </h2>
-                <div
-                  id="collapseOne"
-                  className="accordion-collapse collapse show"
-                  aria-labelledby="headingOne"
-                  data-bs-parent="#accordionExample"
-                >
+                <div id="collapseOne" className="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
                   <div className="accordion-body">
                     {event.event_description ? (
                       <div
@@ -260,18 +213,10 @@ const EventPage = () => {
                     Regulamento
                   </button>
                 </h2>
-                <div
-                  id="collapseTwo"
-                  className="accordion-collapse collapse"
-                  aria-labelledby="headingTwo"
-                  data-bs-parent="#accordionExample"
-                >
+                <div id="collapseTwo" className="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
                   <div className="accordion-body">
                     {event.event_rules ? (
-                      <div
-                        className="custom-html"
-                        dangerouslySetInnerHTML={{ __html: event.event_rules }}
-                      ></div>
+                      <div className="custom-html" dangerouslySetInnerHTML={{ __html: event.event_rules }}></div>
                     ) : (
                       <span>Nada por aqui.</span>
                     )}
@@ -291,12 +236,7 @@ const EventPage = () => {
                     Detalhes
                   </button>
                 </h2>
-                <div
-                  id="collapseThree"
-                  className="accordion-collapse collapse"
-                  aria-labelledby="headingThree"
-                  data-bs-parent="#accordionExample"
-                >
+                <div id="collapseThree" className="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
                   <div className="accordion-body">
                     {event.event_details ? (
                       <div
