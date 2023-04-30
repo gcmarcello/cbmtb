@@ -4,7 +4,7 @@ import { useFieldArray, Controller } from "react-hook-form";
 import { toast } from "react-toastify";
 import LoadingScreen from "../../../../../utils/loadingScreen";
 
-const EditCoupons = (props) => {
+const EditRegistering = (props) => {
   const coupons = props.event.coupons;
   const control = props.control;
 
@@ -31,8 +31,6 @@ const EditCoupons = (props) => {
       <div className="d-flex align-items-center justify-content-between mt-2"></div>
       <div className="row">
         <h2>Inscrição Geral</h2>
-        {props.watch("coupon")?.reduce((accumulator, currentValue) => Number(accumulator.coupon_uses) + Number(currentValue.coupon_uses)) +
-          Number(props.watch("attendees"))}
       </div>
       <div className="row">
         <div className="col-12 col-lg-4">
@@ -44,11 +42,43 @@ const EditCoupons = (props) => {
             name="attendees"
             type="number"
             className={`form-control ${props.errors.attendees?.type ? "is-invalid" : ""}`}
-            {...props.register("attendees", { required: true, min: 2 })}
+            {...props.register("attendees", {
+              required: true,
+              min: 2,
+              validate: (attendees) => attendees >= props.event.registrations.filter((registration) => !registration.coupon_id).length,
+            })}
             aria-invalid={props.errors.attendees ? "true" : "false"}
             placeholder="(ex. 1000)"
           />
         </div>
+
+        <div className="col-lg-4">
+          <label htmlFor="couponName" className="form-label">
+            Inscrições Disponíveis
+          </label>
+          <input
+            type="number"
+            className="form-control"
+            value={Number(props.watch("attendees")) - props.event.registrations.filter((registration) => !registration.coupon_id).length}
+            readOnly
+            disabled
+          />
+        </div>
+        {/* <div className="col-lg-4">
+          <label htmlFor="couponName" className="form-label">
+            Inscrições Totais (Geral + Cupom)
+          </label>
+          <input
+            type="number"
+            className="form-control"
+            value={
+              props?.watch("coupon")?.reduce((accumulator, currentValue) => Number(accumulator.coupon_uses) + Number(currentValue.coupon_uses)) +
+                Number(props.watch("attendees")) || 0
+            }
+            readOnly
+            disabled
+          />
+        </div> */}
       </div>
       <hr />
       <div className="row mb-3">
@@ -168,7 +198,7 @@ const EditCoupons = (props) => {
                         {props.event.registrations
                           .filter((registration) => registration.coupon_link === field.coupon_link)
                           .map((registration) => (
-                            <p>
+                            <p key={registration.user_first_name}>
                               {registration.user_first_name} {registration.user_last_name}
                             </p>
                           ))}
@@ -203,4 +233,4 @@ const EditCoupons = (props) => {
   );
 };
 
-export default EditCoupons;
+export default EditRegistering;

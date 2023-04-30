@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 
 import EditEvent from "./components/editEvent";
 import EditKits from "./components/editKits";
-import EditCoupons from "./components/editCoupons";
+import EditRegistering from "./components/editRegistering";
 import LoadingScreen from "../../../../utils/loadingScreen";
 import { isoTimezone } from "./functions/isoDateTimezone";
 import { useEffect } from "react";
@@ -204,16 +204,16 @@ const EditEventPanel = () => {
               </li>
               <li className="nav-item" role="presentation">
                 <button
-                  className={`nav-link ${tab === "cupons" && "active"} `}
-                  id="cupons-tab"
+                  className={`nav-link ${tab === "inscricao" && "active"} `}
+                  id="inscricao-tab"
                   data-bs-toggle="tab"
-                  data-bs-target="#cupons"
+                  data-bs-target="#inscricao"
                   type="button"
                   role="tab"
-                  aria-controls="cupons"
+                  aria-controls="inscricao"
                   aria-selected="false"
                 >
-                  Cupons
+                  Inscrição
                 </button>
               </li>
               <li className="nav-item" role="presentation">
@@ -264,8 +264,8 @@ const EditEventPanel = () => {
                   errors={errors}
                 />
               </div>
-              <div className={`tab-pane fade ${tab === "cupons" && "show active"}`} id="cupons" role="tabpanel" aria-labelledby="cupons-tab">
-                <EditCoupons
+              <div className={`tab-pane fade ${tab === "inscricao" && "show active"}`} id="inscricao" role="tabpanel" aria-labelledby="inscricao-tab">
+                <EditRegistering
                   event={event}
                   control={control}
                   register={register}
