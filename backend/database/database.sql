@@ -37,8 +37,7 @@ CREATE TABLE events(
   event_description TEXT,
   event_rules TEXT,
   event_details TEXT,
-  event_max_attendees INTEGER NOT NULL,
-  event_current_attendees INTEGER NOT NULL,
+  event_general_attendees INTEGER,
   event_status BOOLEAN NOT NULL,
   event_owner_id UUID NOT NULL,
   PRIMARY KEY(event_id),
@@ -221,7 +220,7 @@ CREATE TABLE event_records(
 
 
 
-CREATE OR REPLACE FUNCTION update_num_attendees() RETURNS TRIGGER AS $$
+/* CREATE OR REPLACE FUNCTION update_num_attendees() RETURNS TRIGGER AS $$
 BEGIN
  -- Update the number of attendees for the corresponding event when a row is inserted into the registration table
  IF (TG_OP = 'INSERT') THEN
@@ -253,4 +252,4 @@ $$ LANGUAGE plpgsql;
 CREATE TRIGGER update_num_attendees_trigger
 AFTER INSERT OR DELETE ON registrations
 FOR EACH ROW
-EXECUTE FUNCTION update_num_attendees();
+EXECUTE FUNCTION update_num_attendees(); */

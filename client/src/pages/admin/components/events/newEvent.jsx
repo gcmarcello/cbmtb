@@ -92,23 +92,13 @@ const NewEvent = () => {
               </div>
 
               <hr />
-              <form
-                onSubmit={handleSubmit(onSubmit)}
-                className="needs-validation"
-                noValidate
-              >
+              <form onSubmit={handleSubmit(onSubmit)} className="needs-validation" noValidate>
                 <div className="row my-3">
                   <div className="col-12 col-lg-6">
                     <label htmlFor="name">Nome do Evento</label>
                     <input
                       id="name"
-                      className={`form-control ${
-                        errors.name?.type
-                          ? "is-invalid"
-                          : getValues("name")
-                          ? "is-valid"
-                          : ""
-                      }`}
+                      className={`form-control ${errors.name?.type ? "is-invalid" : getValues("name") ? "is-valid" : ""}`}
                       {...register("name", {
                         required: true,
                         pattern: /.{2,}/,
@@ -120,13 +110,7 @@ const NewEvent = () => {
                     <label htmlFor="location">Local do Evento</label>
                     <input
                       id="location"
-                      className={`form-control ${
-                        errors.location?.type
-                          ? "is-invalid"
-                          : getValues("location")
-                          ? "is-valid"
-                          : ""
-                      }`}
+                      className={`form-control ${errors.location?.type ? "is-invalid" : getValues("location") ? "is-valid" : ""}`}
                       {...register("location", {
                         required: true,
                         pattern: /.{2,}/,
@@ -145,13 +129,7 @@ const NewEvent = () => {
                       </span>
                       <input
                         id="link"
-                        className={`form-control ${
-                          errors.link?.type
-                            ? "is-invalid"
-                            : getValues("link")
-                            ? "is-valid"
-                            : ""
-                        }`}
+                        className={`form-control ${errors.link?.type ? "is-invalid" : getValues("link") ? "is-valid" : ""}`}
                         {...register("link", {
                           required: true,
                           pattern: /^[a-z0-9]{2,20}$/,
@@ -165,16 +143,8 @@ const NewEvent = () => {
                     <div className="input-group">
                       <span className="input-group-text" id="basic-addon1">
                         <div className="form-check form-switch">
-                          <input
-                            className="form-check-input"
-                            type="checkbox"
-                            id="flexSwitchCheckDefault"
-                            onChange={(e) => onCheckboxToggle(e)}
-                          />
-                          <label
-                            className="form-check-label"
-                            htmlFor="flexSwitchCheckDefault"
-                          >
+                          <input className="form-check-input" type="checkbox" id="flexSwitchCheckDefault" onChange={(e) => onCheckboxToggle(e)} />
+                          <label className="form-check-label" htmlFor="flexSwitchCheckDefault">
                             Habilitar
                           </label>
                         </div>
@@ -183,18 +153,11 @@ const NewEvent = () => {
                         id="external"
                         name="external"
                         className={`form-control ${
-                          externalRegistration
-                            ? errors.external?.type
-                              ? "is-invalid"
-                              : getValues("external")
-                              ? "is-valid"
-                              : ""
-                            : ""
+                          externalRegistration ? (errors.external?.type ? "is-invalid" : getValues("external") ? "is-valid" : "") : ""
                         }`}
                         {...register("external", {
                           required: externalRegistration,
-                          pattern:
-                            /^(https?:\/\/)?[a-z0-9-]+(\.[a-z0-9-]+)*\.[a-z]+(\/[^\s]*)?$/,
+                          pattern: /^(https?:\/\/)?[a-z0-9-]+(\.[a-z0-9-]+)*\.[a-z]+(\/[^\s]*)?$/,
                         })}
                         aria-invalid={errors.external ? "true" : "false"}
                         disabled={!externalRegistration}
@@ -223,24 +186,13 @@ const NewEvent = () => {
                               field.onChange(e.target.files[0]);
                               setFileSize(e.target.files[0]?.size);
                             }}
-                            className={`form-control ${
-                              errors.image?.type
-                                ? "is-invalid"
-                                : getValues("image")
-                                ? "is-valid"
-                                : ""
-                            }`}
+                            className={`form-control ${errors.image?.type ? "is-invalid" : getValues("image") ? "is-valid" : ""}`}
                             aria-invalid={errors.image ? "true" : "false"}
                           />
                         )}
                       />
 
-                      <button
-                        type="button"
-                        className="btn btn-outline-secondary"
-                        data-bs-toggle="modal"
-                        data-bs-target="#eventImageModal"
-                      >
+                      <button type="button" className="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#eventImageModal">
                         <i className="bi bi-zoom-in"></i>
                       </button>
                     </div>
@@ -249,8 +201,7 @@ const NewEvent = () => {
                         O tamanho indicado é de 800x475.
                       </small>
                       <small id="userHelp" className="form-text text-muted">
-                        Formato JPEG, PNG, GIF, WEBP. Tamanho:{" "}
-                        {fileSize / 1000 || 0}/5000kb
+                        Formato JPEG, PNG, GIF, WEBP. Tamanho: {fileSize / 1000 || 0}/5000kb
                       </small>
                     </div>
                   </div>
@@ -264,13 +215,7 @@ const NewEvent = () => {
                         id="attendees"
                         name="attendees"
                         type="number"
-                        className={`form-control ${
-                          errors.attendees?.type
-                            ? "is-invalid"
-                            : getValues("attendees")
-                            ? "is-valid"
-                            : ""
-                        }`}
+                        className={`form-control ${errors.attendees?.type ? "is-invalid" : getValues("attendees") ? "is-valid" : ""}`}
                         {...register("attendees", { required: true, min: 2 })}
                         aria-invalid={errors.attendees ? "true" : "false"}
                         placeholder="(ex. 1000)"
@@ -286,13 +231,7 @@ const NewEvent = () => {
                       type="datetime-local"
                       id="dateStart"
                       name="dateStart"
-                      className={`form-control ${
-                        errors.dateStart?.type
-                          ? "is-invalid"
-                          : watch("dateStart")
-                          ? "is-valid"
-                          : ""
-                      }`}
+                      className={`form-control ${errors.dateStart?.type ? "is-invalid" : watch("dateStart") ? "is-valid" : ""}`}
                       {...register("dateStart", { required: true })}
                     />
                   </div>
@@ -302,13 +241,7 @@ const NewEvent = () => {
                       type="datetime-local"
                       id="dateEnd"
                       name="dateEnd"
-                      className={`form-control ${
-                        errors.dateEnd?.type
-                          ? "is-invalid"
-                          : watch("dateEnd")
-                          ? "is-valid"
-                          : ""
-                      }`}
+                      className={`form-control ${errors.dateEnd?.type ? "is-invalid" : watch("dateEnd") ? "is-valid" : ""}`}
                       {...register("dateEnd", { required: true })}
                     />
                   </div>
@@ -320,13 +253,7 @@ const NewEvent = () => {
                       type="datetime-local"
                       id="registrationStart"
                       name="registrationStart"
-                      className={`form-control ${
-                        errors.registrationStart?.type
-                          ? "is-invalid"
-                          : watch("registrationStart")
-                          ? "is-valid"
-                          : ""
-                      }`}
+                      className={`form-control ${errors.registrationStart?.type ? "is-invalid" : watch("registrationStart") ? "is-valid" : ""}`}
                       {...register("registrationStart", { required: true })}
                     />
                   </div>
@@ -336,13 +263,7 @@ const NewEvent = () => {
                       type="datetime-local"
                       id="registrationEnd"
                       name="registrationEnd"
-                      className={`form-control ${
-                        errors.registrationEnd?.type
-                          ? "is-invalid"
-                          : watch("registrationEnd")
-                          ? "is-valid"
-                          : ""
-                      }`}
+                      className={`form-control ${errors.registrationEnd?.type ? "is-invalid" : watch("registrationEnd") ? "is-valid" : ""}`}
                       {...register("registrationEnd", { required: true })}
                     />
                   </div>
@@ -364,11 +285,7 @@ const NewEvent = () => {
                         <Editor
                           value={value}
                           ref={ref}
-                          apiKey={
-                            process.env.REACT_APP_REACT_ENV === "production"
-                              ? process.env.REACT_APP_TINYMCE_KEY
-                              : ""
-                          }
+                          apiKey={process.env.REACT_APP_REACT_ENV === "production" ? process.env.REACT_APP_TINYMCE_KEY : ""}
                           onEditorChange={(content) => onChange(content)}
                           init={{
                             language: "pt_BR",
@@ -404,11 +321,7 @@ const NewEvent = () => {
                         <Editor
                           value={value}
                           ref={ref}
-                          apiKey={
-                            process.env.REACT_APP_REACT_ENV === "production"
-                              ? process.env.REACT_APP_TINYMCE_KEY
-                              : ""
-                          }
+                          apiKey={process.env.REACT_APP_REACT_ENV === "production" ? process.env.REACT_APP_TINYMCE_KEY : ""}
                           onEditorChange={(content) => onChange(content)}
                           init={{
                             language: "pt_BR",
@@ -444,11 +357,7 @@ const NewEvent = () => {
                         <Editor
                           value={value}
                           ref={ref}
-                          apiKey={
-                            process.env.REACT_APP_REACT_ENV === "production"
-                              ? process.env.REACT_APP_TINYMCE_KEY
-                              : ""
-                          }
+                          apiKey={process.env.REACT_APP_REACT_ENV === "production" ? process.env.REACT_APP_TINYMCE_KEY : ""}
                           onEditorChange={(content) => onChange(content)}
                           init={{
                             language: "pt_BR",
@@ -495,11 +404,7 @@ const NewEvent = () => {
                         name="categoryName"
                         id="categoryName"
                         className={`form-control ${
-                          errors.category && errors.category[index]?.name
-                            ? "is-invalid"
-                            : getValues(`category.${index}.name`)
-                            ? "is-valid"
-                            : ""
+                          errors.category && errors.category[index]?.name ? "is-invalid" : getValues(`category.${index}.name`) ? "is-valid" : ""
                         }`}
                         onChange={(e) => console.log(e)}
                         {...register(`category.${index}.name`, {
@@ -516,11 +421,7 @@ const NewEvent = () => {
                         name="minAge"
                         id="categoryMinAge"
                         className={`form-control ${
-                          errors.category && errors.category[index]?.minAge
-                            ? "is-invalid"
-                            : getValues(`category.${index}.name`)
-                            ? "is-valid"
-                            : ""
+                          errors.category && errors.category[index]?.minAge ? "is-invalid" : getValues(`category.${index}.name`) ? "is-valid" : ""
                         }`}
                         {...register(`category.${index}.minAge`, {
                           required: true,
@@ -536,11 +437,7 @@ const NewEvent = () => {
                         name="maxAge"
                         id="categoryMaxAge"
                         className={`form-control ${
-                          errors.category && errors.category[index]?.maxAge
-                            ? "is-invalid"
-                            : getValues(`category.${index}.name`)
-                            ? "is-valid"
-                            : ""
+                          errors.category && errors.category[index]?.maxAge ? "is-invalid" : getValues(`category.${index}.name`) ? "is-valid" : ""
                         }`}
                         {...register(`category.${index}.maxAge`, {
                           required: true,
@@ -554,11 +451,7 @@ const NewEvent = () => {
                       <select
                         defaultValue=""
                         className={`form-select ${
-                          errors.category && errors.category[index]?.gender
-                            ? "is-invalid"
-                            : getValues(`category.${index}.gender`)
-                            ? "is-valid"
-                            : ""
+                          errors.category && errors.category[index]?.gender ? "is-invalid" : getValues(`category.${index}.gender`) ? "is-valid" : ""
                         }`}
                         aria-label="Default select example"
                         id="categoryGender"
@@ -588,11 +481,7 @@ const NewEvent = () => {
                           name="categoryPrice"
                           id="categoryPrice"
                           className={`form-control ${
-                            errors.category && errors.category[index]?.price
-                              ? "is-invalid"
-                              : getValues(`category.${index}.name`)
-                              ? "is-valid"
-                              : ""
+                            errors.category && errors.category[index]?.price ? "is-invalid" : getValues(`category.${index}.name`) ? "is-valid" : ""
                           }`}
                           {...register(`category.${index}.price`, {
                             required: true,
@@ -621,10 +510,7 @@ const NewEvent = () => {
                 ))}
 
                 <div className="d-flex justify-content-end">
-                  <input
-                    type="submit"
-                    className="btn btn-success my-2 px-5 btn-lg"
-                  />
+                  <input type="submit" className="btn btn-success my-2 px-5 btn-lg" />
                 </div>
               </form>
             </div>

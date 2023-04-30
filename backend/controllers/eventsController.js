@@ -13,7 +13,7 @@ const __config = require("../_config");
 async function listEventsAdmin(req, res) {
   try {
     const listOfEvents = await pool.query(
-      "SELECT event_id,event_name, event_date_start, event_status, event_current_attendees, event_max_attendees FROM events ORDER BY event_date_start DESC"
+      "SELECT event_id,event_name, event_date_start, event_status, event_general_attendees FROM events ORDER BY event_date_start DESC"
     );
     res.json(listOfEvents.rows);
   } catch (err) {
@@ -72,7 +72,7 @@ async function createEvent(req, res) {
     const S3Image = await uploadFileToS3(req.file, process.env.S3_BUCKET_NAME, "event-main");
 
     const newEvent = await pool.query(
-      "INSERT INTO events (event_name, event_location, event_link, event_external, event_image, event_max_attendees, event_current_attendees, event_owner_id, event_status, event_date_start, event_date_end, event_registrations_start, event_registrations_end, event_description, event_rules, event_details) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16)  RETURNING *",
+      "INSERT INTO events (event_name, event_location, event_link, event_external, event_image, event_general_attendees, event_owner_id, event_status, event_date_start, event_date_end, event_registrations_start, event_registrations_end, event_description, event_rules, event_details) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15)  RETURNING *",
       [
         name,
         location,
@@ -80,7 +80,6 @@ async function createEvent(req, res) {
         external !== "undefined" ? external : null,
         S3Image,
         attendees,
-        0,
         req.userId,
         false,
         dateStart,
@@ -185,7 +184,7 @@ async function updateEvent(req, res) {
     const image = req.file ? await uploadFileToS3(req.file, process.env.S3_BUCKET_NAME, "event-main") : imageOld;
 
     const updateEvent = await pool.query(
-      `UPDATE events SET event_link = $1, event_owner_id = $2, event_name= $3, event_location = $4, event_image = $5, event_description = $6, event_rules = $7, event_details = $8, event_max_attendees = $9, event_external = $10, event_date_start = $11, event_date_end = $12, event_registrations_start = $13, event_registrations_end = $14 WHERE event_id = $15`,
+      `UPDATE events SET event_link = $1, event_owner_id = $2, event_name= $3, event_location = $4, event_image = $5, event_description = $6, event_rules = $7, event_details = $8, event_general_attendees = $9, event_external = $10, event_date_start = $11, event_date_end = $12, event_registrations_start = $13, event_registrations_end = $14 WHERE event_id = $15`,
       [
         link,
         req.userId,

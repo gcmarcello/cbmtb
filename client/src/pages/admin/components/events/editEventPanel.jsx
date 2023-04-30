@@ -124,7 +124,7 @@ const EditEventPanel = () => {
         name: event.event_name,
         location: event.event_location,
         link: event.event_link,
-        attendees: event.event_max_attendees,
+        attendees: event.event_general_attendees,
         imageOld: event.event_image,
         external: event.event_external,
         dateStart: isoTimezone(event.event_date_start),

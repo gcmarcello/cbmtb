@@ -37,7 +37,6 @@ const Registration = () => {
 
   const fetchEventInfo = async () => {
     try {
-      setIsLoading(true);
       const response = await fetch(`/api/events/${id}`, {
         method: "GET",
       });
@@ -45,8 +44,6 @@ const Registration = () => {
       setEvent(parseEvent);
     } catch (err) {
       console.log(err);
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -71,17 +68,15 @@ const Registration = () => {
   };
 
   const fetchRegistrationAvailability = async () => {
+    setIsLoading(true);
     const myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     myHeaders.append("token", localStorage.token);
     try {
-      const response = await fetch(
-        `/api/registrations/${id}/checkreg/${coupon ? coupon : ""}`,
-        {
-          method: "GET",
-          headers: myHeaders,
-        }
-      );
+      const response = await fetch(`/api/registrations/${id}/checkreg/${coupon ? coupon : ""}`, {
+        method: "GET",
+        headers: myHeaders,
+      });
       const parseResponse = await response.json();
       if (parseResponse.type === "error") {
         toast.error(parseResponse.message, { theme: "colored" });
@@ -89,6 +84,8 @@ const Registration = () => {
       }
     } catch (error) {
       console.log(error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -97,14 +94,11 @@ const Registration = () => {
     myHeaders.append("Content-Type", "application/json");
     myHeaders.append("token", localStorage.token);
     try {
-      const response = await fetch(
-        `/api/registrations/${id}/${coupon ? coupon : ""}`,
-        {
-          method: "POST",
-          headers: myHeaders,
-          body: JSON.stringify(data),
-        }
-      );
+      const response = await fetch(`/api/registrations/${id}/${coupon ? coupon : ""}`, {
+        method: "POST",
+        headers: myHeaders,
+        body: JSON.stringify(data),
+      });
       const parseResponse = await response.json();
       if (parseResponse.type === "error") {
         navigate(`/eventos/${id}`);
@@ -119,12 +113,11 @@ const Registration = () => {
 
   useEffect(() => {
     fetchEventInfo();
-    fetchRegistrationAvailability();
     fetchUser();
+    fetchRegistrationAvailability();
   }, []);
 
   useEffect(() => {
-    setIsLoading(true);
     if (user) {
       setValue("firstName", user.user_first_name);
       setValue("lastName", user.user_last_name);
@@ -140,7 +133,6 @@ const Registration = () => {
       setValue("number", user.user_number);
       setValue("apartment", user.user_apartment);
     }
-    setIsLoading(false);
   }, [user]);
 
   if (isLoading) {
@@ -163,23 +155,9 @@ const Registration = () => {
           />
         );
       case 2:
-        return (
-          <EventInfo
-            event={event}
-            user={user}
-            watch={watch}
-            register={register}
-          />
-        );
+        return <EventInfo event={event} user={user} watch={watch} register={register} />;
       case 3:
-        return (
-          <ConfirmationPayment
-            event={event}
-            user={user}
-            watch={watch}
-            register={register}
-          />
-        );
+        return <ConfirmationPayment event={event} user={user} watch={watch} register={register} />;
       default:
         <UserInfo
           user={user}

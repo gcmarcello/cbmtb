@@ -26,54 +26,35 @@ const EditCoupons = (props) => {
   if (props.isLoading) {
     return <LoadingScreen />;
   }
-  console.log(props.event);
   return (
     <div className="p-lg-3">
-      <div className="d-flex align-items-center justify-content-between mt-2">
-        {coupons.length > 1 ? (
-          <div className="d-flex flex-wrap justify-content-lg-evenly flex-fill">
-            <div class="card text-white bg-danger mb-3 me-2" style={{ maxWidth: "18rem", minWidth: "10rem" }}>
-              <div class="card-header">Vagas Totais</div>
-              <div class="card-body">
-                <h5 class="card-title text-center">
-                  {props.event.coupons.reduce((accumulator, currentValue) => accumulator.coupon_uses + currentValue.coupon_uses) +
-                    props.event.event_max_attendees}
-                </h5>
-              </div>
-            </div>
-            <div class="card text-white bg-primary mb-3 me-2" style={{ maxWidth: "18rem", minWidth: "10rem" }}>
-              <div class="card-header">Vagas</div>
-              <div class="card-body">
-                <h5 class="card-title text-center">{props.event.event_max_attendees}</h5>
-              </div>
-            </div>
-            <div class="card text-white bg-success mb-3 me-2" style={{ maxWidth: "18rem", minWidth: "10rem" }}>
-              <div class="card-header">Cupons</div>
-              <div class="card-body">
-                <h5 class="card-title text-center">
-                  {props.event.coupons.reduce((accumulator, currentValue) => accumulator.coupon_uses + currentValue.coupon_uses)}
-                </h5>
-              </div>
-            </div>
-            <div class="card text-white bg-secondary mb-3 me-2" style={{ maxWidth: "18rem", minWidth: "10rem" }}>
-              <div class="card-header">Inscrições</div>
-              <div class="card-body">
-                <h5 class="card-title text-center">{<div>{props.event.registrations.length}</div>}</h5>
-              </div>
-            </div>
-
-            <div class="card bg-warning mb-3 me-2" style={{ maxWidth: "18rem", minWidth: "10rem" }}>
-              <div class="card-header">Cupons Utilizados</div>
-              <div class="card-body">
-                <h5 class="card-title text-center">{props.event.registrations.filter((registration) => registration.coupon_link).length}</h5>
-              </div>
-            </div>
-          </div>
-        ) : (
-          <p>Adicione um cupom para começar.</p>
-        )}
+      <div className="d-flex align-items-center justify-content-between mt-2"></div>
+      <div className="row">
+        <h2>Inscrição Geral</h2>
+        {props.watch("coupon")?.reduce((accumulator, currentValue) => Number(accumulator.coupon_uses) + Number(currentValue.coupon_uses)) +
+          Number(props.watch("attendees"))}
+      </div>
+      <div className="row">
+        <div className="col-12 col-lg-4">
+          <label htmlFor="couponName" className="form-label">
+            Máximo de Inscrições
+          </label>
+          <input
+            id="attendees"
+            name="attendees"
+            type="number"
+            className={`form-control ${props.errors.attendees?.type ? "is-invalid" : ""}`}
+            {...props.register("attendees", { required: true, min: 2 })}
+            aria-invalid={props.errors.attendees ? "true" : "false"}
+            placeholder="(ex. 1000)"
+          />
+        </div>
       </div>
       <hr />
+      <div className="row mb-3">
+        <h2>Cupons</h2>
+      </div>
+
       {fields.map((field, index) => (
         <div key={`coupon-${index}`}>
           <div className="row">

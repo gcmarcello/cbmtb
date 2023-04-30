@@ -27,7 +27,7 @@ const EditEvent = (props) => {
       <div className="p-lg-3">
         <form onSubmit={props.handleSubmit(props.onSubmit)} className="needs-validation" noValidate>
           <div className="row mb-2">
-            <div className="col-12 col-lg-6">
+            <div className="col-12">
               <label htmlFor="name">Nome do Evento</label>
               <input
                 id="name"
@@ -38,24 +38,6 @@ const EditEvent = (props) => {
                 })}
                 aria-invalid={props.errors.name ? "true" : "false"}
               />
-            </div>
-            <div className="col-12 col-lg-6">
-              <label htmlFor="price">Máximo de Participantes</label>
-              <div className="input-group">
-                <span className="input-group-text" id="basic-addon1">
-                  <i className="bi bi-people-fill"></i>
-                </span>
-
-                <input
-                  id="attendees"
-                  name="attendees"
-                  type="number"
-                  className={`form-control ${props.errors.attendees?.type ? "is-invalid" : ""}`}
-                  {...props.register("attendees", { required: true, min: 2 })}
-                  aria-invalid={props.errors.attendees ? "true" : "false"}
-                  placeholder="(ex. 1000)"
-                />
-              </div>
             </div>
           </div>
           <div className="row mb-2">
