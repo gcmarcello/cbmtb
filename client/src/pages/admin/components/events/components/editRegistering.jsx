@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useFieldArray, Controller } from "react-hook-form";
 import { toast } from "react-toastify";
 import LoadingScreen from "../../../../../utils/loadingScreen";
+import { Link } from "react-router-dom";
 
 const EditRegistering = (props) => {
   const coupons = props.event.coupons;
@@ -59,7 +60,7 @@ const EditRegistering = (props) => {
           <input
             type="number"
             className="form-control"
-            value={Number(props.watch("attendees")) - props.event.registrations.filter((registration) => !registration.coupon_id).length}
+            value={(Number(props.watch("attendees")) || 0) - props.event.registrations.filter((registration) => !registration.coupon_id).length}
             readOnly
             disabled
           />
@@ -68,6 +69,7 @@ const EditRegistering = (props) => {
           <label htmlFor="couponName" className="form-label">
             Inscrições Totais (Geral + Cupom)
           </label>
+
           <input
             type="number"
             className="form-control"

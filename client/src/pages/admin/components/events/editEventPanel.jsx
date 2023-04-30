@@ -176,6 +176,20 @@ const EditEventPanel = () => {
               </li>
               <li className="nav-item" role="presentation">
                 <button
+                  className={`nav-link ${tab === "inscricao" && "active"} `}
+                  id="inscricao-tab"
+                  data-bs-toggle="tab"
+                  data-bs-target="#inscricao"
+                  type="button"
+                  role="tab"
+                  aria-controls="inscricao"
+                  aria-selected="false"
+                >
+                  Inscrição
+                </button>
+              </li>
+              <li className="nav-item" role="presentation">
+                <button
                   className={`nav-link ${tab === "categorias" && "active"} `}
                   id="categorias-tab"
                   data-bs-toggle="tab"
@@ -202,20 +216,7 @@ const EditEventPanel = () => {
                   Kits
                 </button>
               </li>
-              <li className="nav-item" role="presentation">
-                <button
-                  className={`nav-link ${tab === "inscricao" && "active"} `}
-                  id="inscricao-tab"
-                  data-bs-toggle="tab"
-                  data-bs-target="#inscricao"
-                  type="button"
-                  role="tab"
-                  aria-controls="inscricao"
-                  aria-selected="false"
-                >
-                  Inscrição
-                </button>
-              </li>
+
               <li className="nav-item" role="presentation">
                 <button
                   className={`nav-link ${tab === "inscritos" && "active"} `}

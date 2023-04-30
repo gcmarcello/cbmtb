@@ -235,6 +235,7 @@ async function check_registration(req, res) {
     const currentAttendees = (
       await pool.query("SELECT event_id, COUNT(*) as num_attendees FROM registrations WHERE coupon_id IS NULL GROUP BY event_id")
     ).rows[0].num_attendees;
+    console.log(maxAttendees - currentAttendees);
     const periodVerification = dayjs().isBetween(registrationStarts, registrationEnds, null, []);
 
     // Checking for manual registration status
