@@ -38,6 +38,8 @@ const EditEventPanel = () => {
 
   const onSubmit = async (data) => {
     try {
+      console.log("hi");
+      setIsLoading(true);
       const formData = new FormData();
       const formValues = getValues();
       Object.keys(formValues).forEach((key) => {
@@ -71,6 +73,8 @@ const EditEventPanel = () => {
       toast[parseResponse.type](parseResponse.message, { theme: "colored" });
     } catch (error) {
       toast.error(error, { theme: "colored" });
+    } finally {
+      setIsLoading(false);
     }
   };
 

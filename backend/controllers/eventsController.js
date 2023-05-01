@@ -334,6 +334,22 @@ async function listFlagships(req, res) {
   }
 }
 
+async function listFlagshipEvents(req, res) {
+  try {
+    const { id, widget } = req.params;
+    const flagship = await pool.query(
+      `SELECT event_id, event_link, event_name, event_location, event_image, event_date_start FROM events WHERE flagship_id = $1 ${
+        widget && "LIMIT 3"
+      }`,
+      [id]
+    );
+    res.status(200).json({ data: flagship.rows, type: "success" });
+  } catch (err) {
+    console.log(err.message);
+    res.status(400).json({ message: "Erro ao encontrar os eventos.", type: "error" });
+  }
+}
+
 async function fetchFlagship(req, res) {
   try {
     const { id } = req.params;
@@ -400,4 +416,5 @@ module.exports = {
   listFlagships,
   fetchFlagship,
   updateFlagship,
+  listFlagshipEvents,
 };

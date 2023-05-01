@@ -5,6 +5,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import LoadingScreen from "../../utils/loadingScreen";
 import _config from "../../_config";
+import FlagshipHomeEvents from "./flagshipEvents";
 
 const FlagshipHome = () => {
   const { flagshipLink } = useParams();
@@ -61,7 +62,7 @@ const FlagshipHome = () => {
         </div>
       </div> */}
 
-      <NextEvents />
+      <FlagshipHomeEvents id={flagship?.flagship_id} />
     </Fragment>
   );
 };
