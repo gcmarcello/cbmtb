@@ -10,14 +10,16 @@ const eventsController = require("../controllers/eventsController");
 router.get("/flagships", eventsController.listFlagships);
 // GET Flagship Event Info
 router.get("/flagships/:id", eventsController.fetchFlagship);
+// Update Flagship (ADMIN)
+router.put("/flagships/:id", [adminAuthorization, upload.array("images", 2)], eventsController.updateFlagship);
 // List Events (ADMIN)
 router.get("/", adminAuthorization, eventsController.listEventsAdmin);
+// View Event (PUBLIC)
+router.get("/:id", eventsController.readEventPage);
 // List Next Events (PUBLIC)
 router.get("/next", eventsController.listNextEvents);
 // List Events (PUBLIC)
 router.get("/public/:event?", eventsController.listEventsPublic);
-// View Event (PUBLIC)
-router.get("/:id", eventsController.readEventPage);
 // Create Event (ADMIN)
 router.post("/", [adminAuthorization, upload.single("image")], eventsController.createEvent);
 // Open/Close Event (ADMIN)

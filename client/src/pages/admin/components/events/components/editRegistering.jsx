@@ -6,7 +6,7 @@ import LoadingScreen from "../../../../../utils/loadingScreen";
 import { Link } from "react-router-dom";
 
 const EditRegistering = (props) => {
-  const coupons = props.event.coupons;
+  const coupons = props.event?.coupons;
   const control = props.control;
 
   const { fields, append, remove } = useFieldArray({
@@ -46,7 +46,7 @@ const EditRegistering = (props) => {
             {...props.register("attendees", {
               required: true,
               min: 2,
-              validate: (attendees) => attendees >= props.event.registrations.filter((registration) => !registration.coupon_id).length,
+              validate: (attendees) => attendees >= props.event?.registrations.filter((registration) => !registration.coupon_id).length,
             })}
             aria-invalid={props.errors.attendees ? "true" : "false"}
             placeholder="(ex. 1000)"
@@ -58,9 +58,9 @@ const EditRegistering = (props) => {
             Inscrições Disponíveis
           </label>
           <input
-            type="number"
+            type="text"
             className="form-control"
-            value={(Number(props.watch("attendees")) || 0) - props.event.registrations.filter((registration) => !registration.coupon_id).length}
+            value={(Number(props.watch("attendees")) || 0) - props.event?.registrations.filter((registration) => !registration.coupon_id).length}
             readOnly
             disabled
           />
@@ -112,7 +112,7 @@ const EditRegistering = (props) => {
               />
               {field.coupon_id && (
                 <small id="couponLink" className="form-text text-muted">
-                  {`${window.location.origin.split("//")[1]}/inscricao/${props.event.event_link}/${field.coupon_link}`}
+                  {`${window.location.origin.split("//")[1]}/inscricao/${props.event?.event_link}/${field.coupon_link}`}
                 </small>
               )}
             </div>
@@ -164,14 +164,14 @@ const EditRegistering = (props) => {
                   <button type="button" className="btn btn-primary flex-fill" data-bs-toggle="modal" data-bs-target={`#couponModal-${index}`}>
                     <div className="d-flex justify-content-center">
                       <i className="bi bi-people-fill me-2"></i>
-                      {props.event.registrations.filter((registration) => registration.coupon_link === field.coupon_link).length}
+                      {props.event?.registrations.filter((registration) => registration.coupon_link === field.coupon_link).length}
                     </div>
                   </button>
                   <button
                     className="btn btn-secondary ms-2 flex-fill"
                     onClick={() => {
                       navigator.clipboard.writeText(
-                        `${window.location.origin.split("//")[1]}/inscricao/${props.event.event_link}/${field.coupon_link}`
+                        `${window.location.origin.split("//")[1]}/inscricao/${props.event?.event_link}/${field.coupon_link}`
                       );
                       toast.success("Link Copiado com Sucesso!", { theme: "colored" });
                     }}
@@ -197,7 +197,7 @@ const EditRegistering = (props) => {
                       </div>
 
                       <div className="modal-body">
-                        {props.event.registrations
+                        {props.event?.registrations
                           .filter((registration) => registration.coupon_link === field.coupon_link)
                           .map((registration) => (
                             <p key={registration.user_first_name}>

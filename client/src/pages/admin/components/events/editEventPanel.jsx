@@ -16,6 +16,7 @@ import ListRegistrations from "./listRegistrations";
 const EditEventPanel = () => {
   const { id, tab } = useParams();
   const [event, setEvent] = useState();
+  const [flagships, setFlagships] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
 
@@ -115,7 +116,23 @@ const EditEventPanel = () => {
       }
     };
 
+    const getFlagships = async () => {
+      setIsLoading(true);
+      try {
+        const flagships = await fetch(`/api/events/flagships`, {
+          method: "GET",
+        });
+        const parseFlagships = await flagships.json();
+        setFlagships(parseFlagships.data);
+      } catch (err) {
+        console.log(err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
     getEvent();
+    getFlagships();
   }, [id]);
 
   useEffect(() => {
@@ -134,12 +151,14 @@ const EditEventPanel = () => {
         description: event.event_description,
         rules: event.event_rules,
         details: event.event_details,
+        flagship: event.flagship_id,
       };
+
       reset(parsedInfo);
     }
   }, [event, reset]);
 
-  if (isLoading) return <LoadingScreen />;
+  if (isLoading || !event) return <LoadingScreen />;
 
   return (
     <Fragment>
@@ -147,7 +166,7 @@ const EditEventPanel = () => {
         <div className="px-lg-5 py-lg-5">
           <div className="p-3 bg-white rounded rounded-2 shadow">
             <div className="d-flex flex-column flex-lg-row justify-content-between">
-              <h2 className="text-center">{event.event_name}</h2>
+              <h2 className="text-center">{event?.event_name}</h2>
               <div className="d-flex flex-lg-row flex-column">
                 <Link to="/painel" className="btn btn-secondary my-1 w-100">
                   Voltar
@@ -236,9 +255,11 @@ const EditEventPanel = () => {
               <div className={`tab-pane fade ${tab === undefined && "show active"}`} id="evento" role="tabpanel" aria-labelledby="event-tab">
                 <EditEvent
                   event={event}
+                  flagships={flagships}
                   setFocus={setFocus}
                   getValues={getValues}
                   setValue={setValue}
+                  watch={watch}
                   reset={reset}
                   trigger={trigger}
                   control={control}

@@ -200,7 +200,7 @@ const ListRegistrations = (props) => {
 
   return (
     <div className="p-lg-3">
-      <Table data={props.event.registrations} columns={columns} generateXlsx={generateXlsx} customPageSize={50} />
+      {props.event && <Table data={props.event.registrations} columns={columns} generateXlsx={generateXlsx} customPageSize={50} />}
 
       <div className="modal fade" id={`updateRegistrationModal`} tabIndex="-1" aria-labelledby="updateRegistrationModalLabel" aria-hidden="true">
         <form onSubmit={handleSubmit(onSubmit)} className="needs-validation mt-2 px-2" noValidate>
@@ -208,7 +208,7 @@ const ListRegistrations = (props) => {
             <div className="modal-content">
               <div className="modal-header">
                 <h5 className="modal-title" id="updateRegistrationModalLabel">
-                  Atualizar Inscrição - {props.event.event_name}
+                  Atualizar Inscrição - {props.event?.event_name}
                 </h5>
                 <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
               </div>
@@ -237,7 +237,7 @@ const ListRegistrations = (props) => {
                   className={`form-select ${errors.gender?.type ? "is-invalid" : ""} mb-1`}
                   {...register("registrationCategory", { required: true })}
                 >
-                  {props.event.categories.map((category) => (
+                  {props.event?.categories.map((category) => (
                     <option key={category.category_id} value={category.category_id}>
                       {category.category_name}
                     </option>

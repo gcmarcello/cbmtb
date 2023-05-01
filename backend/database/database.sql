@@ -40,8 +40,10 @@ CREATE TABLE events(
   event_general_attendees INTEGER,
   event_status BOOLEAN NOT NULL,
   event_owner_id UUID NOT NULL,
+  flagship_id UUID,
   PRIMARY KEY(event_id),
   FOREIGN KEY (event_owner_id) REFERENCES users(user_id)
+  FOREIGN KEY (flagship_id) REFERENCES flagship(flagship_id)
 );
 
 CREATE TABLE event_coupons(

@@ -1,13 +1,15 @@
 import { Fragment, useEffect, useState } from "react";
 import Table from "../table";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useForm, Controller } from "react-hook-form";
 import LoadingScreen from "../../../../utils/loadingScreen";
+import { toast } from "react-toastify";
 
 const UpdateFlagship = () => {
   const { id } = useParams();
   const [flagship, setFlagship] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
 
   const {
     getValues,
@@ -37,6 +39,36 @@ const UpdateFlagship = () => {
       console.log(error);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const onSubmit = async (data) => {
+    try {
+      const formData = new FormData();
+      const formValues = getValues();
+      Object.keys(formValues).forEach((key) => {
+        formData.append(key, formValues[key]);
+      });
+
+      const myHeaders = new Headers();
+      myHeaders.append("token", localStorage.token);
+
+      let requestOptions = {
+        method: "PUT",
+        headers: myHeaders,
+        body: formData,
+      };
+
+      const response = await fetch(`/api/events/flagships/${id}`, requestOptions); // eslint-disable-next-line
+      const parseResponse = await response.json();
+
+      if (parseResponse.type === "success") {
+        navigate("/painel/flagships");
+      }
+
+      toast[parseResponse.type](parseResponse.message, { theme: "colored" });
+    } catch (error) {
+      toast.error(error, { theme: "colored" });
     }
   };
 
@@ -74,7 +106,14 @@ const UpdateFlagship = () => {
                   <Link className="btn btn-secondary my-auto mx-2" to="/painel/flagships">
                     Voltar
                   </Link>
-                  <Link className="btn btn-success my-auto">Salvar</Link>
+                  <button
+                    className="btn btn-success my-auto"
+                    onClick={() => {
+                      onSubmit();
+                    }}
+                  >
+                    Salvar
+                  </button>
                 </div>
                 <div className="col-12 col-lg-6">
                   <label htmlFor="name">Nome da Série</label>
@@ -106,10 +145,18 @@ const UpdateFlagship = () => {
                   </div>
                 </div>
               </div>
-              <div className="row">
+              <div className="row mt-3">
                 <div className="col-12 col-lg-6">
                   <label htmlFor="logo">Logo da Série</label>
-                  <img src={watch("logo") ? URL.createObjectURL(getValues("logo")) : getValues("flagshipOldLogo")} className="img-fluid" alt="logo" />
+                  <br />
+                  <div className="d-flex justify-content-center">
+                    <img
+                      src={watch("logo") ? URL.createObjectURL(getValues("logo")) : getValues("flagshipOldLogo")}
+                      className="img-fluid rounded-2"
+                      alt="logo"
+                      style={{ maxHeight: "350px" }}
+                    />
+                  </div>
                   <Controller
                     name="logo"
                     control={control}
@@ -125,15 +172,43 @@ const UpdateFlagship = () => {
                         onChange={(e) => {
                           field.onChange(e.target.files[0]);
                         }}
-                        className={`form-control ${errors.logo?.type ? "is-invalid" : ""}`}
+                        className={`form-control ${errors.logo?.type ? "is-invalid" : ""} mt-2`}
                         aria-invalid={errors.logo ? "true" : "false"}
                       />
                     )}
                   />
                 </div>
-                <div className="col-12 col-lg-6">
+                <div className="col-12 col-lg-6 mt-3 mt-lg-0">
                   <label htmlFor="name">Imagem de Fundo</label>
-                  <img src={getValues("flagshipOldBG")} className="img-fluid rounded-2" alt="bg" />
+                  <br />
+                  <div className="d-flex justify-content-center">
+                    <img
+                      src={watch("bg") ? URL.createObjectURL(getValues("bg")) : getValues("flagshipOldBG")}
+                      className="img-fluid rounded-2"
+                      alt="logo"
+                      style={{ maxHeight: "350px" }}
+                    />
+                  </div>
+                  <Controller
+                    name="bg"
+                    control={control}
+                    defaultValue={null}
+                    rules={{
+                      required: false,
+                    }}
+                    render={({ field }) => (
+                      <input
+                        id="bg"
+                        accept="image/*"
+                        type="file"
+                        onChange={(e) => {
+                          field.onChange(e.target.files[0]);
+                        }}
+                        className={`form-control ${errors.bg?.type ? "is-invalid" : ""} mt-2`}
+                        aria-invalid={errors.bg ? "true" : "false"}
+                      />
+                    )}
+                  />
                 </div>
               </div>
             </div>

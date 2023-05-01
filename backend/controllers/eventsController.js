@@ -196,12 +196,13 @@ async function updateEvent(req, res) {
       rules,
       details,
       external,
+      flagship,
     } = req.body;
 
     const image = req.file ? await uploadFileToS3(req.file, process.env.S3_BUCKET_NAME, "event-main") : imageOld;
 
     const updateEvent = await pool.query(
-      `UPDATE events SET event_link = $1, event_owner_id = $2, event_name= $3, event_location = $4, event_image = $5, event_description = $6, event_rules = $7, event_details = $8, event_general_attendees = $9, event_external = $10, event_date_start = $11, event_date_end = $12, event_registrations_start = $13, event_registrations_end = $14 WHERE event_id = $15`,
+      `UPDATE events SET event_link = $1, event_owner_id = $2, event_name= $3, event_location = $4, event_image = $5, event_description = $6, event_rules = $7, event_details = $8, event_general_attendees = $9, event_external = $10, event_date_start = $11, event_date_end = $12, event_registrations_start = $13, event_registrations_end = $14, flagship_id = $16 WHERE event_id = $15`,
       [
         link,
         req.userId,
@@ -218,6 +219,7 @@ async function updateEvent(req, res) {
         dayjs(registrationStart).format("YYYY-MM-DD HH:mm:ss.SSSSSSZ"),
         dayjs(registrationEnd).format("YYYY-MM-DD HH:mm:ss.SSSSSSZ"),
         id,
+        flagship || null,
       ]
     );
 
@@ -350,6 +352,26 @@ async function fetchFlagship(req, res) {
   }
 }
 
+async function updateFlagship(req, res) {
+  try {
+    const { id } = req.params;
+    const { name, link, flagshipOldBG, flagshipOldLogo } = req.body;
+
+    const logo = /* req.file.logo ? await uploadFileToS3(req.file, process.env.S3_BUCKET_NAME, "flagship-logos") : */ flagshipOldLogo;
+    const bg = /* req.file.bg ? await uploadFileToS3(req.file, process.env.S3_BUCKET_NAME, "flagship-bgs") : */ flagshipOldBG;
+
+    const updateFlagship = await pool.query(
+      "UPDATE flagships SET flagship_name = $1, flagship_link = $2, flagship_logo = $3, flagship_bg = $4 WHERE flagship_id = $5",
+      [name, link, logo, bg, id]
+    );
+
+    res.status(200).json({ message: "Série atualizada com sucesso!", type: "success" });
+  } catch (err) {
+    console.log(err.message);
+    res.status(400).json({ message: "Erro ao encontrar evento.", type: "error" });
+  }
+}
+
 module.exports = {
   listEventsAdmin,
   listEventsPublic,
@@ -362,4 +384,5 @@ module.exports = {
   listNextEvents,
   listFlagships,
   fetchFlagship,
+  updateFlagship,
 };

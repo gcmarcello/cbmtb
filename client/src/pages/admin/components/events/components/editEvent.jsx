@@ -8,7 +8,7 @@ import tinyConfig from "../../../config/tiny.config";
 import uploadImage from "../../../functions/uploadImage";
 
 const EditEvent = (props) => {
-  const [externalRegistration, setExternalRegistration] = useState(props.event.event_external);
+  const [externalRegistration, setExternalRegistration] = useState(props.event?.event_external);
   const [fileSize, setFileSize] = useState(false);
   const [fileUrl, setFileUrl] = useState(null);
 
@@ -41,7 +41,7 @@ const EditEvent = (props) => {
             </div>
           </div>
           <div className="row mb-2">
-            <div className="col-12">
+            <div className="col-12 col-lg-6">
               <label htmlFor="location">Local do Evento</label>
               <input
                 id="location"
@@ -52,6 +52,21 @@ const EditEvent = (props) => {
                 })}
                 aria-invalid={props.errors.location ? "true" : "false"}
               />
+            </div>
+            <div className="col-12 col-lg-6">
+              <label htmlFor="flagship">Série do Evento</label>
+              <select
+                {...props.register("flagship")}
+                defaultValue={props.watch("flagship")}
+                className={`form-select ${props.errors.flagship && props.errors.flagship ? "is-invalid" : ""}`}
+              >
+                <option value="">Nenhum</option>
+                {props.flagships?.map((flagship) => (
+                  <option key={flagship.flagship_id} value={flagship.flagship_id} selected={flagship.flagship_id === props.watch("flagship")}>
+                    {flagship.flagship_name}
+                  </option>
+                ))}
+              </select>
             </div>
           </div>
 
@@ -223,7 +238,7 @@ const EditEvent = (props) => {
               <Controller
                 name="description"
                 control={props.control}
-                defaultValue={props.event.event_description}
+                defaultValue={props.event?.event_description}
                 rules={{
                   required: false,
                 }}
@@ -259,7 +274,7 @@ const EditEvent = (props) => {
               <Controller
                 name="rules"
                 control={props.control}
-                defaultValue={props.event.event_rules}
+                defaultValue={props.event?.event_rules}
                 rules={{
                   required: false,
                 }}
@@ -292,10 +307,11 @@ const EditEvent = (props) => {
               <label htmlFor="details" className="form-label">
                 Detalhes
               </label>
+
               <Controller
                 name="details"
                 control={props.control}
-                defaultValue={props.event.event_details}
+                defaultValue={props.event?.event_details}
                 rules={{
                   required: false,
                 }}
