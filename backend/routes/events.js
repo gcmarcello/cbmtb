@@ -11,7 +11,17 @@ router.get("/flagships", eventsController.listFlagships);
 // GET Flagship Event Info
 router.get("/flagships/:id", eventsController.fetchFlagship);
 // Update Flagship (ADMIN)
-router.put("/flagships/:id", [adminAuthorization, upload.array("images", 2)], eventsController.updateFlagship);
+router.put(
+  "/flagships/:id",
+  [
+    adminAuthorization,
+    upload.fields([
+      { name: "bg", maxCount: 1 },
+      { name: "logo", maxCount: 1 },
+    ]),
+  ],
+  eventsController.updateFlagship
+);
 // List Events (ADMIN)
 router.get("/", adminAuthorization, eventsController.listEventsAdmin);
 // View Event (PUBLIC)

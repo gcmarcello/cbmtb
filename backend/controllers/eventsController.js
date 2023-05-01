@@ -357,18 +357,33 @@ async function updateFlagship(req, res) {
     const { id } = req.params;
     const { name, link, flagshipOldBG, flagshipOldLogo } = req.body;
 
-    const logo = /* req.file.logo ? await uploadFileToS3(req.file, process.env.S3_BUCKET_NAME, "flagship-logos") : */ flagshipOldLogo;
-    const bg = /* req.file.bg ? await uploadFileToS3(req.file, process.env.S3_BUCKET_NAME, "flagship-bgs") : */ flagshipOldBG;
+    const logo = req.files.logo ? await uploadFileToS3(req.files.logo[0], process.env.S3_BUCKET_NAME, "flagship-logos") : flagshipOldLogo;
+    const bg = req.files.bg ? await uploadFileToS3(req.files.bg[0], process.env.S3_BUCKET_NAME, "flagship-bgs") : flagshipOldBG;
 
     const updateFlagship = await pool.query(
       "UPDATE flagships SET flagship_name = $1, flagship_link = $2, flagship_logo = $3, flagship_bg = $4 WHERE flagship_id = $5",
       [name, link, logo, bg, id]
     );
 
+    if (req.files) {
+      const fileKeys = Object.keys(req.files);
+
+      fileKeys.forEach((key) => {
+        const file = req.files[key][0];
+        const filePath = path.join(file.destination, file.filename);
+
+        fs.unlink(filePath, (err) => {
+          if (err) {
+            console.error(err);
+          }
+        });
+      });
+    }
+
     res.status(200).json({ message: "Série atualizada com sucesso!", type: "success" });
   } catch (err) {
     console.log(err.message);
-    res.status(400).json({ message: "Erro ao encontrar evento.", type: "error" });
+    res.status(400).json({ message: "Erro ao atualizar evento.", type: "error" });
   }
 }
 

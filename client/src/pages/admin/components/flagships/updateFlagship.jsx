@@ -42,15 +42,17 @@ const UpdateFlagship = () => {
     }
   };
 
-  const onSubmit = async (data) => {
+  const onSubmit = async () => {
     try {
       const formData = new FormData();
       const formValues = getValues();
+      console.log(formValues);
       Object.keys(formValues).forEach((key) => {
         formData.append(key, formValues[key]);
       });
 
       const myHeaders = new Headers();
+
       myHeaders.append("token", localStorage.token);
 
       let requestOptions = {
