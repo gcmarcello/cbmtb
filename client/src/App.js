@@ -48,6 +48,7 @@ import PedalEdition from "./pages/event/eventRecord";
 import UserWay from "./components/userWay";
 import ListFlagships from "./pages/admin/components/flagships/listFlagships";
 import UpdateFlagship from "./pages/admin/components/flagships/updateFlagship";
+import NewFlagship from "./pages/admin/components/flagships/newFlagship";
 
 function App() {
   const [userAuthentication, setUserAuthentication] = useState(false);
@@ -235,6 +236,15 @@ function App() {
             element={
               <PrivateRoute {...loginProps}>
                 <ListFlagships />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            exact
+            path="/painel/flagships/novo"
+            element={
+              <PrivateRoute {...loginProps}>
+                <NewFlagship />
               </PrivateRoute>
             }
           />

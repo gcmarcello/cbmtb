@@ -7,7 +7,7 @@ const ListFlagships = () => {
 
   const fetchFlagship = async () => {
     try {
-      const response = await fetch(`/api/events/flagships/`, {
+      const response = await fetch(`/api/events/flagships`, {
         method: "GET",
       });
       const parseResponse = await response.json();
@@ -50,7 +50,7 @@ const ListFlagships = () => {
             {flagships && <Table data={flagships} columns={columns} />}
 
             <div className="d-flex justify-content-end">
-              <Link to="/painel/eventos/novo/" className="btn btn-success">
+              <Link to="/painel/flagships/novo" className="btn btn-success">
                 Novo Evento
               </Link>
             </div>

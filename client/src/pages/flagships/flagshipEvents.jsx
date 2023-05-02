@@ -30,7 +30,7 @@ const FlagshipHomeEvents = ({ id }) => {
         <div id="hero-anchor"></div>
         <div className="row">
           <div className="col-12">
-            <h1>Próximos Eventos</h1>
+            <h1>Eventos</h1>
             <div className={`d-flex flex-wrap justify-content-${eventsList > 2 ? "evenly" : "center"}`}>
               {eventsList < 1 ? (
                 <h3>Em breve, mais eventos!</h3>

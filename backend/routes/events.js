@@ -9,6 +9,18 @@ const eventsController = require("../controllers/eventsController");
 // GET List Flagship Events
 router.get("/flagships", eventsController.listFlagships);
 // GET List Flagship Events
+router.post(
+  "/flagships/",
+  [
+    adminAuthorization,
+    upload.fields([
+      { name: "bg", maxCount: 1 },
+      { name: "logo", maxCount: 1 },
+    ]),
+  ],
+  eventsController.createFlagship
+);
+// GET List Flagship Events
 router.get("/flagships/event/:id/:widget?", eventsController.listFlagshipEvents);
 // GET Flagship Event Info
 router.get("/flagships/:id", eventsController.fetchFlagship);

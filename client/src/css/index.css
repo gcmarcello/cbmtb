@@ -249,6 +249,14 @@ input[type="number"] {
   max-width: 100%;
 }
 
+.flagship-logo {
+  transition-duration: 0.5s;
+}
+
+.flagship-logo:hover {
+  transform: scale(1.15);
+}
+
 @media (min-width: 768px) {
   .sticky-bottom {
     position: fixed;

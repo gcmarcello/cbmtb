@@ -403,6 +403,43 @@ async function updateFlagship(req, res) {
   }
 }
 
+async function createFlagship(req, res) {
+  try {
+    const { id } = req.params;
+    const { name, link } = req.body;
+
+    const logo = await uploadFileToS3(req.files.logo[0], process.env.S3_BUCKET_NAME, "flagship-logos");
+    const bg = await uploadFileToS3(req.files.bg[0], process.env.S3_BUCKET_NAME, "flagship-bgs");
+
+    const createFlagship = await pool.query("INSERT INTO flagships (flagship_name,flagship_link,flagship_logo,flagship_bg) VALUES ($1,$2,$3,$4)", [
+      name,
+      link,
+      logo,
+      bg,
+    ]);
+
+    if (req.files) {
+      const fileKeys = Object.keys(req.files);
+
+      fileKeys.forEach((key) => {
+        const file = req.files[key][0];
+        const filePath = path.join(file.destination, file.filename);
+
+        fs.unlink(filePath, (err) => {
+          if (err) {
+            console.error(err);
+          }
+        });
+      });
+    }
+
+    res.status(200).json({ message: "Série atualizada com sucesso!", type: "success" });
+  } catch (err) {
+    console.log(err.message);
+    res.status(400).json({ message: "Erro ao atualizar evento.", type: "error" });
+  }
+}
+
 module.exports = {
   listEventsAdmin,
   listEventsPublic,
@@ -417,4 +454,5 @@ module.exports = {
   fetchFlagship,
   updateFlagship,
   listFlagshipEvents,
+  createFlagship,
 };
