@@ -83,7 +83,7 @@ const EventPage = () => {
   };
 
   useEffect(() => {
-    fetchEvent().then((response) => fetchRegistration()); // eslint-disable-next-line
+    fetchEvent().then((response) => fetchRegistration());
   }, []);
 
   useEffect(() => {
