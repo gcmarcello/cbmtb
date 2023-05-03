@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 
 import EditEvent from "./components/editEvent";
 import EditKits from "./components/editKits";
-import EditCoupons from "./components/editCoupons";
+import EditRegistering from "./components/editRegistering";
 import LoadingScreen from "../../../../utils/loadingScreen";
 import { isoTimezone } from "./functions/isoDateTimezone";
 import { useEffect } from "react";
@@ -16,6 +16,7 @@ import ListRegistrations from "./listRegistrations";
 const EditEventPanel = () => {
   const { id, tab } = useParams();
   const [event, setEvent] = useState();
+  const [flagships, setFlagships] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
 
@@ -37,6 +38,7 @@ const EditEventPanel = () => {
 
   const onSubmit = async (data) => {
     try {
+      setIsLoading(true);
       const formData = new FormData();
       const formValues = getValues();
       Object.keys(formValues).forEach((key) => {
@@ -69,7 +71,10 @@ const EditEventPanel = () => {
 
       toast[parseResponse.type](parseResponse.message, { theme: "colored" });
     } catch (error) {
+      console.log(error);
       toast.error(error, { theme: "colored" });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -115,7 +120,23 @@ const EditEventPanel = () => {
       }
     };
 
+    const getFlagships = async () => {
+      setIsLoading(true);
+      try {
+        const flagships = await fetch(`/api/events/flagships`, {
+          method: "GET",
+        });
+        const parseFlagships = await flagships.json();
+        setFlagships(parseFlagships.data);
+      } catch (err) {
+        console.log(err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
     getEvent();
+    getFlagships();
   }, [id]);
 
   useEffect(() => {
@@ -124,7 +145,7 @@ const EditEventPanel = () => {
         name: event.event_name,
         location: event.event_location,
         link: event.event_link,
-        attendees: event.event_max_attendees,
+        attendees: event.event_general_attendees,
         imageOld: event.event_image,
         external: event.event_external,
         dateStart: isoTimezone(event.event_date_start),
@@ -134,12 +155,14 @@ const EditEventPanel = () => {
         description: event.event_description,
         rules: event.event_rules,
         details: event.event_details,
+        flagship: event.flagship_id,
       };
+
       reset(parsedInfo);
     }
   }, [event, reset]);
 
-  if (isLoading) return <LoadingScreen />;
+  if (isLoading || !event) return <LoadingScreen />;
 
   return (
     <Fragment>
@@ -147,7 +170,7 @@ const EditEventPanel = () => {
         <div className="px-lg-5 py-lg-5">
           <div className="p-3 bg-white rounded rounded-2 shadow">
             <div className="d-flex flex-column flex-lg-row justify-content-between">
-              <h2 className="text-center">{event.event_name}</h2>
+              <h2 className="text-center">{event?.event_name}</h2>
               <div className="d-flex flex-lg-row flex-column">
                 <Link to="/painel" className="btn btn-secondary my-1 w-100">
                   Voltar
@@ -172,6 +195,20 @@ const EditEventPanel = () => {
                   aria-selected="true"
                 >
                   Evento
+                </button>
+              </li>
+              <li className="nav-item" role="presentation">
+                <button
+                  className={`nav-link ${tab === "inscricao" && "active"} `}
+                  id="inscricao-tab"
+                  data-bs-toggle="tab"
+                  data-bs-target="#inscricao"
+                  type="button"
+                  role="tab"
+                  aria-controls="inscricao"
+                  aria-selected="false"
+                >
+                  Inscrição
                 </button>
               </li>
               <li className="nav-item" role="presentation">
@@ -202,20 +239,7 @@ const EditEventPanel = () => {
                   Kits
                 </button>
               </li>
-              <li className="nav-item" role="presentation">
-                <button
-                  className={`nav-link ${tab === "cupons" && "active"} `}
-                  id="cupons-tab"
-                  data-bs-toggle="tab"
-                  data-bs-target="#cupons"
-                  type="button"
-                  role="tab"
-                  aria-controls="cupons"
-                  aria-selected="false"
-                >
-                  Cupons
-                </button>
-              </li>
+
               <li className="nav-item" role="presentation">
                 <button
                   className={`nav-link ${tab === "inscritos" && "active"} `}
@@ -235,9 +259,11 @@ const EditEventPanel = () => {
               <div className={`tab-pane fade ${tab === undefined && "show active"}`} id="evento" role="tabpanel" aria-labelledby="event-tab">
                 <EditEvent
                   event={event}
+                  flagships={flagships}
                   setFocus={setFocus}
                   getValues={getValues}
                   setValue={setValue}
+                  watch={watch}
                   reset={reset}
                   trigger={trigger}
                   control={control}
@@ -264,8 +290,8 @@ const EditEventPanel = () => {
                   errors={errors}
                 />
               </div>
-              <div className={`tab-pane fade ${tab === "cupons" && "show active"}`} id="cupons" role="tabpanel" aria-labelledby="cupons-tab">
-                <EditCoupons
+              <div className={`tab-pane fade ${tab === "inscricao" && "show active"}`} id="inscricao" role="tabpanel" aria-labelledby="inscricao-tab">
+                <EditRegistering
                   event={event}
                   control={control}
                   register={register}

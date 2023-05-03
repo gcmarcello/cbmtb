@@ -51,12 +51,6 @@ const ListEvents = () => {
       ),
     },
     {
-      Header: "Inscritos",
-      accessor: "event_current_attendees",
-      className: "d-none d-lg-table-cell",
-      Cell: ({ value, row }) => `${value} / ${row.original.event_max_attendees}`,
-    },
-    {
       Header: "Data",
       accessor: "formattedDate",
       className: "d-none d-lg-table-cell",

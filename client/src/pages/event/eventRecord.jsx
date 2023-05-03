@@ -29,17 +29,11 @@ const EventRecords = () => {
       });
       const parseResponse = await response.json();
       if (parseResponse.type === "error") {
-        navigate("/404");
+        navigate("/pagina/404");
         return;
       }
       setEvent(parseResponse.event);
-      setPhotos(
-        parseResponse.data.map((photo) => ({
-          src: photo.link,
-          width: 800,
-          height: 600,
-        }))
-      );
+      setPhotos(parseResponse.data.map((photo) => ({ src: photo.link, width: 800, height: 600 })));
     } catch (err) {
       console.log(err);
     } finally {
@@ -51,8 +45,6 @@ const EventRecords = () => {
     fetchPhotos();
   }, []);
 
-  console.log(photos);
-
   if (isLoading) {
     return <LoadingScreen />;
   }
@@ -62,10 +54,7 @@ const EventRecords = () => {
       <div className="d-flex flex-column flex-lg-row justify-content-between">
         <h2>Mídias - {event?.event_name}</h2>
 
-        <Link
-          to={`/evento/${event?.event_link}`}
-          className="btn btn-secondary my-auto"
-        >
+        <Link to={`/eventos/${event?.event_link}`} className="btn btn-secondary my-auto">
           Voltar ao Evento
         </Link>
       </div>
@@ -78,9 +67,7 @@ const EventRecords = () => {
             thumbnails={{ ref: thumbnailsRef }}
             on={{
               click: () => {
-                (thumbnailsRef.current?.visible
-                  ? thumbnailsRef.current?.hide
-                  : thumbnailsRef.current?.show)?.();
+                (thumbnailsRef.current?.visible ? thumbnailsRef.current?.hide : thumbnailsRef.current?.show)?.();
               },
             }}
             open={index >= 0}
@@ -90,12 +77,7 @@ const EventRecords = () => {
           />
         </div>
         <div className="col-12">
-          <PhotoAlbum
-            layout="masonry"
-            photos={photos}
-            targetRowHeight={150}
-            onClick={({ index }) => setIndex(index)}
-          />
+          <PhotoAlbum layout="masonry" photos={photos} targetRowHeight={150} onClick={({ index }) => setIndex(index)} />
         </div>
       </div>
     </div>

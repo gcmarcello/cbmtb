@@ -3,7 +3,7 @@ import React from "react";
 import EventInfoModal from "./eventInfoModal";
 import PaymentModal from "./paymentModal";
 
-const UserRegistrations = ({ registrations, deleteRegistration }) => {
+const UserRegistrations = ({ registrations, deleteRegistration, userInfo }) => {
   const dayjs = require("dayjs");
 
   return (
@@ -39,7 +39,10 @@ const UserRegistrations = ({ registrations, deleteRegistration }) => {
                   <span className="fw-bold">Tamanho da Camisa:</span>{" "}
                   {registration.registration_shirt.toUpperCase()}
                   <div className="d-flex">
-                    <EventInfoModal registration={registration} />
+                    <EventInfoModal
+                      registration={registration}
+                      userInfo={userInfo}
+                    />
 
                     <button
                       type="button"
@@ -173,7 +176,7 @@ const UserRegistrations = ({ registrations, deleteRegistration }) => {
                     {dayjs(registration.event_date_start).format("DD/MM/YYYY")}
                   </small>
                 </div>
-                {/* <a href={`/evento/${event.event_link}`} className="btn btn-primary">
+                {/* <a href={`/eventos/${event.event_link}`} className="btn btn-primary">
                     Inscrições
                   </a> */}
               </div>

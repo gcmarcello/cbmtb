@@ -3,24 +3,26 @@ import { useEffect } from "react";
 import { Link } from "react-router-dom";
 const dayjs = require("dayjs");
 
-const NextEvents = ({ event }) => {
+const FlagshipHomeEvents = ({ id }) => {
   const [eventsList, setEventsList] = useState([]);
 
   const getEvents = async (e) => {
     try {
-      const response = await fetch(`/api/events/next`, {
+      const response = await fetch(`/api/events/flagships/event/${id}/widget`, {
         method: "GET",
       });
       const parseResponse = await response.json();
-      setEventsList(parseResponse);
+      setEventsList(parseResponse.data);
     } catch (err) {
       console.log(err);
     }
   };
 
   useEffect(() => {
-    getEvents();
-  }, []);
+    if (id) {
+      getEvents();
+    }
+  }, [id]);
 
   return (
     <Fragment>
@@ -28,7 +30,7 @@ const NextEvents = ({ event }) => {
         <div id="hero-anchor"></div>
         <div className="row">
           <div className="col-12">
-            <h1>Próximos Eventos</h1>
+            <h1>Eventos</h1>
             <div className={`d-flex flex-wrap justify-content-${eventsList > 2 ? "evenly" : "center"}`}>
               {eventsList < 1 ? (
                 <h3>Em breve, mais eventos!</h3>
@@ -56,9 +58,6 @@ const NextEvents = ({ event }) => {
                         <i className="bi bi-calendar-fill"></i> {dayjs(event.event_date_start).format("DD/MM/YYYY")}
                       </small>
                     </div>
-                    {/* <a href={`/eventos/${event.event_link}`} className="btn btn-primary">
-                      Inscrições
-                    </a> */}
                   </div>
                 ))
               )}
@@ -79,4 +78,4 @@ const NextEvents = ({ event }) => {
   );
 };
 
-export default NextEvents;
+export default FlagshipHomeEvents;

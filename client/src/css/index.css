@@ -128,11 +128,6 @@ code {
   background-position: 50% 10%;
 }
 
-.pedal {
-  background-image: var(--pedal-primary-bg) !important;
-  background-position: 50% 100%;
-}
-
 footer {
   background-color: var(--secondary-color);
 }
@@ -254,7 +249,20 @@ input[type="number"] {
   max-width: 100%;
 }
 
+.flagship-logo {
+  transition-duration: 0.5s;
+}
+
+.flagship-logo:hover {
+  transform: scale(1.15);
+}
+
 @media (min-width: 768px) {
+  .sticky-bottom {
+    position: fixed;
+    bottom: 0;
+  }
+
   .userbar {
     background-size: cover;
     background-repeat: no-repeat;

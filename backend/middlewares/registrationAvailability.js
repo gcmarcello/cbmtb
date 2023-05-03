@@ -17,9 +17,11 @@ module.exports = async (req, res, next) => {
     }
   }
 
+  req.id = id;
+
   const checkForRegistration = await pool.query("SELECT * FROM registrations WHERE event_id = $1 AND user_id = $2", [id, userId]);
   const checkForAvailability = await pool.query(
-    "SELECT event_registrations_start, event_registrations_end, event_status, event_current_attendees, event_max_attendees FROM events WHERE event_id = $1",
+    "SELECT event_registrations_start, event_registrations_end, event_status, event_general_attendees FROM events WHERE event_id = $1",
     [id]
   );
   const checkForUser = await pool.query("SELECT * from users WHERE user_id = $1", [userId]);
@@ -27,16 +29,20 @@ module.exports = async (req, res, next) => {
 
   const registrationStarts = dayjs(checkForAvailability.rows[0].event_registrations_start);
   const registrationEnds = dayjs(checkForAvailability.rows[0].event_registrations_end);
-  const currentAttendees = checkForAvailability.rows[0].event_current_attendees;
-  const maxAttendees = checkForAvailability.rows[0].event_max_attendees;
+
+  const maxAttendees = checkForAvailability.rows[0].event_general_attendees;
+  const currentAttendees = (
+    await pool.query("SELECT event_id, COUNT(*) as num_attendees FROM registrations WHERE coupon_id IS NULL GROUP BY event_id")
+  ).rows[0].num_attendees;
   const periodVerification = dayjs().isBetween(registrationStarts, registrationEnds, null, []);
 
   const listOfCategories = await pool.query(
     "SELECT * FROM event_categories WHERE (event_id = $1) AND (category_minage <= $2) AND (category_maxage >= $2) AND (category_gender = $3 OR category_gender = 'unisex') ORDER BY category_maxage ASC",
     [id, userAge, checkForUser.rows[0].user_gender]
   );
+
   if (!listOfCategories.rows[0]) {
-    return res.status(200).json({
+    return res.status(400).json({
       message: "Esse evento não tem nenhuma categoria disponível para você.",
       type: "error",
     });

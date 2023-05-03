@@ -8,11 +8,8 @@ dayjs.extend(isBetween);
 
 async function create_registration(req, res) {
   try {
-    const { id } = req.params;
-    console.log(req.couponId);
-
-    const userId = req.userId;
-    const { categoryId, registrationShirt } = req.body;
+    const { id, userId } = req;
+    const { category, registrationShirt } = req.body;
     const checkForRegistration = await pool.query("SELECT * FROM registrations WHERE event_id = $1 AND user_id = $2", [id, userId]);
 
     if (checkForRegistration.rows[0]) {
@@ -20,7 +17,7 @@ async function create_registration(req, res) {
       return;
     }
 
-    const eventCost = await pool.query("SELECT category_price FROM event_categories WHERE category_id = $1", [categoryId]);
+    const eventCost = await pool.query("SELECT category_price FROM event_categories WHERE category_id = $1", [category]);
     const paymentStatus = eventCost.rows[0].category_price > 0 ? "pending" : "completed";
 
     if (eventCost.rows[0].category_price) {
@@ -37,7 +34,7 @@ async function create_registration(req, res) {
       [
         id,
         userId,
-        categoryId,
+        category,
         registrationShirt,
         eventCost.rows[0].category_price ? newPayment?.rows[0].payment_id : null,
         paymentStatus,
@@ -49,7 +46,7 @@ async function create_registration(req, res) {
     if (paymentStatus === "completed") {
       const userInfo = await pool.query("SELECT user_email, user_first_name FROM users WHERE user_id = $1", [userId]);
       const eventInfo = await pool.query("SELECT * FROM events WHERE event_id = $1", [id]);
-      const categoryInfo = await pool.query("SELECT * FROM event_categories WHERE category_id = $1", [categoryId]);
+      const categoryInfo = await pool.query("SELECT * FROM event_categories WHERE category_id = $1", [category]);
       const sgEmail = new Email([userInfo.rows[0].user_email]);
       sgEmail.sendRegistrationEmail(
         userInfo.rows[0].user_first_name,
@@ -67,23 +64,12 @@ async function create_registration(req, res) {
       message: "Inscrição realizada com sucesso.",
       type: "success",
     });
-
-    /* axios({
-        method: "GET",
-        headers: {
-          token: `${req.header("token")}`,
-          "Content-Type": "application/json",
-        },
-        url: `http://localhost:3000/api/payments/pix/${newPayment.rows[0].payment_id}`,
-      }).then((response) =>
-        res.status(200).json({
-          message: "Inscrição realizada com sucesso.",
-          type: "success",
-          paymentId: eventCost.rows[0].event_price > 0 ? newPayment.rows[0].payment_id : 0,
-        })
-      ); */
   } catch (err) {
     console.log(err.message);
+    res.status(400).json({
+      message: "Erro ao finalizar inscrição.",
+      type: "error",
+    });
   }
 }
 
@@ -110,10 +96,17 @@ async function update_registration(req, res) {
       [registrationShirt, registrationCategory, registrationId]
     );
 
-    res.status(200).json({ message: "Inscrição atualizada com sucesso!", type: "success", data: updateRegistration.rows[0] });
+    res.status(200).json({
+      message: "Inscrição atualizada com sucesso!",
+      type: "success",
+      data: updateRegistration.rows[0],
+    });
   } catch (err) {
     console.log(err.message);
-    res.status(400).json({ message: `Erro ao alterar inscrição. ${err.message}`, type: "success" });
+    res.status(400).json({
+      message: `Erro ao alterar inscrição. ${err.message}`,
+      type: "success",
+    });
   }
 }
 
@@ -188,7 +181,7 @@ async function check_registration(req, res) {
     }
 
     const checkForAvailability = await pool.query(
-      "SELECT event_registrations_start, event_registrations_end, event_status, event_current_attendees, event_max_attendees FROM events WHERE event_id = $1",
+      "SELECT event_registrations_start, event_registrations_end, event_status, event_general_attendees FROM events WHERE event_id = $1",
       [id]
     );
 
@@ -238,23 +231,25 @@ async function check_registration(req, res) {
 
     const registrationStarts = dayjs(checkForAvailability.rows[0].event_registrations_start);
     const registrationEnds = dayjs(checkForAvailability.rows[0].event_registrations_end);
-    const currentAttendees = checkForAvailability.rows[0].event_current_attendees;
-    const maxAttendees = checkForAvailability.rows[0].event_max_attendees;
+    const maxAttendees = checkForAvailability.rows[0].event_general_attendees;
+    const currentAttendees = (
+      await pool.query("SELECT event_id, COUNT(*) as num_attendees FROM registrations WHERE coupon_id IS NULL GROUP BY event_id")
+    ).rows[0].num_attendees;
     const periodVerification = dayjs().isBetween(registrationStarts, registrationEnds, null, []);
 
     // Checking for manual registration status
     if (!checkForAvailability.rows[0].event_status) {
-      return res.status(200).json({ message: "Inscrições Indisponíveis.", type: "error" });
+      return res.status(200).json({ message: "Inscrições Indisponíveis", type: "error" });
     }
 
     // Checking for number of registrations
     if (currentAttendees >= maxAttendees) {
-      return res.status(200).json({ message: "Inscrições Esgotadas.", type: "error" });
+      return res.status(200).json({ message: "Inscrições Esgotadas", type: "error" });
     }
 
     // Checking for registration period
     if (!periodVerification) {
-      return res.status(200).json({ message: "Inscrições Encerradas.", type: "error" });
+      return res.status(200).json({ message: "Inscrições Encerradas", type: "error" });
     }
 
     return res.status(200).json({

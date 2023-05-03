@@ -1,10 +1,14 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useContext, useEffect, useState } from "react";
 
 import { useForm, Controller } from "react-hook-form";
 import InputMask from "react-input-mask";
 import PasswordRequest from "./passwordRequest";
+import { UserContext } from "../../context/userContext";
+import { useNavigate } from "react-router-dom";
 
 const Login = (props) => {
+  const { userInfo, setUserInfo } = useContext(UserContext);
+  const navigate = useNavigate();
   const {
     setError,
     control,
@@ -24,20 +28,23 @@ const Login = (props) => {
       const parseData = await res.json();
       if (parseData.token) {
         localStorage.setItem("token", parseData.token);
-        props.setUserName(parseData.givenName);
-        props.setUserAuthentication(true);
-        parseData.role === "admin" ? props.setUserAdmin(true) : props.setUserAdmin(false);
+        setUserInfo({ userName: parseData.name, userRole: parseData.role });
       } else {
         setError("root.serverError", {
           type: "server",
           message: parseData.message,
         });
-        props.setUserAuthentication(false);
       }
     } catch (err) {
       console.log(err.message);
     }
   };
+
+  useEffect(() => {
+    if (userInfo.userRole) {
+      navigate("/usuario");
+    }
+  }, [userInfo, navigate]);
 
   return (
     <Fragment>
@@ -93,7 +100,7 @@ const Login = (props) => {
               </div>
               <hr className="d-none d-lg-block" />
 
-              <button className="btn btn-success mt-auto form-control" onClick={handleSubmit(onSubmit)}>
+              <button className="btn btn-success mt-3 mt-lg-auto form-control" onClick={handleSubmit(onSubmit)}>
                 Login
               </button>
             </form>

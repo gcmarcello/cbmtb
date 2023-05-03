@@ -12,11 +12,11 @@ router.post("/", [adminAuthorization, upload.single("image")], newsController.cr
 // List News (ADMIN)
 router.get("/", adminAuthorization, newsController.list_news_admin);
 
-// List News (PUBLIC)
-router.get("/public/:category?", newsController.list_news_public);
-
 // List All News (PUBLIC)
 router.get("/public/all", newsController.list_all_news_public);
+
+// List News (PUBLIC)
+router.get("/public/:category?", newsController.list_news_public);
 
 // List Categories
 router.get("/categories", adminAuthorization, newsController.list_categories);

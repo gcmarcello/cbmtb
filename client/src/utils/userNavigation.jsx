@@ -1,9 +1,10 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useContext } from "react";
 import _config from "../_config.js";
+import { UserContext } from "../context/userContext.js";
 
-import config from "../_config.js";
+const UserNavigation = () => {
+  const { userInfo, setUserInfo } = useContext(UserContext);
 
-const UserNavigation = ({ userAuthentication, setUserAuthentication, userName, userAdmin }) => {
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("settings");
@@ -14,7 +15,7 @@ const UserNavigation = ({ userAuthentication, setUserAuthentication, userName, u
     <nav className="navbar navbar-expand-lg navbar-dark bg-light shadow-lg sticky-top userbar">
       <div className="container-fluid pb-2">
         <a href="/">
-          <img src={config.images.primaryLogo} className="img-fluid" alt={`Logo da ${config.entidade.name}`} height={90} width={250} />
+          <img src={_config.images.primaryLogo} className="img-fluid" alt={`Logo da ${_config.entidade.name}`} height={90} width={250} />
         </a>
         <button
           className="navbar-toggler"
@@ -75,7 +76,7 @@ const UserNavigation = ({ userAuthentication, setUserAuthentication, userName, u
                 </li>
               </ul>
             </li>
-            {userAuthentication ? (
+            {userInfo.userRole ? (
               <li className="nav-item dropdown border rounded border-white border-1 rounded mt-3 mt-lg-0">
                 <a
                   className="nav-link dropdown-toggle mx-3 mx-lg-0"
@@ -85,11 +86,12 @@ const UserNavigation = ({ userAuthentication, setUserAuthentication, userName, u
                   data-bs-toggle="dropdown"
                   aria-expanded="false"
                 >
-                  <i className="bi bi-person-circle fs-3" style={{ verticalAlign: "middle" }}></i> <span className="fw-semibold p-2">{userName}</span>
+                  <i className="bi bi-person-circle fs-3" style={{ verticalAlign: "middle" }}></i>{" "}
+                  <span className="fw-semibold p-2">{userInfo.userName}</span>
                 </a>
 
                 <ul className="dropdown-menu" aria-labelledby="navbarDropdown">
-                  {userAdmin ? (
+                  {userInfo.userRole !== "user" ? (
                     <li>
                       <a className="dropdown-item" href="/painel">
                         Administrativo

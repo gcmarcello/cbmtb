@@ -16,7 +16,7 @@ module.exports = async (req, res, next) => {
     req.userGivenName = payload.userGivenName;
   } catch (err) {
     console.log(err);
-    return res.status(403).json({ message: "You are not authorized", type: "error", detail: "authorization failed" });
+    return res.status(403).json({ message: "You are not authorized" });
   }
   next();
 };

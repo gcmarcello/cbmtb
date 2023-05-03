@@ -3,9 +3,10 @@ import { useState } from "react";
 import { useFieldArray, Controller } from "react-hook-form";
 import { toast } from "react-toastify";
 import LoadingScreen from "../../../../../utils/loadingScreen";
+import { Link } from "react-router-dom";
 
-const EditCoupons = (props) => {
-  const coupons = props.event.coupons;
+const EditRegistering = (props) => {
+  const coupons = props.event?.coupons;
   const control = props.control;
 
   const { fields, append, remove } = useFieldArray({
@@ -26,21 +27,66 @@ const EditCoupons = (props) => {
   if (props.isLoading) {
     return <LoadingScreen />;
   }
-
   return (
     <div className="p-lg-3">
-      <div className="d-flex align-items-center justify-content-end mt-2">
-        <button
-          className="btn btn-success h-25"
-          onClick={(e) => {
-            e.preventDefault();
-            append({});
-          }}
-        >
-          Adicionar
-        </button>
+      <div className="d-flex align-items-center justify-content-between mt-2"></div>
+      <div className="row">
+        <h2>Inscrição Geral</h2>
+      </div>
+      <div className="row">
+        <div className="col-12 col-lg-4">
+          <label htmlFor="couponName" className="form-label">
+            Máximo de Inscrições
+          </label>
+          <input
+            id="attendees"
+            name="attendees"
+            type="number"
+            className={`form-control ${props.errors.attendees?.type ? "is-invalid" : ""}`}
+            {...props.register("attendees", {
+              required: true,
+              min: 2,
+              validate: (attendees) => attendees >= props.event?.registrations.filter((registration) => !registration.coupon_id).length,
+            })}
+            aria-invalid={props.errors.attendees ? "true" : "false"}
+            placeholder="(ex. 1000)"
+          />
+        </div>
+
+        <div className="col-lg-4">
+          <label htmlFor="couponName" className="form-label">
+            Inscrições Disponíveis
+          </label>
+          <input
+            type="text"
+            className="form-control"
+            value={(Number(props.watch("attendees")) || 0) - props.event?.registrations.filter((registration) => !registration.coupon_id).length}
+            readOnly
+            disabled
+          />
+        </div>
+        {/* <div className="col-lg-4">
+          <label htmlFor="couponName" className="form-label">
+            Inscrições Totais (Geral + Cupom)
+          </label>
+
+          <input
+            type="number"
+            className="form-control"
+            value={
+              props?.watch("coupon")?.reduce((accumulator, currentValue) => Number(accumulator.coupon_uses) + Number(currentValue.coupon_uses)) +
+                Number(props.watch("attendees")) || 0
+            }
+            readOnly
+            disabled
+          />
+        </div> */}
       </div>
       <hr />
+      <div className="row mb-3">
+        <h2>Cupons</h2>
+      </div>
+
       {fields.map((field, index) => (
         <div key={`coupon-${index}`}>
           <div className="row">
@@ -66,7 +112,7 @@ const EditCoupons = (props) => {
               />
               {field.coupon_id && (
                 <small id="couponLink" className="form-text text-muted">
-                  {`${window.location.origin.split("//")[1]}/inscricao/${props.event.event_link}/${field.coupon_link}`}
+                  {`${window.location.origin.split("//")[1]}/inscricao/${props.event?.event_link}/${field.coupon_link}`}
                 </small>
               )}
             </div>
@@ -118,14 +164,14 @@ const EditCoupons = (props) => {
                   <button type="button" className="btn btn-primary flex-fill" data-bs-toggle="modal" data-bs-target={`#couponModal-${index}`}>
                     <div className="d-flex justify-content-center">
                       <i className="bi bi-people-fill me-2"></i>
-                      {props.event.registrations.filter((registration) => registration.coupon_link === field.coupon_link).length}
+                      {props.event?.registrations.filter((registration) => registration.coupon_link === field.coupon_link).length}
                     </div>
                   </button>
                   <button
                     className="btn btn-secondary ms-2 flex-fill"
                     onClick={() => {
                       navigator.clipboard.writeText(
-                        `${window.location.origin.split("//")[1]}/inscricao/${props.event.event_link}/${field.coupon_link}`
+                        `${window.location.origin.split("//")[1]}/inscricao/${props.event?.event_link}/${field.coupon_link}`
                       );
                       toast.success("Link Copiado com Sucesso!", { theme: "colored" });
                     }}
@@ -151,10 +197,10 @@ const EditCoupons = (props) => {
                       </div>
 
                       <div className="modal-body">
-                        {props.event.registrations
+                        {props.event?.registrations
                           .filter((registration) => registration.coupon_link === field.coupon_link)
                           .map((registration) => (
-                            <p>
+                            <p key={registration.user_first_name}>
                               {registration.user_first_name} {registration.user_last_name}
                             </p>
                           ))}
@@ -174,8 +220,19 @@ const EditCoupons = (props) => {
           <hr className="my-3" />
         </div>
       ))}
+      <div className="d-flex justify-content-end">
+        <button
+          className="btn btn-success h-25"
+          onClick={(e) => {
+            e.preventDefault();
+            append({});
+          }}
+        >
+          Adicionar
+        </button>
+      </div>
     </div>
   );
 };
 
-export default EditCoupons;
+export default EditRegistering;

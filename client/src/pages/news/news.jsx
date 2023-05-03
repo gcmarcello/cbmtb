@@ -21,7 +21,7 @@ const NewsPage = () => {
       const parseResponse = await response.json();
       console.log(parseResponse);
       if (parseResponse.type === "error") {
-        navigate("/404");
+        navigate("/pagina/404");
         return;
       }
       parseResponse.formattedDate = parseDate(parseResponse.news_date);

@@ -50,6 +50,7 @@ const EventPage = () => {
       });
 
       const parseResponse = await response.json();
+<<<<<<< HEAD
 
       const eventRecord = await fetch(`/api/events/records/event/${id}/mini`, {
         method: "GET",
@@ -63,6 +64,14 @@ const EventPage = () => {
         navigate("/404");
         return;
       }
+=======
+
+      if (parseResponse.type === "error") {
+        navigate("/pagina/404");
+        return;
+      }
+
+>>>>>>> 202de98e7501c4f366d2a847d8735acc6a8a2cac
       const date = new Date(parseResponse.event_date);
       parseResponse.formattedDate = date.toLocaleString("pt-BR");
       setEvent(parseResponse);
@@ -115,7 +124,7 @@ const EventPage = () => {
                         type="text"
                         className="form-control"
                         id="event-link"
-                        defaultValue={`${window.location.origin}/evento/${event.event_link}`}
+                        defaultValue={`${window.location.origin}/eventos/${event.event_link}`}
                         disabled
                       />
                       <button
@@ -165,6 +174,7 @@ const EventPage = () => {
                           </button>
                           {records && (
 <<<<<<< HEAD
+<<<<<<< HEAD
                             <Link to={`/evento/${event.event_link}/fotos`}>
                               <button className="btn btn-primary btn-lg form-control mt-3">
                                 Fotos do Evento
@@ -173,6 +183,10 @@ const EventPage = () => {
                             <Link to={`/eventos/${event.event_link}/fotos`}>
                               <button className="btn btn-primary btn-lg form-control mt-3">Fotos do Evento</button>
 >>>>>>> parent of 1c39a1f (fix: bug with 404 redirect)
+=======
+                            <Link to={`/eventos/${event.event_link}/fotos`}>
+                              <button className="btn btn-primary btn-lg form-control mt-3">Fotos do Evento</button>
+>>>>>>> 202de98e7501c4f366d2a847d8735acc6a8a2cac
                             </Link>
                           )}
                         </div>

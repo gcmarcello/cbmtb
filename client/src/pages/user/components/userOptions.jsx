@@ -6,8 +6,7 @@ import { toast } from "react-toastify";
 const dayjs = require("dayjs");
 const cepSearch = require("cep-promise");
 
-const UserOptions = () => {
-  const [userInfo, setUserInfo] = useState(null);
+const UserOptions = (props) => {
   const {
     getValues,
     setError,
@@ -18,11 +17,10 @@ const UserOptions = () => {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm({ mode: "onChange", defaultValues: userInfo || {} });
+  } = useForm({ mode: "onChange", defaultValues: props.userInfo || {} });
 
   const [showPassword, setShowPassword] = useState(false);
   const [cepLoading, setCepLoading] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
 
   const handleCep = async () => {
     try {
@@ -48,7 +46,7 @@ const UserOptions = () => {
 
   const onSubmit = async (data) => {
     try {
-      setIsLoading(true);
+      props.setIsLoading(true);
       const myHeaders = new Headers();
       myHeaders.append("Content-Type", "application/json");
       myHeaders.append("token", localStorage.token);
@@ -72,60 +70,39 @@ const UserOptions = () => {
     } finally {
       resetField("password");
       setTimeout(function () {
-        setIsLoading(false);
+        props.setIsLoading(false);
       }, 1000);
     }
   };
 
   useEffect(() => {
-    const getUser = async () => {
-      setIsLoading(true);
-      try {
-        const myHeaders = new Headers();
-        myHeaders.append("Content-Type", "application/json");
-        myHeaders.append("token", localStorage.token);
-
-        const response = await fetch(`/api/users/self`, {
-          method: "GET",
-          headers: myHeaders,
-        });
-        const parseResponse = await response.json();
-        setUserInfo(parseResponse);
-      } catch (err) {
-        console.log(err);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    getUser();
-  }, []);
-
-  useEffect(() => {
-    if (userInfo) {
-      setValue("firstName", userInfo.user_first_name);
-      setValue("lastName", userInfo.user_last_name);
-      setValue("email", userInfo.user_email);
-      setValue("cpf", userInfo.user_cpf);
-      setValue("phone", userInfo.user_phone);
-      setValue("gender", userInfo.user_gender);
-      setValue("birthDate", dayjs(userInfo.user_birth_date).format("YYYY-MM-DD"));
-      setValue("cep", userInfo.user_cep);
-      setValue("state", userInfo.user_state);
-      setValue("city", userInfo.user_city);
-      setValue("address", userInfo.user_address);
-      setValue("number", userInfo.user_number);
-      setValue("apartment", userInfo.user_apartment);
+    if (props.userInfo) {
+      setValue("firstName", props.userInfo.user_first_name);
+      setValue("lastName", props.userInfo.user_last_name);
+      setValue("email", props.userInfo.user_email);
+      setValue("cpf", props.userInfo.user_cpf);
+      setValue("phone", props.userInfo.user_phone);
+      setValue("gender", props.userInfo.user_gender);
+      setValue(
+        "birthDate",
+        dayjs(props.userInfo.user_birth_date).format("YYYY-MM-DD")
+      );
+      setValue("cep", props.userInfo.user_cep);
+      setValue("state", props.userInfo.user_state);
+      setValue("city", props.userInfo.user_city);
+      setValue("address", props.userInfo.user_address);
+      setValue("number", props.userInfo.user_number);
+      setValue("apartment", props.userInfo.user_apartment);
     }
-  }, [userInfo, setValue]);
-
-  if (isLoading) {
-    return <LoadingScreen />;
-  }
+  }, [props.userInfo, setValue]);
 
   return (
     <Fragment>
-      <form onSubmit={handleSubmit(onSubmit)} className="needs-validation mt-2 px-2" noValidate>
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="needs-validation mt-2 px-2"
+        noValidate
+      >
         <div className="row mb-2">
           <div className="col-12 col-lg-6">
             <label htmlFor="firstName">
@@ -133,8 +110,13 @@ const UserOptions = () => {
             </label>
             <input
               id="firstName"
-              className={`form-control ${errors.firstName?.type ? "is-invalid" : ""}`}
-              {...register("firstName", { required: true, pattern: /^([A-Za-z]+\s*){3,}$/i })}
+              className={`form-control ${
+                errors.firstName?.type ? "is-invalid" : ""
+              }`}
+              {...register("firstName", {
+                required: true,
+                pattern: /^([A-Za-z]+\s*){3,}$/i,
+              })}
               aria-invalid={errors.firstName ? "true" : "false"}
             />
           </div>
@@ -144,8 +126,13 @@ const UserOptions = () => {
             </label>
             <input
               id="lastName"
-              className={`form-control ${errors.lastName?.type ? "is-invalid" : ""}`}
-              {...register("lastName", { required: true, pattern: /^([A-Za-z]+\s*){3,}$/i })}
+              className={`form-control ${
+                errors.lastName?.type ? "is-invalid" : ""
+              }`}
+              {...register("lastName", {
+                required: true,
+                pattern: /^([A-Za-z]+\s*){3,}$/i,
+              })}
               aria-invalid={errors.fullName ? "true" : "false"}
             />
           </div>
@@ -157,8 +144,13 @@ const UserOptions = () => {
             </label>
             <input
               id="email"
-              className={`form-control ${errors.email?.type ? "is-invalid" : ""}`}
-              {...register("email", { required: true, pattern: /^[\w-.]+@([\w-]+\.)+[\w-]{2,}$/ })}
+              className={`form-control ${
+                errors.email?.type ? "is-invalid" : ""
+              }`}
+              {...register("email", {
+                required: true,
+                pattern: /^[\w-.]+@([\w-]+\.)+[\w-]{2,}$/,
+              })}
               aria-invalid={errors.email ? "true" : "false"}
             />
           </div>
@@ -183,7 +175,9 @@ const UserOptions = () => {
                   onChange={field.onChange}
                   disabled={true}
                 >
-                  {(inputProps) => <input {...inputProps} disabled type="text" />}
+                  {(inputProps) => (
+                    <input {...inputProps} disabled type="text" />
+                  )}
                 </InputMask>
               )}
             />
@@ -203,7 +197,9 @@ const UserOptions = () => {
               render={({ field }) => (
                 <InputMask
                   mask="99 99999-9999"
-                  className={`form-control ${errors.phone ? "is-invalid" : ""} mb-1`}
+                  className={`form-control ${
+                    errors.phone ? "is-invalid" : ""
+                  } mb-1`}
                   maskChar=""
                   value={field.value}
                   onChange={field.onChange}
@@ -218,8 +214,14 @@ const UserOptions = () => {
                 <input
                   id="birthDate"
                   type="date"
-                  className={`form-control ${errors.birthDate?.type ? "is-invalid" : ""}`}
-                  {...register("birthDate", { required: true, pattern: /^\d{4}-\d{2}-\d{2}$/i, validate: (date) => dayjs().diff(date, "year") > 1 })}
+                  className={`form-control ${
+                    errors.birthDate?.type ? "is-invalid" : ""
+                  }`}
+                  {...register("birthDate", {
+                    required: true,
+                    pattern: /^\d{4}-\d{2}-\d{2}$/i,
+                    validate: (date) => dayjs().diff(date, "year") > 1,
+                  })}
                   aria-invalid={errors.fullName ? "true" : "false"}
                   disabled
                 />
@@ -231,7 +233,9 @@ const UserOptions = () => {
                 <select
                   id="gender"
                   defaultValue=""
-                  className={`form-select ${errors.gender?.type ? "is-invalid" : ""} mb-1`}
+                  className={`form-select ${
+                    errors.gender?.type ? "is-invalid" : ""
+                  } mb-1`}
                   {...register("gender", { required: true })}
                   disabled
                 >
@@ -258,7 +262,11 @@ const UserOptions = () => {
                   <span className="text-muted small">
                     {" "}
                     (Não sabe? Clique{" "}
-                    <a href="https://www2.correios.com.br/sistemas/buscacep/buscaCep.cfm" target="_blank" rel="noreferrer">
+                    <a
+                      href="https://www2.correios.com.br/sistemas/buscacep/buscaCep.cfm"
+                      target="_blank"
+                      rel="noreferrer"
+                    >
                       aqui.
                     </a>
                     )
@@ -281,7 +289,13 @@ const UserOptions = () => {
                     <InputMask
                       mask="99999-999"
                       name="cep"
-                      className={`form-control ${errors.cep ? "is-invalid" : cepLoading ? "is-loading" : ""} `}
+                      className={`form-control ${
+                        errors.cep
+                          ? "is-invalid"
+                          : cepLoading
+                          ? "is-loading"
+                          : ""
+                      } `}
                       maskChar=""
                       value={field.value}
                       onChange={field.onChange}
@@ -298,7 +312,9 @@ const UserOptions = () => {
                 <select
                   id="state"
                   defaultValue=""
-                  className={`form-select ${errors.state ? "is-invalid" : ""} mb-1`}
+                  className={`form-select ${
+                    errors.state ? "is-invalid" : ""
+                  } mb-1`}
                   {...register("state", { required: true })}
                 >
                   <option value="" disabled>
@@ -339,8 +355,13 @@ const UserOptions = () => {
                 </label>
                 <input
                   id="city"
-                  className={`form-control ${errors.city?.type ? "is-invalid" : ""}`}
-                  {...register("city", { required: true, pattern: /^([A-Za-zÀ-ÖØ-öø]+\s*){3,}$/i })}
+                  className={`form-control ${
+                    errors.city?.type ? "is-invalid" : ""
+                  }`}
+                  {...register("city", {
+                    required: true,
+                    pattern: /^([A-Za-zÀ-ÖØ-öø]+\s*){3,}$/i,
+                  })}
                   aria-invalid={errors.city ? "true" : "false"}
                 />
               </div>
@@ -352,7 +373,9 @@ const UserOptions = () => {
                 </label>
                 <input
                   id="address"
-                  className={`form-control ${errors.address?.type ? "is-invalid" : ""}`}
+                  className={`form-control ${
+                    errors.address?.type ? "is-invalid" : ""
+                  }`}
                   {...register("address", { required: true, pattern: /.{2,}/ })}
                   aria-invalid={errors.address ? "true" : "false"}
                 />
@@ -361,7 +384,9 @@ const UserOptions = () => {
                 <label htmlFor="number">Número</label>
                 <input
                   id="number"
-                  className={`form-control ${errors.number?.type ? "is-invalid" : ""}`}
+                  className={`form-control ${
+                    errors.number?.type ? "is-invalid" : ""
+                  }`}
                   {...register("number", { required: false, pattern: /.{2,}/ })}
                   aria-invalid={errors.number ? "true" : "false"}
                 />
@@ -370,7 +395,9 @@ const UserOptions = () => {
                 <label htmlFor="apartment">Complemento</label>
                 <input
                   id="apartment"
-                  className={`form-control ${errors.apartment?.type ? "is-invalid" : ""}`}
+                  className={`form-control ${
+                    errors.apartment?.type ? "is-invalid" : ""
+                  }`}
                   {...register("apartment", {
                     required: false,
                     pattern: /.{2,}/,
@@ -383,7 +410,9 @@ const UserOptions = () => {
         </div>
         <div className="mt-3">
           <span id="passwordHelpInline" className="form-text">
-            Para alterar a data de nascimento, CPF ou gênero, por favor entre em contato com a nossa ouvidoria <a href="/ouvidoria">clicando aqui.</a>
+            Para alterar a data de nascimento, CPF ou gênero, por favor entre em
+            contato com a nossa ouvidoria{" "}
+            <a href="/ouvidoria">clicando aqui.</a>
           </span>
         </div>
         <hr className="mt-2" />
@@ -412,13 +441,20 @@ const UserOptions = () => {
                   setShowPassword(!showPassword);
                 }}
               >
-                <i className={`bi bi-eye${showPassword ? "-slash-" : "-"}fill`}></i>
+                <i
+                  className={`bi bi-eye${showPassword ? "-slash-" : "-"}fill`}
+                ></i>
               </button>
             </div>
           </div>
 
           <div className="col-12 col-lg-6">
-            <input className="btn btn-success form-control py-2 mt-3 mt-lg-0" type="submit" value="Salvar Alterações" disabled={!watch("password")} />
+            <input
+              className="btn btn-success form-control py-2 mt-3 mt-lg-0"
+              type="submit"
+              value="Salvar Alterações"
+              disabled={!watch("password")}
+            />
           </div>
           <div className="col-12">
             {errors?.root && (
