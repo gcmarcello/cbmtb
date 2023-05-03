@@ -91,11 +91,11 @@ const EventPage = () => {
             <div className="col-12 col-lg-5 mt-3 mt-lg-0">
               <div className="card">
                 <div className="card-body">
-                  <h5 className="card-title">Informações do Evento</h5>
+                  <h5 className="card-title">InformaÃ§Ãµes do Evento</h5>
                   <ul className="list-group">
                     <li className="list-group-item">
                       <i className="bi bi-calendar-fill fs-4"></i> <span className="h6">Data:</span> <span></span>{" "}
-                      {dayjs(event.event_date_start).format("DD/MM/YYYY - HH:mm")} à {dayjs(event.event_date_end).format("DD/MM/YYYY - HH:mm")}
+                      {dayjs(event.event_date_start).format("DD/MM/YYYY - HH:mm")} Ã  {dayjs(event.event_date_end).format("DD/MM/YYYY - HH:mm")}
                     </li>
                     <li className="list-group-item">
                       <i className="bi bi-geo-alt-fill fs-4"></i> <span className="h6">Local:</span> <span></span> {event.event_location}
@@ -150,7 +150,7 @@ const EventPage = () => {
                                 {event.categories &&
                                   (event.categories.sort((a, b) => a.category_price - b.category_price)[0].category_price === 0
                                     ? " (Gratuito)"
-                                    : ` (à partir de R$${
+                                    : ` (Ã€ partir de R$${
                                         event.categories.sort((a, b) => a.category_price - b.category_price)[0].category_price
                                       },00)`)}
                               </Fragment>
@@ -182,7 +182,7 @@ const EventPage = () => {
                     aria-expanded="true"
                     aria-controls="collapseOne"
                   >
-                    Descrição do Evento
+                    DescriÃ§Ã£o do Evento
                   </button>
                 </h2>
                 <div id="collapseOne" className="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
