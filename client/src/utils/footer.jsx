@@ -78,9 +78,9 @@ const Footer = ({ userAuthentication }) => {
                           Endereço de Email
                         </label>
                         <input
-                          id="email"
-                          className={`form-control ${errors.email?.type ? "is-invalid" : getValues("email") ? "is-valid" : ""}`}
-                          {...register("email", {
+                          id="newsletterEmail"
+                          className={`form-control ${errors.email?.type ? "is-invalid" : getValues("newsletterEmail") ? "is-valid" : ""}`}
+                          {...register("newsletterEmail", {
                             required: true,
                             pattern: /^[\w-.]+@([\w-]+\.)+[\w-]{2,}$/,
                           })}
