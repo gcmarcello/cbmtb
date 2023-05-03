@@ -338,7 +338,7 @@ async function listFlagshipEvents(req, res) {
   try {
     const { id, widget } = req.params;
     const flagship = await pool.query(
-      `SELECT event_id, event_link, event_name, event_location, event_image, event_date_start FROM events WHERE flagship_id = $1 ${
+      `SELECT event_id, event_link, event_name, event_location, event_image, event_date_start FROM events WHERE flagship_id = $1 ORDER BY event_date_start DESC ${
         widget && "LIMIT 3"
       }`,
       [id]
