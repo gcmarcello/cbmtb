@@ -67,7 +67,7 @@ const EventPage = () => {
   };
 
   useEffect(() => {
-    fetchEvent().then((response) => fetchRegistration());
+    fetchEvent().then((response) => fetchRegistration()); //eslint-disable-next-line
   }, []);
 
   useEffect(() => {
