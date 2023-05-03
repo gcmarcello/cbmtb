@@ -49,12 +49,14 @@ import UserWay from "./components/userWay";
 import ListFlagships from "./pages/admin/components/flagships/listFlagships";
 import UpdateFlagship from "./pages/admin/components/flagships/updateFlagship";
 import NewFlagship from "./pages/admin/components/flagships/newFlagship";
+import { UserContext } from "./context/userContext";
 
 function App() {
   const [userAuthentication, setUserAuthentication] = useState(false);
   const [userAdmin, setUserAdmin] = useState(false);
   const [userName, setUserName] = useState("");
   const [loading, setLoading] = useState(true);
+  const [userInfo, setUserInfo] = useState({ userName: null, userRole: null });
   let location = useLocation();
   let page = location.pathname.split("/")[1];
 
@@ -79,9 +81,7 @@ function App() {
       });
 
       const parseData = await res.json();
-      setUserName(parseData.givenName);
-      parseData.authentication === true ? setUserAuthentication(true) : setUserAuthentication(false);
-      parseData.role === "admin" ? setUserAdmin(true) : setUserAdmin(false);
+      setUserInfo({ userName: parseData.name || null, userRole: parseData.role || null });
       setLoading(false);
     } catch (err) {
       console.log(err.message);
@@ -97,206 +97,200 @@ function App() {
   }
 
   return (
-    <Fragment>
-      <UserWay />
-      <ToastContainer
-        position="bottom-right"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="light"
-      />
-      {!(page === "painel") ? (
-        <UserNavigation userAuthentication={userAuthentication} userName={userName} userAdmin={userAdmin} setUserAdmin={setUserAdmin} />
-      ) : (
-        userAuthentication && (
-          <AdminNavigation userAuthentication={userAuthentication} userName={userName} userAdmin={userAdmin} setUserAdmin={setUserAdmin} />
-        )
-      )}
-      <main>
-        <Routes>
-          <Route exact path="/cadastro" element={!userAuthentication ? <Register /> : <Navigate to="/usuario" />} />
-          <Route exact path="/login" element={!userAuthentication ? <Login {...loginProps} /> : <Navigate to="/usuario" />} />
-          <Route
-            exact
-            path="/painel/"
-            element={
-              <PrivateRoute {...loginProps}>
-                <Navigate to="/painel/eventos" />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            exact
-            path="/painel/eventos"
-            element={
-              <PrivateRoute {...loginProps}>
-                <ListEvents userAdmin={userAdmin} userName={userName} />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            exact
-            path="/painel/eventos/novo"
-            element={
-              <PrivateRoute {...loginProps}>
-                <NewEvent userAdmin={userAdmin} userName={userName} />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            exact
-            path="/painel/eventos/:id/:tab?"
-            element={
-              <PrivateRoute {...loginProps}>
-                <EditEventPanel />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            exact
-            path="/painel/noticias"
-            element={
-              <PrivateRoute {...loginProps}>
-                <ListNews />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            exact
-            path="/painel/noticias/nova"
-            element={
-              <PrivateRoute {...loginProps}>
-                <NewNews />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            exact
-            path="/painel/noticias/:id"
-            element={
-              <PrivateRoute {...loginProps}>
-                <EditNews />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            exact
-            path="/painel/documentos/"
-            element={
-              <PrivateRoute {...loginProps}>
-                <ListDocuments />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            exact
-            path="/painel/documentos/novo"
-            element={
-              <PrivateRoute {...loginProps}>
-                <NewDocument />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            exact
-            path="/painel/ouvidoria/"
-            element={
-              <PrivateRoute {...loginProps}>
-                <ListTickets />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            exact
-            path="/painel/ouvidoria/:id"
-            element={
-              <PrivateRoute {...loginProps}>
-                <AnswerTicket />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            exact
-            path="/painel/usuarios"
-            element={
-              <PrivateRoute {...loginProps}>
-                <ListUsers />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            exact
-            path="/painel/flagships"
-            element={
-              <PrivateRoute {...loginProps}>
-                <ListFlagships />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            exact
-            path="/painel/flagships/novo"
-            element={
-              <PrivateRoute {...loginProps}>
-                <NewFlagship />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            exact
-            path="/painel/flagships/:id"
-            element={
-              <PrivateRoute {...loginProps}>
-                <UpdateFlagship />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            exact
-            path="/usuario/:panel?"
-            element={
-              <PrivateRoute userAuthentication={userAuthentication}>
-                <UserPanel userAuthentication={userAuthentication} setUserAuthentication={setUserAuthentication} userName={userName} />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            exact
-            path="/inscricao/:id/:coupon?"
-            element={
-              <PrivateRoute {...loginProps}>
-                <Registration userAdmin={userAdmin} userName={userName} />
-              </PrivateRoute>
-            }
-          />
-          <Route exact path="/" element={<Home />} />
-          <Route exact path="/:flagshipLink/" element={<FlagshipHome />} />
-          <Route exact path="/pagamento/:linkId" element={<Payments />} />
-          <Route exact path="/confirmacao/:id" element={<ConfirmationPage {...loginProps} />} />
-          <Route exact path="/eventos/:id" element={<EventPage />} />
-          <Route exact path="/eventos/" element={<AllEvents />} />
-          {_config.pages.federacoes && <Route exact path="/federacoes/" element={<Federations />} />}
-          <Route exact path="/imprensa/" element={<Imprensa />} />
-          <Route exact path="/eventos/:eventLink/midias" element={<PedalEdition />} />
-          <Route exact path="/noticias/" element={<AllNews />} />
-          <Route exact path="/noticias/:title" element={<NewsPage />} />
-          <Route exact path="/senha/:requestId" element={<PasswordReset {...loginProps} />} />
-          <Route exact path="/ouvidoria/" element={<Ouvidoria />} />
-          <Route exact path="/ouvidoria/:id" element={<TicketPanel />} />
-          <Route exact path="/transparencia/" element={<Documents />} />
-          <Route path="*" element={<Page404 />} />
-        </Routes>
-      </main>
-      {!(page === "cadastro" || page === "painel" || page === "senha" || page === "inscricao") && (
-        <Footer userAuthentication={userAuthentication} userName={userName} />
-      )}
-    </Fragment>
+    <UserContext.Provider value={{ userInfo: userInfo, setUserInfo: setUserInfo }}>
+      <Fragment>
+        <UserWay />
+        <ToastContainer
+          position="bottom-right"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="light"
+        />
+        {!(page === "painel") ? <UserNavigation /> : userInfo.userRole === "admin" && <AdminNavigation />}
+        <main>
+          <Routes>
+            <Route exact path="/cadastro" element={!userAuthentication ? <Register /> : <Navigate to="/usuario" />} />
+            <Route exact path="/login" element={!userAuthentication ? <Login /> : <Navigate to="/usuario" />} />
+            <Route
+              exact
+              path="/painel/"
+              element={
+                <PrivateRoute>
+                  <Navigate to="/painel/eventos" />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              exact
+              path="/painel/eventos"
+              element={
+                <PrivateRoute>
+                  <ListEvents userAdmin={userAdmin} userName={userName} />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              exact
+              path="/painel/eventos/novo"
+              element={
+                <PrivateRoute>
+                  <NewEvent userAdmin={userAdmin} userName={userName} />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              exact
+              path="/painel/eventos/:id/:tab?"
+              element={
+                <PrivateRoute>
+                  <EditEventPanel />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              exact
+              path="/painel/noticias"
+              element={
+                <PrivateRoute roles={["press", "organizer"]}>
+                  <ListNews />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              exact
+              path="/painel/noticias/nova"
+              element={
+                <PrivateRoute>
+                  <NewNews />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              exact
+              path="/painel/noticias/:id"
+              element={
+                <PrivateRoute>
+                  <EditNews />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              exact
+              path="/painel/documentos/"
+              element={
+                <PrivateRoute>
+                  <ListDocuments />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              exact
+              path="/painel/documentos/novo"
+              element={
+                <PrivateRoute>
+                  <NewDocument />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              exact
+              path="/painel/ouvidoria/"
+              element={
+                <PrivateRoute>
+                  <ListTickets />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              exact
+              path="/painel/ouvidoria/:id"
+              element={
+                <PrivateRoute>
+                  <AnswerTicket />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              exact
+              path="/painel/usuarios"
+              element={
+                <PrivateRoute>
+                  <ListUsers />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              exact
+              path="/painel/flagships"
+              element={
+                <PrivateRoute>
+                  <ListFlagships />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              exact
+              path="/painel/flagships/novo"
+              element={
+                <PrivateRoute>
+                  <NewFlagship />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              exact
+              path="/painel/flagships/:id"
+              element={
+                <PrivateRoute>
+                  <UpdateFlagship />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              exact
+              path="/usuario/:panel?"
+              element={
+                <PrivateRoute>
+                  <UserPanel />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              exact
+              path="/inscricao/:id/:coupon?"
+              element={
+                <PrivateRoute>
+                  <Registration />
+                </PrivateRoute>
+              }
+            />
+            <Route exact path="/" element={<Home />} />
+            <Route exact path="/:flagshipLink/" element={<FlagshipHome />} />
+            <Route exact path="/pagamento/:linkId" element={<Payments />} />
+            <Route exact path="/confirmacao/:id" element={<ConfirmationPage />} />
+            <Route exact path="/eventos/:id" element={<EventPage />} />
+            <Route exact path="/eventos/" element={<AllEvents />} />
+            {_config.pages.federacoes && <Route exact path="/federacoes/" element={<Federations />} />}
+            <Route exact path="/imprensa/" element={<Imprensa />} />
+            <Route exact path="/eventos/:eventLink/midias" element={<PedalEdition />} />
+            <Route exact path="/noticias/" element={<AllNews />} />
+            <Route exact path="/noticias/:title" element={<NewsPage />} />
+            <Route exact path="/senha/:requestId" element={<PasswordReset />} />
+            <Route exact path="/ouvidoria/" element={<Ouvidoria />} />
+            <Route exact path="/ouvidoria/:id" element={<TicketPanel />} />
+            <Route exact path="/transparencia/" element={<Documents />} />
+            <Route path="*" element={<Page404 />} />
+          </Routes>
+        </main>
+        {!(page === "cadastro" || page === "painel" || page === "senha" || page === "inscricao") && <Footer />}
+      </Fragment>
+    </UserContext.Provider>
   );
 }
 export default App;

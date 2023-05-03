@@ -153,8 +153,7 @@ router.post("/login", async (req, res) => {
       res.json({
         token: token,
         role: CPFVerification.rows[0].user_role,
-        name: CPFVerification.rows[0].user_name,
-        givenName: CPFVerification.rows[0].user_first_name,
+        name: CPFVerification.rows[0].user_first_name,
       });
     } catch (err) {
       console.log(err.message);
@@ -324,7 +323,6 @@ router.get("/authentication", authorization, async (req, res) => {
       authentication: true,
       role: req.userRole,
       name: req.userName,
-      givenName: req.userGivenName,
     });
   } catch (err) {
     res.status(500).json("Server Error");

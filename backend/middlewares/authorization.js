@@ -5,16 +5,15 @@ module.exports = async (req, res, next) => {
   try {
     const jwtToken = req.header("token");
     if (!jwtToken) {
-      return res.status(403).json({ message: "You are not authorized", type: "error" });
+      return res.status(403).json({ message: "Você não está autorizado.", type: "error" });
     }
     const payload = jwt.verify(jwtToken, `${process.env.JWT_KEY}`);
 
     req.userId = payload.userId;
-    req.userName = payload.userName;
     req.userRole = payload.userRole;
-    req.userGivenName = payload.userGivenName;
+    req.userName = payload.userName;
   } catch (err) {
-    return res.status(403).json({ message: "You are not authorized" });
+    return res.status(403).json({ message: "Você não está autorizado.", type: "error" });
   }
   next();
 };

@@ -1,40 +1,19 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useContext, useEffect } from "react";
 import { Navigate } from "react-router-dom";
 
 import Login from "../../pages/login/login";
 
+import { UserContext } from "../../context/userContext";
+
 const PrivateRoute = (props) => {
-  let loginComponent;
-  let isPanel;
+  const roles = props.roles || ["admin"];
+  const { userInfo } = useContext(UserContext);
 
-  if (window.location.pathname.split("/")[1] === "painel") {
-    isPanel = true;
+  if (roles.indexOf(userInfo.userRole) >= 0 || userInfo.userRole === "admin") {
+    return <Fragment>{props.children}</Fragment>;
+  } else {
+    return <Login />;
   }
-
-  return (
-    <Fragment>
-      {props.userAuthentication ? (
-        isPanel ? (
-          props.userAdmin ? (
-            props.children
-          ) : (
-            <Navigate to="/" replace />
-          )
-        ) : (
-          props.children
-        )
-      ) : (
-        <Login
-          userAuthentication={props.userAuthentication}
-          setUserAuthentication={props.setUserAuthentication}
-          setUserAdmin={props.setUserAdmin}
-          userAdmin={props.userAdmin}
-          setUserName={props.setUserName}
-          userName={props.userName}
-        />
-      )}
-    </Fragment>
-  );
 };
 
 export default PrivateRoute;
