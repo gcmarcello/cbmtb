@@ -232,9 +232,11 @@ async function check_registration(req, res) {
     const registrationStarts = dayjs(checkForAvailability.rows[0].event_registrations_start);
     const registrationEnds = dayjs(checkForAvailability.rows[0].event_registrations_end);
     const maxAttendees = checkForAvailability.rows[0].event_general_attendees;
-    const currentAttendees = (
-      await pool.query("SELECT event_id, COUNT(*) as num_attendees FROM registrations WHERE coupon_id IS NULL GROUP BY event_id")
-    ).rows[0].num_attendees;
+    const fetchAttendees = await pool.query(
+      "SELECT event_id, COUNT(*) as num_attendees FROM registrations WHERE coupon_id IS NULL AND event_id = $1 GROUP BY event_id",
+      [id]
+    );
+    const currentAttendees = Number(fetchAttendees.rows[0]?.num_attendees || 0);
     const periodVerification = dayjs().isBetween(registrationStarts, registrationEnds, null, []);
 
     // Checking for manual registration status
