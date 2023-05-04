@@ -4,14 +4,13 @@ import LoadingScreen from "../../utils/loadingScreen";
 
 import Lightbox from "yet-another-react-lightbox";
 import Thumbnails from "yet-another-react-lightbox/plugins/thumbnails";
-import Inline from "yet-another-react-lightbox/plugins/inline";
 import PhotoAlbum from "react-photo-album";
 import "yet-another-react-lightbox/styles.css";
 import "yet-another-react-lightbox/plugins/thumbnails.css";
 import { useRef } from "react";
 
 const EventRecords = () => {
-  const { eventLink } = useParams();
+  const { id } = useParams();
   const [photos, setPhotos] = useState([]);
   const [event, setEvent] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -24,10 +23,11 @@ const EventRecords = () => {
     setIsLoading(true);
     try {
       setIsLoading(true);
-      const response = await fetch(`/api/events/records/event/${eventLink}`, {
+      const response = await fetch(`/api/events/${id}/medias`, {
         method: "GET",
       });
       const parseResponse = await response.json();
+      console.log(parseResponse);
       if (parseResponse.type === "error") {
         navigate("/pagina/404");
         return;
@@ -52,9 +52,9 @@ const EventRecords = () => {
   return (
     <div className="inner-page container">
       <div className="d-flex flex-column flex-lg-row justify-content-between">
-        <h2>Mídias - {event?.event_name}</h2>
+        <h2>Mídias - {event?.name}</h2>
 
-        <Link to={`/eventos/${event?.event_link}`} className="btn btn-secondary my-auto">
+        <Link to={`/eventos/${event?.link}`} className="btn btn-secondary my-auto">
           Voltar ao Evento
         </Link>
       </div>

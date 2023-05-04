@@ -50,6 +50,8 @@ router.put("/toggle/:id/:boolean", adminAuthorization, eventsController.toggleRe
 router.get("/update/:id", adminAuthorization, eventsController.retrieveEventInformation);
 // View Event (PUBLIC)
 router.get("/:id", eventsController.readEventPage);
+// View Event (PUBLIC)
+router.get("/:id/medias", eventsController.listEventMedias);
 // Update Event (ADMIN)
 router.put("/:id", [adminAuthorization, upload.single("image")], eventsController.updateEvent);
 // Delete Event (ADMIN)

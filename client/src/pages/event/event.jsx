@@ -56,8 +56,6 @@ const EventPage = () => {
         return;
       }
 
-      const date = new Date(parseResponse.event_date);
-      parseResponse.formattedDate = date.toLocaleString("pt-BR");
       setEvent(parseResponse);
     } catch (err) {
       console.log(err);
@@ -156,9 +154,11 @@ const EventPage = () => {
                               </Fragment>
                             )}
                           </button>
-                          {records && (
-                            <Link to={`/eventos/${event.event_link}/fotos`}>
-                              <button className="btn btn-primary btn-lg form-control mt-3">Fotos do Evento</button>
+                          {event.media && (
+                            <Link to={`/eventos/${event.event_id}/midias`}>
+                              <button className="btn btn-primary btn-lg form-control mt-3">
+                                <i class="bi bi-images"></i> Fotos do Evento
+                              </button>
                             </Link>
                           )}
                         </div>

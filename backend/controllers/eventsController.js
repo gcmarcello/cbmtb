@@ -70,7 +70,8 @@ async function readEventPage(req, res) {
       : await pool.query("SELECT * FROM events WHERE event_link = $1", [id]);
     if (eventInfo.rows[0]) {
       const categories = (await pool.query("SELECT * FROM event_categories WHERE event_id = $1", [eventInfo.rows[0].event_id])).rows;
-      res.status(200).json({ ...eventInfo.rows[0], categories });
+      const media = !!(await pool.query("SELECT * FROM event_records WHERE event_id = $1", [eventInfo.rows[0].event_id])).rows[0];
+      res.status(200).json({ ...eventInfo.rows[0], categories, media });
     } else {
       res.status(404).json({ message: "Evento não encontrado!", type: "error" });
     }
@@ -334,6 +335,24 @@ async function listFlagships(req, res) {
   }
 }
 
+async function listEventMedias(req, res) {
+  try {
+    const { id } = req.params;
+    const bucket = await pool.query(
+      "SELECT record_bucket, event_name, event_link FROM event_records LEFT JOIN events ON event_records.event_id = events.event_id WHERE event_records.event_id = $1",
+      [id]
+    );
+    if (!bucket.rows[0].record_bucket) {
+      res.status(400).json({ message: "Erro ao encontrar as mídias.", type: "error" });
+    }
+    const files = await listFilesInFolder(__config.entidade.abbreviation.toLowerCase(), `events/${bucket.rows[0].record_bucket}`);
+    res.status(200).json({ event: { name: bucket.rows[0].event_name, link: bucket.rows[0].event_link }, data: files, type: "success" });
+  } catch (err) {
+    console.log(err.message);
+    res.status(400).json({ message: "Erro ao encontrar os eventos.", type: "error" });
+  }
+}
+
 async function listFlagshipEvents(req, res) {
   try {
     const { id, widget } = req.params;
@@ -455,4 +474,5 @@ module.exports = {
   updateFlagship,
   listFlagshipEvents,
   createFlagship,
+  listEventMedias,
 };
