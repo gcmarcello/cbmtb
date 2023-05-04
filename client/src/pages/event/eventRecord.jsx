@@ -7,7 +7,11 @@ import Thumbnails from "yet-another-react-lightbox/plugins/thumbnails";
 import PhotoAlbum from "react-photo-album";
 import "yet-another-react-lightbox/styles.css";
 import "yet-another-react-lightbox/plugins/thumbnails.css";
+
+import "react-lazy-load-image-component/src/effects/blur.css"; // Import the CSS for the blur effect
+
 import { useRef } from "react";
+import { LazyLoadComponent } from "react-lazy-load-image-component";
 
 const EventRecords = () => {
   const { id } = useParams();
@@ -27,7 +31,6 @@ const EventRecords = () => {
         method: "GET",
       });
       const parseResponse = await response.json();
-      console.log(parseResponse);
       if (parseResponse.type === "error") {
         navigate("/pagina/404");
         return;
@@ -77,7 +80,38 @@ const EventRecords = () => {
           />
         </div>
         <div className="col-12">
-          <PhotoAlbum layout="masonry" photos={photos} targetRowHeight={150} onClick={({ index }) => setIndex(index)} />
+          <PhotoAlbum
+            layout="masonry"
+            photos={photos}
+            renderPhoto={({ photo, wrapperStyle, renderDefaultPhoto }) => (
+              <LazyLoadComponent
+                placeholder={
+                  <div className="d-flex justify-content-center align-items-center" style={{ minHeight: "300px", minWidth: "300px" }}>
+                    <div className="spinner-border" role="status"></div>
+                  </div>
+                }
+              >
+                <div style={{ position: "relative", ...wrapperStyle }}>
+                  {renderDefaultPhoto({ wrapped: true })}
+                  {photo.title && (
+                    <div
+                      style={{
+                        position: "absolute",
+                        overflow: "hidden",
+                        backgroundColor: "rgba(255 255 255 / .6)",
+                        inset: "auto 0 0 0",
+                        padding: 8,
+                      }}
+                    >
+                      {photo.title}
+                    </div>
+                  )}
+                </div>
+              </LazyLoadComponent>
+            )}
+            targetRowHeight={150}
+            onClick={({ index }) => setIndex(index)}
+          />
         </div>
       </div>
     </div>
