@@ -171,6 +171,22 @@ async function delete_news(req, res) {
   }
 }
 
+async function listFlagshipNews(req, res) {
+  try {
+    const { id, widget } = req.params;
+    const flagshipNews = await pool.query(
+      `SELECT news_id, news_link, news_title, news_subtitle, news_image_link, news_date FROM news WHERE flagship_id = $1 ORDER BY event_date_start DESC ${
+        widget && "LIMIT 3"
+      }`,
+      [id]
+    );
+    res.status(200).json({ data: flagship.rows, type: "success" });
+  } catch (err) {
+    console.log(err.message);
+    res.status(400).json({ message: "Erro ao encontrar os eventos.", type: "error" });
+  }
+}
+
 module.exports = {
   create_news,
   list_news_admin,
