@@ -1,10 +1,18 @@
+import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 
 const UserWay = () => {
-  const location = useLocation().pathname.split("/")[1];
-  if (location === "inscricao") {
-    return null;
-  }
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.pathname.split("/")[1] === "inscricao") {
+      const myElement = document.getElementById("userwayAccessibilityIcon");
+      if (myElement) {
+        myElement.style.display = "none";
+      }
+    }
+  });
+
   return (function (d) {
     var s = d.createElement("script");
     s.setAttribute("data-account", "vBloadPTNB");
