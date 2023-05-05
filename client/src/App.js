@@ -50,6 +50,7 @@ import UpdateFlagship from "./pages/admin/components/flagships/updateFlagship";
 import NewFlagship from "./pages/admin/components/flagships/newFlagship";
 import { UserContext } from "./context/userContext";
 import EventRecords from "./pages/event/eventRecord";
+import CheckInPage from "./pages/admin/components/checkin/checkInPage";
 
 function App() {
   const [userAuthentication, setUserAuthentication] = useState(false);
@@ -150,6 +151,15 @@ function App() {
               element={
                 <PrivateRoute>
                   <EditEventPanel />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              exact
+              path="/painel/eventos/:id/checkin"
+              element={
+                <PrivateRoute>
+                  <CheckInPage />
                 </PrivateRoute>
               }
             />
