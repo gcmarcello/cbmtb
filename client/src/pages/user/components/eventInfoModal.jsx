@@ -5,6 +5,10 @@ const EventInfoModal = ({ registration, userInfo }) => {
   const dayjs = require("dayjs");
   const qrCodeInfo = registration.registration_id;
 
+  if (!registration || !userInfo) {
+    return null;
+  }
+
   return (
     <Fragment>
       <button type="button" className="btn btn-warning form-control me-2 mt-2 h-50" data-bs-toggle="modal" data-bs-target="#InfoModal">
