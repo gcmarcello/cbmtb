@@ -61,6 +61,11 @@ const ListRegistrations = (props) => {
       accessor: "coupon_link",
     },
     {
+      Header: "Check In",
+      accessor: "registration_checkin",
+      Cell: ({ value }) => (value ? <i class="bi bi-check fs-2 fw-bold text-success"></i> : ""),
+    },
+    {
       Header: "Opções",
       accessor: "registration_id",
       disableSortBy: true,

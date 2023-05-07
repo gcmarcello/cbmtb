@@ -6,7 +6,6 @@ import Table from "../table";
 const ListEvents = () => {
   const navigate = useNavigate();
   const [eventChange, setEventChange] = useState(false);
-  const [statusButton, setStatusButton] = useState({ class: null, text: null });
   const [eventsList, setEventsList] = useState([]);
 
   const columns = [
