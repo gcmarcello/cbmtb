@@ -12,9 +12,9 @@ router.get("/:id", documentsController.read_document);
 router.get("/", documentsController.list_documents);
 
 // Create Document
-router.post("/", [adminAuthorization, upload.single("file")], documentsController.create_document);
+router.post("/", [adminAuthorization(), upload.single("file")], documentsController.create_document);
 
 // Delete Document
-router.delete("/:id", adminAuthorization, documentsController.delete_document);
+router.delete("/:id", adminAuthorization(), documentsController.delete_document);
 
 module.exports = router;

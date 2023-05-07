@@ -12,7 +12,7 @@ router.get("/flagships", eventsController.listFlagships);
 router.post(
   "/flagships/",
   [
-    adminAuthorization,
+    adminAuthorization(),
     upload.fields([
       { name: "bg", maxCount: 1 },
       { name: "logo", maxCount: 1 },
@@ -28,7 +28,7 @@ router.get("/flagships/:id", eventsController.fetchFlagship);
 router.put(
   "/flagships/:id",
   [
-    adminAuthorization,
+    adminAuthorization(),
     upload.fields([
       { name: "bg", maxCount: 1 },
       { name: "logo", maxCount: 1 },
@@ -37,24 +37,24 @@ router.put(
   eventsController.updateFlagship
 );
 // List Events (ADMIN)
-router.get("/", adminAuthorization, eventsController.listEventsAdmin);
+router.get("/", adminAuthorization(), eventsController.listEventsAdmin);
 // Create Event (ADMIN)
-router.post("/", [adminAuthorization, upload.single("image")], eventsController.createEvent);
+router.post("/", [adminAuthorization(), upload.single("image")], eventsController.createEvent);
 // List Next Events (PUBLIC)
 router.get("/next", eventsController.listNextEvents);
 // List Events (PUBLIC)
 router.get("/public/:event?", eventsController.listEventsPublic);
 // Open/Close Event (ADMIN)
-router.put("/toggle/:id/:status", adminAuthorization, eventsController.toggleRegistrations);
+router.put("/toggle/:id/:status", adminAuthorization(), eventsController.toggleRegistrations);
 // GET Info to Update Event (ADMIN)
-router.get("/update/:id", adminAuthorization, eventsController.retrieveEventInformation);
+router.get("/update/:id", adminAuthorization(), eventsController.retrieveEventInformation);
 // View Event (PUBLIC)
 router.get("/:id", eventsController.readEventPage);
 // View Event (PUBLIC)
 router.get("/:id/medias", eventsController.listEventMedias);
 // Update Event (ADMIN)
-router.put("/:id", [adminAuthorization, upload.single("image")], eventsController.updateEvent);
+router.put("/:id", [adminAuthorization(), upload.single("image")], eventsController.updateEvent);
 // Delete Event (ADMIN)
-router.delete("/:id", adminAuthorization, eventsController.deleteEvent);
+router.delete("/:id", adminAuthorization(), eventsController.deleteEvent);
 
 module.exports = router;

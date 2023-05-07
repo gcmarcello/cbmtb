@@ -9,7 +9,7 @@ var upload = multer({
 });
 
 // Create Document
-router.post("/", [adminAuthorization, upload.single("file")], bucketController.upload_file);
+router.post("/", [adminAuthorization(), upload.single("file")], bucketController.upload_file);
 
 router.use((err, req, res, next) => {
   if (err instanceof multer.MulterError && err.code === "LIMIT_FILE_SIZE") {

@@ -96,7 +96,7 @@ router.put("/", [authorization, registrationValidation], async (req, res) => {
 });
 
 // Update User Information
-router.put("/admin", adminAuthorization, async (req, res) => {
+router.put("/admin", adminAuthorization(), async (req, res) => {
   const { address, apartment, cep, city, email, firstName, lastName, number, phone, state, userId, userStatus, birthDate } = req.body;
   try {
     const userInfoEmail = (await pool.query("SELECT user_email FROM users WHERE user_id = $1", [userId])).rows[0];
@@ -176,7 +176,7 @@ router.get("/self", authorization, async (req, res) => {
   }
 });
 
-router.get("/list", adminAuthorization, async (req, res) => {
+router.get("/list", adminAuthorization(), async (req, res) => {
   try {
     const userList = await pool.query(
       "SELECT user_id, user_email, user_first_name, user_last_name, user_gender, user_phone, user_cpf, user_birth_date, user_cep, user_state, user_city, user_address, user_number, user_apartment, user_role, user_confirmed FROM users"
@@ -297,7 +297,7 @@ router.post("/passwordReset/:requestId", async (req, res) => {
 });
 
 // Delete Registrations (USER)
-router.delete("/admin/:userId", adminAuthorization, async (req, res) => {
+router.delete("/admin/:userId", adminAuthorization(), async (req, res) => {
   try {
     const { userId } = req.params;
 

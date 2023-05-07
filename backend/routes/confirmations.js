@@ -8,6 +8,6 @@ const confirmationsController = require("../controllers/confirmationsController"
 router.get("/:id", confirmationsController.confirm_account);
 
 // Confirm Email
-router.post("/:userId", adminAuthorization, confirmationsController.resend_confirmation);
+router.post("/:userId", adminAuthorization(), confirmationsController.resend_confirmation);
 
 module.exports = router;
