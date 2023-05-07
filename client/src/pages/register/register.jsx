@@ -1,12 +1,16 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useContext, useEffect } from "react";
 import { Fragment } from "react";
+import { useNavigate } from "react-router-dom";
 
 import { useForm } from "react-hook-form";
 
 import ConfirmRegistration from "./components/registrationConfirmation.jsx";
 import RegistrationForm from "./components/registrationForm.jsx";
+import { UserContext } from "../../context/userContext.js";
 
 const Register = () => {
+  const { userInfo, setUserInfo } = useContext(UserContext);
+  const navigate = useNavigate();
   const [isRegistered, setIsRegistered] = useState(false);
   const reCaptchaComponent = useRef(null);
   const {
@@ -46,6 +50,12 @@ const Register = () => {
       resetField("reCaptcha");
     }
   };
+
+  useEffect(() => {
+    if (userInfo.userRole) {
+      navigate("/usuario");
+    }
+  }, [userInfo, navigate]);
 
   if (isRegistered) {
     return <ConfirmRegistration name={getValues("firstName")} />;

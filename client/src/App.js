@@ -61,15 +61,6 @@ function App() {
   let location = useLocation();
   let page = location.pathname.split("/")[1];
 
-  let loginProps = {
-    userAuthentication: userAuthentication,
-    setUserAuthentication: setUserAuthentication,
-    userAdmin: userAdmin,
-    setUserAdmin: setUserAdmin,
-    userName: userName,
-    setUserName: setUserName,
-  };
-
   const checkAuthentication = async () => {
     setLoading(true);
     try {
@@ -116,8 +107,8 @@ function App() {
         {!(page === "painel") ? <UserNavigation /> : userInfo.userRole === "admin" && <AdminNavigation />}
         <main>
           <Routes>
-            <Route exact path="/cadastro" element={!userAuthentication ? <Register /> : <Navigate to="/usuario" />} />
-            <Route exact path="/login" element={!userAuthentication ? <Login /> : <Navigate to="/usuario" />} />
+            <Route exact path="/cadastro" element={<Register />} />
+            <Route exact path="/login" element={<Login />} />
             <Route
               exact
               path="/painel/"
@@ -132,7 +123,7 @@ function App() {
               path="/painel/eventos"
               element={
                 <PrivateRoute>
-                  <ListEvents userAdmin={userAdmin} userName={userName} />
+                  <ListEvents />
                 </PrivateRoute>
               }
             />
@@ -141,16 +132,7 @@ function App() {
               path="/painel/eventos/novo"
               element={
                 <PrivateRoute>
-                  <NewEvent userAdmin={userAdmin} userName={userName} />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              exact
-              path="/painel/eventos/:id/:tab?"
-              element={
-                <PrivateRoute>
-                  <EditEventPanel />
+                  <NewEvent />
                 </PrivateRoute>
               }
             />
@@ -160,6 +142,15 @@ function App() {
               element={
                 <PrivateRoute>
                   <CheckInPage />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              exact
+              path="/painel/eventos/:id/:tab?"
+              element={
+                <PrivateRoute>
+                  <EditEventPanel />
                 </PrivateRoute>
               }
             />
