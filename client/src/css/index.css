@@ -260,7 +260,7 @@ input[type="number"] {
 .viewfinder-crosshair {
   position: absolute;
   z-index: 999999;
-  top: 43%;
+  top: 37%;
   left: 37%;
   width: 100px;
   height: 100px;

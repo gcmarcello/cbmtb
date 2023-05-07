@@ -140,7 +140,7 @@ function App() {
               exact
               path="/painel/eventos/:id/checkin"
               element={
-                <PrivateRoute>
+                <PrivateRoute roles={["staff"]}>
                   <CheckInPage />
                 </PrivateRoute>
               }
@@ -167,7 +167,7 @@ function App() {
               exact
               path="/painel/noticias/nova"
               element={
-                <PrivateRoute>
+                <PrivateRoute roles={["press", "organizer"]}>
                   <NewNews />
                 </PrivateRoute>
               }
@@ -176,7 +176,7 @@ function App() {
               exact
               path="/painel/noticias/:id"
               element={
-                <PrivateRoute>
+                <PrivateRoute roles={["press", "organizer"]}>
                   <EditNews />
                 </PrivateRoute>
               }
@@ -257,7 +257,7 @@ function App() {
               exact
               path="/usuario/:panel?"
               element={
-                <PrivateRoute>
+                <PrivateRoute roles={["user", "staff", "press", "organizer"]}>
                   <UserPanel />
                 </PrivateRoute>
               }
@@ -266,14 +266,14 @@ function App() {
               exact
               path="/inscricao/:id/:coupon?"
               element={
-                <PrivateRoute>
+                <PrivateRoute roles={["user", "staff", "press", "organizer"]}>
                   <Registration />
                 </PrivateRoute>
               }
             />
             <Route exact path="/" element={<Home />} />
             <Route exact path="/:flagshipLink/" element={<FlagshipHome />} />
-            <Route exact path="/pagamento/:linkId" element={<Payments />} />
+            {/* <Route exact path="/pagamento/:linkId" element={<Payments />} /> */}
             <Route exact path="/confirmacao/:id" element={<ConfirmationPage />} />
             <Route exact path="/eventos/:id" element={<EventPage />} />
             <Route exact path="/eventos/" element={<AllEvents />} />
