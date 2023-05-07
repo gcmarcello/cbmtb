@@ -17,8 +17,10 @@ const ReaderComponent = ({ getCheckInNumbers, id }) => {
 
     try {
       setError(null);
-
-      const response = await fetch(`/api/registrations/verify/${id}/${code.data}`, { method: "GET" });
+      const myHeaders = new Headers();
+      myHeaders.append("Content-Type", "application/json");
+      myHeaders.append("token", localStorage.token);
+      const response = await fetch(`/api/registrations/verify/${id}/${code.data}`, { method: "GET", headers: myHeaders });
       const parseResponse = await response.json();
       if (parseResponse.type === "success") {
         setRegistration(parseResponse.data);
