@@ -24,7 +24,7 @@ async function listEventsAdmin(req, res) {
 async function listNextEvents(req, res) {
   let listOfEvents;
   try {
-    listOfEvents = await pool.query("SELECT * FROM events WHERE event_status = $1 ORDER BY event_date_start DESC", [true]);
+    listOfEvents = await pool.query("SELECT * FROM events WHERE event_status = $1 ORDER BY event_date_start DESC", ["open"]);
 
     const checkForAvailability = (registrationStartDate, registrationEndDate) => {
       const registrationStarts = dayjs(registrationStartDate);
@@ -39,15 +39,10 @@ async function listNextEvents(req, res) {
 }
 
 async function listEventsPublic(req, res) {
-  let listOfEvents;
   try {
     const { event, home } = req.params;
 
-    if (event) {
-      listOfEvents = await pool.query("SELECT * FROM events WHERE event_name LIKE $1 ORDER BY event_date_start DESC", [`%${event}%`]);
-    } else {
-      listOfEvents = await pool.query("SELECT * FROM events WHERE event_status = $1 ORDER BY event_date_start DESC", [true]);
-    }
+    const listOfEvents = await pool.query("SELECT * FROM events WHERE event_status <> $1 ORDER BY event_date_start DESC", ["private"]);
 
     const checkForAvailability = (registrationStartDate, registrationEndDate) => {
       const registrationStarts = dayjs(registrationStartDate);
@@ -138,20 +133,19 @@ async function createEvent(req, res) {
 
 async function toggleRegistrations(req, res) {
   try {
-    const { id, boolean } = req.params;
-    const state = JSON.parse(boolean);
+    const { id, status } = req.params;
     const toggleEvent = await pool.query("UPDATE events SET event_status = $1 WHERE event_id = $2 AND event_owner_id = $3 RETURNING *", [
-      state,
+      status,
       id,
       req.userId,
     ]);
     res.status(200).json({
-      message: boolean ? "Inscrições abertas!" : "Inscrições fechadas.",
+      message: "Status do Evento Atualizado!",
       type: "success",
     });
   } catch (err) {
     res.status(400).json({
-      message: `Erro ao abrir/fechar inscrições. ${err.message}`,
+      message: `Erro ao atualizar evento. ${err.message}`,
       type: "error",
     });
     console.log(err.message);
@@ -166,7 +160,7 @@ async function retrieveEventInformation(req, res) {
     const coupons = (await pool.query("SELECT * FROM event_coupons WHERE event_id = $1", [id])).rows;
     const registrations = (
       await pool.query(
-        "SELECT r.registration_id,r.registration_shirt,r.registration_status,r.registration_date, r.coupon_id, u.user_email,u.user_first_name,u.user_last_name,u.user_cpf, u.user_phone, u.user_birth_date, c.category_id, c.category_name, ec.coupon_link FROM registrations AS r LEFT JOIN users AS u ON r.user_id = u.user_id LEFT JOIN event_categories AS c ON r.category_id = c.category_id LEFT JOIN event_coupons AS ec ON r.coupon_id = ec.coupon_id WHERE r.event_id = $1",
+        "SELECT r.registration_id,r.registration_checkin,r.registration_shirt,r.registration_status,r.registration_date, r.coupon_id, u.user_email,u.user_first_name,u.user_last_name,u.user_cpf, u.user_phone, u.user_birth_date, c.category_id, c.category_name, ec.coupon_link FROM registrations AS r LEFT JOIN users AS u ON r.user_id = u.user_id LEFT JOIN event_categories AS c ON r.category_id = c.category_id LEFT JOIN event_coupons AS ec ON r.coupon_id = ec.coupon_id WHERE r.event_id = $1",
         [id]
       )
     ).rows;

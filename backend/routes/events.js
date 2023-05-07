@@ -45,7 +45,7 @@ router.get("/next", eventsController.listNextEvents);
 // List Events (PUBLIC)
 router.get("/public/:event?", eventsController.listEventsPublic);
 // Open/Close Event (ADMIN)
-router.put("/toggle/:id/:boolean", adminAuthorization, eventsController.toggleRegistrations);
+router.put("/toggle/:id/:status", adminAuthorization, eventsController.toggleRegistrations);
 // GET Info to Update Event (ADMIN)
 router.get("/update/:id", adminAuthorization, eventsController.retrieveEventInformation);
 // View Event (PUBLIC)
