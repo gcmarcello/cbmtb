@@ -6,6 +6,7 @@ import Table from "../table";
 const ListEvents = () => {
   const navigate = useNavigate();
   const [eventChange, setEventChange] = useState(false);
+  const [statusButton, setStatusButton] = useState({ class: null, text: null });
   const [eventsList, setEventsList] = useState([]);
 
   const columns = [
@@ -16,39 +17,45 @@ const ListEvents = () => {
     },
     {
       accessor: "event_status",
-      Header: "Manual",
-      Cell: ({ value, row }) => (
-        <Fragment>
-          {eventChange ? (
-            <button className="btn btn-light" disabled>
-              <div className="spinner-border spinner-border-sm" role="status"></div> <span className="d-none d-lg-inline-block">Carregando...</span>
-            </button>
-          ) : (
-            <div className="dropdown">
-              <button
-                className={`btn btn-${value ? "success" : "danger"} dropdown-toggle`}
-                type="button"
-                id="dropdownMenuButton1"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
-              >
-                {value ? "Abertas" : "Fechadas"}
+      Header: "Status",
+      Cell: ({ value, row }) => {
+        return (
+          <Fragment>
+            {eventChange ? (
+              <button className="btn btn-light" disabled>
+                <div className="spinner-border spinner-border-sm" role="status"></div> <span className="d-none d-lg-inline-block">Carregando...</span>
               </button>
-              <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                <li>
-                  <button
-                    className="dropdown-item"
-                    onClick={(e) => toggleEvents(e, row.original.event_id, !row.original.event_status)}
-                    disabled={eventChange}
-                  >
-                    {value ? "Fechar" : "Abrir"}
-                  </button>
-                </li>
-              </ul>
-            </div>
-          )}
-        </Fragment>
-      ),
+            ) : (
+              <div className="dropdown">
+                <button
+                  className={`btn btn-${value === "open" ? "success" : value === "private" ? "warning" : "secondary"} dropdown-toggle`}
+                  type="button"
+                  id="dropdownMenuButton1"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                  style={{ minWidth: "91px" }}
+                >
+                  {value === "open" ? "Aberto" : value === "private" ? "Privado" : "Finalizado"}
+                </button>
+                <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                  {value === "open" && <PrivateEventButton row={row} />}
+                  {(value === "private" || value === "completed") && <OpenEventButton row={row} />}
+                  {value !== "completed" && (
+                    <>
+                      <hr className="dropdown-divider" />
+                      <li>
+                        <button className="dropdown-item" onClick={(e) => {}} disabled={eventChange}>
+                          {"Finalizar Evento"}
+                        </button>
+                      </li>
+                    </>
+                  )}
+                </ul>
+              </div>
+            )}
+          </Fragment>
+        );
+      },
     },
     {
       Header: "Data",
@@ -71,6 +78,26 @@ const ListEvents = () => {
       ),
     },
   ];
+
+  const PrivateEventButton = ({ row }) => {
+    return (
+      <li>
+        <button className="dropdown-item" onClick={(e) => toggleEvents(e, row.original.event_id, "private")} disabled={eventChange}>
+          {"Privar Evento"}
+        </button>
+      </li>
+    );
+  };
+
+  const OpenEventButton = ({ row }) => {
+    return (
+      <li>
+        <button className="dropdown-item" onClick={(e) => toggleEvents(e, row.original.event_id, "open")} disabled={eventChange}>
+          {"Abrir Evento"}
+        </button>
+      </li>
+    );
+  };
 
   const getEvents = async (e) => {
     try {

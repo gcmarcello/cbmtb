@@ -72,7 +72,7 @@ module.exports = async (req, res, next) => {
   }
 
   // Checking for manual registration status
-  if (!checkForAvailability.rows[0].event_status) {
+  if (checkForAvailability.rows[0].event_status !== "open") {
     return res.status(200).json({ message: "Inscrições Indisponíveis", type: "error" });
   }
 
