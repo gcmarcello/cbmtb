@@ -73,6 +73,9 @@ const ListEvents = () => {
           <Link to={`/painel/eventos/${value}/inscritos`} className="btn btn-primary mx-1 d-none d-lg-inline-block">
             <i className="bi bi-people-fill"></i>
           </Link>
+          <Link to={`/painel/eventos/${value}/checkin`} className="btn btn-warning mx-1 d-none d-lg-inline-block">
+            <i class="bi bi-check-circle-fill"></i>
+          </Link>
         </div>
       ),
     },
