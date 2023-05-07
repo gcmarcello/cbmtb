@@ -1,4 +1,3 @@
-const axios = require("axios");
 const crypto = require("crypto");
 const pool = require("../database/database");
 const Email = require("../utils/emails");
@@ -77,7 +76,7 @@ async function read_user_registrations(req, res) {
   try {
     const userId = req.userId;
     const registrations = await pool.query(
-      "SELECT r.registration_status, r.registration_shirt, r.registration_id, r.payment_id, c.category_name, e.event_id, e.event_name, e.event_description, e.event_rules, e.event_location, e.event_date_start, e.event_image FROM registrations AS r LEFT JOIN users AS u ON r.user_id = u.user_id LEFT JOIN event_categories AS c ON r.category_id = c.category_id LEFT JOIN events AS e ON c.event_id = e.event_id WHERE u.user_id = $1",
+      "SELECT r.registration_status, r.registration_id, r.registration_shirt, r.registration_id, r.payment_id, c.category_name, e.event_id, e.event_name, e.event_location, e.event_date_start, e.event_image FROM registrations AS r LEFT JOIN users AS u ON r.user_id = u.user_id LEFT JOIN event_categories AS c ON r.category_id = c.category_id LEFT JOIN events AS e ON c.event_id = e.event_id WHERE u.user_id = $1",
       [userId]
     );
 
@@ -240,7 +239,7 @@ async function check_registration(req, res) {
     const periodVerification = dayjs().isBetween(registrationStarts, registrationEnds, null, []);
 
     // Checking for manual registration status
-    if (!checkForAvailability.rows[0].event_status) {
+    if (checkForAvailability.rows[0].event_status !== "open") {
       return res.status(200).json({ message: "Inscrições Indisponíveis", type: "error" });
     }
 
@@ -263,6 +262,69 @@ async function check_registration(req, res) {
   }
 }
 
+async function verify_registration(req, res) {
+  const { id, eventId } = req.params;
+  try {
+    const verifyRegistration = await pool.query(
+      "SELECT u.user_first_name, u.user_last_name, u.user_birth_date, ec.category_name, r.registration_status, r.registration_checkin, r.registration_id FROM users AS u LEFT JOIN registrations as r on u.user_id = r.user_id LEFT JOIN event_categories AS ec ON r.category_id = ec.category_id WHERE r.registration_id = $1 AND r.event_id = $2",
+      [id, eventId]
+    );
+
+    if (!verifyRegistration.rowCount) {
+      return res.status(404).json({ message: "Erro ao encontrar inscrição", type: "error" });
+    }
+
+    if (verifyRegistration.rows[0].registration_status !== "completed") {
+      return res.status(403).json({ message: "Esta inscrição não foi confirmada", type: "error" });
+    }
+
+    return res.status(200).json({ data: verifyRegistration.rows[0], type: "success" });
+  } catch (error) {
+    res.status(400).json({ message: "Erro ao buscar inscrição", type: "error" });
+  }
+}
+
+async function checkin_registration(req, res) {
+  const { id } = req.params;
+  try {
+    const verifyRegistration = await pool.query("SELECT * FROM registrations WHERE registration_id = $1", [id]);
+
+    if (!verifyRegistration.rowCount) {
+      console.log({ message: "Erro ao encontrar inscrição", type: "error" });
+      return res.status(404).json({ message: "Erro ao encontrar inscrição", type: "error" });
+    }
+
+    if (verifyRegistration.rows[0].registration_status !== "completed") {
+      console.log({ message: "Esta inscrição não foi confirmada", type: "error" });
+      return res.status(403).json({ message: "Esta inscrição não foi confirmada", type: "error" });
+    }
+
+    const checkinRegistration = await pool.query("UPDATE registrations SET registration_checkin = true WHERE registration_id = $1", [id]);
+
+    return res.status(200).json({ data: verifyRegistration.rows[0], message: "Check-in Realizado!", type: "success" });
+  } catch (error) {
+    res.status(400).json({ message: "Erro ao buscar inscrição", type: "error" });
+  }
+}
+
+async function list_event_registrations(req, res) {
+  const { id } = req.params;
+  try {
+    const eventInfo = await pool.query("SELECT event_name, event_id FROM events WHERE event_id = $1", [id]);
+    const registrationList = await pool.query(
+      "SELECT COUNT(*) as total_attendees, COUNT(CASE WHEN registration_checkin = true THEN 1 END) AS checkedin_attendees FROM registrations WHERE event_id = $1",
+      [id]
+    );
+    res.status(200).json({
+      data: { eventInfo: eventInfo.rows[0], attendeeCount: registrationList.rows[0] },
+      message: "Lista de inscritos atualizada",
+      type: "success",
+    });
+  } catch (error) {
+    res.status(400).json({ message: `Erro ao atualizar a lista de inscritos. ${error.message}`, type: "error" });
+  }
+}
+
 module.exports = {
   create_registration,
   read_user_registrations,
@@ -270,4 +332,7 @@ module.exports = {
   delete_registration,
   delete_registration_admin,
   check_registration,
+  verify_registration,
+  checkin_registration,
+  list_event_registrations,
 };
