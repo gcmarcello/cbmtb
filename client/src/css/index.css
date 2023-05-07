@@ -257,6 +257,20 @@ input[type="number"] {
   transform: scale(1.15);
 }
 
+.viewfinder-crosshair {
+  position: absolute;
+  z-index: 999999;
+  top: 43%;
+  left: 37%;
+  width: 100px;
+  height: 100px;
+  pointer-events: none;
+}
+
+.qr-code-reader {
+  margin-bottom: -110px;
+}
+
 @media (min-width: 768px) {
   .sticky-bottom {
     position: fixed;
