@@ -200,7 +200,7 @@ const ListRegistrations = (props) => {
   };
 
   if (isLoading) {
-    setIsLoading(true);
+    <LoadingScreen />;
   }
 
   return (
