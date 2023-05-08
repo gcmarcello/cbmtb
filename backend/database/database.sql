@@ -161,7 +161,7 @@ CREATE TABLE news_categories(
 
 CREATE TABLE news(
   news_id UUID DEFAULT UUID_generate_v4(),
-  news_link VARCHAR(20) NOT NULL UNIQUE,
+  news_link VARCHAR(50) NOT NULL UNIQUE,
   news_title VARCHAR(255) UNIQUE,
   news_subtitle VARCHAR(255) UNIQUE,
   news_image_link VARCHAR(255),

@@ -51,6 +51,7 @@ import NewFlagship from "./pages/admin/components/flagships/newFlagship";
 import { UserContext } from "./context/userContext";
 import EventRecords from "./pages/event/eventRecord";
 import CheckInPage from "./pages/admin/components/checkin/checkInPage";
+import AdminPanel from "./pages/admin/adminPanel";
 
 function App() {
   const [userAuthentication, setUserAuthentication] = useState(false);
@@ -104,7 +105,7 @@ function App() {
           pauseOnHover
           theme="light"
         />
-        {!(page === "painel") ? <UserNavigation /> : userInfo.userRole === "admin" && <AdminNavigation />}
+        {!(page === "painel") ? <UserNavigation /> : <AdminNavigation />}
         <main>
           <Routes>
             <Route exact path="/cadastro" element={<Register />} />
@@ -113,8 +114,8 @@ function App() {
               exact
               path="/painel/"
               element={
-                <PrivateRoute>
-                  <Navigate to="/painel/eventos" />
+                <PrivateRoute roles={["staff", "press", "organizer"]}>
+                  <AdminPanel />
                 </PrivateRoute>
               }
             />
@@ -122,7 +123,7 @@ function App() {
               exact
               path="/painel/eventos"
               element={
-                <PrivateRoute>
+                <PrivateRoute roles={["staff"]}>
                   <ListEvents />
                 </PrivateRoute>
               }

@@ -109,6 +109,7 @@ const EditNews = () => {
         title: news.news_title,
         subtitle: news.news_subtitle,
         imageOld: news.news_image_link,
+        link: news.news_link,
         body: news.news_text,
       });
     }
@@ -202,17 +203,42 @@ const EditNews = () => {
                     </div>
                   </div>
                 </div>
-                <label htmlFor="title" className="form-label">
-                  Sub-Título da Notícia
-                </label>
+                <div className="row mt-2">
+                  <div className="col-12 col-lg-6">
+                    <label htmlFor="title" className="form-label">
+                      Sub-Título da Notícia
+                    </label>
 
-                <input
-                  type="text"
-                  id="subtitle"
-                  name="subtitle"
-                  className={`form-control ${errors.subtitle?.type ? "is-invalid" : ""}`}
-                  {...register("subtitle", { required: true, pattern: /.{2,}/ })}
-                />
+                    <input
+                      type="text"
+                      id="subtitle"
+                      name="subtitle"
+                      className={`form-control ${errors.subtitle?.type ? "is-invalid" : ""}`}
+                      {...register("subtitle", { required: true, pattern: /.{2,}/ })}
+                    />
+                  </div>
+                  <div className="col-12 col-lg-6">
+                    <label htmlFor="link" className="form-label">
+                      Link da Notícia
+                    </label>
+
+                    <div className="input-group">
+                      <span className="input-group-text" id="basic-addon1">
+                        {window.location.origin}/eventos/
+                      </span>
+                      <input
+                        type="text"
+                        id="link"
+                        name="link"
+                        className={`form-control ${errors.link?.type ? "is-invalid" : ""}`}
+                        {...register("link", { required: true, pattern: /^[a-z0-9-]{1,50}$/i })}
+                      />
+                    </div>
+                    <small id="userHelp" className="form-text text-muted">
+                      Use apenas letras minúsculas, números e hífens.
+                    </small>
+                  </div>
+                </div>
 
                 <label htmlFor="news-text" className="mt-3">
                   Corpo da Notícia

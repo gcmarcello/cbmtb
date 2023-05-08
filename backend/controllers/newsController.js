@@ -96,7 +96,7 @@ async function publish_unpublish_news(req, res) {
   try {
     const { id, boolean } = req.params;
     const toggleNews = await pool.query("UPDATE news SET news_status = $1 WHERE news_id = $2", [boolean, id]);
-    const message = Number(boolean) ? "Notícia publicada." : "Notícia despublicada.";
+    const message = boolean === "true" ? "Notícia publicada." : "Notícia despublicada.";
 
     res.status(200).json({ message: message, type: "success" });
   } catch (err) {
@@ -128,7 +128,7 @@ async function fetch_specific_news(req, res) {
 async function update_news(req, res) {
   try {
     const { id } = req.params;
-    const { title, subtitle, body, imageOld } = req.body;
+    const { title, subtitle, body, imageOld, link } = req.body;
 
     const image = req.file ? await uploadFileToS3(req.file, process.env.S3_BUCKET_NAME, "news-main") : imageOld;
 
@@ -139,8 +139,8 @@ async function update_news(req, res) {
     const updateDate = new Date();
 
     const updateNews = await pool.query(
-      `UPDATE news SET news_title = $1, news_subtitle = $2, news_text = $3, news_last_update = $4, news_image_link = $5 WHERE news_id = $6`,
-      [title, subtitle, body, updateDate, image, id]
+      `UPDATE news SET news_title = $1, news_subtitle = $2, news_text = $3, news_last_update = $4, news_image_link = $5, news_link = $7 WHERE news_id = $6`,
+      [title, subtitle, body, updateDate, image, id, link]
     );
 
     res.status(200).json({ message: "Notícia atualizada com sucesso!", type: "success" });
