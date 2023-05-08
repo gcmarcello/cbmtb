@@ -157,7 +157,7 @@ const EventPage = () => {
                           {event.media && (
                             <Link to={`/eventos/${event.event_id}/midias`}>
                               <button className="btn btn-primary btn-lg form-control mt-3">
-                                <i class="bi bi-images"></i> Fotos do Evento
+                                <i class="bi bi-images"></i> Mídias do Evento
                               </button>
                             </Link>
                           )}

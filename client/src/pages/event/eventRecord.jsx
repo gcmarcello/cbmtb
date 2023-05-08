@@ -72,11 +72,11 @@ const EventRecords = () => {
         <div className="col-12 d-flex justify-content-center rounded-2 mb-3">
           {!videos.length && <p>Mais vídeos em breve.</p>}
           {videos.map((video, index) => (
-            <>
-              <video key={`video-${index}`} controls>
+            <div key={`video-${index}`} style={{ maxWidth: "480px" }} className="ratio ratio-16x9">
+              <video controls>
                 <source src={video.src} type="video/mp4" />
               </video>
-            </>
+            </div>
           ))}
         </div>
       </div>
