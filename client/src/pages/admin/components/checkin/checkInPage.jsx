@@ -30,8 +30,6 @@ const CheckInPage = () => {
     }
   };
 
-  console.log(registrationInfo);
-
   useEffect(() => {
     getCheckInNumbers();
   }, []);
