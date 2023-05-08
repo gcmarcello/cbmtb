@@ -16,6 +16,7 @@ import { LazyLoadComponent } from "react-lazy-load-image-component";
 const EventRecords = () => {
   const { id } = useParams();
   const [photos, setPhotos] = useState([]);
+  const [videos, setVideos] = useState([]);
   const [event, setEvent] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
@@ -36,7 +37,10 @@ const EventRecords = () => {
         return;
       }
       setEvent(parseResponse.event);
-      setPhotos(parseResponse.data.map((photo) => ({ src: photo.link, width: 800, height: 600 })));
+      setPhotos(
+        parseResponse.data.filter((file) => file.link && !file.link.endsWith("mp4")).map((photo) => ({ src: photo.link, width: 800, height: 600 }))
+      );
+      setVideos(parseResponse.data.filter((file) => file.link && file.link.endsWith("mp4")).map((video) => ({ src: video.link })));
     } catch (err) {
       console.log(err);
     } finally {
@@ -64,7 +68,22 @@ const EventRecords = () => {
       <hr />
 
       <div className="row">
+        <h2>Vídeos</h2>
         <div className="col-12 d-flex justify-content-center rounded-2 mb-3">
+          {!videos.length && <p>Mais vídeos em breve.</p>}
+          {videos.map((video, index) => (
+            <>
+              <video key={`video-${index}`} controls>
+                <source src={video.src} type="video/mp4" />
+              </video>
+            </>
+          ))}
+        </div>
+      </div>
+      <div className="row">
+        <h2>Fotos</h2>
+        <div className="col-12 d-flex justify-content-center rounded-2 mb-3">
+          {!photos.length && <p>Mais fotos em breve.</p>}
           <Lightbox
             plugins={[Thumbnails]}
             thumbnails={{ ref: thumbnailsRef }}
