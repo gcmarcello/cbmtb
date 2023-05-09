@@ -308,15 +308,25 @@ async function checkin_registration(req, res) {
 }
 
 async function list_event_registrations(req, res) {
-  const { id } = req.params;
+  const { id, type } = req.params;
   try {
-    const eventInfo = await pool.query("SELECT event_name, event_id FROM events WHERE event_id = $1", [id]);
-    const registrationList = await pool.query(
-      "SELECT COUNT(*) as total_attendees, COUNT(CASE WHEN registration_checkin = true THEN 1 END) AS checkedin_attendees FROM registrations WHERE event_id = $1",
-      [id]
-    );
+    let registrationList;
+    const eventInfo = await pool.query("SELECT event_name, event_id, event_status FROM events WHERE event_id = $1", [id]);
+
+    if (type === "noshow") {
+      registrationList = await pool.query(
+        "SELECT user_first_name, user_last_name, user_cpf, registrations.user_id, registration_id FROM registrations LEFT JOIN users ON registrations.user_id = users.user_id WHERE event_id = $1 AND (NOT registration_checkin OR registration_checkin IS NULL)",
+        [id]
+      );
+    } else {
+      registrationList = await pool.query(
+        "SELECT COUNT(*) as total_attendees, COUNT(CASE WHEN registration_checkin = true THEN 1 END) AS checkedin_attendees FROM registrations WHERE event_id = $1",
+        [id]
+      );
+    }
+
     res.status(200).json({
-      data: { eventInfo: eventInfo.rows[0], attendeeCount: registrationList.rows[0] },
+      data: { eventInfo: eventInfo.rows[0], attendeeCount: type ? registrationList.rows : registrationList.rows[0] },
       message: "Lista de inscritos atualizada",
       type: "success",
     });

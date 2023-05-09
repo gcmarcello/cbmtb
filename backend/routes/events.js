@@ -40,6 +40,8 @@ router.put(
 router.get("/", adminAuthorization(), eventsController.listEventsAdmin);
 // Create Event (ADMIN)
 router.post("/", [adminAuthorization(), upload.single("image")], eventsController.createEvent);
+// Create Event (ADMIN)
+router.post("/:id/complete", adminAuthorization(), eventsController.completeEvent);
 // List Next Events (PUBLIC)
 router.get("/next", eventsController.listNextEvents);
 // List Events (PUBLIC)

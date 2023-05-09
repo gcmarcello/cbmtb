@@ -19,15 +19,28 @@ const Pagination = (props) => {
     <div className="pagination-container ms-2 mb-1 d-flex">
       <ul className="pagination mb-0">
         <li className={`page-item ${!props.canPreviousPage && `disabled`}`}>
-          <button className={`page-link`} onClick={() => props.previousPage()} disabled={!props.canPreviousPage}>
+          <button
+            className={`page-link`}
+            type="button"
+            onClick={(e) => {
+              e.preventDefault();
+              props.previousPage();
+            }}
+            disabled={!props.canPreviousPage}
+          >
             {`<`} <span className="d-none d-lg-inline-block">Anterior</span>
           </button>
         </li>
         {Array.from(Array(props.pageCount).keys()).map((page, index) => (
-          <li className={`page-item ${page === props.pageIndex && `disabled`}`} key={`page-${index + 1}`}>
+          <li
+            className={`d-none ${props.pageCount <= 20 && "d-lg-block"} page-item ${page === props.pageIndex && `disabled`}`}
+            key={`page-${index + 1}`}
+          >
             <button
               className="page-link"
-              onClick={() => {
+              type="button"
+              onClick={(e) => {
+                e.preventDefault();
                 props.gotoPage(page);
               }}
             >
@@ -36,7 +49,14 @@ const Pagination = (props) => {
           </li>
         ))}
         <li className={`page-item ${!props.canNextPage && `disabled`}`}>
-          <button className="page-link" onClick={() => props.nextPage()}>
+          <button
+            className="page-link"
+            type="button"
+            onClick={(e) => {
+              e.preventDefault();
+              props.nextPage();
+            }}
+          >
             <span className="d-none d-lg-inline-block">Próxima</span> {`>`}
           </button>
         </li>
@@ -117,7 +137,7 @@ const Table = ({ data, columns, customPageSize, sortByColumn, generateXlsx }) =>
 
   return (
     <div className="table-responsive">
-      <div className={`d-flex my-2 mx-1 align-items-center`}>
+      <div className={`d-flex justify-content-between my-2 mx-1 align-items-center`}>
         <GlobalFilter globalFilter={globalFilter} setGlobalFilter={setGlobalFilter} />
         <Pagination
           canPreviousPage={canPreviousPage}

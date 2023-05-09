@@ -172,7 +172,7 @@ const EditEventPanel = () => {
             <div className="d-flex flex-column flex-lg-row justify-content-between">
               <h2 className="text-center">{event?.event_name}</h2>
               <div className="d-flex flex-lg-row flex-column">
-                <Link to="/painel" className="btn btn-secondary my-1 w-100">
+                <Link to="/painel/eventos" className="btn btn-secondary my-1 w-100">
                   Voltar
                 </Link>
                 <button className="btn btn-success ms-lg-2 my-1 w-100" onClick={handleSubmit(onSubmit)}>

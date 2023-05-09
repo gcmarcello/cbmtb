@@ -43,9 +43,9 @@ const ListEvents = () => {
                     <>
                       <hr className="dropdown-divider" />
                       <li>
-                        <button className="dropdown-item" onClick={(e) => {}} disabled={eventChange}>
+                        <Link to={`/painel/eventos/${row.original.event_id}/finalizar`} className="dropdown-item" disabled={eventChange}>
                           {"Finalizar Evento"}
-                        </button>
+                        </Link>
                       </li>
                     </>
                   )}
@@ -74,7 +74,7 @@ const ListEvents = () => {
             <i className="bi bi-people-fill"></i>
           </Link>
           <Link to={`/painel/eventos/${value}/checkin`} className="btn btn-warning mx-1 d-none d-lg-inline-block">
-            <i class="bi bi-check-circle-fill"></i>
+            <i className="bi bi-check-circle-fill"></i>
           </Link>
         </div>
       ),

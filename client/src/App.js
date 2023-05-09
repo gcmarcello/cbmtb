@@ -52,6 +52,7 @@ import { UserContext } from "./context/userContext";
 import EventRecords from "./pages/event/eventRecord";
 import CheckInPage from "./pages/admin/components/checkin/checkInPage";
 import AdminPanel from "./pages/admin/adminPanel";
+import CompleteEvent from "./pages/admin/components/events/completeEvent";
 
 function App() {
   const [userAuthentication, setUserAuthentication] = useState(false);
@@ -105,7 +106,8 @@ function App() {
           pauseOnHover
           theme="light"
         />
-        {!(page === "painel") ? <UserNavigation /> : <AdminNavigation />}
+        {!(page === "painel") && <UserNavigation />}
+        {page === "painel" && userInfo.userRole && userInfo.userRole !== "user" && <AdminNavigation />}
         <main>
           <Routes>
             <Route exact path="/cadastro" element={<Register />} />
@@ -143,6 +145,15 @@ function App() {
               element={
                 <PrivateRoute roles={["staff"]}>
                   <CheckInPage />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              exact
+              path="/painel/eventos/:id/finalizar"
+              element={
+                <PrivateRoute>
+                  <CompleteEvent />
                 </PrivateRoute>
               }
             />

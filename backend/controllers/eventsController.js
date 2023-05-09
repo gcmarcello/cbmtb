@@ -453,6 +453,20 @@ async function createFlagship(req, res) {
   }
 }
 
+async function completeEvent(req, res) {
+  try {
+    const { id } = req.params;
+    const suspendedUsers = req.body.filter((user) => user.suspended);
+    const userIds = suspendedUsers.map((user) => user.user_id);
+    const suspendUsers = pool.query(`UPDATE users SET user_confirmed = false, user_email = null WHERE user_id = ANY($1::uuid[])`, [userIds]);
+    const completeEvent = pool.query(`UPDATE events SET event_status = 'completed' WHERE event_id = $1`, [id]);
+    res.status(200).json({ message: "Evento finalizado com sucesso.", type: "success" });
+  } catch (err) {
+    console.log(err.message);
+    res.status(400).json({ message: "Erro ao finalizar evento.", type: "error" });
+  }
+}
+
 module.exports = {
   listEventsAdmin,
   listEventsPublic,
@@ -469,4 +483,5 @@ module.exports = {
   listFlagshipEvents,
   createFlagship,
   listEventMedias,
+  completeEvent,
 };
