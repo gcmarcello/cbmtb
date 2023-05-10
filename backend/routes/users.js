@@ -97,13 +97,13 @@ router.put("/", [authorization, registrationValidation], async (req, res) => {
 
 // Update User Information
 router.put("/admin", adminAuthorization(), async (req, res) => {
-  const { address, apartment, cep, city, email, firstName, lastName, number, phone, state, userId, userStatus, birthDate } = req.body;
+  const { address, apartment, cep, city, email, firstName, lastName, number, phone, state, userId, userStatus, birthDate, role } = req.body;
   try {
     const userInfoEmail = (await pool.query("SELECT user_email FROM users WHERE user_id = $1", [userId])).rows[0];
 
     const userInfoUpdate = await pool.query(
-      "UPDATE users SET user_address = $1, user_apartment = $2, user_cep = $3, user_city = $4, user_email = $5, user_first_name = $6, user_last_name = $7, user_number = $8, user_phone = $9, user_state = $10, user_confirmed = $12, user_birth_date = $13 WHERE user_id = $11 RETURNING *",
-      [address, apartment, cep, city, email.toLowerCase(), firstName, lastName, number, phone, state, userId, userStatus, birthDate]
+      "UPDATE users SET user_address = $1, user_apartment = $2, user_cep = $3, user_city = $4, user_email = $5, user_first_name = $6, user_last_name = $7, user_number = $8, user_phone = $9, user_state = $10, user_confirmed = $12, user_birth_date = $13, user_role = $14 WHERE user_id = $11 RETURNING *",
+      [address, apartment, cep, city, email.toLowerCase(), firstName, lastName, number, phone, state, userId, userStatus, birthDate, role]
     );
 
     if (userInfoEmail.user_email !== email) {
