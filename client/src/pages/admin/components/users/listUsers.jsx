@@ -182,7 +182,6 @@ const ListUsers = () => {
         headers: myHeaders,
         body: JSON.stringify(data),
       });
-      console.log(data);
       const parseResponse = await response.json();
       if (parseResponse.type === "success") {
         const index = userList.findIndex((user) => user.user_id === data.userId);
