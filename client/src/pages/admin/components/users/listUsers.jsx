@@ -162,6 +162,7 @@ const ListUsers = () => {
         method: "GET",
         headers: myHeaders,
       }); // eslint-disable-next-line
+
       const parseResponse = await response.json();
       setUserList(parseResponse);
     } catch (err) {
@@ -181,7 +182,30 @@ const ListUsers = () => {
         headers: myHeaders,
         body: JSON.stringify(data),
       });
+      console.log(data);
       const parseResponse = await response.json();
+      if (parseResponse.type === "success") {
+        const index = userList.findIndex((user) => user.user_id === data.userId);
+        const updatedUser = {
+          user_address: data.address,
+          user_apartment: data.apartment,
+          user_birth_date: data.birthDate,
+          user_cep: data.cep,
+          user_city: data.city,
+          user_cpf: data.cpf,
+          user_email: data.email,
+          user_first_name: data.firstName,
+          user_gender: data.gender,
+          user_last_name: data.lastName,
+          user_number: data.number,
+          user_phone: data.phone,
+          user_role: data.role,
+          user_state: data.state,
+          user_id: data.userId,
+          user_confirmed: data.userStatus,
+        };
+        setUserList([...userList.slice(0, index), updatedUser, ...userList.slice(index + 1)]);
+      }
       toast[parseResponse.type](parseResponse.message, { theme: "colored" });
     } catch (err) {
       console.log(err.message);
@@ -225,14 +249,13 @@ const ListUsers = () => {
       apartment: userInfo.user_apartment,
       userId: userInfo.user_id,
       userStatus: userInfo.user_confirmed,
+      role: userInfo.user_role,
     });
   };
 
   useEffect(() => {
-    if (!userListChange) {
-      listUsers();
-    }
-  }, [userListChange]);
+    listUsers();
+  }, []);
 
   return (
     <div className="bg-light">
@@ -312,29 +335,50 @@ const ListUsers = () => {
                       </div>
 
                       <div className="col-12 col-lg-6">
-                        <label htmlFor="name">
-                          CPF<span className="text-danger">*</span>
-                        </label>
-                        <Controller
-                          name="cpf"
-                          control={control}
-                          defaultValue=""
-                          rules={{
-                            required: true,
-                            pattern: /^(\d{3}\.){2}\d{3}-\d{2}$/,
-                          }}
-                          render={({ field }) => (
-                            <InputMask
-                              mask="999.999.999-99"
-                              className={`form-control ${errors.cpf ? "is-invalid" : ""}`}
-                              maskChar=""
-                              value={field.value}
-                              onChange={field.onChange}
+                        <div className="row">
+                          <div className="col-12 col-lg-6">
+                            <label htmlFor="name">
+                              CPF<span className="text-danger">*</span>
+                            </label>
+                            <Controller
+                              name="cpf"
+                              control={control}
+                              defaultValue=""
+                              rules={{
+                                required: true,
+                                pattern: /^(\d{3}\.){2}\d{3}-\d{2}$/,
+                              }}
+                              render={({ field }) => (
+                                <InputMask
+                                  mask="999.999.999-99"
+                                  className={`form-control ${errors.cpf ? "is-invalid" : ""}`}
+                                  maskChar=""
+                                  value={field.value}
+                                  onChange={field.onChange}
+                                >
+                                  {(inputProps) => <input {...inputProps} type="text" />}
+                                </InputMask>
+                              )}
+                            />
+                          </div>
+                          <div className="col-12 col-lg-6">
+                            <label htmlFor="role">
+                              Cargo<span className="text-danger">*</span>
+                            </label>
+                            <select
+                              id="role"
+                              defaultValue=""
+                              className={`form-select ${errors.role?.type ? "is-invalid" : ""} mb-1`}
+                              {...register("role", { required: true })}
                             >
-                              {(inputProps) => <input {...inputProps} type="text" />}
-                            </InputMask>
-                          )}
-                        />
+                              <option value="">Selecionar</option>
+                              <option value="user">Usuário</option>
+                              <option value="press">Imprensa</option>
+                              <option value="organizer">Organizador</option>
+                              <option value="admin">Administrador</option>
+                            </select>
+                          </div>
+                        </div>
                       </div>
                     </div>
                     <hr />
