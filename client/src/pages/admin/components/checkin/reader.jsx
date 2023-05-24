@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import QrCodeReader from "react-qrcode-reader";
 import CheckInOffCanvas from "./checkInOffCanvas";
 import LoadingScreen from "../../../../utils/loadingScreen";
+import _config from "../../../../_config";
 
 const ReaderComponent = ({ getCheckInNumbers, id }) => {
   const [registration, setRegistration] = useState(null);
@@ -44,7 +45,7 @@ const ReaderComponent = ({ getCheckInNumbers, id }) => {
         <div className="qr-code-reader mb-2">
           <QrCodeReader delay={100} width={300} height={300} onRead={handleRead} videoConstraints={{ facingMode: { exact: "environment" } }} />
           <p className="text-center mb-0">Use a câmera para escanear o QR Code</p>
-          <img src="/crosshair.png" alt="Crosshair" className="viewfinder-crosshair" />
+          <img src={_config.images.crosshair} alt="Crosshair" className="viewfinder-crosshair" />
         </div>
       )}
       {error && (

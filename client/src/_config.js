@@ -8,6 +8,7 @@ const _config = {
     secondaryLogo: "https://cbmtb.s3.sa-east-1.amazonaws.com/assets/logoconf_white.svg",
     dashboardLogo: "https://cbmtb.s3.sa-east-1.amazonaws.com/assets/logoconf_black.svg",
     pedalLogo: "https://cbmtb.s3.sa-east-1.amazonaws.com/assets/pedal-logo.png",
+    crosshair: "https://cbmtb.s3.sa-east-1.amazonaws.com/assets/crosshair.png",
   },
   entidade: {
     abbreviation: "CBMTB",
