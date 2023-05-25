@@ -1,5 +1,6 @@
 const sgMail = require("@sendgrid/mail");
 const dayjs = require("dayjs");
+const QRCode = require("qrcode");
 
 const _config = require("../_config");
 
@@ -30,6 +31,12 @@ module.exports = class Email {
   }
   async sendRegistrationEmail(firstName, eventName, dateStart, dateEnd, location, category, registrationID, eventLink) {
     sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+    const qrCode = await new Promise((resolve, reject) => {
+      QRCode.toDataURL(registrationID, function (err, url) {
+        if (err) reject(err);
+        resolve(url);
+      });
+    });
     const msg = {
       to: this.emails[0],
       from: {
@@ -43,8 +50,11 @@ module.exports = class Email {
       
       <p>Obrigado por se inscrever no(a) <strong><span style="font-size:16px">${eventName}</span></strong>! Sua inscri&ccedil;&atilde;o foi confirmada e falta pouco para estarmos juntos!</p>
       
-      <p>Aqui est&atilde;o as informa&ccedil;&otilde;es do evento e da sua inscri&ccedil;&atilde;o.&nbsp;Imprima este e-mail e leve ao evento para facilitar o check-in!</p>
+      <p>Aqui est&atilde;o as informa&ccedil;&otilde;es do evento e da sua inscri&ccedil;&atilde;o.&nbsp;Imprima este e-mail ou leve seu celular ao evento para facilitar o check-in!</p>
       
+      <strong>QR Code para Check-in</strong><br/>
+      <img src="${qrCode}"/>
+
       <ul>
         <li><strong>Data:</strong>&nbsp;${dayjs(dateStart).format("DD/MM/YYYY HH:mm")} -&nbsp;${dayjs(dateEnd).format("DD/MM/YYYY HH:mm")}</li>
         <li><strong>Local:</strong>&nbsp;${location}</li>
