@@ -5,8 +5,9 @@ const EventInfo = (props) => {
     <Fragment>
       <div className="container">
         <p>
-          Selecione a sua categoria e o tamanho da camiseta do kit. Lembrando que você pode apenas se inscrever nas categorias disponíveis para a sua
-          idade.
+          Selecione a sua categoria e o tamanho da camiseta do kit. Lembrando
+          que você pode apenas se inscrever nas categorias disponíveis para a
+          sua idade.
         </p>
         <div className="row align-items-start mb-3">
           <div className="col-12 col-lg-6 mb-3 mb-lg-0">
@@ -55,7 +56,11 @@ const EventInfo = (props) => {
                 <h5 className="card-title mb-0">Regulamento do Evento</h5>
               </div>
               <div className="card-body">
-                <div dangerouslySetInnerHTML={{ __html: props.event.event_rules }} className="overflow-auto" style={{ maxHeight: "255px" }}></div>
+                <div
+                  dangerouslySetInnerHTML={{ __html: props.event.event_rules }}
+                  className="overflow-auto"
+                  style={{ maxHeight: "200px" }}
+                ></div>
               </div>
               <div className="card-footer">
                 <input

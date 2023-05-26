@@ -36,8 +36,9 @@ const UserInfo = (props) => {
     <Fragment>
       <div className="position-sticky top-0">
         <p>
-          Verifique suas informações de cadastro antes de se inscrever na prova. Se alguma alteração for necessária, por favor edite os campos e
-          clique em avançar para seguir com a inscrição.
+          Verifique suas informações de cadastro antes de se inscrever na prova.
+          Se alguma alteração for necessária, por favor edite os campos e clique
+          em avançar para seguir com a inscrição.
         </p>
       </div>
 
@@ -49,7 +50,10 @@ const UserInfo = (props) => {
             id="user_given_name"
             name="user_given_name"
             className="form-control"
-            {...props.register("firstName", { required: true, pattern: /^([A-Za-z]+\s*){1,}$/i })}
+            {...props.register("firstName", {
+              required: true,
+              pattern: /^([A-Za-z]+\s*){1,}$/i,
+            })}
           />
           <label htmlFor="user_last_name">Sobrenome</label>
           <input
@@ -57,12 +61,22 @@ const UserInfo = (props) => {
             id="user_last_name"
             name="user_last_name"
             className="form-control"
-            {...props.register("lastName", { required: true, pattern: /^([A-Za-z]+\s*){1,}$/i })}
+            {...props.register("lastName", {
+              required: true,
+              pattern: /^([A-Za-z]+\s*){1,}$/i,
+            })}
           />
           <div className="row">
             <div className="col-12 col-lg-6">
               <label htmlFor="user_gender">Sexo</label>
-              <select type="text" id="user_gender" name="user_gender" className="form-select" defaultValue={""} disabled>
+              <select
+                type="text"
+                id="user_gender"
+                name="user_gender"
+                className="form-select"
+                defaultValue={""}
+                disabled
+              >
                 <option value="" disabled={true}>
                   {props.user?.user_gender}
                 </option>
@@ -70,7 +84,14 @@ const UserInfo = (props) => {
             </div>
             <div className="col-12 col-lg-6">
               <label htmlFor="user_cpf">CPF</label>
-              <input type="text" id="user_cpf" name="user_cpf" className="form-control" defaultValue={props.user?.user_cpf} disabled />
+              <input
+                type="text"
+                id="user_cpf"
+                name="user_cpf"
+                className="form-control"
+                defaultValue={props.user?.user_cpf}
+                disabled
+              />
             </div>
           </div>
           <div className="row">
@@ -87,7 +108,9 @@ const UserInfo = (props) => {
                 render={({ field }) => (
                   <InputMask
                     mask="99 99999-9999"
-                    className={`form-control ${props.errors.phone ? "is-invalid" : ""} mb-1`}
+                    className={`form-control ${
+                      props.errors.phone ? "is-invalid" : ""
+                    } mb-1`}
                     maskChar=""
                     value={field.value}
                     onChange={field.onChange}
@@ -104,12 +127,16 @@ const UserInfo = (props) => {
                 id="user_birth_date"
                 name="user_birth_date"
                 className="form-control"
-                defaultValue={props.user && dayjs(props.user?.user_birth_date).format("YYYY-MM-DD")}
+                defaultValue={
+                  props.user &&
+                  dayjs(props.user?.user_birth_date).format("YYYY-MM-DD")
+                }
                 disabled
               />
             </div>
             <span id="passwordHelpInline" className="form-text mt-3">
-              Para alterar a data de nascimento, CPF ou gênero, por favor entre em contato com a nossa ouvidoria{" "}
+              Para alterar a data de nascimento, CPF ou gênero, por favor entre
+              em contato com a nossa ouvidoria{" "}
               <Link to="/ouvidoria">clicando aqui.</Link>
             </span>
           </div>
@@ -120,7 +147,11 @@ const UserInfo = (props) => {
             <span className="text-muted small">
               {" "}
               (Não sabe? Clique{" "}
-              <a href="https://www2.correios.com.br/sistemas/buscacep/buscaCep.cfm" target="_blank" rel="noreferrer">
+              <a
+                href="https://www2.correios.com.br/sistemas/buscacep/buscaCep.cfm"
+                target="_blank"
+                rel="noreferrer"
+              >
                 aqui.
               </a>
               )
@@ -143,7 +174,13 @@ const UserInfo = (props) => {
               <InputMask
                 mask="99999-999"
                 name="cep"
-                className={`form-control ${props.errors.cep ? "is-invalid" : cepLoading ? "is-loading" : ""} `}
+                className={`form-control ${
+                  props.errors.cep
+                    ? "is-invalid"
+                    : cepLoading
+                    ? "is-loading"
+                    : ""
+                } `}
                 maskChar=""
                 value={field.value}
                 onChange={field.onChange}
@@ -160,12 +197,21 @@ const UserInfo = (props) => {
                 id="user_city"
                 name="user_city"
                 className="form-control"
-                {...props.register("city", { required: true, pattern: /^([A-Za-zÀ-ÖØ-öø]+\s*){3,}$/i })}
+                {...props.register("city", {
+                  required: true,
+                  pattern: /^([A-Za-zÀ-ÖØ-öø]+\s*){3,}$/i,
+                })}
               />
             </div>
             <div className="col-12 col-lg-6">
               <label htmlFor="user_state">Estado</label>
-              <input type="text" id="user_state" name="user_state" className="form-control" {...props.register("state", { required: true })} />
+              <input
+                type="text"
+                id="user_state"
+                name="user_state"
+                className="form-control"
+                {...props.register("state", { required: true })}
+              />
             </div>
             <div className="col-12">
               <label htmlFor="user_street">Endereço</label>
@@ -174,7 +220,10 @@ const UserInfo = (props) => {
                 id="user_street"
                 name="user_street"
                 className="form-control"
-                {...props.register("address", { required: true, pattern: /.{2,}/ })}
+                {...props.register("address", {
+                  required: true,
+                  pattern: /.{2,}/,
+                })}
               />
             </div>
             <div className="col-12 col-lg-6">
@@ -184,7 +233,10 @@ const UserInfo = (props) => {
                 id="user_number"
                 name="user_number"
                 className="form-control"
-                {...props.register("number", { required: false, pattern: /.{2,}/ })}
+                {...props.register("number", {
+                  required: false,
+                  pattern: /.{2,}/,
+                })}
               />
             </div>
             <div className="col-12 col-lg-6">

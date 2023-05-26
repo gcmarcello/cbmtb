@@ -73,10 +73,13 @@ const Registration = () => {
     myHeaders.append("Content-Type", "application/json");
     myHeaders.append("token", localStorage.token);
     try {
-      const response = await fetch(`/api/registrations/${id}/checkreg/${coupon ? coupon : ""}`, {
-        method: "GET",
-        headers: myHeaders,
-      });
+      const response = await fetch(
+        `/api/registrations/${id}/checkreg/${coupon ? coupon : ""}`,
+        {
+          method: "GET",
+          headers: myHeaders,
+        }
+      );
       const parseResponse = await response.json();
       if (parseResponse.type === "error") {
         toast.error(parseResponse.message, { theme: "colored" });
@@ -94,11 +97,14 @@ const Registration = () => {
     myHeaders.append("Content-Type", "application/json");
     myHeaders.append("token", localStorage.token);
     try {
-      const response = await fetch(`/api/registrations/${id}/${coupon ? coupon : ""}`, {
-        method: "POST",
-        headers: myHeaders,
-        body: JSON.stringify(data),
-      });
+      const response = await fetch(
+        `/api/registrations/${id}/${coupon ? coupon : ""}`,
+        {
+          method: "POST",
+          headers: myHeaders,
+          body: JSON.stringify(data),
+        }
+      );
       const parseResponse = await response.json();
       if (parseResponse.type === "error") {
         navigate(`/eventos/${id}`);
@@ -155,9 +161,23 @@ const Registration = () => {
           />
         );
       case 2:
-        return <EventInfo event={event} user={user} watch={watch} register={register} />;
+        return (
+          <EventInfo
+            event={event}
+            user={user}
+            watch={watch}
+            register={register}
+          />
+        );
       case 3:
-        return <ConfirmationPayment event={event} user={user} watch={watch} register={register} />;
+        return (
+          <ConfirmationPayment
+            event={event}
+            user={user}
+            watch={watch}
+            register={register}
+          />
+        );
       default:
         <UserInfo
           user={user}
@@ -181,7 +201,9 @@ const Registration = () => {
         </h1>
         <hr />
         <form onSubmit={handleSubmit(onSubmit)}>
-          <StepPanel />
+          <div className="mb-5">
+            <StepPanel />
+          </div>
         </form>
       </div>
       {
@@ -195,17 +217,6 @@ const Registration = () => {
           }}
         >
           <ProgressBar stage={stage} setStage={setStage} watch={watch} />
-          {/* <div
-            className="text-white shadow-lg d-flex justify-content-center align-items-center sticky-bottom"
-            style={{ height: "80px", bottom: "0", width: "100%", backgroundColor: "#00a859" }}
-          >
-            <h1>
-              Valor:{" "}
-              {event?.categories.filter((category) => category.category_id === watch("category"))[0]?.category_price
-                ? `R$ ${event?.categories.filter((category) => category.category_id === watch("category"))[0]?.category_price}`
-                : "Gratuito"}
-            </h1>
-          </div> */}
         </div>
       }
     </Fragment>
