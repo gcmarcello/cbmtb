@@ -276,7 +276,7 @@ async function updateEvent(req, res) {
         dayjs(registrationStart).format("YYYY-MM-DD HH:mm:ss.SSSSSSZ"),
         dayjs(registrationEnd).format("YYYY-MM-DD HH:mm:ss.SSSSSSZ"),
         id,
-        flagship === "null" ? null : flagship,
+        flagship === "null" || !flagship ? null : flagship,
       ]
     );
 
