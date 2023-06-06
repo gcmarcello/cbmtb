@@ -24,15 +24,28 @@ async function listEventsAdmin(req, res) {
 async function listNextEvents(req, res) {
   let listOfEvents;
   try {
-    listOfEvents = await pool.query("SELECT * FROM events WHERE event_status = $1 ORDER BY event_date_start DESC", ["open"]);
+    listOfEvents = await pool.query(
+      "SELECT * FROM events WHERE event_status = $1 ORDER BY event_date_start DESC",
+      ["open"]
+    );
 
-    const checkForAvailability = (registrationStartDate, registrationEndDate) => {
+    const checkForAvailability = (
+      registrationStartDate,
+      registrationEndDate
+    ) => {
       const registrationStarts = dayjs(registrationStartDate);
       const registrationEnds = dayjs(registrationEndDate);
       return dayjs().isBetween(registrationStarts, registrationEnds, null, []);
     };
 
-    return res.json(listOfEvents.rows.filter((event) => checkForAvailability(event.event_registrations_start, event.event_registrations_end)));
+    return res.json(
+      listOfEvents.rows.filter((event) =>
+        checkForAvailability(
+          event.event_registrations_start,
+          event.event_registrations_end
+        )
+      )
+    );
   } catch (err) {
     console.log(err.message);
   }
@@ -42,9 +55,15 @@ async function listEventsPublic(req, res) {
   try {
     const { event, home } = req.params;
 
-    const listOfEvents = await pool.query("SELECT * FROM events WHERE event_status <> $1 ORDER BY event_date_start DESC", ["private"]);
+    const listOfEvents = await pool.query(
+      "SELECT * FROM events WHERE event_status <> $1 ORDER BY event_date_start DESC",
+      ["private"]
+    );
 
-    const checkForAvailability = (registrationStartDate, registrationEndDate) => {
+    const checkForAvailability = (
+      registrationStartDate,
+      registrationEndDate
+    ) => {
       const registrationStarts = dayjs(registrationStartDate);
       const registrationEnds = dayjs(registrationEndDate);
       return dayjs().isBetween(registrationStarts, registrationEnds, null, []);
@@ -59,16 +78,29 @@ async function listEventsPublic(req, res) {
 async function readEventPage(req, res) {
   try {
     const { id } = req.params;
-    const typeOfLink = /^\b[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}\b$/.test(id);
+    const typeOfLink =
+      /^\b[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}\b$/.test(
+        id
+      );
     const eventInfo = typeOfLink
       ? await pool.query("SELECT * FROM events WHERE event_id = $1", [id])
       : await pool.query("SELECT * FROM events WHERE event_link = $1", [id]);
     if (eventInfo.rows[0]) {
-      const categories = (await pool.query("SELECT * FROM event_categories WHERE event_id = $1", [eventInfo.rows[0].event_id])).rows;
-      const media = !!(await pool.query("SELECT * FROM event_records WHERE event_id = $1", [eventInfo.rows[0].event_id])).rows[0];
+      const categories = (
+        await pool.query("SELECT * FROM event_categories WHERE event_id = $1", [
+          eventInfo.rows[0].event_id,
+        ])
+      ).rows;
+      const media = !!(
+        await pool.query("SELECT * FROM event_records WHERE event_id = $1", [
+          eventInfo.rows[0].event_id,
+        ])
+      ).rows[0];
       res.status(200).json({ ...eventInfo.rows[0], categories, media });
     } else {
-      res.status(404).json({ message: "Evento não encontrado!", type: "error" });
+      res
+        .status(404)
+        .json({ message: "Evento não encontrado!", type: "error" });
     }
   } catch (err) {
     console.error(err.message);
@@ -77,12 +109,28 @@ async function readEventPage(req, res) {
 
 async function createEvent(req, res) {
   try {
-    const { name, location, link, external, attendees, dateStart, dateEnd, registrationStart, registrationEnd, description, rules, details } =
-      req.body;
+    const {
+      name,
+      location,
+      link,
+      external,
+      attendees,
+      dateStart,
+      dateEnd,
+      registrationStart,
+      registrationEnd,
+      description,
+      rules,
+      details,
+    } = req.body;
 
     const categories = JSON.parse(req.body.categories);
 
-    const S3Image = await uploadFileToS3(req.file, process.env.S3_BUCKET_NAME, "event-main");
+    const S3Image = await uploadFileToS3(
+      req.file,
+      process.env.S3_BUCKET_NAME,
+      "event-main"
+    );
 
     const newEvent = await pool.query(
       "INSERT INTO events (event_name, event_location, event_link, event_external, event_image, event_general_attendees, event_owner_id, event_status, event_date_start, event_date_end, event_registrations_start, event_registrations_end, event_description, event_rules, event_details) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15)  RETURNING *",
@@ -110,7 +158,8 @@ async function createEvent(req, res) {
     if (categories.length) {
       const categoriesSQL = categories
         .map(
-          (category) => `('${newEventID}','${category.name}','${category.minAge}','${category.maxAge}', '${category.gender}', '${category.price}')`
+          (category) =>
+            `('${newEventID}','${category.name}','${category.minAge}','${category.maxAge}', '${category.gender}', '${category.price}')`
         )
         .join(",");
       const newCategories = await pool.query(
@@ -125,7 +174,9 @@ async function createEvent(req, res) {
       }
     });
 
-    res.status(200).json({ message: "Evento criado com sucesso!", type: "success" });
+    res
+      .status(200)
+      .json({ message: "Evento criado com sucesso!", type: "success" });
   } catch (err) {
     console.log(err.message);
   }
@@ -134,11 +185,10 @@ async function createEvent(req, res) {
 async function toggleRegistrations(req, res) {
   try {
     const { id, status } = req.params;
-    const toggleEvent = await pool.query("UPDATE events SET event_status = $1 WHERE event_id = $2 AND event_owner_id = $3 RETURNING *", [
-      status,
-      id,
-      req.userId,
-    ]);
+    const toggleEvent = await pool.query(
+      "UPDATE events SET event_status = $1 WHERE event_id = $2 AND event_owner_id = $3 RETURNING *",
+      [status, id, req.userId]
+    );
     res.status(200).json({
       message: "Status do Evento Atualizado!",
       type: "success",
@@ -155,9 +205,17 @@ async function toggleRegistrations(req, res) {
 async function retrieveEventInformation(req, res) {
   try {
     const { id } = req.params;
-    const event = (await pool.query("SELECT * FROM events WHERE event_id = $1", [id])).rows[0];
-    const categories = (await pool.query("SELECT * FROM event_categories WHERE event_id = $1", [id])).rows;
-    const coupons = (await pool.query("SELECT * FROM event_coupons WHERE event_id = $1", [id])).rows;
+    const event = (
+      await pool.query("SELECT * FROM events WHERE event_id = $1", [id])
+    ).rows[0];
+    const categories = (
+      await pool.query("SELECT * FROM event_categories WHERE event_id = $1", [
+        id,
+      ])
+    ).rows;
+    const coupons = (
+      await pool.query("SELECT * FROM event_coupons WHERE event_id = $1", [id])
+    ).rows;
     const registrations = (
       await pool.query(
         "SELECT r.registration_id,r.registration_checkin,r.registration_shirt,r.registration_status,r.registration_date, r.coupon_id, u.user_email,u.user_first_name,u.user_last_name,u.user_cpf, u.user_phone, u.user_birth_date, c.category_id, c.category_name, ec.coupon_link FROM registrations AS r LEFT JOIN users AS u ON r.user_id = u.user_id LEFT JOIN event_categories AS c ON r.category_id = c.category_id LEFT JOIN event_coupons AS ec ON r.coupon_id = ec.coupon_id WHERE r.event_id = $1",
@@ -166,7 +224,9 @@ async function retrieveEventInformation(req, res) {
     ).rows;
     res.status(200).json({ ...event, categories, coupons, registrations });
   } catch (err) {
-    res.status(400).json({ message: `Erro ao encontrar o evento. ${err}`, type: "error" });
+    res
+      .status(400)
+      .json({ message: `Erro ao encontrar o evento. ${err}`, type: "error" });
     console.log(err.message);
   }
 }
@@ -194,7 +254,9 @@ async function updateEvent(req, res) {
       flagship,
     } = req.body;
 
-    const image = req.file ? await uploadFileToS3(req.file, process.env.S3_BUCKET_NAME, "event-main") : imageOld;
+    const image = req.file
+      ? await uploadFileToS3(req.file, process.env.S3_BUCKET_NAME, "event-main")
+      : imageOld;
 
     const updateEvent = await pool.query(
       `UPDATE events SET event_link = $1, event_owner_id = $2, event_name= $3, event_location = $4, event_image = $5, event_description = $6, event_rules = $7, event_details = $8, event_general_attendees = $9, event_external = $10, event_date_start = $11, event_date_end = $12, event_registrations_start = $13, event_registrations_end = $14, flagship_id = $16 WHERE event_id = $15`,
@@ -214,7 +276,7 @@ async function updateEvent(req, res) {
         dayjs(registrationStart).format("YYYY-MM-DD HH:mm:ss.SSSSSSZ"),
         dayjs(registrationEnd).format("YYYY-MM-DD HH:mm:ss.SSSSSSZ"),
         id,
-        flagship || null,
+        flagship === "null" ? null : flagship,
       ]
     );
 
@@ -224,7 +286,10 @@ async function updateEvent(req, res) {
 
       if (existingCoupons.length) {
         const existingCouponsSQL = existingCoupons
-          .map((coupon) => `('${coupon.coupon_id}'::uuid, '${id}'::uuid, '${coupon.coupon_link}', '${coupon.coupon_uses}'::integer)`)
+          .map(
+            (coupon) =>
+              `('${coupon.coupon_id}'::uuid, '${id}'::uuid, '${coupon.coupon_link}', '${coupon.coupon_uses}'::integer)`
+          )
           .join(",");
 
         const updateExistingCoupons = await pool.query(
@@ -243,14 +308,21 @@ async function updateEvent(req, res) {
       if (newCoupons.length) {
         const newCouponsSQL = coupons
           .filter((coupon) => coupon.coupon_id.length < 1)
-          .map((coupon) => `('${id}'::uuid, '${coupon.coupon_link}', '${coupon.coupon_uses}'::integer)`)
+          .map(
+            (coupon) =>
+              `('${id}'::uuid, '${coupon.coupon_link}', '${coupon.coupon_uses}'::integer)`
+          )
           .join(",");
 
-        const createNewCoupons = await pool.query(`INSERT INTO event_coupons (event_id,coupon_link,coupon_uses) VALUES ${newCouponsSQL}`);
+        const createNewCoupons = await pool.query(
+          `INSERT INTO event_coupons (event_id,coupon_link,coupon_uses) VALUES ${newCouponsSQL}`
+        );
       }
     }
 
-    const existingCategories = categories.filter((category) => category.category_id);
+    const existingCategories = categories.filter(
+      (category) => category.category_id
+    );
 
     if (existingCategories.length) {
       const existingCategoriesSQL = existingCategories
@@ -273,7 +345,9 @@ async function updateEvent(req, res) {
       );
     }
 
-    const newCategories = categories.filter((category) => !category.category_id);
+    const newCategories = categories.filter(
+      (category) => !category.category_id
+    );
 
     if (newCategories.length) {
       const newCategoriesSQL = categories
@@ -298,7 +372,9 @@ async function updateEvent(req, res) {
       });
     }
 
-    res.status(200).json({ message: "Evento atualizado com sucesso!", type: "success" });
+    res
+      .status(200)
+      .json({ message: "Evento atualizado com sucesso!", type: "success" });
   } catch (err) {
     console.log(err.message);
     res.status(400).json({
@@ -311,11 +387,18 @@ async function updateEvent(req, res) {
 async function deleteEvent(req, res) {
   try {
     const { id } = req.params;
-    const deleteEvent = await pool.query("DELETE FROM events WHERE event_id = $1", [id]);
-    res.status(200).json({ message: "Evento removido com sucesso.", type: "success" });
+    const deleteEvent = await pool.query(
+      "DELETE FROM events WHERE event_id = $1",
+      [id]
+    );
+    res
+      .status(200)
+      .json({ message: "Evento removido com sucesso.", type: "success" });
   } catch (err) {
     console.log(err.message);
-    res.status(400).json({ message: "Evento ao remover o evento!", type: "error" });
+    res
+      .status(400)
+      .json({ message: "Evento ao remover o evento!", type: "error" });
   }
 }
 
@@ -325,7 +408,9 @@ async function listFlagships(req, res) {
     res.status(200).json({ data: flagship.rows, type: "success" });
   } catch (err) {
     console.log(err.message);
-    res.status(400).json({ message: "Erro ao encontrar os eventos.", type: "error" });
+    res
+      .status(400)
+      .json({ message: "Erro ao encontrar os eventos.", type: "error" });
   }
 }
 
@@ -337,9 +422,14 @@ async function listEventMedias(req, res) {
       [id]
     );
     if (!bucket.rows[0].record_bucket) {
-      res.status(400).json({ message: "Erro ao encontrar as mídias.", type: "error" });
+      res
+        .status(400)
+        .json({ message: "Erro ao encontrar as mídias.", type: "error" });
     }
-    const files = await listFilesInFolder(__config.entidade.abbreviation.toLowerCase(), `events/${bucket.rows[0].record_bucket}`);
+    const files = await listFilesInFolder(
+      __config.entidade.abbreviation.toLowerCase(),
+      `events/${bucket.rows[0].record_bucket}`
+    );
     res.status(200).json({
       event: {
         name: bucket.rows[0].event_name,
@@ -350,7 +440,9 @@ async function listEventMedias(req, res) {
     });
   } catch (err) {
     console.log(err.message);
-    res.status(400).json({ message: "Erro ao encontrar os eventos.", type: "error" });
+    res
+      .status(400)
+      .json({ message: "Erro ao encontrar os eventos.", type: "error" });
   }
 }
 
@@ -366,25 +458,36 @@ async function listFlagshipEvents(req, res) {
     res.status(200).json({ data: flagship.rows, type: "success" });
   } catch (err) {
     console.log(err.message);
-    res.status(400).json({ message: "Erro ao encontrar os eventos.", type: "error" });
+    res
+      .status(400)
+      .json({ message: "Erro ao encontrar os eventos.", type: "error" });
   }
 }
 
 async function fetchFlagship(req, res) {
   try {
     const { id } = req.params;
-    const typeOfLink = /^\b[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}\b$/.test(id);
+    const typeOfLink =
+      /^\b[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}\b$/.test(
+        id
+      );
     const flagship = typeOfLink
       ? await pool.query("SELECT * FROM flagships WHERE flagship_id = $1", [id])
-      : await pool.query("SELECT * FROM flagships WHERE flagship_link = $1", [id]);
+      : await pool.query("SELECT * FROM flagships WHERE flagship_link = $1", [
+          id,
+        ]);
     if (!flagship.rows.length) {
-      return res.status(404).json({ message: "Erro ao encontrar o evento", type: "error" });
+      return res
+        .status(404)
+        .json({ message: "Erro ao encontrar o evento", type: "error" });
     }
 
     res.status(200).json({ data: flagship.rows[0], type: "success" });
   } catch (err) {
     console.log(err.message);
-    res.status(400).json({ message: "Erro ao encontrar evento.", type: "error" });
+    res
+      .status(400)
+      .json({ message: "Erro ao encontrar evento.", type: "error" });
   }
 }
 
@@ -393,8 +496,20 @@ async function updateFlagship(req, res) {
     const { id } = req.params;
     const { name, link, flagshipOldBG, flagshipOldLogo } = req.body;
 
-    const logo = req.files.logo ? await uploadFileToS3(req.files.logo[0], process.env.S3_BUCKET_NAME, "flagship-logos") : flagshipOldLogo;
-    const bg = req.files.bg ? await uploadFileToS3(req.files.bg[0], process.env.S3_BUCKET_NAME, "flagship-bgs") : flagshipOldBG;
+    const logo = req.files.logo
+      ? await uploadFileToS3(
+          req.files.logo[0],
+          process.env.S3_BUCKET_NAME,
+          "flagship-logos"
+        )
+      : flagshipOldLogo;
+    const bg = req.files.bg
+      ? await uploadFileToS3(
+          req.files.bg[0],
+          process.env.S3_BUCKET_NAME,
+          "flagship-bgs"
+        )
+      : flagshipOldBG;
 
     const updateFlagship = await pool.query(
       "UPDATE flagships SET flagship_name = $1, flagship_link = $2, flagship_logo = $3, flagship_bg = $4 WHERE flagship_id = $5",
@@ -416,10 +531,14 @@ async function updateFlagship(req, res) {
       });
     }
 
-    res.status(200).json({ message: "Série atualizada com sucesso!", type: "success" });
+    res
+      .status(200)
+      .json({ message: "Série atualizada com sucesso!", type: "success" });
   } catch (err) {
     console.log(err.message);
-    res.status(400).json({ message: "Erro ao atualizar evento.", type: "error" });
+    res
+      .status(400)
+      .json({ message: "Erro ao atualizar evento.", type: "error" });
   }
 }
 
@@ -428,15 +547,21 @@ async function createFlagship(req, res) {
     const { id } = req.params;
     const { name, link } = req.body;
 
-    const logo = await uploadFileToS3(req.files.logo[0], process.env.S3_BUCKET_NAME, "flagship-logos");
-    const bg = await uploadFileToS3(req.files.bg[0], process.env.S3_BUCKET_NAME, "flagship-bgs");
+    const logo = await uploadFileToS3(
+      req.files.logo[0],
+      process.env.S3_BUCKET_NAME,
+      "flagship-logos"
+    );
+    const bg = await uploadFileToS3(
+      req.files.bg[0],
+      process.env.S3_BUCKET_NAME,
+      "flagship-bgs"
+    );
 
-    const createFlagship = await pool.query("INSERT INTO flagships (flagship_name,flagship_link,flagship_logo,flagship_bg) VALUES ($1,$2,$3,$4)", [
-      name,
-      link,
-      logo,
-      bg,
-    ]);
+    const createFlagship = await pool.query(
+      "INSERT INTO flagships (flagship_name,flagship_link,flagship_logo,flagship_bg) VALUES ($1,$2,$3,$4)",
+      [name, link, logo, bg]
+    );
 
     if (req.files) {
       const fileKeys = Object.keys(req.files);
@@ -453,10 +578,14 @@ async function createFlagship(req, res) {
       });
     }
 
-    res.status(200).json({ message: "Série atualizada com sucesso!", type: "success" });
+    res
+      .status(200)
+      .json({ message: "Série atualizada com sucesso!", type: "success" });
   } catch (err) {
     console.log(err.message);
-    res.status(400).json({ message: "Erro ao atualizar evento.", type: "error" });
+    res
+      .status(400)
+      .json({ message: "Erro ao atualizar evento.", type: "error" });
   }
 }
 
@@ -465,12 +594,22 @@ async function completeEvent(req, res) {
     const { id } = req.params;
     const suspendedUsers = req.body.filter((user) => user.suspended);
     const userIds = suspendedUsers.map((user) => user.user_id);
-    const suspendUsers = pool.query(`UPDATE users SET user_confirmed = false, user_email = null WHERE user_id = ANY($1::uuid[])`, [userIds]);
-    const completeEvent = pool.query(`UPDATE events SET event_status = 'completed' WHERE event_id = $1`, [id]);
-    res.status(200).json({ message: "Evento finalizado com sucesso.", type: "success" });
+    const suspendUsers = pool.query(
+      `UPDATE users SET user_confirmed = false, user_email = null WHERE user_id = ANY($1::uuid[])`,
+      [userIds]
+    );
+    const completeEvent = pool.query(
+      `UPDATE events SET event_status = 'completed' WHERE event_id = $1`,
+      [id]
+    );
+    res
+      .status(200)
+      .json({ message: "Evento finalizado com sucesso.", type: "success" });
   } catch (err) {
     console.log(err.message);
-    res.status(400).json({ message: "Erro ao finalizar evento.", type: "error" });
+    res
+      .status(400)
+      .json({ message: "Erro ao finalizar evento.", type: "error" });
   }
 }
 
