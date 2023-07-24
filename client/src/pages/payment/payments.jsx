@@ -20,22 +20,22 @@ const Payments = ({ id, registration }) => {
     }
 
     fetchPayment(id || linkId).then((response) => {
-      if (response.type === "error") {
+      if (response?.type === "error") {
         toast.error(response.message, { theme: "colored" });
         navigate("/");
         return;
       }
       setExpirationTime(
         new Date(
-          new Date(response.calendario.criacao).getTime() +
-            response.calendario.expiracao * 1000
+          new Date(response?.calendario?.criacao).getTime() +
+            response?.calendario?.expiracao * 1000
         )
       );
       setPayment(response);
       if (
         new Date(
-          new Date(response.calendario.criacao).getTime() +
-            response.calendario.expiracao * 1000
+          new Date(response?.calendario?.criacao).getTime() +
+            response?.calendario?.expiracao * 1000
         ) -
           new Date().getTime() <
         0

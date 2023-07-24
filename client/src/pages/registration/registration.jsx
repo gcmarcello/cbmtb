@@ -13,7 +13,10 @@ import { useForm } from "react-hook-form";
 import ProgressBar from "./components/progressBar";
 import ConfirmationPayment from "./components/confirmationPayment";
 
+var relativeTime = require("dayjs/plugin/relativeTime");
+
 const dayjs = require("dayjs");
+dayjs.extend(relativeTime);
 
 const Registration = () => {
   const navigate = useNavigate();
@@ -33,7 +36,10 @@ const Registration = () => {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm({ mode: "onChange" });
+  } = useForm({
+    mode: "onSubmit",
+    defaultValues: { paymentMethod: "", order_id: "" },
+  });
 
   const fetchEventInfo = async () => {
     try {
@@ -62,6 +68,7 @@ const Registration = () => {
         toast.error(parseResponse.message, { theme: "colored" });
         navigate(`/eventos/${id}`);
       }
+      return parseResponse;
     } catch (error) {
       console.log(error);
     }
@@ -93,27 +100,31 @@ const Registration = () => {
   };
 
   const onSubmit = async (data) => {
+    if (!data.card) data.card = {};
+    console.log(data);
+    const { card, ...rest } = data;
     const myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     myHeaders.append("token", localStorage.token);
+    setIsLoading(true);
     try {
       const response = await fetch(
         `/api/registrations/${id}/${coupon ? coupon : ""}`,
         {
           method: "POST",
           headers: myHeaders,
-          body: JSON.stringify(data),
+          body: JSON.stringify(rest),
         }
       );
       const parseResponse = await response.json();
-      if (parseResponse.type === "error") {
-        navigate(`/eventos/${id}`);
-      } else {
+      if (parseResponse.type !== "error") {
         navigate("/usuario");
       }
       toast[parseResponse.type](parseResponse.message, { theme: "colored" });
     } catch (error) {
       console.log(error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -176,6 +187,12 @@ const Registration = () => {
             user={user}
             watch={watch}
             register={register}
+            setValue={setValue}
+            getValues={getValues}
+            handleSubmit={handleSubmit}
+            onSubmit={onSubmit}
+            setIsLoading={setIsLoading}
+            control={control}
           />
         );
       default:
@@ -194,7 +211,7 @@ const Registration = () => {
 
   return (
     <Fragment>
-      <div className="container inner-page">
+      <div className="container inner-page pb-md-5">
         <h1 className="text-justify text-center">
           Inscrição - <br className="d-block d-lg-none" />
           {event?.event_name}

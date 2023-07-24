@@ -37,7 +37,7 @@ const UserRegistrations = ({ registrations, deleteRegistration, userInfo }) => {
                   {registration.category_name}
                   <br />
                   <span className="fw-bold">Tamanho da Camisa:</span>{" "}
-                  {registration.registration_shirt.toUpperCase()}
+                  {registration.registration_shirt?.toUpperCase()}
                   <div className="d-flex">
                     <EventInfoModal
                       registration={registration}
@@ -160,7 +160,7 @@ const UserRegistrations = ({ registrations, deleteRegistration, userInfo }) => {
                   {registration.category_name}
                   <br />
                   <span className="fw-bold">Tamanho da Camisa:</span>{" "}
-                  {registration.registration_shirt.toUpperCase()}
+                  {registration.registration_shirt?.toUpperCase()}
                   <div className="d-flex">
                     <PaymentModal registration={registration} />
                     <EventInfoModal registration={registration} />
