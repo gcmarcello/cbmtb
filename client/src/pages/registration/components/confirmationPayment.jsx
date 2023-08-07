@@ -23,11 +23,12 @@ const ConfirmationPayment = (props) => {
   }, [props.watch("category")]);
 
   async function fetchPix() {
+    const tax =
+      category?.category_price > 1 ? category?.category_price * 0.1 : 0;
     const infoPix = {
       items: [
         {
-          amount:
-            (category?.category_price + category?.category_price * 0.1) * 100,
+          amount: (category?.category_price + tax) * 100,
           description: `Inscrição ${props.event.event_name}`,
           quantity: 1,
         },
@@ -54,21 +55,18 @@ const ConfirmationPayment = (props) => {
         },
       ],
     };
-    const { data } = await axios.post(
-      "http://localhost:5000/api/payments/",
-      infoPix,
-      {
-        headers: {
-          "Content-Type": "application/json",
-          token: localStorage.token,
-        },
-      }
-    );
+    const { data } = await axios.post("/api/payments/", infoPix, {
+      headers: {
+        "Content-Type": "application/json",
+        token: localStorage.token,
+      },
+    });
     console.log(data);
+    if (!data.charges) return;
     setPixInfo({
-      code: data.charges[0].last_transaction.qr_code,
-      qrCode: data.charges[0].last_transaction.qr_code_url,
-      orderId: data.id,
+      code: data?.charges[0]?.last_transaction.qr_code,
+      qrCode: data?.charges[0]?.last_transaction.qr_code_url,
+      orderId: data?.id,
     });
   }
 
@@ -268,7 +266,8 @@ const ConfirmationPayment = (props) => {
                           <div className="">
                             <PixBox />
                             <button
-                              onClick={() => {
+                              onClick={(e) => {
+                                e.preventDefault();
                                 props.setValue("paymentMethod", "pix");
                                 props.setValue("order_id", pixInfo.orderId);
                                 props.onSubmit(props.getValues());

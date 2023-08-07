@@ -6,16 +6,21 @@ import PaymentModal from "./paymentModal";
 const UserRegistrations = ({ registrations, deleteRegistration, userInfo }) => {
   const dayjs = require("dayjs");
 
+  console.log(registrations);
+
   return (
     <div className="row mt-2">
       <h3>Inscrições Confirmadas</h3>
-      <div className="d-flex justify-content-center justify-content-lg-start">
+      <div className="d-flex justify-content-center flex-column flex-lg-row justify-content-lg-start">
         {registrations.filter(
           (registration) => registration.registration_status === "completed"
         ).length ? (
           registrations
             .filter(
               (registration) => registration.registration_status === "completed"
+            )
+            .sort(
+              (a, b) => dayjs(b.registration_date) - dayjs(a.registration_date)
             )
             .map((registration) => (
               <div
@@ -48,14 +53,14 @@ const UserRegistrations = ({ registrations, deleteRegistration, userInfo }) => {
                       type="button"
                       className="btn btn-danger form-control mt-2 h-50"
                       data-bs-toggle="modal"
-                      data-bs-target="#removeRegistrationModal"
+                      data-bs-target={`#cancel-${registration.registration_id}-modal`}
                     >
                       Cancelar
                     </button>
 
                     <div
                       className="modal fade"
-                      id="removeRegistrationModal"
+                      id={`cancel-${registration.registration_id}-modal`}
                       tabIndex="-1"
                       aria-labelledby="removeRegistrationModalLabel"
                       aria-hidden="true"

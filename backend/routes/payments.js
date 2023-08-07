@@ -4,8 +4,6 @@ const authorization = require("../middlewares/authorization");
 require("dotenv").config();
 const paymentsController = require("../controllers/paymentsController");
 
-router.get("/", async (req, res) => {});
-
 router.post("/", authorization, paymentsController.createOrder);
 
 router.get("/:id", authorization, paymentsController.verifyPayment);

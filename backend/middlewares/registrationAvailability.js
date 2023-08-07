@@ -119,6 +119,13 @@ module.exports = async (req, res, next) => {
   }
 
   // Checking for registration period
+  if (dayjs().isBefore(dayjs(registrationStarts))) {
+    return res
+      .status(200)
+      .json({ message: "Inscrições Em Breve", type: "error" });
+  }
+
+  // Checking for registration period
   if (!periodVerification) {
     return res
       .status(200)

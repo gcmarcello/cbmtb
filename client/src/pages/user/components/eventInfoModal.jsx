@@ -15,14 +15,14 @@ const EventInfoModal = ({ registration, userInfo }) => {
         type="button"
         className="btn btn-warning form-control me-2 mt-2 h-50"
         data-bs-toggle="modal"
-        data-bs-target="#InfoModal"
+        data-bs-target={`#info-${registration.registration_id}-modal`}
       >
         Inscrição
       </button>
 
       <div
         className="modal fade"
-        id="InfoModal"
+        id={`info-${registration.registration_id}-modal`}
         tabIndex="-1"
         aria-labelledby="InfoModalLabel"
         aria-hidden="true"

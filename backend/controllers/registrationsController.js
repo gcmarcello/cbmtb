@@ -157,6 +157,7 @@ async function create_registration(req, res) {
                 ) * 100,
               description: "Inscrição CBMTB",
               quantity: 1,
+              code: category,
             },
           ],
           payments: [
@@ -189,6 +190,7 @@ async function create_registration(req, res) {
             console.log(error.response.data.errors);
           });
         if (data.status && data.status !== "paid") {
+          console.log(data.charges[0].last_transaction.gateway_response);
           return res.json({
             message: "Erro ao confirmar pagamento.",
             type: "error",
@@ -210,7 +212,7 @@ async function read_user_registrations(req, res) {
   try {
     const userId = req.userId;
     const registrations = await pool.query(
-      "SELECT r.registration_status, r.registration_id, r.registration_shirt, r.registration_id, r.payment_id, c.category_name, e.event_id, e.event_name, e.event_location, e.event_date_start, e.event_image FROM registrations AS r LEFT JOIN users AS u ON r.user_id = u.user_id LEFT JOIN event_categories AS c ON r.category_id = c.category_id LEFT JOIN events AS e ON c.event_id = e.event_id WHERE u.user_id = $1",
+      "SELECT r.registration_status, r.registration_id, r.registration_shirt, r.registration_date, r.registration_id, r.payment_id, c.category_name, e.event_id, e.event_name, e.event_location, e.event_date_start, e.event_image FROM registrations AS r LEFT JOIN users AS u ON r.user_id = u.user_id LEFT JOIN event_categories AS c ON r.category_id = c.category_id LEFT JOIN events AS e ON c.event_id = e.event_id WHERE u.user_id = $1",
       [userId]
     );
 
@@ -451,6 +453,13 @@ async function check_registration(req, res) {
       return res
         .status(200)
         .json({ message: "Inscrições Esgotadas", type: "error" });
+    }
+
+    // Checking for registration period
+    if (dayjs().isBefore(dayjs(registrationStarts))) {
+      return res
+        .status(200)
+        .json({ message: "Inscrições Em Breve", type: "error" });
     }
 
     // Checking for registration period
