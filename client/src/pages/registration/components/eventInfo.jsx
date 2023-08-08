@@ -16,8 +16,8 @@ const EventInfo = (props) => {
       (category) =>
         (category.category_gender === userGender ||
           category.category_gender === "unisex") &&
-        category.category_maxage > userAge &&
-        category.category_minage < userAge
+        category.category_maxage >= userAge &&
+        category.category_minage <= userAge
     );
   };
 
