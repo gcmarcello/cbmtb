@@ -213,7 +213,7 @@ const Registration = () => {
             height: "100px",
             bottom: "0",
             width: "100%",
-            backgroundColor: "#00a859",
+            backgroundColor: "var(--primary-color)",
           }}
         >
           <ProgressBar stage={stage} setStage={setStage} watch={watch} />
