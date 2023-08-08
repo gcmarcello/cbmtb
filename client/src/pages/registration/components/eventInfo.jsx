@@ -1,6 +1,26 @@
+import dayjs from "dayjs";
 import { React, Fragment } from "react";
 
+var relativeTime = require("dayjs/plugin/relativeTime");
+
+dayjs.extend(relativeTime);
+
 const EventInfo = (props) => {
+  const filterCategories = (user, categories) => {
+    const userGender = user?.user_gender === "Masculino" ? "masc" : "fem";
+    const userAge = Number(
+      dayjs(user?.user_birth_date).fromNow().split(" ")[0]
+    );
+
+    return categories.filter(
+      (category) =>
+        (category.category_gender === userGender ||
+          category.category_gender === "unisex") &&
+        category.category_maxage > userAge &&
+        category.category_minage < userAge
+    );
+  };
+
   return (
     <Fragment>
       <div className="container">
@@ -23,11 +43,16 @@ const EventInfo = (props) => {
               <option value="" disabled={true}>
                 Selecione a Categoria
               </option>
-              {props.event?.categories?.map((category) => (
-                <option value={category.category_id} key={category.category_id}>
-                  {category.category_name}
-                </option>
-              ))}
+              {filterCategories(props.user, props.event.categories).map(
+                (category) => (
+                  <option
+                    value={category.category_id}
+                    key={category.category_id}
+                  >
+                    {category.category_name}
+                  </option>
+                )
+              )}
             </select>
             {/* <label htmlFor="registrationShirt">Tamanho da Camiseta</label>
 

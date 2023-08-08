@@ -40,16 +40,21 @@ async function read_event_categories_public(req, res) {
     const userInfo = verifyUser.rows[0];
     const userAge =
       new Date().getFullYear() - userInfo.user_birth_date.getFullYear(); // Milliseconds to Years
+
+    const gender =
+      checkForUser.rows[0].user_gender === "Masculino" ? "masc" : "fem";
     const listOfCategories = await pool.query(
       "SELECT * FROM event_categories WHERE (event_id = $1) AND (category_minage <= $2) AND (category_maxage >= $2) AND (category_gender = $3 OR category_gender = 'unisex') ORDER BY category_maxage ASC",
-      [id, userAge, userInfo.user_gender]
+      [id, userAge, gender]
     );
+
     if (!listOfCategories.rows[0]) {
       res.json({
         message: "Esse evento não tem nenhuma categoria disponível para você.",
         type: "error",
       });
     }
+
     res.json(listOfCategories.rows);
   } catch (err) {
     console.log(err.message);
@@ -72,12 +77,10 @@ async function delete_categories(req, res) {
     res.status(200).json({ message: "Categoria Removida.", type: "success" });
   } catch (err) {
     console.log(err.message);
-    res
-      .status(400)
-      .json({
-        message: `Erro ao remover categoria. ${err.message}`,
-        type: "error",
-      });
+    res.status(400).json({
+      message: `Erro ao remover categoria. ${err.message}`,
+      type: "error",
+    });
   }
 }
 
