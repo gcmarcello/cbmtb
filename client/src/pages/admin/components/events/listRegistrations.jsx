@@ -97,7 +97,7 @@ const ListRegistrations = (props) => {
       registrationDate: userInfo.registration_date,
       registrationPhone: userInfo.user_phone,
       registrationBirthDate: userInfo.user_birth_date,
-      registrationShirt: userInfo.registration_shirt,
+      registrationShirt: userInfo?.registration_shirt,
     });
   };
 

@@ -41,8 +41,8 @@ const UserRegistrations = ({ registrations, deleteRegistration, userInfo }) => {
                   <span className="fw-bold">Categoria:</span>{" "}
                   {registration.category_name}
                   <br />
-                  <span className="fw-bold">Tamanho da Camisa:</span>{" "}
-                  {registration.registration_shirt?.toUpperCase()}
+                  {/* <span className="fw-bold">Tamanho da Camisa:</span>{" "}
+                  {registration.registration_shirt?.toUpperCase()} */}
                   <div className="d-flex">
                     <EventInfoModal
                       registration={registration}
@@ -53,14 +53,14 @@ const UserRegistrations = ({ registrations, deleteRegistration, userInfo }) => {
                       type="button"
                       className="btn btn-danger form-control mt-2 h-50"
                       data-bs-toggle="modal"
-                      data-bs-target={`#cancel-${registration.registration_id}-modal`}
+                      data-bs-target={`#registration-${registration.registration_id}-cancel`}
                     >
                       Cancelar
                     </button>
 
                     <div
                       className="modal fade"
-                      id={`cancel-${registration.registration_id}-modal`}
+                      id={`registration-${registration.registration_id}-cancel`}
                       tabIndex="-1"
                       aria-labelledby="removeRegistrationModalLabel"
                       aria-hidden="true"
@@ -164,8 +164,8 @@ const UserRegistrations = ({ registrations, deleteRegistration, userInfo }) => {
                   <span className="fw-bold">Categoria:</span>{" "}
                   {registration.category_name}
                   <br />
-                  <span className="fw-bold">Tamanho da Camisa:</span>{" "}
-                  {registration.registration_shirt?.toUpperCase()}
+                  {/* <span className="fw-bold">Tamanho da Camisa:</span>{" "}
+                  {registration.registration_shirt?.toUpperCase()} */}
                   <div className="d-flex">
                     <PaymentModal registration={registration} />
                     <EventInfoModal registration={registration} />

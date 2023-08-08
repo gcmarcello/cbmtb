@@ -15,14 +15,14 @@ const EventInfoModal = ({ registration, userInfo }) => {
         type="button"
         className="btn btn-warning form-control me-2 mt-2 h-50"
         data-bs-toggle="modal"
-        data-bs-target={`#info-${registration.registration_id}-modal`}
+        data-bs-target={`#registration-${registration.registration_id}`}
       >
         Inscrição
       </button>
 
       <div
         className="modal fade"
-        id={`info-${registration.registration_id}-modal`}
+        id={`registration-${registration.registration_id}`}
         tabIndex="-1"
         aria-labelledby="InfoModalLabel"
         aria-hidden="true"
@@ -63,13 +63,11 @@ const EventInfoModal = ({ registration, userInfo }) => {
                   <span className="fw-bolder">Categoria:</span>{" "}
                   {registration.category_name}
                 </li>
-                {registration.registration_shirt ? (
-                  <li className="list-group-item">
-                    <i className="bi bi-incognito"></i>{" "}
-                    <span className="fw-bolder">Tamanho da Camiseta:</span>{" "}
-                    {registration.registration_shirt?.toUpperCase()}
-                  </li>
-                ) : null}
+                {/* <li className="list-group-item">
+                  <i className="bi bi-incognito"></i>{" "}
+                  <span className="fw-bolder">Tamanho da Camiseta:</span>{" "}
+                  {registration.registration_shirt?.toUpperCase()}
+                </li> */}
               </ul>
               <div className="mb-3">
                 <h6>QR Code da Inscrição</h6>
