@@ -31,7 +31,7 @@ const ListRegistrations = (props) => {
     {
       Header: "Camisa",
       accessor: "registration_shirt",
-      Cell: ({ value }) => value.toUpperCase(),
+      Cell: ({ value }) => value?.toUpperCase(),
     },
     {
       Header: "Status",
@@ -63,7 +63,8 @@ const ListRegistrations = (props) => {
     {
       Header: "Check In",
       accessor: "registration_checkin",
-      Cell: ({ value }) => (value ? <i class="bi bi-check fs-2 fw-bold text-success"></i> : ""),
+      Cell: ({ value }) =>
+        value ? <i class="bi bi-check fs-2 fw-bold text-success"></i> : "",
     },
     {
       Header: "Opções",
@@ -96,7 +97,7 @@ const ListRegistrations = (props) => {
       registrationDate: userInfo.registration_date,
       registrationPhone: userInfo.user_phone,
       registrationBirthDate: userInfo.user_birth_date,
-      registrationShirt: userInfo.registration_shirt,
+      registrationShirt: userInfo?.registration_shirt,
     });
   };
 
@@ -118,11 +119,18 @@ const ListRegistrations = (props) => {
         value: column,
       })),
       content: registrationsToExcel
-        .filter((registration) => registration.category_name === category.category_name)
+        .filter(
+          (registration) =>
+            registration.category_name === category.category_name
+        )
         .map(function (registration) {
-          let registrationDate = dayjs(registration.registration_date).format("DD/MM/YYYY HH:mm");
+          let registrationDate = dayjs(registration.registration_date).format(
+            "DD/MM/YYYY HH:mm"
+          );
           let age = dayjs().diff(dayjs(registration.user_birth_date), "year");
-          let birthDate = dayjs(registration.user_birth_date).format("DD/MM/YYYY");
+          let birthDate = dayjs(registration.user_birth_date).format(
+            "DD/MM/YYYY"
+          );
 
           return {
             ...registration,
@@ -141,9 +149,13 @@ const ListRegistrations = (props) => {
       })),
 
       content: registrationsToExcel.map(function (registration) {
-        let registrationDate = dayjs(registration.registration_date).format("DD/MM/YYYY HH:mm");
+        let registrationDate = dayjs(registration.registration_date).format(
+          "DD/MM/YYYY HH:mm"
+        );
         let age = dayjs().diff(dayjs(registration.user_birth_date), "year");
-        let birthDate = dayjs(registration.user_birth_date).format("DD/MM/YYYY");
+        let birthDate = dayjs(registration.user_birth_date).format(
+          "DD/MM/YYYY"
+        );
 
         return {
           ...registration,
@@ -155,7 +167,9 @@ const ListRegistrations = (props) => {
     });
 
     const settings = {
-      fileName: `${props.event.event_name} - Inscritos (${dayjs().format("DD-MM-YYYY")})`, // Name of the resulting spreadsheet
+      fileName: `${props.event.event_name} - Inscritos (${dayjs().format(
+        "DD-MM-YYYY"
+      )})`, // Name of the resulting spreadsheet
       extraLength: 3, // A bigger number means that columns will be wider
       writeMode: "writeFile", // The available parameters are 'WriteFile' and 'write'. This setting is optional. Useful in such cases https://docs.sheetjs.com/docs/solutions/output#example-remote-file
       writeOptions: {}, // Style options from https://docs.sheetjs.com/docs/api/write-options
@@ -180,16 +194,24 @@ const ListRegistrations = (props) => {
       const parseResponse = await response.json();
       toast[parseResponse.type](parseResponse.message, { theme: "colored" });
       if (parseResponse.type === "success") {
-        const index = props.event.registrations.findIndex((registration) => registration.registration_id === data.registrationId);
+        const index = props.event.registrations.findIndex(
+          (registration) => registration.registration_id === data.registrationId
+        );
         const updatedRegistration = {
           ...props.event.registrations[index],
           registration_shirt: data.registrationShirt,
           category_id: data.registrationCategory,
-          category_name: props.event.categories.filter((category) => category.category_id === data.registrationCategory)[0].category_name,
+          category_name: props.event.categories.filter(
+            (category) => category.category_id === data.registrationCategory
+          )[0].category_name,
         };
         props.setEvent({
           ...props.event,
-          registrations: [...props.event.registrations.slice(0, index), updatedRegistration, ...props.event.registrations.slice(index + 1)],
+          registrations: [
+            ...props.event.registrations.slice(0, index),
+            updatedRegistration,
+            ...props.event.registrations.slice(index + 1),
+          ],
         });
       }
     } catch (err) {
@@ -205,22 +227,45 @@ const ListRegistrations = (props) => {
 
   return (
     <div className="p-lg-3">
-      {props.event && <Table data={props.event.registrations} columns={columns} generateXlsx={generateXlsx} customPageSize={50} />}
+      {props.event && (
+        <Table
+          data={props.event.registrations}
+          columns={columns}
+          generateXlsx={generateXlsx}
+          customPageSize={50}
+        />
+      )}
 
-      <div className="modal fade" id={`updateRegistrationModal`} tabIndex="-1" aria-labelledby="updateRegistrationModalLabel" aria-hidden="true">
-        <form onSubmit={handleSubmit(onSubmit)} className="needs-validation mt-2 px-2" noValidate>
+      <div
+        className="modal fade"
+        id={`updateRegistrationModal`}
+        tabIndex="-1"
+        aria-labelledby="updateRegistrationModalLabel"
+        aria-hidden="true"
+      >
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="needs-validation mt-2 px-2"
+          noValidate
+        >
           <div className="modal-dialog">
             <div className="modal-content">
               <div className="modal-header">
                 <h5 className="modal-title" id="updateRegistrationModalLabel">
                   Atualizar Inscrição - {props.event?.event_name}
                 </h5>
-                <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button
+                  type="button"
+                  className="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                ></button>
               </div>
               <div className="modal-body">
                 <ul className="list-group mb-2">
                   <li className="list-group-item">
-                    <strong>Nome:</strong> {getValues("registrationFirstName")} {getValues("registrationLastName")}
+                    <strong>Nome:</strong> {getValues("registrationFirstName")}{" "}
+                    {getValues("registrationLastName")}
                   </li>
                   <li className="list-group-item">
                     <strong>Email:</strong> {getValues("registrationEmail")}
@@ -229,21 +274,32 @@ const ListRegistrations = (props) => {
                     <strong>Telefone:</strong> {getValues("registrationPhone")}
                   </li>
                   <li className="list-group-item">
-                    <strong>Data de Nascimento:</strong> {dayjs(getValues("registrationBirthDate")).format("DD/MM/YYYY")}
+                    <strong>Data de Nascimento:</strong>{" "}
+                    {dayjs(getValues("registrationBirthDate")).format(
+                      "DD/MM/YYYY"
+                    )}
                   </li>
                   <li className="list-group-item">
-                    <strong>Data da Inscrição:</strong> {dayjs(getValues("registrationDate")).format("DD/MM/YYYY HH:mm")}
+                    <strong>Data da Inscrição:</strong>{" "}
+                    {dayjs(getValues("registrationDate")).format(
+                      "DD/MM/YYYY HH:mm"
+                    )}
                   </li>
                 </ul>
                 <label htmlFor="gender">Categoria</label>
                 <select
                   id="gender"
                   defaultValue=""
-                  className={`form-select ${errors.gender?.type ? "is-invalid" : ""} mb-1`}
+                  className={`form-select ${
+                    errors.gender?.type ? "is-invalid" : ""
+                  } mb-1`}
                   {...register("registrationCategory", { required: true })}
                 >
                   {props.event?.categories.map((category) => (
-                    <option key={category.category_id} value={category.category_id}>
+                    <option
+                      key={category.category_id}
+                      value={category.category_id}
+                    >
                       {category.category_name}
                     </option>
                   ))}
@@ -253,7 +309,9 @@ const ListRegistrations = (props) => {
                 <select
                   id="gender"
                   defaultValue=""
-                  className={`form-select ${errors.gender?.type ? "is-invalid" : ""} mb-1`}
+                  className={`form-select ${
+                    errors.gender?.type ? "is-invalid" : ""
+                  } mb-1`}
                   {...register("registrationShirt", { required: true })}
                 >
                   <option value={"pp"}>PP</option>
@@ -264,7 +322,9 @@ const ListRegistrations = (props) => {
                   <option value={"exg"}>EXG</option>
                 </select>
               </div>
-              <small className="text-muted mx-3 mb-1">ID: {getValues("registrationId")}</small>
+              <small className="text-muted mx-3 mb-1">
+                ID: {getValues("registrationId")}
+              </small>
               <div className="modal-footer justify-content-between">
                 <button
                   type="button"
@@ -276,10 +336,18 @@ const ListRegistrations = (props) => {
                   Cancelar Inscrição
                 </button>
                 <div>
-                  <button type="button" className="btn btn-secondary me-2" data-bs-dismiss="modal">
+                  <button
+                    type="button"
+                    className="btn btn-secondary me-2"
+                    data-bs-dismiss="modal"
+                  >
                     Voltar
                   </button>
-                  <button type="submit" className="btn btn-success" data-bs-dismiss="modal">
+                  <button
+                    type="submit"
+                    className="btn btn-success"
+                    data-bs-dismiss="modal"
+                  >
                     Salvar
                   </button>
                 </div>
@@ -289,19 +357,33 @@ const ListRegistrations = (props) => {
         </form>
       </div>
 
-      <div className="modal fade" id={`removeRegistrationModal`} tabIndex="-1" aria-labelledby="removeRegistrationModalLabel" aria-hidden="true">
+      <div
+        className="modal fade"
+        id={`removeRegistrationModal`}
+        tabIndex="-1"
+        aria-labelledby="removeRegistrationModalLabel"
+        aria-hidden="true"
+      >
         <div className="modal-dialog">
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title" id="removeRegistrationModalLabel">
                 Cancelar inscrição
               </h5>
-              <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              <button
+                type="button"
+                className="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
             </div>
             <div className="modal-body">
-              Tem certeza que deseja cancelar esta inscrição? O inscrito receberá um email com a confirmação do cancelamento.
+              Tem certeza que deseja cancelar esta inscrição? O inscrito
+              receberá um email com a confirmação do cancelamento.
             </div>
-            <small className="text-muted mx-3 mb-1">ID: {getValues("registrationId")}</small>
+            <small className="text-muted mx-3 mb-1">
+              ID: {getValues("registrationId")}
+            </small>
             <div className="modal-footer">
               <button
                 type="button"
@@ -315,7 +397,9 @@ const ListRegistrations = (props) => {
               <button
                 type="button"
                 className="btn btn-danger"
-                onClick={() => props.deleteRegistration(watch("registrationId"), true)}
+                onClick={() =>
+                  props.deleteRegistration(watch("registrationId"), true)
+                }
                 data-bs-dismiss="modal"
               >
                 Cancelar Inscrição
