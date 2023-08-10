@@ -1,11 +1,13 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import LoadingScreen from "../../utils/loadingScreen";
 import { useEffect } from "react";
 import { toast } from "react-toastify";
+import { UserContext } from "../../context/userContext";
 
 const PasswordReset = (props) => {
+  const { userInfo, setUserInfo } = useContext(UserContext);
   const { requestId } = useParams();
   const navigate = useNavigate();
   const {
@@ -28,11 +30,14 @@ const PasswordReset = (props) => {
       const parseResponse = await res.json();
       if (parseResponse.token) {
         localStorage.setItem("token", parseResponse.token);
-        props.setUserName(parseResponse.givenName);
-        props.setUserAuthentication(true);
-        parseResponse.role === "admin" ? props.setUserAdmin(true) : props.setUserAdmin(false);
+        setUserInfo({
+          userName: parseResponse.givenName,
+          userRole: parseResponse.role,
+        });
         navigate("/usuario");
-        toast.success("Senha atualizada e login efetuado com sucesso!", { theme: "colored" });
+        toast.success("Senha atualizada e login efetuado com sucesso!", {
+          theme: "colored",
+        });
       }
     } catch (err) {
       console.log(err.message);
@@ -74,13 +79,17 @@ const PasswordReset = (props) => {
       </div>
       <hr />
       <p>
-        Bem vindo à página de redefinição de senha. Por favor, digite sua nova senha no campo "Nova senha" e confirme digitando-a novamente no campo
-        "Confirmar senha". Depois de ter digitado e confirmado sua nova senha, clique no botão "Redefinir senha" para atualizá-la.
+        Bem vindo à página de redefinição de senha. Por favor, digite sua nova
+        senha no campo "Nova senha" e confirme digitando-a novamente no campo
+        "Confirmar senha". Depois de ter digitado e confirmado sua nova senha,
+        clique no botão "Redefinir senha" para atualizá-la.
       </p>
       <p>
-        Lembre-se de escolher uma senha forte e segura (nosso sistema irá lhe auxiliar com os requerimentos), que seja difícil de adivinhar para
-        outras pessoas. Se precisar de ajuda, entre em contato com nossa equipe de suporte. Obrigado por usar nossa plataforma e por nos ajudar a
-        manter sua conta segura.
+        Lembre-se de escolher uma senha forte e segura (nosso sistema irá lhe
+        auxiliar com os requerimentos), que seja difícil de adivinhar para
+        outras pessoas. Se precisar de ajuda, entre em contato com nossa equipe
+        de suporte. Obrigado por usar nossa plataforma e por nos ajudar a manter
+        sua conta segura.
       </p>
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="row">
@@ -92,8 +101,18 @@ const PasswordReset = (props) => {
               <input
                 id="password"
                 type={showPassword ? "text" : "password"}
-                className={`form-control ${errors.password?.type ? "is-invalid" : getValues("password") ? "is-valid" : ""} `}
-                {...register("password", { required: true, pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/ })}
+                className={`form-control ${
+                  errors.password?.type
+                    ? "is-invalid"
+                    : getValues("password")
+                    ? "is-valid"
+                    : ""
+                } `}
+                {...register("password", {
+                  required: true,
+                  pattern:
+                    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+                })}
                 aria-invalid={errors.password ? "true" : "false"}
               />
               <button
@@ -104,7 +123,9 @@ const PasswordReset = (props) => {
                   setShowPassword(!showPassword);
                 }}
               >
-                <i className={`bi bi-eye${showPassword ? "-slash-" : "-"}fill`}></i>
+                <i
+                  className={`bi bi-eye${showPassword ? "-slash-" : "-"}fill`}
+                ></i>
               </button>
             </div>
             {errors.password && (
@@ -127,13 +148,25 @@ const PasswordReset = (props) => {
             <input
               id="repeatPassword"
               type={showPassword ? "text" : "password"}
-              className={`form-control ${errors.repeatPassword?.type ? "is-invalid" : getValues("repeatPassword") ? "is-valid" : ""} mb-1`}
-              {...register("repeatPassword", { required: true, validate: (value) => value === getValues("password") })}
+              className={`form-control ${
+                errors.repeatPassword?.type
+                  ? "is-invalid"
+                  : getValues("repeatPassword")
+                  ? "is-valid"
+                  : ""
+              } mb-1`}
+              {...register("repeatPassword", {
+                required: true,
+                validate: (value) => value === getValues("password"),
+              })}
               aria-invalid={errors.repeatPassword ? "true" : "false"}
             />
           </div>
           <div className="d-flex justify-content-end">
-            <button className="btn btn-success mt-auto" onClick={handleSubmit(onSubmit)}>
+            <button
+              className="btn btn-success mt-auto"
+              onClick={handleSubmit(onSubmit)}
+            >
               Redefinir Senha
             </button>
           </div>
