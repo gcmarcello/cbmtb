@@ -312,7 +312,7 @@ const ListRegistrations = (props) => {
                   className={`form-select ${
                     errors.gender?.type ? "is-invalid" : ""
                   } mb-1`}
-                  {...register("registrationShirt", { required: true })}
+                  {...register("registrationShirt")}
                 >
                   <option value={"pp"}>PP</option>
                   <option value={"p"}>P</option>
