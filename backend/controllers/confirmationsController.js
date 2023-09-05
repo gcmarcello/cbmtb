@@ -37,19 +37,22 @@ async function confirm_account(req, res) {
 async function resend_confirmation(req, res) {
   try {
     const { userId } = req.params;
-    const checkConfirmation = await pool.query(
-      "SELECT confirmation_id, user_email, user_first_name FROM email_confirmations AS ec LEFT JOIN users AS u ON ec.user_id = u.user_id WHERE ec.user_id = $1",
-      [userId]
-    );
-    if (!checkConfirmation.rows[0]) {
-      return res.status(400).json({
-        message: "Erro ao encontrar conta.",
-        type: "error",
-      });
-    }
 
-    const sgEmail = new Email([checkConfirmation.rows[0].user_email]);
-    sgEmail.sendConfirmationEmail(checkConfirmation.rows[0].user_first_name, checkConfirmation.rows[0].confirmation_id);
+    const user = (await pool.query(
+      "SELECT * FROM users WHERE user_id = $1",
+      [userId]
+    )).rows[0]
+
+    const newConfirmation = await pool.query(
+      "INSERT INTO email_confirmations (register_date,user_id,confirmation_status) VALUES ($1,$2,$3) RETURNING *",
+      [new Date(), userId, false]
+    );
+    
+    const sgEmail = new Email([user.user_email]);
+    sgEmail.sendConfirmationEmail(
+      user.user_first_name,
+      newConfirmation.rows[0].confirmation_id
+    );
 
     return res.status(200).json({ message: "Confirmação reenviada.", type: "success" });
   } catch (err) {
