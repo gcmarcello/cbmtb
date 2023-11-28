@@ -155,6 +155,7 @@ router.put("/admin", adminAuthorization(), async (req, res) => {
     apartment,
     cep,
     city,
+    gender,
     email,
     firstName,
     lastName,
@@ -174,7 +175,7 @@ router.put("/admin", adminAuthorization(), async (req, res) => {
     ).rows[0];
 
     const userInfoUpdate = await pool.query(
-      "UPDATE users SET user_address = $1, user_apartment = $2, user_cep = $3, user_city = $4, user_email = $5, user_first_name = $6, user_last_name = $7, user_number = $8, user_phone = $9, user_state = $10, user_confirmed = $12, user_birth_date = $13, user_role = $14 WHERE user_id = $11 RETURNING *",
+      "UPDATE users SET user_address = $1, user_apartment = $2, user_cep = $3, user_city = $4, user_email = $5, user_first_name = $6, user_last_name = $7, user_number = $8, user_phone = $9, user_state = $10, user_confirmed = $12, user_birth_date = $13, user_role = $14, user_gender=$15 WHERE user_id = $11 RETURNING *",
       [
         address,
         apartment,
@@ -190,6 +191,7 @@ router.put("/admin", adminAuthorization(), async (req, res) => {
         userStatus,
         birthDate,
         role,
+        gender,
       ]
     );
 

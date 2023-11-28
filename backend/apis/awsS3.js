@@ -77,7 +77,7 @@ async function listFilesInFolder(bucketName, folder) {
     .promise()
     .then((data) => {
       return data.Contents.filter((file) => file.Size > 0).map((file) => ({
-        link: `https://${__config.entidade.abbreviation.toLowerCase()}.s3.${process.env.AWS_DEFAULT_REGION}.amazonaws.com/${file.Key}`,
+        link: `https://${__config.bucket_name}.s3.${process.env.AWS_DEFAULT_REGION}.amazonaws.com/${file.Key}`,
         size: file.Size,
       }));
     })

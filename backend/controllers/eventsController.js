@@ -427,7 +427,7 @@ async function listEventMedias(req, res) {
         .json({ message: "Erro ao encontrar as mídias.", type: "error" });
     }
     const files = await listFilesInFolder(
-      __config.entidade.abbreviation.toLowerCase(),
+      __config.bucket_name,
       `events/${bucket.rows[0].record_bucket}`
     );
     res.status(200).json({
