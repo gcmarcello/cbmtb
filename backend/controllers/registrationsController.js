@@ -191,7 +191,7 @@ async function create_registration(req, res) {
             console.log(error.response.data.errors);
           });
         if (data.status && data.status !== "paid") {
-          console.log(data.charges[0].last_transaction.gateway_response);
+          console.log(data.charges[0].last_transaction.gateway_response, 194);
           return res.json({
             message: "Erro ao confirmar pagamento.",
             type: "error",
