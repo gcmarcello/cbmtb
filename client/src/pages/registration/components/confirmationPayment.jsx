@@ -19,7 +19,7 @@ const ConfirmationPayment = (props) => {
       (category) => category.category_id === props.watch("category")
     )[0];
     setCategory(pickedCategory);
-    setPagarMeFee(pickedCategory.category_price / 10);
+    setPagarMeFee(Math.max(pickedCategory.category_price / 10, 1));
   }, [props.watch("category")]);
 
   async function fetchPix() {
@@ -61,7 +61,6 @@ const ConfirmationPayment = (props) => {
         token: localStorage.token,
       },
     });
-    console.log(data);
     if (!data.charges) return;
     setPixInfo({
       code: data?.charges[0]?.last_transaction.qr_code,
@@ -98,18 +97,27 @@ const ConfirmationPayment = (props) => {
       type: "card",
     };
     try {
-      const { data } = await axios.post(
-        `https://api.pagar.me/core/v5/tokens?appId=pk_21Jg5yqdcpfm5BVY`,
-        body,
-        {
-          headers: {
-            accept: "application/json",
-            "content-type": "application/json",
-          },
-        }
-      );
+      const { data } = await axios
+        .post(
+          `https://api.pagar.me/core/v5/tokens?appId=${(process.env.NODE_ENV =
+            "production"
+              ? "pk_21Jg5yqdcpfm5BVY"
+              : "pk_test_e7k98YOSmS0EoJxr")}`,
+          body,
+          {
+            headers: {
+              accept: "application/json",
+              "content-type": "application/json",
+            },
+          }
+        )
+        .catch((error) => {
+          console.log(error);
+          toast.error("Erro ao processar cartão de crédito", {
+            theme: "colored",
+          });
+        });
       props.setValue("cc_token", data.id);
-      console.log(data);
       const { card, ...dataSubmit } = props.getValues();
       props.onSubmit(dataSubmit);
     } catch (error) {
@@ -186,7 +194,7 @@ const ConfirmationPayment = (props) => {
                     <div className="fw-semibold">Taxa de processamento</div>
                   </div>
                   <span className="badge bg-success rounded-pill">
-                    R$ {pagarMeFee},00
+                    R$ {Math.ceil(pagarMeFee)},00
                   </span>
                 </li>
               }
@@ -207,7 +215,7 @@ const ConfirmationPayment = (props) => {
                 </div>
 
                 <span className="">
-                  R$ {category?.category_price + pagarMeFee},00
+                  R$ {category?.category_price + Math.ceil(pagarMeFee)},00
                 </span>
               </li>
             </ul>
@@ -259,7 +267,11 @@ const ConfirmationPayment = (props) => {
                             </li>
                             <li className="my-2">
                               Depois de efetuar o pagamento, clique em
-                              "Confirmar Pagamento" para efetuar sua inscrição.
+                              "Confirmar Pagamento" para efetuar sua inscrição.{" "}
+                              <div className="text-danger fw-bold">
+                                A inscrição não será completada caso esse passo
+                                não seja seguido!
+                              </div>
                             </li>
                           </ol>
                         </div>
@@ -329,28 +341,36 @@ const ConfirmationPayment = (props) => {
                             >
                               <option value={1}>
                                 à Vista (R$
-                                {(category?.category_price +
-                                  category?.category_price * 0.1) /
-                                  1}
+                                {Math.ceil(
+                                  category?.category_price +
+                                    category?.category_price * 0.1
+                                ) / 1}
                                 ,00) s/ juros
                               </option>
-                              {installments.map((installment) => (
-                                <option
-                                  value={installment.installments}
-                                  key={`installment-${installment.installments}`}
-                                >
-                                  {installment.installments}x (R$
-                                  {Math.ceil(
-                                    (category?.category_price +
-                                      category?.category_price * 0.1 +
-                                      category?.category_price *
-                                        installment.tax) /
-                                      installment.installments
-                                  )}
-                                  ,00){" "}
-                                  {!installment.tax ? "s/ juros" : "c/ juros"}
-                                </option>
-                              ))}
+                              {installments
+                                .filter(
+                                  (i) =>
+                                    i.installments <=
+                                    category?.category_price +
+                                      Math.ceil(pagarMeFee)
+                                )
+                                .map((installment) => (
+                                  <option
+                                    value={installment.installments}
+                                    key={`installment-${installment.installments}`}
+                                  >
+                                    {installment.installments}x (R$
+                                    {Math.ceil(
+                                      (category?.category_price +
+                                        category?.category_price * 0.1 +
+                                        category?.category_price *
+                                          installment.tax) /
+                                        installment.installments
+                                    )}
+                                    ,00){" "}
+                                    {!installment.tax ? "s/ juros" : "c/ juros"}
+                                  </option>
+                                ))}
                             </select>
                           </div>
                         </div>
