@@ -99,7 +99,7 @@ const ConfirmationPayment = (props) => {
     };
     try {
       const { data } = await axios.post(
-        `https://api.pagar.me/core/v5/tokens?appId=pk_test_0n79Z9vrc3UEOdpl`,
+        `https://api.pagar.me/core/v5/tokens?appId=pk_21Jg5yqdcpfm5BVY`,
         body,
         {
           headers: {
@@ -109,6 +109,7 @@ const ConfirmationPayment = (props) => {
         }
       );
       props.setValue("cc_token", data.id);
+      console.log(data);
       const { card, ...dataSubmit } = props.getValues();
       props.onSubmit(dataSubmit);
     } catch (error) {
