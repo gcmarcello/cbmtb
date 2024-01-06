@@ -101,6 +101,7 @@ async function create_registration(req, res) {
           });
         }
       } else {
+        console.log(req.body, 104);
         const installments = [
           { installments: 1, tax: 0 },
           { installments: 2, tax: 0 },
