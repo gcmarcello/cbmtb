@@ -99,10 +99,11 @@ const ConfirmationPayment = (props) => {
     try {
       const { data } = await axios
         .post(
-          `https://api.pagar.me/core/v5/tokens?appId=${(process.env.NODE_ENV =
-            "production"
+          `https://api.pagar.me/core/v5/tokens?appId=${
+            process.env.NODE_ENV === "production"
               ? "pk_21Jg5yqdcpfm5BVY"
-              : "pk_test_e7k98YOSmS0EoJxr")}`,
+              : "pk_test_e7k98YOSmS0EoJxr"
+          }`,
           body,
           {
             headers: {
