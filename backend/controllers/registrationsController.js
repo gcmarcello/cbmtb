@@ -101,7 +101,6 @@ async function create_registration(req, res) {
           });
         }
       } else {
-        console.log(req.body, 104);
         const installments = [
           { installments: 1, tax: 0 },
           { installments: 2, tax: 0 },
@@ -183,7 +182,8 @@ async function create_registration(req, res) {
             },
           ],
         };
-        const data = await axios
+        console.log(ccInfo, 185);
+        const { data } = await axios
           .post("https://api.pagar.me/core/v5/orders/", ccInfo, {
             headers: headers,
           })
