@@ -183,15 +183,16 @@ async function create_registration(req, res) {
             },
           ],
         };
-        const { data } = await axios
+        const data = await axios
           .post("https://api.pagar.me/core/v5/orders/", ccInfo, {
             headers: headers,
           })
           .catch((error) => {
             console.log(error.response.data.errors);
           });
+        console.log(data, 193);
         if (data.status && data.status !== "paid") {
-          console.log(data.charges[0].last_transaction.gateway_response, 194);
+          console.log(data.charges[0].last_transaction.gateway_response, 195);
           return res.json({
             message: "Erro ao confirmar pagamento.",
             type: "error",
