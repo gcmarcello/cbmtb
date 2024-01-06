@@ -187,10 +187,10 @@ async function create_registration(req, res) {
           .post("https://api.pagar.me/core/v5/orders/", ccInfo, {
             headers: headers,
           })
+          .then((response) => console.log(response))
           .catch((error) => {
             console.log(error.response.data.errors);
           });
-        console.log(data, 193);
         if (data.status && data.status !== "paid") {
           console.log(data.charges[0].last_transaction.gateway_response, 195);
           return res.json({
