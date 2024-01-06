@@ -187,7 +187,7 @@ async function create_registration(req, res) {
           .post("https://api.pagar.me/core/v5/orders/", ccInfo, {
             headers: headers,
           })
-          .then((response) => console.log(response))
+          .then((response) => console.log(response, 190))
           .catch((error) => {
             console.log(error.response.data.errors);
           });
