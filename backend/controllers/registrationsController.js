@@ -33,6 +33,31 @@ async function create_registration(req, res) {
 
     const registration = async () => {
       paymentStatus = "completed";
+      const coupon = req.couponId;
+
+      if (coupon) {
+        const validateCoupon = await pool.query(
+          "SELECT * FROM event_coupons WHERE event_id = $1 AND coupon_link = $2",
+          [id, coupon]
+        );
+        if (!validateCoupon.rows[0]) {
+          return res
+            .status(200)
+            .json({ message: "Cupom inválido.", type: "error" });
+        }
+        const verifyAvailability = await pool.query(
+          "SELECT * FROM registrations AS r LEFT JOIN event_coupons AS ec ON r.coupon_id = ec.coupon_id WHERE r.event_id = $1 AND ec.coupon_link = $2",
+          [id, coupon]
+        );
+        if (
+          verifyAvailability.rows.length >= validateCoupon.rows[0].coupon_uses
+        ) {
+          return res
+            .status(200)
+            .json({ message: "Cupom Esgotado.", type: "error" });
+        }
+      }
+
       const newRegistrations = await pool.query(
         `INSERT INTO registrations (event_id,user_id,category_id,registration_shirt, payment_id, registration_status, registration_date, coupon_id) VALUES ($1,$2,$3,$4,$5,$6,$7,$8) RETURNING registration_id`,
         [
@@ -77,7 +102,8 @@ async function create_registration(req, res) {
       };
     };
 
-    if (paymentStatus === "completed") return res.json(registration());
+    if (paymentStatus === "completed" || req.couponId)
+      return res.json(registration());
     if (paymentStatus === "pending") {
       const headers = {
         Authorization:

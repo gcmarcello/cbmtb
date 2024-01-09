@@ -193,6 +193,7 @@ const Registration = () => {
             onSubmit={onSubmit}
             setIsLoading={setIsLoading}
             control={control}
+            coupon={coupon}
           />
         );
       default:

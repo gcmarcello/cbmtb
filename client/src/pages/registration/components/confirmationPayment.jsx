@@ -186,7 +186,7 @@ const ConfirmationPayment = (props) => {
                   </small>
                 </div>
                 <span className="badge bg-success rounded-pill">
-                  R$ {category?.category_price},00
+                  R$ {props.coupon ? 0 : category?.category_price},00
                 </span>
               </li>
               {
@@ -195,7 +195,7 @@ const ConfirmationPayment = (props) => {
                     <div className="fw-semibold">Taxa de processamento</div>
                   </div>
                   <span className="badge bg-success rounded-pill">
-                    R$ {Math.ceil(pagarMeFee)},00
+                    R$ {Math.ceil(props.coupon ? 0 : pagarMeFee)},00
                   </span>
                 </li>
               }
@@ -216,11 +216,15 @@ const ConfirmationPayment = (props) => {
                 </div>
 
                 <span className="">
-                  R$ {category?.category_price + Math.ceil(pagarMeFee)},00
+                  R${" "}
+                  {props.coupon
+                    ? 0
+                    : category?.category_price + Math.ceil(pagarMeFee)}
+                  ,00
                 </span>
               </li>
             </ul>
-            {category?.category_price === 0 ? (
+            {category?.category_price === 0 || props.coupon ? (
               <div>
                 <div className="mt-2">
                   <p className="text-justify">
