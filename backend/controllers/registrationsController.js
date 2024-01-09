@@ -95,14 +95,13 @@ async function create_registration(req, res) {
         eventInfo.rows[0].event_link
       );
 
-      return {
+      return res.status(200).json({
         message: "Inscrição realizada com sucesso.",
         type: "success",
-      };
+      });
     };
 
-    if (paymentStatus === "completed" || req.couponId)
-      return res.json(registration());
+    if (paymentStatus === "completed" || req.couponId) registration();
     if (paymentStatus === "pending") {
       const headers = {
         Authorization:
