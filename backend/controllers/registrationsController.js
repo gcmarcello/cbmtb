@@ -37,13 +37,13 @@ async function create_registration(req, res) {
 
       if (coupon) {
         const validateCoupon = await pool.query(
-          "SELECT * FROM event_coupons WHERE event_id = $1 AND coupon_link = $2",
+          "SELECT * FROM event_coupons WHERE event_id = $1 AND coupon_id = $2",
           [id, coupon]
         );
+
         if (!validateCoupon.rows[0]) {
-          return res
-            .status(200)
-            .json({ message: "Cupom inválido.", type: "error" });
+          res.status(200).json({ message: "Cupom inválido.", type: "error" });
+          return;
         }
         const verifyAvailability = await pool.query(
           "SELECT * FROM registrations AS r LEFT JOIN event_coupons AS ec ON r.coupon_id = ec.coupon_id WHERE r.event_id = $1 AND ec.coupon_link = $2",
@@ -52,9 +52,8 @@ async function create_registration(req, res) {
         if (
           verifyAvailability.rows.length >= validateCoupon.rows[0].coupon_uses
         ) {
-          return res
-            .status(200)
-            .json({ message: "Cupom Esgotado.", type: "error" });
+          res.status(200).json({ message: "Cupom Esgotado.", type: "error" });
+          return;
         }
       }
 
