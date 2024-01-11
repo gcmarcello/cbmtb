@@ -3,6 +3,7 @@ const pool = require("../database/database");
 
 router.post("/pagarme", async (req, res) => {
   try {
+    if(!req.body?.data) return res.status(400).json("Invalid request");
     const {id, status, charges} = req.body.data;
     const metadata = req.body?.data?.metadata;
 
