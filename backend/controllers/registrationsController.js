@@ -10,7 +10,6 @@ const axios = require("axios").default;
 async function create_registration(req, res) {
   try {
     const { id, userId } = req;
-    console.log(req.body)
     const checkForRegistration = await pool.query(
       "SELECT * FROM registrations WHERE event_id = $1 AND user_id = $2",
       [id, userId]
