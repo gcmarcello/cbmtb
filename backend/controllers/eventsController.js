@@ -218,7 +218,7 @@ async function retrieveEventInformation(req, res) {
     ).rows;
     const registrations = (
       await pool.query(
-        "SELECT r.registration_id,r.registration_checkin,r.registration_shirt,r.registration_status,r.registration_date, r.coupon_id, u.user_email,u.user_first_name,u.user_last_name,u.user_cpf, u.user_phone, u.user_birth_date, c.category_id, c.category_name, ec.coupon_link FROM registrations AS r LEFT JOIN users AS u ON r.user_id = u.user_id LEFT JOIN event_categories AS c ON r.category_id = c.category_id LEFT JOIN event_coupons AS ec ON r.coupon_id = ec.coupon_id WHERE r.event_id = $1",
+        "SELECT r.registration_id,r.registration_team, r.registration_checkin,r.registration_shirt,r.registration_status,r.registration_date, r.coupon_id, u.user_email,u.user_first_name,u.user_last_name,u.user_cpf, u.user_phone, u.user_birth_date, c.category_id, c.category_name, ec.coupon_link FROM registrations AS r LEFT JOIN users AS u ON r.user_id = u.user_id LEFT JOIN event_categories AS c ON r.category_id = c.category_id LEFT JOIN event_coupons AS ec ON r.coupon_id = ec.coupon_id WHERE r.event_id = $1",
         [id]
       )
     ).rows;
@@ -328,7 +328,7 @@ async function updateEvent(req, res) {
       const existingCategoriesSQL = existingCategories
         .map(
           (category) =>
-            `('${category.category_id}'::uuid, '${category.category_name}', '${category.category_minAge}'::integer, '${category.category_maxAge}'::integer, '${category.category_gender}', '${category.category_price}'::real)`
+            `('${category.category_id}'::uuid, '${category.category_name}', '${category.category_minAge}'::integer, '${category.category_maxAge}'::integer, '${category.category_gender}', '${category.category_price}'::real, '${category.team_category}'::boolean)`
         )
         .join(",");
 
@@ -339,8 +339,9 @@ async function updateEvent(req, res) {
       category_minage = t.category_minage,
       category_maxage = t.category_maxage,
       category_gender = t.category_gender,
-      category_price = t.category_price
-      FROM (VALUES ${existingCategoriesSQL}) AS t(category_id, category_name, category_minage, category_maxage, category_gender, category_price)
+      category_price = t.category_price,
+      team_category = t.team_category
+      FROM (VALUES ${existingCategoriesSQL}) AS t(category_id, category_name, category_minage, category_maxage, category_gender, category_price, team_category)
       WHERE t.category_id = ec.category_id`
       );
     }
@@ -354,12 +355,12 @@ async function updateEvent(req, res) {
         .filter((category) => category.category_id.length < 1)
         .map(
           (category) =>
-            `('${id}'::uuid,'${category.category_name}','${category.category_minAge}'::integer,'${category.category_maxAge}'::integer, '${category.category_gender}', '${category.category_price}'::real)`
+            `('${id}'::uuid,'${category.category_name}','${category.category_minAge}'::integer,'${category.category_maxAge}'::integer, '${category.category_gender}', '${category.category_price}'::real, '${category.team_category}'::boolean)`
         )
         .join(",");
 
       const createNewCategories = await pool.query(
-        `INSERT INTO event_categories (event_id,category_name,category_minage,category_maxage,category_gender, category_price) VALUES ${newCategoriesSQL}`
+        `INSERT INTO event_categories (event_id,category_name,category_minage,category_maxage,category_gender, category_price, team_category) VALUES ${newCategoriesSQL}`
       );
     }
 

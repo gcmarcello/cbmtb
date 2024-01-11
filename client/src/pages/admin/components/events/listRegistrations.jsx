@@ -29,6 +29,11 @@ const ListRegistrations = (props) => {
       accessor: "category_name",
     },
     {
+      Header: "Dupla",
+      accessor: "registration_team",
+      Cell: ({ value }) => value?.toUpperCase(),
+    },
+    {
       Header: "Camisa",
       accessor: "registration_shirt",
       Cell: ({ value }) => value?.toUpperCase(),

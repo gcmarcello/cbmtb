@@ -30,6 +30,7 @@ module.exports = class Email {
       });
   }
   async sendRegistrationEmail(firstName, eventName, dateStart, dateEnd, location, category, registrationID, eventLink) {
+    if (process.env.NODE_ENV !== "production") return;
     sgMail.setApiKey(process.env.SENDGRID_API_KEY);
     const qrCode = await new Promise((resolve, reject) => {
       QRCode.toDataURL(registrationID, function (err, url) {

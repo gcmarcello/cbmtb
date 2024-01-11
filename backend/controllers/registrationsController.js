@@ -60,7 +60,7 @@ async function create_registration(req, res) {
       }
 
       const newRegistrations = await pool.query(
-        `INSERT INTO registrations (event_id,user_id,category_id,registration_shirt, payment_id, registration_status, registration_date, coupon_id) VALUES ($1,$2,$3,$4,$5,$6,$7,$8) RETURNING registration_id`,
+        `INSERT INTO registrations (event_id,user_id,category_id,registration_shirt, payment_id, registration_status, registration_date, coupon_id, registration_team) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9) RETURNING registration_id`,
         [
           id,
           userId,
@@ -70,6 +70,7 @@ async function create_registration(req, res) {
           paymentStatus,
           new Date(),
           req.couponId || null,
+          req.body.registration_team || null
         ]
       );
 

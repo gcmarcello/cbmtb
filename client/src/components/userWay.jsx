@@ -11,7 +11,11 @@ const UserWay = () => {
         myElement.style.display = "none";
       }
     }
-  });
+  },[]);
+
+
+  if(process.env.NODE_ENV !== "production") return null;
+
 
   return (function (d) {
     var s = d.createElement("script");

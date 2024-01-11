@@ -20,6 +20,7 @@ const EditEventPanel = () => {
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
 
+
   const {
     getValues,
     setValue,

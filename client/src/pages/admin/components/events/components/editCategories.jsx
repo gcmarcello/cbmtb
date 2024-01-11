@@ -109,7 +109,7 @@ const EditCategories = (props) => {
               <option value="fem">Fem.</option>
             </select>
           </div>
-          <div className="col-6 col-lg-2 mt-2 mt-lg-0">
+          <div className="col-6 col-lg-1 mt-2 mt-lg-0">
             <label htmlFor="categoryPrice" className="form-label">
               Preço
             </label>
@@ -124,6 +124,20 @@ const EditCategories = (props) => {
                 defaultValue={field.category_price}
                 className={`form-control ${props.errors.category && props.errors.category[index]?.category_price ? "is-invalid" : ""}`}
                 {...props.register(`category.${index}.category_price`, { required: true })}
+              />
+            </div>
+          </div>
+          <div className="col-6 col-lg-1 mt-2 mt-lg-0">
+            <label htmlFor={`category[${index}].team_category`} className="form-label">
+              Dupla?
+            </label>
+            <div className="input-group">
+              <input
+                type="checkbox"
+                id={`category[${index}].team_category`}
+                defaultChecked={field.team_category}
+                className={`form-check-input ${props.errors.category && props.errors.category[index]?.team_category ? "is-invalid" : ""}`}
+                {...props.register(`category.${index}.team_category`)}
               />
             </div>
           </div>

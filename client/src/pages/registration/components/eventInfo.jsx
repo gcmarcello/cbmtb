@@ -20,6 +20,7 @@ const EventInfo = (props) => {
         category.category_minage <= userAge
     );
   };
+  
 
   return (
     <Fragment>
@@ -54,6 +55,19 @@ const EventInfo = (props) => {
                 )
               )}
             </select>
+            {props.event.categories.find(c => c.category_id === props.watch('category'))?.team_category && 
+            <>
+              <label htmlFor="registration_team">Nome Completo do Parceiro(a) de Dupla</label>
+              <input
+              type="text"
+              id="registration_team"
+              className="form-control"
+              {...props.register("registration_team", {
+                required: true,
+              })}
+            />
+            <div className="text-muted text-sm">Obs.: A inscrição é individual, os dois atletas devem fazê-la.</div>
+          </>}
             {/* <label htmlFor="registrationShirt">Tamanho da Camiseta</label>
 
             <select
