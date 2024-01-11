@@ -26,6 +26,7 @@ module.exports = async (req, res, next) => {
   }
 
   req.id = id;
+  
 
   const checkForRegistration = await pool.query(
     "SELECT * FROM registrations WHERE event_id = $1 AND user_id = $2",
@@ -47,11 +48,11 @@ module.exports = async (req, res, next) => {
   const registrationEnds = dayjs(
     checkForAvailability.rows[0].event_registrations_end
   );
-
+  
   const maxAttendees = checkForAvailability.rows[0].event_general_attendees;
   const fetchAttendees = await pool.query(
-    "SELECT event_id, COUNT(*) as num_attendees FROM registrations WHERE coupon_id IS NULL AND event_id = $1 GROUP BY event_id",
-    [id]
+    "SELECT event_id, COUNT(*) as num_attendees FROM registrations WHERE coupon_id IS NULL AND event_id = $1 AND registration_status = $2 GROUP BY event_id",
+    [id, 'completed']
   );
   const currentAttendees = Number(fetchAttendees.rows[0]?.num_attendees || 0);
   const periodVerification = dayjs().isBetween(
@@ -60,6 +61,8 @@ module.exports = async (req, res, next) => {
     null,
     []
   );
+
+  
 
   const gender =
     checkForUser.rows[0].user_gender === "Masculino" ? "masc" : "fem";
@@ -100,9 +103,13 @@ module.exports = async (req, res, next) => {
   }
 
   // Checking if user is already registered
-  if (checkForRegistration.rows[0]) {
-    return res.status(200).json({ message: "Inscrito!", type: "error" });
+  if (checkForRegistration.rows[0] && !req.body?.metadata) {
+    const registration = checkForRegistration.rows[0];
+    if(registration.registration_status === 'completed') return res.status(200).json({ message: "Inscrito!", type: "error" });
+    if(registration.registration_status === 'pending') return res.status(200).json({ message: "Inscrição Pendente", type: "alert" });
   }
+
+  
 
   // Checking for manual registration status
   if (checkForAvailability.rows[0].event_status !== "open") {
@@ -132,5 +139,6 @@ module.exports = async (req, res, next) => {
       .json({ message: "Inscrições Encerradas", type: "error" });
   }
 
+  
   next();
 };

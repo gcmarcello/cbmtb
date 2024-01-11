@@ -228,39 +228,3 @@ CREATE TABLE flagships(
 	flagship_bg VARCHAR(255) NOT NULL,
   PRIMARY KEY(flagship_id)
 )
-
-
-
-/* CREATE OR REPLACE FUNCTION update_num_attendees() RETURNS TRIGGER AS $$
-BEGIN
- -- Update the number of attendees for the corresponding event when a row is inserted into the registration table
- IF (TG_OP = 'INSERT') THEN
-  UPDATE events
-  SET event_current_attendees = (
-   SELECT COUNT(*)
-   FROM registrations
-   WHERE event_id = NEW.event_id
-  )
-  WHERE event_id = NEW.event_id;
-
-  RETURN NEW;
-
- -- Update the number of attendees for the corresponding event when a row is deleted from the registration table
- ELSIF (TG_OP = 'DELETE') THEN
-  UPDATE events
-  SET event_current_attendees = (
-   SELECT COUNT(*)
-   FROM registrations
-   WHERE event_id = OLD.event_id
-  )
-  WHERE event_id = OLD.event_id;
-
-  RETURN OLD;
- END IF;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE TRIGGER update_num_attendees_trigger
-AFTER INSERT OR DELETE ON registrations
-FOR EACH ROW
-EXECUTE FUNCTION update_num_attendees(); */

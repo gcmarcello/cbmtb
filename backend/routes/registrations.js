@@ -32,6 +32,9 @@ router.delete("/:eventId/:registrationId", authorization, registrationsControlle
 // Check if user is registered (USER)
 router.get("/:id/checkreg/:coupon?", authentication, registrationsController.check_registration);
 
+// Verify Registration Status (USER)
+router.get("/status/:id/", authentication, registrationsController.verify_registration_status);
+
 // List Registrations
 router.get("/:id/:type?", adminAuthorization(["admin", "staff"]), registrationsController.list_event_registrations);
 

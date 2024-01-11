@@ -1,0 +1,64 @@
+version: "3.8"
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    volumes:
+      - ../..:/workspaces:cached
+      - type: bind
+        source: ${SSH_AUTH_SOCK}
+        target: /ssh-agent
+    environment:
+      SSH_AUTH_SOCK: /ssh-agent
+
+    command: sleep infinity
+
+    ports:
+      - 3000:3000
+      - 5000:5000
+
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  db:
+    image: postgres:latest
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_DB: postgres
+    ports:
+      - 5432:5432
+    extra_hosts:
+      - host.docker.internal:host-gateway
+
+  cloudbeaver:
+    image: dbeaver/cloudbeaver:latest
+    ports:
+      - 5431:8978
+    volumes:
+      - "cloudbeaver:/opt/cloudbeaver/workspace/"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  ngrok:
+    image: ngrok/ngrok:latest
+    command:
+      - "start"
+      - "--all"
+      - "--config"
+      - "/etc/ngrok.yml"
+    volumes:
+      - ./ngrok.yml:/etc/ngrok.yml
+    ports:
+      - 4040:4040
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+volumes:
+  postgres-data:
+  cloudbeaver:

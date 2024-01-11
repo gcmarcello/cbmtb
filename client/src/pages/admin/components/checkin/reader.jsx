@@ -58,7 +58,7 @@ const ReaderComponent = ({ getCheckInNumbers, id }) => {
               setRegistration(null);
             }}
           >
-            <i class="bi bi-arrow-repeat"></i>
+            <i className="bi bi-arrow-repeat"></i>
           </button>
         </div>
       )}

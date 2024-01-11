@@ -27,7 +27,7 @@ const EventPage = () => {
         headers: myHeaders,
       });
       const parseResponse = await response.json();
-      if (parseResponse.type === "error") {
+      if (parseResponse.type === "error" || parseResponse.type === "alert") {
         setRegistrationError(parseResponse);
       }
     } catch (error) {
@@ -132,15 +132,16 @@ const EventPage = () => {
                         <div className="flex-fill">
                           <button
                             type="button"
-                            className={`btn ${registrationError?.type === "error" ? "btn-danger" : "btn-success"} btn-lg form-control`}
+                            className={`btn ${registrationError?.type === "error" ? "btn-danger" : registrationError?.type === "alert" ? "btn-warning" : "btn-success"} btn-lg form-control`}
                             disabled={registrationError}
                             onClick={() =>
                               event.event_external ? (window.location = `https://${event.event_external}`) : navigate(`/inscricao/${event.event_id}`)
                             }
                           >
-                            {registrationError?.type === "error" ? (
+                            {registrationError?.type === "error" || registrationError?.type === "alert" ? (
                               <Fragment>
-                                <i className="bi bi-x-circle"></i> {registrationError.message}
+                                {registrationError?.type === "error" ? <i className="me-2 bi bi-x-circle"></i> : <i className=" me-2 bi bi-exclamation-triangle"></i>}
+                                 {registrationError.message}
                               </Fragment>
                             ) : (
                               <Fragment>
@@ -157,7 +158,7 @@ const EventPage = () => {
                           {event.media && (
                             <Link to={`/eventos/${event.event_id}/midias`}>
                               <button className="btn btn-primary btn-lg form-control mt-3">
-                                <i class="bi bi-images"></i> Mídias do Evento
+                                <i className="bi bi-images"></i> Mídias do Evento
                               </button>
                             </Link>
                           )}

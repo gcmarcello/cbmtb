@@ -47,7 +47,7 @@ const CheckInOffCanvas = ({ registration, setRegistration, getCheckInNumbers }) 
         </div>
         <div className="offcanvas-body text-white">
           <div className="d-flex justify-content-center mb-3">
-            <svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16">
+            <svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" fill="currentColor" className="bi bi-person-circle" viewBox="0 0 16 16">
               <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" />
               <path
                 fill-rule="evenodd"
@@ -56,17 +56,17 @@ const CheckInOffCanvas = ({ registration, setRegistration, getCheckInNumbers }) 
             </svg>
           </div>
           <div>
-            <i class="bi bi-person-fill text-white fs-1"></i>
+            <i className="bi bi-person-fill text-white fs-1"></i>
             <span className="fs-3 ms-2">
               {registration.user_first_name} {registration.user_last_name}
             </span>
           </div>
           <div>
-            <i class="bi bi-people-fill text-white fs-1"></i>
+            <i className="bi bi-people-fill text-white fs-1"></i>
             <span className="fs-3 ms-2">{registration.category_name}</span>
           </div>
           <div>
-            <i class="bi bi-calendar-fill text-white fs-1"></i>
+            <i className="bi bi-calendar-fill text-white fs-1"></i>
             <span className="fs-3 ms-2">{dayjs(registration.user_birth_date).format("DD/MM/YYYY")}</span>
           </div>
           <div className="d-flex justify-content-evenly mt-3">

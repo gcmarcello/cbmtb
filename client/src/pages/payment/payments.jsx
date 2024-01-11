@@ -11,41 +11,12 @@ const Payments = ({ id, registration }) => {
   const [payment, setPayment] = useState("");
   const [pageType, setPageType] = useState("");
   const [expirationTime, setExpirationTime] = useState();
+  const [pixInfo, setPixInfo] = useState(null);
 
-  useEffect(() => {
-    if (window.location.pathname.includes("pagamento")) {
-      setPageType("pagamento");
-    } else {
-      setPageType("perfil");
-    }
+  
 
-    fetchPayment(id || linkId).then((response) => {
-      if (response?.type === "error") {
-        toast.error(response.message, { theme: "colored" });
-        navigate("/");
-        return;
-      }
-      setExpirationTime(
-        new Date(
-          new Date(response?.calendario?.criacao).getTime() +
-            response?.calendario?.expiracao * 1000
-        )
-      );
-      setPayment(response);
-      if (
-        new Date(
-          new Date(response?.calendario?.criacao).getTime() +
-            response?.calendario?.expiracao * 1000
-        ) -
-          new Date().getTime() <
-        0
-      ) {
-        generateNewPayment(id || linkId).then((response) =>
-          setPayment(response)
-        );
-      }
-    });
-  }, [id, linkId, navigate]);
+  useEffect(() => {},[])
+
 
   return (
     <Fragment>
@@ -127,23 +98,7 @@ const Payments = ({ id, registration }) => {
                 .padStart(2, "0")}`}</span>
             </div>
             <hr />
-            <div className="d-flex justify-content-between">
-              <img
-                src="https://gerencianet-pub-prod-1.s3.amazonaws.com/imagens/marcas/efi-horizontal-primary.svg"
-                height={45}
-                width={100}
-                alt="efi"
-                className="me-2"
-              />
-
-              <p className="mb-0 text-end">
-                Esta cobrança foi gerada pela Efí. Abra a sua conta digital
-                grátis e facilite a gestão financeira do seu negócio!{" "}
-                <a href="gerencianet.com.br" target={"_blank"}>
-                  Saiba Mais
-                </a>
-              </p>
-            </div>
+            
           </div>
         ) : (
           <div
@@ -151,13 +106,7 @@ const Payments = ({ id, registration }) => {
             style={{ minHeight: "300px" }}
           >
             <p className="text-center">Carregando chave PIX...</p>
-            <img
-              src={`${process.env.BUCKET_URL}/assets/logo-pix.png`}
-              alt="LOGO PIX"
-              height={90}
-              width={90}
-              className="mb-3"
-            />
+            
             <LoadingScreen />
           </div>
         )}

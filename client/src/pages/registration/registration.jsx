@@ -88,9 +88,13 @@ const Registration = () => {
         }
       );
       const parseResponse = await response.json();
-      if (parseResponse.type === "error") {
+      if (parseResponse.type === "error" ) {
         toast.error(parseResponse.message, { theme: "colored" });
         navigate(`/eventos/${id}`);
+      }
+      if (parseResponse.type === "alert") {
+        toast.warning(parseResponse.message, { theme: "colored" });
+        navigate(`/usuario`);
       }
     } catch (error) {
       console.log(error);
@@ -101,12 +105,11 @@ const Registration = () => {
 
   const onSubmit = async (data) => {
     if (!data.card) data.card = {};
-    console.log(data);
     const { card, ...rest } = data;
     const myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     myHeaders.append("token", localStorage.token);
-    setIsLoading(true);
+    
     try {
       const response = await fetch(
         `/api/registrations/${id}/${coupon ? coupon : ""}`,
@@ -117,10 +120,13 @@ const Registration = () => {
         }
       );
       const parseResponse = await response.json();
-      if (parseResponse.type !== "error") {
+      if (parseResponse.type !== "error" && data.paymentMethod !== "pix") {
         navigate("/usuario");
       }
-      toast[parseResponse.type](parseResponse.message, { theme: "colored" });
+      if (data.paymentMethod !== "pix") toast[parseResponse.type](parseResponse.message, { theme: "colored" });
+      if(parseResponse.type === "error") {
+        resetField('card')
+      }
     } catch (error) {
       console.log(error);
     } finally {

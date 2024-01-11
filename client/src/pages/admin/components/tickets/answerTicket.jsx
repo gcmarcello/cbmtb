@@ -199,23 +199,23 @@ const AnswerTicket = () => {
                     Resolvido
                   </button>
 
-                  <div class="modal fade" id="resolveModal" tabindex="-1" aria-labelledby="resolveModalLabel" aria-hidden="true">
-                    <div class="modal-dialog">
-                      <div class="modal-content">
-                        <div class="modal-header">
-                          <h5 class="modal-title" id="exampleModalLabel">
+                  <div className="modal fade" id="resolveModal" tabindex="-1" aria-labelledby="resolveModalLabel" aria-hidden="true">
+                    <div className="modal-dialog">
+                      <div className="modal-content">
+                        <div className="modal-header">
+                          <h5 className="modal-title" id="exampleModalLabel">
                             Confirmar Resolução
                           </h5>
-                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                          <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
-                        <div class="modal-body">Deseja resolver esse chamado?</div>
-                        <div class="modal-footer">
-                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <div className="modal-body">Deseja resolver esse chamado?</div>
+                        <div className="modal-footer">
+                          <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">
                             Cancelar
                           </button>
                           <button
                             type="button"
-                            class="btn btn-success"
+                            className="btn btn-success"
                             data-bs-dismiss="modal"
                             onClick={(e) => {
                               resolveTicket();

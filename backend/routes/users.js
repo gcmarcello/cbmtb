@@ -275,7 +275,7 @@ router.post("/login", async (req, res) => {
 router.get("/self", authorization, async (req, res) => {
   try {
     const self = await pool.query(
-      "SELECT user_email, user_first_name, user_last_name, user_gender, user_phone, user_cpf, user_birth_date, user_cep, user_state, user_city, user_address, user_number, user_apartment FROM users WHERE user_id = $1",
+      "SELECT user_email, user_id, user_first_name, user_last_name, user_gender, user_phone, user_cpf, user_birth_date, user_cep, user_state, user_city, user_address, user_number, user_apartment FROM users WHERE user_id = $1",
       [req.userId]
     );
     res.status(200).json(self.rows[0]);

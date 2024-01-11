@@ -5,14 +5,17 @@ import { Controller, useForm } from "react-hook-form";
 import InputMask from "react-input-mask";
 import Tab from "react-bootstrap/Tab";
 import Tabs from "react-bootstrap/Tabs";
+import { useNavigate } from "react-router-dom";
 
 const ConfirmationPayment = (props) => {
+  const [typeTab, setTypeTab] = useState(localStorage.paymentType || 'pix');
   const [category, setCategory] = useState(null);
   const [pagarMeFee, setPagarMeFee] = useState(null);
   const [pixInfo, setPixInfo] = useState(null);
   const pixRef = useRef(null);
   const pixQRRef = useRef(null);
   const cardRef = useRef(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const pickedCategory = props.event?.categories.filter(
@@ -21,6 +24,25 @@ const ConfirmationPayment = (props) => {
     setCategory(pickedCategory);
     setPagarMeFee(Math.max(pickedCategory.category_price / 10, 1));
   }, [props.watch("category")]);
+
+  async function verifyRegistration(){
+    const { data } = await axios.get(`/api/registrations/status/${props.event.event_id}`, {
+      headers: {
+        "Content-Type": "application/json",
+        token: localStorage.token,
+      },
+    });
+    if (data) {
+      toast.error(data.message, {
+        theme: "colored",
+        type: data.type
+      });
+
+      if(data.type === 'success'){
+        navigate("/usuario");
+      }
+    }
+  }
 
   async function fetchPix() {
     const tax =
@@ -54,6 +76,10 @@ const ConfirmationPayment = (props) => {
           },
         },
       ],
+      metadata: {
+        event_id: props.event.event_id,
+        user_id: props.user.user_id,
+      },
     };
     const { data } = await axios.post("/api/payments/", infoPix, {
       headers: {
@@ -61,12 +87,17 @@ const ConfirmationPayment = (props) => {
         token: localStorage.token,
       },
     });
+
+
+    
     if (!data.charges) return;
-    setPixInfo({
+    const info = {
       code: data?.charges[0]?.last_transaction.qr_code,
       qrCode: data?.charges[0]?.last_transaction.qr_code_url,
       orderId: data?.id,
-    });
+    }
+    setPixInfo(info);
+    return info
   }
 
   function scrollToItem(id, delay) {
@@ -195,7 +226,7 @@ const ConfirmationPayment = (props) => {
                     <div className="fw-semibold">Taxa de processamento</div>
                   </div>
                   <span className="badge bg-success rounded-pill">
-                    R$ {Math.ceil(props.coupon ? 0 : pagarMeFee)},00
+                    R$ {Math.ceil(props.coupon || !category?.category_price ? 0 : pagarMeFee)},00
                   </span>
                 </li>
               }
@@ -217,7 +248,7 @@ const ConfirmationPayment = (props) => {
 
                 <span className="">
                   R${" "}
-                  {props.coupon
+                  {props.coupon || !category?.category_price
                     ? 0
                     : category?.category_price + Math.ceil(pagarMeFee)}
                   ,00
@@ -244,7 +275,11 @@ const ConfirmationPayment = (props) => {
             ) : (
               <div className="mt-4">
                 <Tabs
-                  defaultActiveKey="pix"
+                  activeKey={typeTab}
+                  onSelect={(k) => {
+                    setTypeTab(k);
+                    localStorage.paymentType = k;
+                  }}
                   id="uncontrolled-tab-example"
                   className="mb-3"
                 >
@@ -274,8 +309,8 @@ const ConfirmationPayment = (props) => {
                               Depois de efetuar o pagamento, clique em
                               "Confirmar Pagamento" para efetuar sua inscrição.{" "}
                               <div className="text-danger fw-bold">
-                                A inscrição não será completada caso esse passo
-                                não seja seguido!
+                                Caso você feche a página, é necessário confirmar
+                                o pagamento no seu perfil.
                               </div>
                             </li>
                           </ol>
@@ -284,11 +319,10 @@ const ConfirmationPayment = (props) => {
                           <div className="">
                             <PixBox />
                             <button
-                              onClick={(e) => {
+                              onClick={async (e) => {
                                 e.preventDefault();
-                                props.setValue("paymentMethod", "pix");
-                                props.setValue("order_id", pixInfo.orderId);
-                                props.onSubmit(props.getValues());
+                                await verifyRegistration()
+                                
                               }}
                               type="submit"
                               className="mt-1 btn btn-success form-control"
@@ -300,9 +334,10 @@ const ConfirmationPayment = (props) => {
                           <Fragment>
                             <button
                               className="btn btn-success my-auto"
-                              onClick={(e) => {
+                              onClick={async (e) => {
                                 e.preventDefault();
-                                fetchPix();
+                                const info = await fetchPix()
+                                await props.onSubmit({...props.getValues(), paymentMethod: "pix", payment_id: info.orderId});
                               }}
                             >
                               Criar Chave Pix
@@ -493,7 +528,7 @@ const ConfirmationPayment = (props) => {
                         <div className="col-12 mt-2">
                           <small className="text-muted">
                             As transações via cartão são processadas 100% via{" "}
-                            <a href="https://pagar.me" target="_blank">
+                            <a href="https://pagar.me" target="_blank" rel="noreferrer">
                               Pagar-me
                             </a>
                             . Não salvamos dados do seu cartão no nosso sistema.

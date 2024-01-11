@@ -64,7 +64,7 @@ const ListRegistrations = (props) => {
       Header: "Check In",
       accessor: "registration_checkin",
       Cell: ({ value }) =>
-        value ? <i class="bi bi-check fs-2 fw-bold text-success"></i> : "",
+        value ? <i className="bi bi-check fs-2 fw-bold text-success"></i> : "",
     },
     {
       Header: "Opções",

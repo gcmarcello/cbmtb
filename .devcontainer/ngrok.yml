@@ -1,0 +1,11 @@
+version: "2"
+
+authtoken: 2YupN3oVbdtbEt7WJbH7nRXVWS9_4np1T4XihkRU1PM8eKaF6
+tunnels:
+  web:
+    proto: http
+    addr: host.docker.internal:5000
+    domain: bright-obliging-hookworm.ngrok-free.app
+  ssh:
+    proto: tcp
+    addr: 22

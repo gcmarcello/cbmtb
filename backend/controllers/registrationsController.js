@@ -10,13 +10,16 @@ const axios = require("axios").default;
 async function create_registration(req, res) {
   try {
     const { id, userId } = req;
-    const { category, registrationShirt } = req.body;
+    console.log(req.body)
     const checkForRegistration = await pool.query(
       "SELECT * FROM registrations WHERE event_id = $1 AND user_id = $2",
       [id, userId]
     );
 
-    if (checkForRegistration.rows[0]) {
+    const category = checkForRegistration?.rows[0]?.category_id || req.body?.category;
+    const registrationShirt = checkForRegistration?.rows[0]?.registration_shirt || req.body?.registrationShirt;
+
+    if (checkForRegistration.rows[0] && checkForRegistration.rows[0]?.registration_status === 'completed') {
       res
         .status(200)
         .json({ message: "Você já se inscreveu neste evento!", type: "error" });
@@ -29,11 +32,11 @@ async function create_registration(req, res) {
     );
 
     let paymentStatus =
-      eventCost.rows[0].category_price > 0 ? "pending" : "completed";
+      eventCost.rows[0].category_price > 0 && !req.couponId ? "pending" : "completed";
 
-    const registration = async () => {
-      paymentStatus = "completed";
+    const registration = async (paymentStatus) => {
       const coupon = req.couponId;
+
 
       if (coupon) {
         const validateCoupon = await pool.query(
@@ -42,8 +45,8 @@ async function create_registration(req, res) {
         );
 
         if (!validateCoupon.rows[0]) {
-          res.status(200).json({ message: "Cupom inválido.", type: "error" });
-          return;
+          
+          return res.status(200).json({ message: "Cupom inválido.", type: "error" });;
         }
         const verifyAvailability = await pool.query(
           "SELECT * FROM registrations AS r LEFT JOIN event_coupons AS ec ON r.coupon_id = ec.coupon_id WHERE r.event_id = $1 AND ec.coupon_link = $2",
@@ -52,8 +55,8 @@ async function create_registration(req, res) {
         if (
           verifyAvailability.rows.length >= validateCoupon.rows[0].coupon_uses
         ) {
-          res.status(200).json({ message: "Cupom Esgotado.", type: "error" });
-          return;
+          
+          return res.status(200).json({ message: "Cupom Esgotado.", type: "error" });;
         }
       }
 
@@ -64,12 +67,19 @@ async function create_registration(req, res) {
           userId,
           category,
           registrationShirt,
-          null,
+          req.body.payment_id,
           paymentStatus,
           new Date(),
           req.couponId || null,
         ]
       );
+
+      if (paymentStatus === "pending") {
+        return res.status(200).json({
+          message: "Inscrição pendente realizada com sucesso.",
+          type: "success",
+        });
+      }
 
       const userInfo = await pool.query(
         "SELECT user_email, user_first_name FROM users WHERE user_id = $1",
@@ -101,7 +111,8 @@ async function create_registration(req, res) {
       });
     };
 
-    if (paymentStatus === "completed" || req.couponId) registration();
+    if (paymentStatus === "completed" || req.couponId)
+    return await registration("completed")
     if (paymentStatus === "pending") {
       const headers = {
         Authorization:
@@ -111,19 +122,7 @@ async function create_registration(req, res) {
         accept: "application/json",
       };
       if (req.body.paymentMethod === "pix") {
-        const id = req.body.order_id;
-        const dataPix = await axios.get(
-          `https://api.pagar.me/core/v5/orders/${id}`,
-          {
-            headers: headers,
-          }
-        );
-        if (dataPix.data.status !== "paid") {
-          return res.json({
-            type: "error",
-            message: "Pagamento não foi detectado.",
-          });
-        }
+        return await registration("pending")
       } else {
         const installments = [
           { installments: 1, tax: 0 },
@@ -205,6 +204,9 @@ async function create_registration(req, res) {
               payment_method: "credit_card",
             },
           ],
+          metadata: {
+            registrationId: req.body.metadata?.registrationId,
+          }
         };
 
         const response = await axios
@@ -212,6 +214,7 @@ async function create_registration(req, res) {
             headers: headers,
           })
           .catch((error) => {
+            console.log
             console.log(error);
           });
 
@@ -221,12 +224,24 @@ async function create_registration(req, res) {
             type: "error",
           });
         }
+        if(req.body.metadata?.registration_id){
+          const registration = await pool.query(
+            "UPDATE registrations SET registration_status = $1 WHERE registration_id = $2 RETURNING *",
+            ['completed', req.body.metadata?.registration_id]
+          );
+          const deletedRegistrations = await pool.query("DELETE FROM registrations WHERE user_id = $1 AND event_id = $2 AND registration_status != $3", [userId, id, 'completed'])
+          return res.json({
+            message: "Pagamento confirmado com sucesso.",
+            type: "success",
+          });
+        } else {
+          await registration("completed")
+        }
+        
       }
-
-      return res.json(await registration());
     }
   } catch (err) {
-    console.log(err.message);
+    console.log(err.message)
     res.status(400).json({
       message: "Erro ao finalizar inscrição.",
       type: "error",
@@ -234,11 +249,34 @@ async function create_registration(req, res) {
   }
 }
 
+async function verify_registration_status(req, res) {
+  const { userId } = req;
+  const { id } = req.params;
+  const checkForRegistration = await pool.query(
+    "SELECT * FROM registrations WHERE event_id = $1 AND user_id = $2",
+    [id, userId]
+  );
+
+  if (checkForRegistration.rows[0].registration_status !== "completed") {
+    return res.status(200).json({
+      message: `Inscrição não confirmada.`,
+      type: "error",
+    });
+  }
+
+  return res.status(200).json({
+    message: `Inscrição confirmada.`,
+    type: "success",
+  });
+
+  
+}
+
 async function read_user_registrations(req, res) {
   try {
     const userId = req.userId;
     const registrations = await pool.query(
-      "SELECT r.registration_status, r.registration_id, r.registration_shirt, r.registration_date, r.registration_id, r.payment_id, c.category_name, e.event_id, e.event_name, e.event_location, e.event_date_start, e.event_image FROM registrations AS r LEFT JOIN users AS u ON r.user_id = u.user_id LEFT JOIN event_categories AS c ON r.category_id = c.category_id LEFT JOIN events AS e ON c.event_id = e.event_id WHERE u.user_id = $1",
+      "SELECT r.registration_status, r.registration_id, r.registration_shirt, r.registration_date, r.registration_id, r.payment_id, c.category_name, c.category_price, e.event_id, e.event_name, e.event_location, e.event_date_start, e.event_image FROM registrations AS r LEFT JOIN users AS u ON r.user_id = u.user_id LEFT JOIN event_categories AS c ON r.category_id = c.category_id LEFT JOIN events AS e ON c.event_id = e.event_id WHERE u.user_id = $1",
       [userId]
     );
 
@@ -402,7 +440,10 @@ async function check_registration(req, res) {
 
       // Checking if user is already registered
       if (checkForRegistration.rows[0]) {
-        return res.status(200).json({ message: "Inscrito!", type: "error" });
+        const registration = checkForRegistration.rows[0];
+
+        if(registration.registration_status === 'completed') return res.status(200).json({ message: "Inscrito!", type: "error" });
+        if(registration.registration_status === 'pending') return res.status(200).json({ message: "Inscrição Pendente", type: "alert" });
       }
       const gender =
         checkForUser.rows[0].user_gender === "Masculino" ? "masc" : "fem";
@@ -456,8 +497,8 @@ async function check_registration(req, res) {
     );
     const maxAttendees = checkForAvailability.rows[0].event_general_attendees;
     const fetchAttendees = await pool.query(
-      "SELECT event_id, COUNT(*) as num_attendees FROM registrations WHERE coupon_id IS NULL AND event_id = $1 GROUP BY event_id",
-      [id]
+      "SELECT event_id, COUNT(*) as num_attendees FROM registrations WHERE coupon_id IS NULL AND event_id = $1 AND registration_status = $2 GROUP BY event_id",
+      [id, 'completed']
     );
     const currentAttendees = Number(fetchAttendees.rows[0]?.num_attendees || 0);
     const periodVerification = dayjs().isBetween(
@@ -521,7 +562,7 @@ async function verify_registration(req, res) {
     if (verifyRegistration.rows[0].registration_status !== "completed") {
       return res
         .status(403)
-        .json({ message: "Esta inscrição não foi confirmada", type: "error" });
+        .json({ message: "Esta inscrição não foi paga.", type: "error" });
     }
 
     return res
@@ -546,12 +587,12 @@ async function checkin_registration(req, res) {
       console.log({ message: "Erro ao encontrar inscrição", type: "error" });
       return res
         .status(404)
-        .json({ message: "Erro ao encontrar inscrição", type: "error" });
+        .json({ message: "Erro ao encontrar inscrição.", type: "error" });
     }
 
     if (verifyRegistration.rows[0].registration_status !== "completed") {
       console.log({
-        message: "Esta inscrição não foi confirmada",
+        message: "Esta inscrição não foi paga.",
         type: "error",
       });
       return res
@@ -623,4 +664,5 @@ module.exports = {
   verify_registration,
   checkin_registration,
   list_event_registrations,
+  verify_registration_status
 };
