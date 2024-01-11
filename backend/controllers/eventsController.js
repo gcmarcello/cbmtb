@@ -209,7 +209,7 @@ async function retrieveEventInformation(req, res) {
       await pool.query("SELECT * FROM events WHERE event_id = $1", [id])
     ).rows[0];
     const categories = (
-      await pool.query("SELECT * FROM event_categories WHERE event_id = $1", [
+      await pool.query("SELECT * FROM event_categories WHERE event_id = $1 ORDER BY category_minage ASC", [
         id,
       ])
     ).rows;
