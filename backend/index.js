@@ -27,7 +27,7 @@ app.use("/api/payments", require("./routes/payments"));
 app.use("/api/registrations", require("./routes/registrations"));
 app.use("/api/tickets", require("./routes/tickets"));
 app.use("/api/users", require("./routes/users"));
-app.use("/api/webhook", require("./routes/webhook"));
+app.use("/api/webhooks", require("./routes/webhook"));
 
 /* React Routes */
 
