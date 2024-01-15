@@ -1,3 +1,5 @@
+const pool = require("../database/database");
+
 async function verifyCoupon(couponId, eventId) {
   const validateCoupon = await pool.query(
     "SELECT * FROM event_coupons WHERE event_id = $1 AND coupon_id = $2",
