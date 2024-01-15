@@ -39,6 +39,7 @@ const installments = [
  * @returns {Promise<Object>} - The updated registration object.
  */
 async function createOrder(paymentInfo) {
+  console.dir(paymentInfo, { depth: null });
   try {
     const { data } = await axios.post(
       "https://api.pagar.me/core/v5/orders",
