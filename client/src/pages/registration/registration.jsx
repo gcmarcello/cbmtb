@@ -88,7 +88,7 @@ const Registration = () => {
         }
       );
       const parseResponse = await response.json();
-      if (parseResponse.type === "error" ) {
+      if (parseResponse.type === "error") {
         toast.error(parseResponse.message, { theme: "colored" });
         navigate(`/eventos/${id}`);
       }
@@ -109,24 +109,31 @@ const Registration = () => {
     const myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     myHeaders.append("token", localStorage.token);
-    
+
     try {
-      const response = await fetch(
-        `/api/registrations/${id}/${coupon ? coupon : ""}`,
-        {
-          method: "POST",
-          headers: myHeaders,
-          body: JSON.stringify(rest),
-        }
-      );
+      const response = await fetch(`/api/registrations/${id}/${coupon ? coupon : ""}`, {
+        method: "POST",
+        headers: myHeaders,
+        body: JSON.stringify(rest),
+      });
       const parseResponse = await response.json();
-      if (parseResponse.type !== "error" && data.paymentMethod !== "pix") {
+
+      if (parseResponse.type !== "error" && !parseResponse.data) {
+        toast.success(parseResponse.message, { theme: "colored" });
         navigate("/usuario");
       }
-      if (data.paymentMethod !== "pix") toast[parseResponse.type](parseResponse.message, { theme: "colored" });
+
+      if (parseResponse.type !== "error" && parseResponse.data) {
+        window.open(parseResponse.data, "_self");
+      }
+
+      if (parseResponse.type === "error") {
+        toast.error(parseResponse.message, { theme: "colored" });
+      }
+      /*if (data.paymentMethod !== "pix") toast[parseResponse.type](parseResponse.message, { theme: "colored" });
       if(parseResponse.type === "error") {
         resetField('card')
-      }
+      } */
     } catch (error) {
       console.log(error);
     } finally {
@@ -178,14 +185,7 @@ const Registration = () => {
           />
         );
       case 2:
-        return (
-          <EventInfo
-            event={event}
-            user={user}
-            watch={watch}
-            register={register}
-          />
-        );
+        return <EventInfo event={event} user={user} watch={watch} register={register} />;
       case 3:
         return (
           <ConfirmationPayment

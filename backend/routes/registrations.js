@@ -1,5 +1,5 @@
-const router = require("express").Router();
 
+const router = require("express").Router();
 const authentication = require("../middlewares/authentication");
 const authorization = require("../middlewares/authorization");
 const adminAuthorization = require("../middlewares/adminAuthorization");
@@ -22,6 +22,9 @@ router.get("/user/", authorization, registrationsController.read_user_registrati
 
 // Update Registration
 router.put("/", adminAuthorization(), registrationsController.update_registration);
+
+// Update Registration Payment
+router.put("/:registrationId/payment", authorization, registrationsController.update_registration_payment);
 
 // Create Registrations (USER)
 router.post("/:id/:coupon?", [authorization, registrationAvailability, updateUser], registrationsController.create_registration);

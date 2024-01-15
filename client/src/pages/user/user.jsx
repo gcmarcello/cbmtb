@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Fragment } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 import { toast } from "react-toastify";
 
 import LoadingScreen from "../../utils/loadingScreen";
@@ -14,6 +14,7 @@ const UserPanel = () => {
   const { panel } = useParams();
   const [isLoading, setIsLoading] = useState(true);
   const [userInfo, setUserInfo] = useState(null);
+  const [searchParams] = useSearchParams();
 
   const deleteRegistration = async (eventId, registrationId) => {
     try {
@@ -21,13 +22,10 @@ const UserPanel = () => {
       myHeaders.append("Content-Type", "application/json");
       myHeaders.append("token", localStorage.token);
 
-      const response = await fetch(
-        `/api/registrations/${eventId}/${registrationId}`,
-        {
-          method: "DELETE",
-          headers: myHeaders,
-        }
-      );
+      const response = await fetch(`/api/registrations/${eventId}/${registrationId}`, {
+        method: "DELETE",
+        headers: myHeaders,
+      });
       const parseResponse = await response.json();
       if (parseResponse.type === "success") {
         setRegistrations(
@@ -64,7 +62,7 @@ const UserPanel = () => {
 
   const fetchRegistrations = async (type) => {
     try {
-      setIsLoading(true);
+      setRegistrations(null);
       const myHeaders = new Headers();
       myHeaders.append("Content-Type", "application/json");
       myHeaders.append("token", localStorage.token);
@@ -82,21 +80,55 @@ const UserPanel = () => {
   };
 
   useEffect(() => {
-    getUser();
-    fetchRegistrations();
+    // Check if 'success' parameter is in the URL and is true
+    setTimeout(
+      () => {
+        getUser();
+        fetchRegistrations();
+      },
+      searchParams.get("order_id") ? 10000 : 0
+    );
   }, []);
 
   useEffect(() => {
     document.title = `${__config.entidade.abbreviation} - Painel do Usuário`;
   }, []);
 
-  if (isLoading) {
-    return <LoadingScreen />;
+  if (isLoading || !userInfo || !registrations) {
+    return (
+      <div className="d-flex flex-column">
+        <LoadingScreen />
+        <span className="text-center mb-4 mt-n2">Carregando Inscrições</span>
+      </div>
+    );
   }
 
   return (
     <Fragment>
       <div className="container-lg inner-page">
+        {searchParams.get("order_id") && (
+          <div className="alert alert-success alert-dismissible fade show" role="alert">
+            <strong>Sua inscrição foi confirmada!</strong>
+
+            <>
+              <br />
+              {registrations.some((reg) => reg.registration_status === "pending") && (
+                <>
+                  Ela ainda pode constar como pendente até que o pagamento seja
+                  processado.{" "}
+                </>
+              )}
+              Você receberá uma confirmação via e-mail com seu QR Code!
+            </>
+
+            <button
+              type="button"
+              className="btn-close"
+              data-bs-dismiss="alert"
+              aria-label="Close"
+            ></button>
+          </div>
+        )}
         <h1>Minha Conta</h1>
 
         <ul className="nav nav-tabs" id="myTab" role="tablist">

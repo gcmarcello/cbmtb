@@ -29,8 +29,16 @@ module.exports = class Email {
         console.error(error);
       });
   }
-  async sendRegistrationEmail(firstName, eventName, dateStart, dateEnd, location, category, registrationID, eventLink) {
-    if (process.env.NODE_ENV !== "production") return;
+  async sendRegistrationEmail(
+    firstName,
+    eventName,
+    dateStart,
+    dateEnd,
+    location,
+    category,
+    registrationID,
+    eventLink
+  ) {
     sgMail.setApiKey(process.env.SENDGRID_API_KEY);
     const qrCode = await new Promise((resolve, reject) => {
       QRCode.toDataURL(registrationID, function (err, url) {
@@ -57,7 +65,9 @@ module.exports = class Email {
       <img src="${qrCode}"/>
 
       <ul>
-        <li><strong>Data:</strong>&nbsp;${dayjs(dateStart).format("DD/MM/YYYY HH:mm")} -&nbsp;${dayjs(dateEnd).format("DD/MM/YYYY HH:mm")}</li>
+        <li><strong>Data:</strong>&nbsp;${dayjs(dateStart).format(
+          "DD/MM/YYYY HH:mm"
+        )} -&nbsp;${dayjs(dateEnd).format("DD/MM/YYYY HH:mm")}</li>
         <li><strong>Local:</strong>&nbsp;${location}</li>
         <li><strong>Categoria:</strong>&nbsp;${category}</li>
         <li><strong>ID da inscri&ccedil;&atilde;o:</strong> ${registrationID}&nbsp;(Esse &eacute; apenas o n&uacute;mero de controle no sistema, seu n&uacute;mero de atleta&nbsp;ser&aacute; definido de forma aleat&oacute;ria no check-in do evento)</li>

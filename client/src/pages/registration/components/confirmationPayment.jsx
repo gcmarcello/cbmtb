@@ -1,21 +1,8 @@
-import { Fragment, useEffect, useRef, useState } from "react";
-import axios from "axios";
-import { toast } from "react-toastify";
-import { Controller, useForm } from "react-hook-form";
-import InputMask from "react-input-mask";
-import Tab from "react-bootstrap/Tab";
-import Tabs from "react-bootstrap/Tabs";
-import { useNavigate } from "react-router-dom";
+import { Fragment, useEffect, useState } from "react";
 
 const ConfirmationPayment = (props) => {
-  const [typeTab, setTypeTab] = useState(localStorage.paymentType || 'pix');
   const [category, setCategory] = useState(null);
   const [pagarMeFee, setPagarMeFee] = useState(null);
-  const [pixInfo, setPixInfo] = useState(null);
-  const pixRef = useRef(null);
-  const pixQRRef = useRef(null);
-  const cardRef = useRef(null);
-  const navigate = useNavigate();
 
   useEffect(() => {
     const pickedCategory = props.event?.categories.filter(
@@ -25,183 +12,7 @@ const ConfirmationPayment = (props) => {
     setPagarMeFee(Math.max(pickedCategory.category_price / 10, 1));
   }, [props.watch("category")]);
 
-  async function verifyRegistration(){
-    const { data } = await axios.get(`/api/registrations/status/${props.event.event_id}`, {
-      headers: {
-        "Content-Type": "application/json",
-        token: localStorage.token,
-      },
-    });
-    if (data) {
-      toast.error(data.message, {
-        theme: "colored",
-        type: data.type
-      });
-
-      if(data.type === 'success'){
-        navigate("/usuario");
-      }
-    }
-  }
-
-  async function fetchPix() {
-    const tax =
-      category?.category_price > 1 ? category?.category_price * 0.1 : 0;
-    const infoPix = {
-      items: [
-        {
-          amount: (category?.category_price + tax) * 100,
-          description: `Inscrição ${props.event.event_name}`,
-          quantity: 1,
-        },
-      ],
-      customer: {
-        name: [props.user.user_first_name, props.user.user_last_name].join(" "),
-        email: props.user.user_email,
-        type: "individual",
-        document: props.user.user_cpf.replace(/[.-]/g, ""),
-        phones: {
-          home_phone: {
-            country_code: "55",
-            number: props.user.user_phone.split(" ")[1].replace(/[.-]/g, ""),
-            area_code: props.user.user_phone.split(" ")[0],
-          },
-        },
-      },
-      payments: [
-        {
-          payment_method: "pix",
-          pix: {
-            expires_in: "600",
-          },
-        },
-      ],
-      metadata: {
-        event_id: props.event.event_id,
-        user_id: props.user.user_id,
-      },
-    };
-    const { data } = await axios.post("/api/payments/", infoPix, {
-      headers: {
-        "Content-Type": "application/json",
-        token: localStorage.token,
-      },
-    });
-
-
-    
-    if (!data.charges) return;
-    const info = {
-      code: data?.charges[0]?.last_transaction.qr_code,
-      qrCode: data?.charges[0]?.last_transaction.qr_code_url,
-      orderId: data?.id,
-    }
-    setPixInfo(info);
-    return info
-  }
-
-  function scrollToItem(id, delay) {
-    setTimeout(() => {
-      id.current.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-        inline: "start",
-      });
-    }, delay);
-  }
-
-  async function tokenizeCard() {
-    props.setValue("paymentMethod", "credit_card");
-    const card = props.getValues("card");
-    card.exp_month = Number(card.exp.split("/")[0]);
-
-    card.exp_year = Number(card.exp.split("/")[1]);
-    const { exp, name, ...cardToToken } = card;
-    const body = {
-      card: {
-        number: cardToToken.number.replace(/\s/g, ""),
-        exp_month: cardToToken.exp_month,
-        exp_year: cardToToken.exp_year,
-        cvv: cardToToken.cvv,
-        holder_name: `${props.user.user_first_name} ${props.user.user_last_name}`,
-      },
-      type: "card",
-    };
-    try {
-      const { data } = await axios
-        .post(
-          `https://api.pagar.me/core/v5/tokens?appId=${
-            process.env.NODE_ENV === "production"
-              ? "pk_21Jg5yqdcpfm5BVY"
-              : "pk_test_e7k98YOSmS0EoJxr"
-          }`,
-          body,
-          {
-            headers: {
-              accept: "application/json",
-              "content-type": "application/json",
-            },
-          }
-        )
-        .catch((error) => {
-          console.log(error);
-          toast.error("Erro ao processar cartão de crédito", {
-            theme: "colored",
-          });
-        });
-      props.setValue("cc_token", data.id);
-      const { card, ...dataSubmit } = props.getValues();
-      props.onSubmit(dataSubmit);
-    } catch (error) {
-      toast.error("Erro ao processar cartão de crédito", { theme: "colored" });
-    }
-  }
-
-  useEffect(() => {
-    if (pixQRRef.current) {
-      scrollToItem(pixQRRef, 1000);
-    }
-  }, [pixQRRef.current]);
-
-  const installments = [
-    { installments: 2, tax: 0 },
-    { installments: 3, tax: 0 },
-    { installments: 4, tax: 0.1 },
-    { installments: 5, tax: 0.1 },
-    { installments: 6, tax: 0.1 },
-    { installments: 7, tax: 0.2 },
-    { installments: 8, tax: 0.2 },
-    { installments: 9, tax: 0.2 },
-    { installments: 10, tax: 0.3 },
-    { installments: 11, tax: 0.3 },
-    { installments: 12, tax: 0.3 },
-  ];
-
   if (!category) return null;
-
-  const PixBox = () => {
-    return (
-      <div className="d-flex flex-column">
-        <img className="img-fluid" src={pixInfo.qrCode} alt="QR Code Pix" />
-        <div className="input-group mb-3">
-          <input
-            className="form-control"
-            defaultValue={pixInfo.code}
-            readOnly
-            id="pix-code"
-          />
-          <button
-            className="btn btn-outline-secondary"
-            type="button"
-            id="button-addon2"
-            onClick={() => navigator.clipboard.writeText(pixInfo.code)}
-          >
-            <i className="bi bi-clipboard2-check-fill"></i>
-          </button>
-        </div>
-      </div>
-    );
-  };
 
   return (
     <Fragment>
@@ -226,7 +37,11 @@ const ConfirmationPayment = (props) => {
                     <div className="fw-semibold">Taxa de processamento</div>
                   </div>
                   <span className="badge bg-success rounded-pill">
-                    R$ {Math.ceil(props.coupon || !category?.category_price ? 0 : pagarMeFee)},00
+                    R${" "}
+                    {Math.ceil(
+                      props.coupon || !category?.category_price ? 0 : pagarMeFee
+                    )}
+                    ,00
                   </span>
                 </li>
               }
@@ -255,24 +70,59 @@ const ConfirmationPayment = (props) => {
                 </span>
               </li>
             </ul>
-            {category?.category_price === 0 || props.coupon ? (
-              <div>
-                <div className="mt-2">
-                  <p className="text-justify">
-                    A inscrição neste evento é gratuita. Ao clicar em
-                    'finalizar', sua inscrição será confirmada e você será
-                    redirecionado para o seu perfil. Você receberá a confirmação
-                    da inscrição por e-mail e ela também estará disponível no
-                    seu perfil.
-                  </p>
+            {
+              category?.category_price === 0 || props.coupon ? (
+                <div>
+                  <div className="mt-2">
+                    <p className="text-justify">
+                      A inscrição neste evento é gratuita. Ao clicar em 'finalizar', sua
+                      inscrição será confirmada e você será redirecionado para o seu
+                      perfil. Você receberá a confirmação da inscrição por e-mail e ela
+                      também estará disponível no seu perfil.
+                    </p>
+                  </div>
+                  <div className="d-flex justify-content-end mt-3">
+                    <button className="btn btn-success form-control">Finalizar</button>
+                  </div>
                 </div>
-                <div className="d-flex justify-content-end mt-3">
-                  <button className="btn btn-success form-control">
-                    Finalizar
-                  </button>
+              ) : (
+                <div className="container mt-3">
+                  <div className="row">
+                    <div className="d-md-block col-md-6">
+                      <div className="mb-3">
+                        <p>
+                          Clique no botão verde para ser redirecionado para a plataforma
+                          da{" "}
+                          <span className="text-success ">
+                            <strong>Pagar.me</strong>
+                          </span>{" "}
+                          para finalizar o pagamento.
+                        </p>
+                      </div>
+                    </div>
+                    <div className="col-12 col-md-6 ">
+                      <div className="d-flex flex-column">
+                        <button type="submit" className="btn btn-success my-auto">
+                          <i className="bi bi-lock-fill"></i> Prosseguir para o pagamento
+                        </button>
+                        <div className="d-flex align-items-center mt-2">
+                          <p className="text-muted mb-0 fs-6">
+                            Após o pagamento, sua inscrição será confirmada
+                            automaticamente!
+                          </p>
+                          <img
+                            src="https://dka575ofm4ao0.cloudfront.net/pages-transactional_logos/retina/1949/PagarMe_Logo_PRINCIPAL-02.png"
+                            alt=""
+                            className="ms-3"
+                            height={30}
+                            width={110}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            ) : (
+              ) /* (
               <div className="mt-4">
                 <Tabs
                   activeKey={typeTab}
@@ -292,9 +142,7 @@ const ConfirmationPayment = (props) => {
                         <div className="d-flex">
                           <ol
                             ref={pixRef}
-                            className={
-                              pixInfo?.qrCode ? "d-none d-lg-block" : "d-block"
-                            }
+                            className={pixInfo?.qrCode ? "d-none d-lg-block" : "d-block"}
                           >
                             <li className="my-2">
                               Aperte o botão verde "Criar Chave Pix".
@@ -306,11 +154,11 @@ const ConfirmationPayment = (props) => {
                               Copie a chave ou scaneie o QR Code para pagar.
                             </li>
                             <li className="my-2">
-                              Depois de efetuar o pagamento, clique em
-                              "Confirmar Pagamento" para efetuar sua inscrição.{" "}
+                              Depois de efetuar o pagamento, clique em "Confirmar
+                              Pagamento" para efetuar sua inscrição.{" "}
                               <div className="text-danger fw-bold">
-                                Caso você feche a página, é necessário confirmar
-                                o pagamento no seu perfil.
+                                Caso você feche a página, é necessário confirmar o
+                                pagamento no seu perfil.
                               </div>
                             </li>
                           </ol>
@@ -321,8 +169,7 @@ const ConfirmationPayment = (props) => {
                             <button
                               onClick={async (e) => {
                                 e.preventDefault();
-                                await verifyRegistration()
-                                
+                                await verifyRegistration();
                               }}
                               type="submit"
                               className="mt-1 btn btn-success form-control"
@@ -336,8 +183,12 @@ const ConfirmationPayment = (props) => {
                               className="btn btn-success my-auto"
                               onClick={async (e) => {
                                 e.preventDefault();
-                                const info = await fetchPix()
-                                await props.onSubmit({...props.getValues(), paymentMethod: "pix", payment_id: info.orderId});
+                                const info = await fetchPix();
+                                await props.onSubmit({
+                                  ...props.getValues(),
+                                  paymentMethod: "pix",
+                                  payment_id: info.orderId,
+                                });
                               }}
                             >
                               Criar Chave Pix
@@ -391,8 +242,7 @@ const ConfirmationPayment = (props) => {
                                 .filter(
                                   (i) =>
                                     i.installments <=
-                                    category?.category_price +
-                                      Math.ceil(pagarMeFee)
+                                    category?.category_price + Math.ceil(pagarMeFee)
                                 )
                                 .map((installment) => (
                                   <option
@@ -403,12 +253,10 @@ const ConfirmationPayment = (props) => {
                                     {Math.ceil(
                                       (category?.category_price +
                                         category?.category_price * 0.1 +
-                                        category?.category_price *
-                                          installment.tax) /
+                                        category?.category_price * installment.tax) /
                                         installment.installments
                                     )}
-                                    ,00){" "}
-                                    {!installment.tax ? "s/ juros" : "c/ juros"}
+                                    ,00) {!installment.tax ? "s/ juros" : "c/ juros"}
                                   </option>
                                 ))}
                             </select>
@@ -438,9 +286,7 @@ const ConfirmationPayment = (props) => {
                                   value={field.value}
                                   onChange={field.onChange}
                                 >
-                                  {(inputProps) => (
-                                    <input {...inputProps} type="text" />
-                                  )}
+                                  {(inputProps) => <input {...inputProps} type="text" />}
                                 </InputMask>
                               )}
                             />
@@ -471,9 +317,7 @@ const ConfirmationPayment = (props) => {
                                   onChange={field.onChange}
                                   id="exp"
                                 >
-                                  {(inputProps) => (
-                                    <input {...inputProps} type="text" />
-                                  )}
+                                  {(inputProps) => <input {...inputProps} type="text" />}
                                 </InputMask>
                               )}
                             />
@@ -504,9 +348,7 @@ const ConfirmationPayment = (props) => {
                                   onChange={field.onChange}
                                   id="cvv"
                                 >
-                                  {(inputProps) => (
-                                    <input {...inputProps} type="text" />
-                                  )}
+                                  {(inputProps) => <input {...inputProps} type="text" />}
                                 </InputMask>
                               )}
                             />
@@ -539,7 +381,8 @@ const ConfirmationPayment = (props) => {
                   </Tab>
                 </Tabs>
               </div>
-            )}
+            ) */
+            }
           </div>
         </div>
       </div>
