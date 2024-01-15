@@ -24,7 +24,10 @@ const ConfirmationPayment = (props) => {
                 <div className="py-2">
                   <div className="fw-semibold">Categoria</div>
                   <small className="text-muted">
-                    {category?.category_name} - {props.user.user_gender}
+                    {category?.category_name} - {props.user.user_gender}{" "}
+                    {props.getValues("registration_team")
+                      ? props.getValues("registration_team")
+                      : ""}
                   </small>
                 </div>
                 <span className="badge bg-success rounded-pill">

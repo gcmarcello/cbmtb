@@ -2,7 +2,7 @@ const ProgressBar = (props) => {
   const changeStage = (e, number) => {
     e.preventDefault();
 
-    if (props.stage + number >= 1 && props.stage + number <= 3) {
+    if (props.stage + number >= 1 && props.stage + number <= 2) {
       props.setStage(props.stage + number);
     }
   };
@@ -12,8 +12,6 @@ const ProgressBar = (props) => {
       case 1:
         return "0%";
       case 2:
-        return "50%";
-      case 3:
         return "100%";
       default:
         break;
@@ -41,7 +39,7 @@ const ProgressBar = (props) => {
               </button>
             )}
           </div>
-          <div className="col-7">
+          <div className="col-5">
             <div>
               <div className="position-relative">
                 <div className="progress" style={{ height: "5px" }}>
@@ -54,31 +52,17 @@ const ProgressBar = (props) => {
                     aria-valuemax="100"
                   ></div>
                 </div>
-                <div className="position-absolute  translate-middle start-0">
+
+                <div className="position-absolute  start-0 translate-middle ">
                   <button
                     type="button"
                     className={`btn btn-sm btn-${
                       props.stage >= 1 ? "primary" : "secondary"
                     } rounded-pill`}
                     style={{ width: "2rem", height: "2rem" }}
-                    onClick={() => props.setStage(1)}
-                  >
-                    1
-                  </button>
-                  <p className="position-absolute" style={{ left: "-3px" }}>
-                    Atleta
-                  </p>
-                </div>
-                <div className="position-absolute  start-50 translate-middle ">
-                  <button
-                    type="button"
-                    className={`btn btn-sm btn-${
-                      props.stage >= 2 ? "primary" : "secondary"
-                    } rounded-pill`}
-                    style={{ width: "2rem", height: "2rem" }}
                     onClick={() => props.setStage(2)}
                   >
-                    2
+                    1
                   </button>
                   <p className="position-absolute left-50" style={{ left: "-7px" }}>
                     Evento
@@ -89,7 +73,7 @@ const ProgressBar = (props) => {
                   <button
                     type="button"
                     className={`btn btn-sm btn-${
-                      props.stage >= 3 ? "primary" : "secondary"
+                      props.stage >= 2 ? "primary" : "secondary"
                     } rounded-pill`}
                     style={{ width: "2rem", height: "2rem" }}
                     onClick={() => props.setStage(3)}
@@ -101,17 +85,17 @@ const ProgressBar = (props) => {
                         : true
                     }
                   >
-                    3
+                    2
                   </button>
                   <p className="position-absolute left-50" style={{ left: "-15px" }}>
-                    Concluir
+                    Pagamento
                   </p>
                 </div>
               </div>
             </div>
           </div>
           <div className="col-2 px-0 d-flex justify-content-center">
-            {props.stage !== 3 && (
+            {props.stage !== 2 && (
               <button
                 className="btn btn-link text-white ms-3"
                 onClick={(e) => {
@@ -120,13 +104,13 @@ const ProgressBar = (props) => {
                   changeStage(e, 1);
                 }}
                 disabled={
-                  props.stage === 2
+                  props.stage === 1
                     ? props.watch("rulesAgreement") &&
                       /* props.watch("registrationShirt") && */
                       props.watch("category")
                       ? false
                       : true
-                    : props.stage === 3
+                    : props.stage === 2
                     ? true
                     : false
                 }

@@ -1,6 +1,6 @@
 // Library Components
 import React, { useState, useEffect, Fragment } from "react";
-import { useParams, useNavigate, Navigate } from "react-router-dom";
+import { useParams, useNavigate, Navigate, Link } from "react-router-dom";
 import { toast } from "react-toastify";
 
 // General Components
@@ -37,7 +37,7 @@ const Registration = () => {
     handleSubmit,
     formState: { errors },
   } = useForm({
-    mode: "onSubmit",
+    mode: "onChange",
     defaultValues: { paymentMethod: "", order_id: "" },
   });
 
@@ -165,28 +165,15 @@ const Registration = () => {
     }
   }, [user]);
 
-  if (isLoading) {
+  if (isLoading || !event) {
     return <LoadingScreen />;
   }
 
   const StepPanel = () => {
     switch (stage) {
       case 1:
-        return (
-          <UserInfo
-            user={user}
-            setValue={setValue}
-            getValues={getValues}
-            setError={setError}
-            register={register}
-            errors={errors}
-            control={control}
-            setIsLoading={setIsLoading}
-          />
-        );
-      case 2:
         return <EventInfo event={event} user={user} watch={watch} register={register} />;
-      case 3:
+      case 2:
         return (
           <ConfirmationPayment
             event={event}
@@ -219,10 +206,15 @@ const Registration = () => {
   return (
     <Fragment>
       <div className="container inner-page pb-md-5">
-        <h1 className="text-justify text-center">
-          Inscrição - <br className="d-block d-lg-none" />
-          {event?.event_name}
-        </h1>
+        <div className="d-flex flex-column flex-lg-row justify-content-between">
+          <h1 className="text-justify text-center">
+            Inscrição - <br className="d-block d-lg-none" />
+            {event?.event_name}
+          </h1>
+          <Link to={`/eventos/${id}`} className="btn btn-secondary my-auto w-lg-auto">
+            Voltar ao Evento
+          </Link>
+        </div>
 
         <hr />
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -245,7 +237,7 @@ const Registration = () => {
           <div className="d-flex justify-content-end">
             <span
               id="accessibilityWidget"
-              className="btn btn-link text-white mt-3 me-1 mb-1 mt-lg-2 p-0"
+              className="btn btn-link text-white mt-3 me-1  mt-lg-2 p-0"
               tabIndex="0"
             >
               Acessibilidade

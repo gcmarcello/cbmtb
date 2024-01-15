@@ -27,7 +27,7 @@ router.put("/", adminAuthorization(), registrationsController.update_registratio
 router.put("/:registrationId/payment", authorization, registrationsController.update_registration_payment);
 
 // Create Registrations (USER)
-router.post("/:id/:coupon?", [authorization, registrationAvailability, updateUser], registrationsController.create_registration);
+router.post("/:id/:coupon?", [authorization, registrationAvailability], registrationsController.create_registration);
 
 // Delete Registrations (USER)
 router.delete("/:eventId/:registrationId", authorization, registrationsController.delete_registration);

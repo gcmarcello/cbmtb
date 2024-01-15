@@ -57,26 +57,30 @@ const EventInfo = (props) => {
                   )
                 )}
               </div>
-            </div>
-            {props.event.categories.find((c) => c.category_id === props.watch("category"))
-              ?.team_category && (
-              <>
-                <label htmlFor="registration_team">
-                  Nome Completo do Parceiro(a) de Dupla
-                </label>
-                <input
-                  type="text"
-                  id="registration_team"
-                  className="form-control"
-                  {...props.register("registration_team", {
-                    required: true,
-                  })}
-                />
-                <div className="text-muted text-sm">
-                  Obs.: A inscrição é individual, os dois atletas devem fazê-la.
+              {props.event.categories.find(
+                (c) => c.category_id === props.watch("category")
+              )?.team_category && (
+                <div className="card-footer">
+                  <div className="mt-2">
+                    <label htmlFor="registration_team">
+                      Nome Completo do Parceiro(a) de Dupla
+                    </label>
+                    <input
+                      type="text"
+                      id="registration_team"
+                      className="form-control"
+                      {...props.register("registration_team", {
+                        required: true,
+                      })}
+                    />
+                    <div className="text-muted text-sm">
+                      Obs.: A inscrição é individual, os dois atletas devem fazê-la.
+                    </div>
+                  </div>
                 </div>
-              </>
-            )}
+              )}
+            </div>
+
             {/* <label htmlFor="registrationShirt">Tamanho da Camiseta</label>
 
             <select
@@ -124,6 +128,11 @@ const EventInfo = (props) => {
                 </label>
               </div>
             </div>
+            {!props.watch("rulesAgreement") && (
+              <span className="d-flex text-danger fw-bold mt-2">
+                Você precisa aceitar o regulamento para prosseguir!
+              </span>
+            )}
           </div>
         </div>
       </div>
