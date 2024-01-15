@@ -3,6 +3,7 @@ const crypto = require("crypto");
 const { readOrder, installments, createOrder } = require("./pagarme");
 const dayjs = require("dayjs");
 const Email = require("../utils/emails");
+const { readCategoryFromId } = require("./categories");
 
 /**
  * Verifies if a registration is active for a given event and user.
