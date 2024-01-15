@@ -53,6 +53,7 @@ import EventRecords from "./pages/event/eventRecord";
 import CheckInPage from "./pages/admin/components/checkin/checkInPage";
 import AdminPanel from "./pages/admin/adminPanel";
 import CompleteEvent from "./pages/admin/components/events/completeEvent";
+import EventAttendees from "./pages/event/eventAttendees";
 
 function App() {
   const [userAuthentication, setUserAuthentication] = useState(false);
@@ -307,6 +308,7 @@ function App() {
             )}
             <Route exact path="/imprensa/" element={<Imprensa />} />
             <Route exact path="/eventos/:id/midias" element={<EventRecords />} />
+            <Route exact path="/eventos/:id/inscritos" element={<EventAttendees />} />
             <Route exact path="/noticias/" element={<AllNews />} />
             <Route exact path="/noticias/:title" element={<NewsPage />} />
             <Route exact path="/senha/:requestId" element={<PasswordReset />} />

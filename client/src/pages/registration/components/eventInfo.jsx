@@ -35,11 +35,11 @@ const EventInfo = (props) => {
               <div className="card-body">
                 {filterCategories(props.user, props.event.categories).map(
                   (category, index) => (
-                    <>
+                    <div key={`${category.category_id}`}>
                       {index !== 0 && <hr />}
-                      <div class="form-check my-2">
+                      <div className="form-check my-2">
                         <input
-                          class="form-check-input"
+                          className="form-check-input"
                           type="radio"
                           style={{ transform: "scale(1.5)" }}
                           value={category.category_id}
@@ -47,13 +47,13 @@ const EventInfo = (props) => {
                           {...props.register("category", { required: true })}
                         />
                         <label
-                          class="form-check-label"
-                          for={`flexRadio-${category.category_id}`}
+                          className="form-check-label ms-1 w-100"
+                          htmlFor={`flexRadio-${category.category_id}`}
                         >
                           {category.category_name}
                         </label>
                       </div>
-                    </>
+                    </div>
                   )
                 )}
               </div>

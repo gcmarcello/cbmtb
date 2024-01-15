@@ -54,6 +54,8 @@ router.get("/update/:id", adminAuthorization(), eventsController.retrieveEventIn
 router.get("/:id", eventsController.readEventPage);
 // View Event (PUBLIC)
 router.get("/:id/medias", eventsController.listEventMedias);
+// View Event Attendees List (PUBLIC)
+router.get("/:id/attendees", eventsController.fetchEventAttendeesList);
 // Update Event (ADMIN)
 router.put("/:id", [adminAuthorization(), upload.single("image")], eventsController.updateEvent);
 // Delete Event (ADMIN)

@@ -223,6 +223,7 @@ const Registration = () => {
           Inscrição - <br className="d-block d-lg-none" />
           {event?.event_name}
         </h1>
+
         <hr />
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="mb-5">
@@ -241,6 +242,15 @@ const Registration = () => {
           }}
         >
           <ProgressBar stage={stage} setStage={setStage} watch={watch} />
+          <div className="d-flex justify-content-end">
+            <span
+              id="accessibilityWidget"
+              className="btn btn-link text-white mt-3 me-1 mb-1 mt-lg-2 p-0"
+              tabIndex="0"
+            >
+              Acessibilidade
+            </span>
+          </div>
         </div>
       }
     </Fragment>
