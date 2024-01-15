@@ -84,8 +84,8 @@ async function create_registration(req, res) {
             accepted_payment_methods: ["credit_card", "pix"],
             success_url:
               process.env.NODE_ENV === "production"
-                ? `https://www.cbmtb.com.br/usuario`
-                : `http://localhost:3000/usuario`,
+                ? `https://www.cbmtb.com.br/pagamento`
+                : `http://localhost:3000/pagamento`,
             credit_card: {
               capture: true,
               statement_descriptor: "CBMTBINSCR",
@@ -147,11 +147,11 @@ async function create_registration(req, res) {
 }
 
 async function verify_registration_status(req, res) {
-  const { userId } = req;
   const { id } = req.params;
+  console.log(id);
   const checkForRegistration = await pool.query(
-    "SELECT * FROM registrations WHERE event_id = $1 AND user_id = $2",
-    [id, userId]
+    "SELECT * FROM registrations WHERE registration_id = $1",
+    [id]
   );
 
   if (checkForRegistration.rows[0].registration_status !== "completed") {

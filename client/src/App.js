@@ -94,9 +94,7 @@ function App() {
   }
 
   return (
-    <UserContext.Provider
-      value={{ userInfo: userInfo, setUserInfo: setUserInfo }}
-    >
+    <UserContext.Provider value={{ userInfo: userInfo, setUserInfo: setUserInfo }}>
       <Fragment>
         <UserWay />
         <ToastContainer
@@ -112,9 +110,9 @@ function App() {
           theme="light"
         />
         {!(page === "painel") && <UserNavigation />}
-        {page === "painel" &&
-          userInfo.userRole &&
-          userInfo.userRole !== "user" && <AdminNavigation />}
+        {page === "painel" && userInfo.userRole && userInfo.userRole !== "user" && (
+          <AdminNavigation />
+        )}
         <main>
           <Routes>
             <Route exact path="/cadastro" element={<Register />} />
@@ -292,23 +290,23 @@ function App() {
             />
             <Route exact path="/" element={<Home />} />
             <Route exact path="/:flagshipLink/" element={<FlagshipHome />} />
-            {/* <Route exact path="/pagamento/:linkId" element={<Payments />} /> */}
             <Route
               exact
-              path="/confirmacao/:id"
-              element={<ConfirmationPage />}
+              path="/pagamento"
+              element={
+                <PrivateRoute roles={["user", "staff", "press", "organizer"]}>
+                  <Payments />
+                </PrivateRoute>
+              }
             />
+            <Route exact path="/confirmacao/:id" element={<ConfirmationPage />} />
             <Route exact path="/eventos/:id" element={<EventPage />} />
             <Route exact path="/eventos/" element={<AllEvents />} />
             {_config.pages.federacoes && (
               <Route exact path="/federacoes/" element={<Federations />} />
             )}
             <Route exact path="/imprensa/" element={<Imprensa />} />
-            <Route
-              exact
-              path="/eventos/:id/midias"
-              element={<EventRecords />}
-            />
+            <Route exact path="/eventos/:id/midias" element={<EventRecords />} />
             <Route exact path="/noticias/" element={<AllNews />} />
             <Route exact path="/noticias/:title" element={<NewsPage />} />
             <Route exact path="/senha/:requestId" element={<PasswordReset />} />

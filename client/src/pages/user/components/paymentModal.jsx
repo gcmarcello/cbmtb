@@ -10,7 +10,7 @@ const relativeTime = require("dayjs/plugin/relativeTime");
 const dayjs = require("dayjs");
 dayjs.extend(relativeTime);
 
-const PaymentModal = ({ registration, userInfo }) => {
+const PaymentModal = ({ registration, userInfo, lockedRegistration }) => {
   const [pagarMeFee, setPagarMeFee] = useState(null);
 
   useEffect(() => {
@@ -18,10 +18,6 @@ const PaymentModal = ({ registration, userInfo }) => {
   }, []);
 
   async function generateNewPayment() {
-    const myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-    myHeaders.append("token", localStorage.token);
-
     try {
       const { data: parseResponse } = await axios.put(
         `/api/registrations/${registration.registration_id}/payment`,
@@ -43,14 +39,15 @@ const PaymentModal = ({ registration, userInfo }) => {
         type="button"
         className="btn btn-success form-control me-2 mt-2 h-50"
         data-bs-toggle="modal"
-        data-bs-target="#exampleModal"
+        data-bs-target={`#paymentModal-${registration.registration_id}`}
+        disabled={lockedRegistration === registration.registration_id}
       >
         Pagar
       </button>
 
       <div
         className="modal fade"
-        id="exampleModal"
+        id={`paymentModal-${registration.registration_id}`}
         tabIndex="-1"
         aria-labelledby="exampleModalLabel"
         aria-hidden="true"

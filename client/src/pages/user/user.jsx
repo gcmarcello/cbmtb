@@ -80,14 +80,8 @@ const UserPanel = () => {
   };
 
   useEffect(() => {
-    // Check if 'success' parameter is in the URL and is true
-    setTimeout(
-      () => {
-        getUser();
-        fetchRegistrations();
-      },
-      searchParams.get("order_id") ? 10000 : 0
-    );
+    getUser();
+    fetchRegistrations();
   }, []);
 
   useEffect(() => {
@@ -106,7 +100,7 @@ const UserPanel = () => {
   return (
     <Fragment>
       <div className="container-lg inner-page">
-        {searchParams.get("order_id") && (
+        {searchParams.get("confirmed") && (
           <div className="alert alert-success alert-dismissible fade show" role="alert">
             <strong>Sua inscrição foi confirmada!</strong>
 
@@ -187,6 +181,7 @@ const UserPanel = () => {
             aria-labelledby="registrations-tab"
           >
             <UserRegistrations
+              lockedRegistration={searchParams.get("confirmed")}
               registrations={registrations}
               deleteRegistration={deleteRegistration}
               userInfo={userInfo}

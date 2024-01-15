@@ -3,7 +3,12 @@ import React from "react";
 import EventInfoModal from "./eventInfoModal";
 import PaymentModal from "./paymentModal";
 
-const UserRegistrations = ({ registrations, deleteRegistration, userInfo }) => {
+const UserRegistrations = ({
+  registrations,
+  deleteRegistration,
+  userInfo,
+  lockedRegistration,
+}) => {
   const dayjs = require("dayjs");
 
   return (
@@ -152,7 +157,11 @@ const UserRegistrations = ({ registrations, deleteRegistration, userInfo }) => {
                   {/* <span className="fw-bold">Tamanho da Camisa:</span>{" "}
                   {registration.registration_shirt?.toUpperCase()} */}
                   <div className="d-flex">
-                    <PaymentModal registration={registration} userInfo={userInfo} />
+                    <PaymentModal
+                      registration={registration}
+                      userInfo={userInfo}
+                      lockedRegistration={lockedRegistration}
+                    />
                     <button
                       type="button"
                       className="btn btn-danger form-control mt-2 h-50"
