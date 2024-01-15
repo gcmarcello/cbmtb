@@ -123,7 +123,7 @@ async function create_registration(req, res) {
       registrationId,
     });
 
-    if (cost === 0) {
+    if (cost === 0 || coupon) {
       return res.status(200).json({
         message: "Inscrição Confirmada com Sucesso!",
         type: "success",
