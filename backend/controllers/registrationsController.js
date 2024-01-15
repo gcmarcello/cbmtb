@@ -107,7 +107,7 @@ async function create_registration(req, res) {
     };
 
     let order;
-    if (cost !== 0) {
+    if (cost !== 0 && !coupon) {
       order = await createOrder(paymentInfo);
     }
 
