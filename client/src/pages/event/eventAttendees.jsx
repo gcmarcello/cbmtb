@@ -54,9 +54,9 @@ export default function EventAttendees() {
   return (
     <div className="container inner-page">
       <div className="container my-3">
-        <div className="d-flex justify-content-between mb-3">
+        <div className="d-flex flex-column flex-lg-row justify-content-between mb-3">
           <h1 className="mb-3">{event?.event_name || "Evento"} - Lista de Inscritos</h1>
-          <Link to={`/eventos/${id}`} className="btn btn-secondary my-auto">
+          <Link to={`/eventos/${id}`} className="btn btn-secondary my-auto w-lg-auto">
             Voltar ao Evento
           </Link>
         </div>
