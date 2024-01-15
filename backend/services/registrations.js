@@ -35,11 +35,6 @@ async function readRegistration(registrationId) {
     const order = await readOrder(registration.rows[0].payment_id);
     return {
       ...registration.rows[0],
-      payment_url: dayjs(order.checkouts[0].created_at)
-        .add(1, dayjs("hour"))
-        .isBefore(dayjs())
-        ? order.checkouts[0].payment_url
-        : null,
     };
   }
   return registration.rows[0] ?? null;
@@ -147,7 +142,6 @@ async function updateRegistrationPaymentId(registrationId) {
       amount: cost * 100 + cost * 10,
       checkout: {
         customer_editable: true,
-        expires_in: 1440,
         skip_checkout_success_page: true,
         accepted_payment_methods: ["credit_card", "pix"],
         success_url:
