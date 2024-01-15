@@ -8,9 +8,7 @@ dayjs.extend(relativeTime);
 const EventInfo = (props) => {
   const filterCategories = (user, categories) => {
     const userGender = user?.user_gender === "Masculino" ? "masc" : "fem";
-    const userAge = Number(
-      dayjs(user?.user_birth_date).fromNow().split(" ")[0]
-    );
+    const userAge = Number(dayjs(user?.user_birth_date).fromNow().split(" ")[0]);
 
     return categories.filter(
       (category) =>
@@ -20,54 +18,65 @@ const EventInfo = (props) => {
         category.category_minage <= userAge
     );
   };
-  
 
   return (
     <Fragment>
       <div className="container">
         <p>
-          Selecione a sua categoria e o tamanho da camiseta do kit. Lembrando
-          que você pode apenas se inscrever nas categorias disponíveis para a
-          sua idade.
+          Selecione a sua categoria. Lembrando que você pode apenas se inscrever nas
+          categorias disponíveis para a sua idade.
         </p>
         <div className="row align-items-start mb-3">
           <div className="col-12 col-lg-6 mb-3 mb-lg-0">
-            <label htmlFor="registrationCategory">Categoria</label>
-            <select
-              type="text"
-              id="registrationCategory"
-              name="category"
-              defaultValue={""}
-              className="form-select mb-3"
-              {...props.register("category", { required: true })}
-            >
-              <option value="" disabled={true}>
-                Selecione a Categoria
-              </option>
-              {filterCategories(props.user, props.event.categories).map(
-                (category) => (
-                  <option
-                    value={category.category_id}
-                    key={category.category_id}
-                  >
-                    {category.category_name}
-                  </option>
-                )
-              )}
-            </select>
-            {props.event.categories.find(c => c.category_id === props.watch('category'))?.team_category && 
-            <>
-              <label htmlFor="registration_team">Nome Completo do Parceiro(a) de Dupla</label>
-              <input
-              type="text"
-              id="registration_team"
-              className="form-control"
-              {...props.register("registration_team", {
-                required: true,
-              })}
-            />
-            <div className="text-muted text-sm">Obs.: A inscrição é individual, os dois atletas devem fazê-la.</div>
-          </>}
+            <div className="card">
+              <div className="card-header">
+                <h5 className="card-title mb-0">Categorias Disponíveis</h5>
+              </div>
+              <div className="card-body">
+                {filterCategories(props.user, props.event.categories).map(
+                  (category, index) => (
+                    <>
+                      {index !== 0 && <hr />}
+                      <div class="form-check my-2">
+                        <input
+                          class="form-check-input"
+                          type="radio"
+                          style={{ transform: "scale(1.5)" }}
+                          value={category.category_id}
+                          id={`flexRadio-${category.category_id}`}
+                          {...props.register("category", { required: true })}
+                        />
+                        <label
+                          class="form-check-label"
+                          for={`flexRadio-${category.category_id}`}
+                        >
+                          {category.category_name}
+                        </label>
+                      </div>
+                    </>
+                  )
+                )}
+              </div>
+            </div>
+            {props.event.categories.find((c) => c.category_id === props.watch("category"))
+              ?.team_category && (
+              <>
+                <label htmlFor="registration_team">
+                  Nome Completo do Parceiro(a) de Dupla
+                </label>
+                <input
+                  type="text"
+                  id="registration_team"
+                  className="form-control"
+                  {...props.register("registration_team", {
+                    required: true,
+                  })}
+                />
+                <div className="text-muted text-sm">
+                  Obs.: A inscrição é individual, os dois atletas devem fazê-la.
+                </div>
+              </>
+            )}
             {/* <label htmlFor="registrationShirt">Tamanho da Camiseta</label>
 
             <select
@@ -108,6 +117,7 @@ const EventInfo = (props) => {
                   name="rules"
                   className="form-check-input"
                   {...props.register("rulesAgreement", { required: true })}
+                  style={{ transform: "scale(1.5)" }}
                 />
                 <label className="form-check-label ms-2" htmlFor="rules">
                   Eu aceito o regulamento.
