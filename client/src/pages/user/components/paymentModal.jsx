@@ -14,7 +14,7 @@ const PaymentModal = ({ registration, userInfo, lockedRegistration }) => {
   const [pagarMeFee, setPagarMeFee] = useState(null);
 
   useEffect(() => {
-    setPagarMeFee(Math.max(registration.category_price / 10, 1));
+    setPagarMeFee(Math.floor(registration.category_price / 10, 1));
   }, []);
 
   async function generateNewPayment() {
@@ -78,7 +78,12 @@ const PaymentModal = ({ registration, userInfo, lockedRegistration }) => {
                           </small>
                         </div>
                         <span className="badge bg-success rounded-pill">
-                          R$ {registration.coupon ? 0 : registration?.category_price},00
+                          {new Intl.NumberFormat("pt-BR", {
+                            style: "currency",
+                            currency: "BRL",
+                          }).format(
+                            registration.coupon ? 0 : registration?.category_price
+                          )}
                         </span>
                       </li>
                       {
@@ -87,13 +92,14 @@ const PaymentModal = ({ registration, userInfo, lockedRegistration }) => {
                             <div className="fw-semibold">Taxa de processamento</div>
                           </div>
                           <span className="badge bg-success rounded-pill">
-                            R${" "}
-                            {Math.ceil(
+                            {new Intl.NumberFormat("pt-BR", {
+                              style: "currency",
+                              currency: "BRL",
+                            }).format(
                               registration.coupon || !registration?.category_price
                                 ? 0
                                 : pagarMeFee
                             )}
-                            ,00
                           </span>
                         </li>
                       }
@@ -112,13 +118,15 @@ const PaymentModal = ({ registration, userInfo, lockedRegistration }) => {
                           <div className="fw-semibold">Total</div>{" "}
                           {/* <small className="text-muted">Tamanho {props.watch("registrationShirt").toUpperCase()}</small> */}
                         </div>
-
                         <span className="">
-                          R${" "}
-                          {registration.coupon || !registration?.category_price
-                            ? 0
-                            : registration?.category_price + Math.ceil(pagarMeFee)}
-                          ,00
+                          {new Intl.NumberFormat("pt-BR", {
+                            style: "currency",
+                            currency: "BRL",
+                          }).format(
+                            registration.coupon || !registration?.category_price
+                              ? 0
+                              : registration?.category_price + pagarMeFee
+                          )}
                         </span>
                       </li>
                     </ul>

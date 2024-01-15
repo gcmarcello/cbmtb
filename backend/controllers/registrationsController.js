@@ -55,7 +55,7 @@ async function create_registration(req, res) {
     const paymentInfo = {
       items: [
         {
-          amount: cost * 100 + cost * 0.1,
+          amount: Math.floor(cost * 100 + cost * 10),
           description: `Inscrição ${event.event_name}`,
           quantity: 1,
         },
@@ -76,7 +76,7 @@ async function create_registration(req, res) {
       payments: [
         {
           payment_method: "checkout",
-          amount: cost * 100 + cost * 10,
+          amount: Math.floor(cost * 100 + cost * 10),
           checkout: {
             customer_editable: true,
             skip_checkout_success_page: true,
@@ -90,7 +90,7 @@ async function create_registration(req, res) {
               statement_descriptor: "CBMTBINSCR",
               installments: installments.map((i) => ({
                 number: i.installments,
-                total: cost * 100 + cost * 10 + cost * 100 * i.tax,
+                total: Math.floor(cost * 100 + cost * 10 + cost * 100 * i.tax),
               })),
             },
             pix: {

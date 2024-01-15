@@ -28,7 +28,10 @@ const ConfirmationPayment = (props) => {
                   </small>
                 </div>
                 <span className="badge bg-success rounded-pill">
-                  R$ {props.coupon ? 0 : category?.category_price},00
+                  {new Intl.NumberFormat("pt-BR", {
+                    style: "currency",
+                    currency: "BRL",
+                  }).format(props.coupon ? 0 : category?.category_price)}
                 </span>
               </li>
               {
@@ -37,11 +40,10 @@ const ConfirmationPayment = (props) => {
                     <div className="fw-semibold">Taxa de processamento</div>
                   </div>
                   <span className="badge bg-success rounded-pill">
-                    R${" "}
-                    {Math.ceil(
-                      props.coupon || !category?.category_price ? 0 : pagarMeFee
-                    )}
-                    ,00
+                    {new Intl.NumberFormat("pt-BR", {
+                      style: "currency",
+                      currency: "BRL",
+                    }).format(props.coupon || !category?.category_price ? 0 : pagarMeFee)}
                   </span>
                 </li>
               }
@@ -62,11 +64,14 @@ const ConfirmationPayment = (props) => {
                 </div>
 
                 <span className="">
-                  R${" "}
-                  {props.coupon || !category?.category_price
-                    ? 0
-                    : category?.category_price + Math.ceil(pagarMeFee)}
-                  ,00
+                  {new Intl.NumberFormat("pt-BR", {
+                    style: "currency",
+                    currency: "BRL",
+                  }).format(
+                    props.coupon || !category?.category_price
+                      ? 0
+                      : category?.category_price + pagarMeFee
+                  )}
                 </span>
               </li>
             </ul>
