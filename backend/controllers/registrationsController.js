@@ -119,7 +119,7 @@ async function create_registration(req, res) {
       couponId: req.couponId || null,
       registrationTeam: req.body.registration_team || null,
       registrationStatus: cost === 0 || coupon ? "completed" : "pending",
-      paymentId: cost === 0 ? null : order.id,
+      paymentId: cost === 0 || coupon ? null : order.id,
       registrationId,
     });
 
