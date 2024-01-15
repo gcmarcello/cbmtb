@@ -79,7 +79,6 @@ async function create_registration(req, res) {
           amount: cost * 100 + cost * 10,
           checkout: {
             customer_editable: true,
-            expires_in: 1440,
             skip_checkout_success_page: true,
             accepted_payment_methods: ["credit_card", "pix"],
             success_url:
