@@ -31,8 +31,14 @@ const AdminNavigation = () => {
     <Fragment>
       <nav className="navbar navbar-expand-lg navbar-light shadow-sm">
         <div className="container-fluid">
-          <a className="navbar-brand" href="/painel">
-            <img src={_config.images.dashboardLogo} alt="LOGO" className="img-fluid" height={100} width={150} />
+          <a className="navbar-brand" href="/">
+            <img
+              src={_config.images.dashboardLogo}
+              alt="LOGO"
+              className="img-fluid"
+              height={100}
+              width={150}
+            />
           </a>
           <button
             className="navbar-toggler"
@@ -46,7 +52,10 @@ const AdminNavigation = () => {
             <span className="navbar-toggler-icon"></span>
           </button>
           <div className="collapse navbar-collapse" id="navbarScroll">
-            <ul className="navbar-nav me-auto my-2 my-lg-0" style={{ "--bs-scroll-height": "100px" }}>
+            <ul
+              className="navbar-nav me-auto my-2 my-lg-0"
+              style={{ "--bs-scroll-height": "100px" }}
+            >
               <li className="nav-item dropdown">
                 <a
                   className="nav-link dropdown-toggle"
@@ -96,20 +105,41 @@ const AdminNavigation = () => {
                 </ul>
               </li>
               <li className="nav-item">
-                <a href="/painel/documentos" className="nav-link" aria-current="page" style={{ border: "0", background: "none" }}>
+                <a
+                  href="/painel/documentos"
+                  className="nav-link"
+                  aria-current="page"
+                  style={{ border: "0", background: "none" }}
+                >
                   Documentos
                 </a>
               </li>
               <li className="nav-item">
-                <a href="/painel/usuarios" className="nav-link" aria-current="page" style={{ border: "0", background: "none" }}>
+                <a
+                  href="/painel/usuarios"
+                  className="nav-link"
+                  aria-current="page"
+                  style={{ border: "0", background: "none" }}
+                >
                   Usuários
                 </a>
               </li>
               <li className="nav-item">
-                <a href="/painel/ouvidoria" className="nav-link position-relative" aria-current="page" style={{ border: "0", background: "none" }}>
+                <a
+                  href="/painel/ouvidoria"
+                  className="nav-link position-relative"
+                  aria-current="page"
+                  style={{ border: "0", background: "none" }}
+                >
                   Ouvidoria{" "}
-                  <span className="position-absolute translate-middle badge rounded-pill bg-danger" style={{ top: 5, left: 85 }}>
-                    {openTicketNumber?.length > 0 && openTicketNumber.filter((ticket) => ticket.ticket_status === "pending").length}
+                  <span
+                    className="position-absolute translate-middle badge rounded-pill bg-danger"
+                    style={{ top: 5, left: 85 }}
+                  >
+                    {openTicketNumber?.length > 0 &&
+                      openTicketNumber.filter(
+                        (ticket) => ticket.ticket_status === "pending"
+                      ).length}
                   </span>
                 </a>
               </li>
