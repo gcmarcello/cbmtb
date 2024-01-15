@@ -118,7 +118,7 @@ async function create_registration(req, res) {
       registrationShirt,
       couponId: req.couponId || null,
       registrationTeam: req.body.registration_team || null,
-      registrationStatus: cost === 0 ? "completed" : "pending",
+      registrationStatus: cost === 0 || coupon ? "completed" : "pending",
       paymentId: cost === 0 ? null : order.id,
       registrationId,
     });
