@@ -83,7 +83,7 @@ async function create_registration(req, res) {
             accepted_payment_methods: ["credit_card", "pix"],
             success_url:
               process.env.NODE_ENV === "production"
-                ? `https://www.cbmtb.com.br/pagamento`
+                ? `https://cbmtb.com.br/pagamento`
                 : `http://localhost:3000/pagamento`,
             credit_card: {
               capture: true,
