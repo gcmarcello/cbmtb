@@ -259,7 +259,7 @@ async function delete_registration(req, res) {
     ).rows[0];
 
     const sgEmail = new Email([userInfo.user_email]);
-    sgEmail.sendRegistrationCancellationEmail(
+    await sgEmail.sendRegistrationCancellationEmail(
       userInfo.user_first_name,
       eventInfo.event_name,
       eventInfo.event_link
@@ -300,7 +300,7 @@ async function delete_registration_admin(req, res) {
     ).rows[0];
 
     const sgEmail = new Email([userInfo.user_email]);
-    sgEmail.sendRegistrationCancellationEmail(
+    await sgEmail.sendRegistrationCancellationEmail(
       userInfo.user_first_name,
       eventInfo.event_name,
       eventInfo.event_link

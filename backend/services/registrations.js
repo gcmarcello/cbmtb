@@ -109,7 +109,7 @@ async function updateRegistrationStatus(registrationId, status) {
       [registration.rows[0].category_id]
     );
     const sgEmail = new Email([userInfo.rows[0].user_email]);
-    sgEmail.sendRegistrationEmail(
+    await sgEmail.sendRegistrationEmail(
       userInfo.rows[0].user_first_name,
       eventInfo.rows[0].event_name,
       eventInfo.rows[0].event_date_start,

@@ -75,7 +75,7 @@ router.post(
       );
 
       const sgEmail = new Email([email]);
-      sgEmail.sendConfirmationEmail(
+      await sgEmail.sendConfirmationEmail(
         firstName,
         newConfirmation.rows[0].confirmation_id
       );
@@ -205,7 +205,7 @@ router.put("/admin", adminAuthorization(), async (req, res) => {
         [new Date(), userId, false]
       );
       const sgEmail = new Email([email]);
-      sgEmail.sendConfirmationEmail(
+      await sgEmail.sendConfirmationEmail(
         firstName,
         newConfirmation.rows[0].confirmation_id
       );
