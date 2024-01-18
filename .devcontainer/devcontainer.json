@@ -39,7 +39,7 @@
         "editor.formatOnPaste": false,
         "prettier.useEditorConfig": false,
         "prettier.configPath": "./.prettierrc.js",
-        "prettier.prettierPath": "./node_modules/prettier",
+        "prettier.prettierPath": "./backend/node_modules/prettier",
         "typescript.tsdk": "node_modules/typescript/lib",
         "eslint.workingDirectories": ["./"],
         "explorer.compactFolders": false,

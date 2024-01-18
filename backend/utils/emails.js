@@ -243,4 +243,64 @@ module.exports = class Email {
         console.error(error);
       });
   }
+
+  async sendOrderEmail(info, status) {
+    sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+    const msg = {
+      to: this.emails[0],
+      from: {
+        name: `${_config.entidade.name} - ${_config.entidade.name}`,
+        email: _config.contact.noreply,
+      },
+      subject: `${_config.entidade.abbreviation} - Inscrição Paga ${
+        status === "paid" ? "com Sucesso" : "Criada"
+      }`,
+      html: `<style>
+      table {
+        font-family: arial, sans-serif;
+        border-collapse: collapse;
+        width: 100%;
+      }
+      
+      td, th {
+        border: 1px solid #dddddd;
+        text-align: left;
+        padding: 8px;
+      }
+      
+      tr:nth-child(even) {
+        background-color: #dddddd;
+      }
+      </style>
+      
+      <h1><strong>Inscrição Paga Criada!</strong></h1>
+
+      <table>
+        <tr>
+          <th>Atleta</th>
+          <th>Evento</th>
+          <th>Valor</th>
+        </tr>
+        <tr>
+          <td>${info.customer.name}</td>
+          <td>${info.items[0].description}</td>
+          <td>${new Intl.NumberFormat("pt-BR", {
+            style: "currency",
+            currency: "BRL",
+          }).format(info.items[0].amount / 100)}</td>
+        </tr>
+      </table>
+      
+      <p>${_config.entidade.name}&nbsp;</p>`,
+    };
+
+    sgMail
+      .send(msg)
+      .then(() => {
+        console.log("Email sent");
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }
 };
