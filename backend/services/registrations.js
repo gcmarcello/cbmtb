@@ -147,8 +147,8 @@ async function updateRegistrationPaymentId(registrationId) {
         accepted_payment_methods: ["credit_card", "pix"],
         success_url:
           process.env.NODE_ENV === "production"
-            ? `https://cbmtb.com.br/pagamento`
-            : `http://localhost:3000/pagamento`,
+            ? `https://cbmtb.com.br/usuario`
+            : `http://localhost:3000/usuario`,
         credit_card: {
           capture: true,
           statement_descriptor: "CBMTBINSCR",
