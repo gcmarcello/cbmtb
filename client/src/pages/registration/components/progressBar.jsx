@@ -60,7 +60,7 @@ const ProgressBar = (props) => {
                       props.stage >= 1 ? "primary" : "secondary"
                     } rounded-pill`}
                     style={{ width: "2rem", height: "2rem" }}
-                    onClick={() => props.setStage(2)}
+                    onClick={() => props.setStage(1)}
                   >
                     1
                   </button>
@@ -76,7 +76,7 @@ const ProgressBar = (props) => {
                       props.stage >= 2 ? "primary" : "secondary"
                     } rounded-pill`}
                     style={{ width: "2rem", height: "2rem" }}
-                    onClick={() => props.setStage(3)}
+                    onClick={() => props.setStage(2)}
                     disabled={
                       props.watch("rulesAgreement") &&
                       /* props.watch("registrationShirt") && */

@@ -239,7 +239,7 @@ const EditEvent = (props) => {
                   style={{ transform: "scale(1.5)" }}
                   type="checkbox"
                   defaultChecked={props.event?.showattendees}
-                  {...props.register("showAttendees", { required: true })}
+                  {...props.register("showAttendees")}
                   id="showAttendees"
                 />
                 <label className="form-check-label ms-2" htmlFor="showAttendees">
