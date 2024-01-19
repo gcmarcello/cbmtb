@@ -143,7 +143,7 @@ async function updateRegistrationPaymentId(registrationId) {
       amount: cost * 100 + cost * 10,
       checkout: {
         customer_editable: true,
-        skip_checkout_success_page: true,
+        skip_checkout_success_page: false,
         accepted_payment_methods: ["credit_card", "pix"],
         success_url:
           process.env.NODE_ENV === "production"
