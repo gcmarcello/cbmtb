@@ -135,7 +135,7 @@ async function updateRegistrationPaymentId(registrationId) {
   const order = await readOrder(registration.payment_id);
   if (!order) throw "Pedido não encontrado";
 
-  const items = order.items;
+  const items = { ...order.items, code: registration.registration_id };
   const customer = order.customer;
   const payments = [
     {
