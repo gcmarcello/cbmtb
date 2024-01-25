@@ -150,10 +150,10 @@ const EventPage = () => {
                                 : "btn-success"
                             } btn-lg form-control`}
                             disabled={
-                              registrationError && registrationError.type === "error"
+                              registrationError && registrationError?.type === "error"
                             }
                             onClick={() =>
-                              registrationError.type === "alert"
+                              registrationError?.type === "alert"
                                 ? navigate(`/usuario`)
                                 : event.event_external
                                 ? (window.location = `https://${event.event_external}`)
