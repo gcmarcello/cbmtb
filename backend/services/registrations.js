@@ -134,7 +134,7 @@ async function updateRegistrationPaymentId(registrationId) {
   const order = await readOrder(registration.payment_id);
   if (!order) throw "Pedido não encontrado";
 
-  const items = { ...order.items, code: registration.registration_id };
+  const items = [{ ...order.items[0], code: registration.registration_id }];
   const customer = order.customer;
   const payments = [
     {
@@ -167,6 +167,8 @@ async function updateRegistrationPaymentId(registrationId) {
       },
     },
   ];
+
+  console.dir({ items, customer, payments }, { depth: null });
 
   const newPayment = await createOrder({ items, customer, payments });
 

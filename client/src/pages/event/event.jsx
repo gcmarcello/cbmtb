@@ -149,9 +149,13 @@ const EventPage = () => {
                                 ? "btn-warning"
                                 : "btn-success"
                             } btn-lg form-control`}
-                            disabled={registrationError}
+                            disabled={
+                              registrationError && registrationError.type === "error"
+                            }
                             onClick={() =>
-                              event.event_external
+                              registrationError.type === "alert"
+                                ? navigate(`/usuario`)
+                                : event.event_external
                                 ? (window.location = `https://${event.event_external}`)
                                 : navigate(`/inscricao/${event.event_id}`)
                             }
@@ -184,16 +188,19 @@ const EventPage = () => {
                               </>
                             )}
                           </button>
-                          <button
-                            onClick={() =>
-                              event.event_external
-                                ? (window.location = `https://${event.event_external}?team=true`)
-                                : navigate(`/inscricao/${event.event_id}?team=true`)
-                            }
-                            className="btn btn-lg btn-secondary mt-2 w-100 p-2"
-                          >
-                            <i className="bi bi-clipboard2-check"></i> Inscrição de Equipe
-                          </button>
+                          {event.enableteamregistration && (
+                            <button
+                              onClick={() =>
+                                event.event_external
+                                  ? (window.location = `https://${event.event_external}?team=true`)
+                                  : navigate(`/inscricao/${event.event_id}?team=true`)
+                              }
+                              className="btn btn-lg btn-secondary mt-2 w-100 p-2"
+                            >
+                              <i className="bi bi-clipboard2-check"></i> Inscrição de
+                              Equipe
+                            </button>
+                          )}
                           {event.media && (
                             <Link to={`/eventos/${event.event_id}/midias`}>
                               <button className="btn btn-primary btn-lg form-control mt-3">
