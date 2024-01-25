@@ -100,7 +100,7 @@ const UserPanel = () => {
   return (
     <Fragment>
       <div className="container-lg inner-page">
-        {searchParams.get("confirmed") && (
+        {searchParams.get("order_id") && (
           <div className="alert alert-success alert-dismissible fade show" role="alert">
             <strong>Sua inscrição foi confirmada!</strong>
 
@@ -181,7 +181,7 @@ const UserPanel = () => {
             aria-labelledby="registrations-tab"
           >
             <UserRegistrations
-              lockedRegistration={searchParams.get("confirmed")}
+              lockedRegistration={searchParams.get("order_id")}
               registrations={registrations}
               deleteRegistration={deleteRegistration}
               userInfo={userInfo}

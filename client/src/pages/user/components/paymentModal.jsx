@@ -40,7 +40,7 @@ const PaymentModal = ({ registration, userInfo, lockedRegistration }) => {
         className="btn btn-success form-control me-2 mt-2 h-50"
         data-bs-toggle="modal"
         data-bs-target={`#paymentModal-${registration.registration_id}`}
-        disabled={lockedRegistration === registration.registration_id}
+        disabled={lockedRegistration === registration.payment_id}
       >
         Pagar
       </button>

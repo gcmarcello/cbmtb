@@ -55,6 +55,7 @@ async function create_registration(req, res) {
     const paymentInfo = {
       items: [
         {
+          code: registrationId,
           amount: Math.floor(cost * 100 + cost * 10),
           description: `Inscrição ${event.event_name}`,
           quantity: 1,
@@ -79,15 +80,15 @@ async function create_registration(req, res) {
           amount: Math.floor(cost * 100 + cost * 10),
           checkout: {
             customer_editable: true,
-            skip_checkout_success_page: true,
+            skip_checkout_success_page: false,
             accepted_payment_methods: ["credit_card", "pix"],
             success_url:
               process.env.NODE_ENV === "production"
-                ? `https://cbmtb.com.br/pagamento`
-                : `http://localhost:3000/pagamento`,
+                ? `https://cbmtb.com.br/usuario`
+                : `http://localhost:3000/usuario`,
             credit_card: {
               capture: true,
-              statement_descriptor: "CBMTBINSCR",
+              statement_descriptor: "cbmtbinscr",
               installments: installments.map((i) => ({
                 number: i.installments,
                 total: Math.floor(cost * 100 + cost * 10 + cost * 100 * i.tax),

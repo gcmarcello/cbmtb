@@ -134,7 +134,7 @@ async function updateRegistrationPaymentId(registrationId) {
   const order = await readOrder(registration.payment_id);
   if (!order) throw "Pedido não encontrado";
 
-  const items = order.items;
+  const items = { ...order.items, code: registration.registration_id };
   const customer = order.customer;
   const payments = [
     {
@@ -142,12 +142,12 @@ async function updateRegistrationPaymentId(registrationId) {
       amount: cost * 100 + cost * 10,
       checkout: {
         customer_editable: true,
-        skip_checkout_success_page: true,
+        skip_checkout_success_page: false,
         accepted_payment_methods: ["credit_card", "pix"],
         success_url:
           process.env.NODE_ENV === "production"
-            ? `https://cbmtb.com.br/pagamento`
-            : `http://localhost:3000/pagamento`,
+            ? `https://cbmtb.com.br/usuario`
+            : `http://localhost:3000/usuario`,
         credit_card: {
           capture: true,
           statement_descriptor: "CBMTBINSCR",
