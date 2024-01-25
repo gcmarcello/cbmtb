@@ -17,10 +17,7 @@ async function verifyActiveRegistration(eventId, userId) {
     [eventId, userId]
   );
 
-  if (
-    checkForRegistration.rows[0] &&
-    checkForRegistration.rows[0]?.registration_status === "completed"
-  ) {
+  if (checkForRegistration.rows[0]) {
     return checkForRegistration.rows[0];
   } else {
     return false;
@@ -65,9 +62,10 @@ async function createRegistration({
   couponId,
   registrationTeam,
   registrationId,
+  registrationGroup,
 }) {
   const newRegistration = await pool.query(
-    `INSERT INTO registrations (event_id,user_id,category_id,registration_shirt, payment_id, registration_status, registration_date, coupon_id, registration_team, registration_id) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10) RETURNING registration_id`,
+    `INSERT INTO registrations (event_id,user_id,category_id,registration_shirt, payment_id, registration_status, registration_date, coupon_id, registration_team, registration_group, registration_id) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11) RETURNING registration_id`,
     [
       eventId,
       userId,
@@ -78,6 +76,7 @@ async function createRegistration({
       new Date(),
       couponId || null,
       registrationTeam || null,
+      registrationGroup || null,
       registrationId ?? crypto.randomUUID(),
     ]
   );

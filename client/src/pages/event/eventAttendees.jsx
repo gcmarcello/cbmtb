@@ -27,6 +27,8 @@ export default function EventAttendees() {
         <div>
           {value === "completed" ? (
             <span className="badge text-bg-success">Confirmada</span>
+          ) : row.original.registration_group ? (
+            <span className="badge text-bg-secondary">Equipe</span>
           ) : (
             <span className="badge text-bg-warning">Pendente</span>
           )}

@@ -246,6 +246,19 @@ const EditEvent = (props) => {
                   Exibir Lista de Inscritos
                 </label>
               </div>
+              <div className="form-check ms-3">
+                <input
+                  className="form-check-input"
+                  style={{ transform: "scale(1.5)" }}
+                  type="checkbox"
+                  defaultChecked={props.event?.enableteamregistration}
+                  {...props.register("enableTeamRegistration")}
+                  id="enableTeamRegistration"
+                />
+                <label className="form-check-label ms-2" htmlFor="enableTeamRegistration">
+                  Permitir Inscrição em Equipe
+                </label>
+              </div>
             </div>
           </div>
           <hr />

@@ -167,20 +167,32 @@ const EventPage = () => {
                                 {registrationError.message}
                               </Fragment>
                             ) : (
-                              <Fragment>
-                                <i className="bi bi-check-circle"></i> Inscreva-se
-                                {event.categories &&
-                                  (event.categories.sort(
-                                    (a, b) => a.category_price - b.category_price
-                                  )[0].category_price === 0
-                                    ? " (Gratuito)"
-                                    : ` (À partir de R$${
-                                        event.categories.sort(
-                                          (a, b) => a.category_price - b.category_price
-                                        )[0].category_price
-                                      },00)`)}
-                              </Fragment>
+                              <>
+                                <Fragment>
+                                  <i className="bi bi-check-circle"></i> Inscreva-se
+                                  {event.categories &&
+                                    (event.categories.sort(
+                                      (a, b) => a.category_price - b.category_price
+                                    )[0].category_price === 0
+                                      ? " (Gratuito)"
+                                      : ` (À partir de R$${
+                                          event.categories.sort(
+                                            (a, b) => a.category_price - b.category_price
+                                          )[0].category_price
+                                        },00)`)}
+                                </Fragment>
+                              </>
                             )}
+                          </button>
+                          <button
+                            onClick={() =>
+                              event.event_external
+                                ? (window.location = `https://${event.event_external}?team=true`)
+                                : navigate(`/inscricao/${event.event_id}?team=true`)
+                            }
+                            className="btn btn-lg btn-secondary mt-2 w-100 p-2"
+                          >
+                            <i className="bi bi-clipboard2-check"></i> Inscrição de Equipe
                           </button>
                           {event.media && (
                             <Link to={`/eventos/${event.event_id}/midias`}>

@@ -1,4 +1,5 @@
 import { Fragment, useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 
 const ConfirmationPayment = (props) => {
   const [category, setCategory] = useState(null);
@@ -19,38 +20,41 @@ const ConfirmationPayment = (props) => {
       <div className="container">
         <div className="row">
           <div className="col-12 ">
-            <ul className="list-group ">
-              <li className="list-group-item d-flex justify-content-between align-items-center ">
-                <div className="py-2">
-                  <div className="fw-semibold">Categoria</div>
-                  <small className="text-muted">
-                    {category?.category_name} - {props.user.user_gender}{" "}
-                    {props.getValues("registration_team")
-                      ? props.getValues("registration_team")
-                      : ""}
-                  </small>
-                </div>
-                <span className="badge bg-success rounded-pill">
-                  {new Intl.NumberFormat("pt-BR", {
-                    style: "currency",
-                    currency: "BRL",
-                  }).format(props.coupon ? 0 : category?.category_price)}
-                </span>
-              </li>
-              {
+            {!props.isTeam && (
+              <ul className="list-group ">
                 <li className="list-group-item d-flex justify-content-between align-items-center ">
                   <div className="py-2">
-                    <div className="fw-semibold">Taxa de processamento</div>
+                    <div className="fw-semibold">Categoria</div>
+                    <small className="text-muted">
+                      {category?.category_name} - {props.user.user_gender}{" "}
+                      {props.getValues("registration_team")
+                        ? props.getValues("registration_team")
+                        : ""}
+                    </small>
                   </div>
                   <span className="badge bg-success rounded-pill">
                     {new Intl.NumberFormat("pt-BR", {
                       style: "currency",
                       currency: "BRL",
-                    }).format(props.coupon || !category?.category_price ? 0 : pagarMeFee)}
+                    }).format(props.coupon ? 0 : category?.category_price)}
                   </span>
                 </li>
-              }
-              {/* <li className="list-group-item d-flex justify-content-between align-items-center">
+                {
+                  <li className="list-group-item d-flex justify-content-between align-items-center ">
+                    <div className="py-2">
+                      <div className="fw-semibold">Taxa de processamento</div>
+                    </div>
+                    <span className="badge bg-success rounded-pill">
+                      {new Intl.NumberFormat("pt-BR", {
+                        style: "currency",
+                        currency: "BRL",
+                      }).format(
+                        props.coupon || !category?.category_price ? 0 : pagarMeFee
+                      )}
+                    </span>
+                  </li>
+                }
+                {/* <li className="list-group-item d-flex justify-content-between align-items-center">
                 <div className="py-2">
                   <div className="fw-semibold">Kit do Evento</div>{" "}
                   <small className="text-muted">
@@ -60,24 +64,25 @@ const ConfirmationPayment = (props) => {
 
                 <span className="badge bg-success rounded-pill">R$ 0,00</span>
               </li> */}
-              <li className="list-group-item d-flex justify-content-between align-items-center">
-                <div className="">
-                  <div className="fw-semibold">Total</div>{" "}
-                  {/* <small className="text-muted">Tamanho {props.watch("registrationShirt").toUpperCase()}</small> */}
-                </div>
+                <li className="list-group-item d-flex justify-content-between align-items-center">
+                  <div className="">
+                    <div className="fw-semibold">Total</div>{" "}
+                    {/* <small className="text-muted">Tamanho {props.watch("registrationShirt").toUpperCase()}</small> */}
+                  </div>
 
-                <span className="">
-                  {new Intl.NumberFormat("pt-BR", {
-                    style: "currency",
-                    currency: "BRL",
-                  }).format(
-                    props.coupon || !category?.category_price
-                      ? 0
-                      : category?.category_price + pagarMeFee
-                  )}
-                </span>
-              </li>
-            </ul>
+                  <span className="">
+                    {new Intl.NumberFormat("pt-BR", {
+                      style: "currency",
+                      currency: "BRL",
+                    }).format(
+                      props.coupon || !category?.category_price
+                        ? 0
+                        : category?.category_price + pagarMeFee
+                    )}
+                  </span>
+                </li>
+              </ul>
+            )}
             {
               category?.category_price === 0 || props.coupon ? (
                 <div>
@@ -92,6 +97,39 @@ const ConfirmationPayment = (props) => {
                   <div className="d-flex justify-content-end mt-3">
                     <button className="btn btn-success form-control">Finalizar</button>
                   </div>
+                </div>
+              ) : props.isTeam ? (
+                <div className="my-3 flex flex-col">
+                  <label htmlFor="registration_group">Nome da Equipe</label>
+                  <input
+                    {...props.register("registration_group", {
+                      required: true,
+                      minLength: 3,
+                    })}
+                    type="text"
+                    id="registration_group"
+                    className={`form-control ${
+                      props.errors?.registration_group
+                        ? "is-invalid"
+                        : props.getValues("registration_group")
+                        ? "is-valid"
+                        : ""
+                    }`}
+                  />
+                  <div className="mt-2 text-muted text-justify">
+                    Sua inscrição será realizada, porém permanecerá pendente até o
+                    pagamento. Os organizadores que desejarem efetuar o pagamento da
+                    equipe, devem entrar em contato com a CBMTB através da ouvidoria.
+                  </div>
+                  {props.watch("registration_group") ? (
+                    <button
+                      disabled={props.isLoading}
+                      type="submit"
+                      className="btn w-100 mt-2 btn-success my-auto"
+                    >
+                      Realizar Inscrição
+                    </button>
+                  ) : null}
                 </div>
               ) : (
                 <div className="container mt-3">
@@ -110,7 +148,11 @@ const ConfirmationPayment = (props) => {
                     </div>
                     <div className="col-12 col-md-6 ">
                       <div className="d-flex flex-column">
-                        <button type="submit" className="btn btn-success my-auto">
+                        <button
+                          disabled={props.isLoading}
+                          type="submit"
+                          className="btn btn-success my-auto"
+                        >
                           <i className="bi bi-lock-fill"></i> Prosseguir para o pagamento
                         </button>
                         <div className="d-flex align-items-center mt-2">
