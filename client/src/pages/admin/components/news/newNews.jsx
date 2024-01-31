@@ -97,7 +97,13 @@ const NewNews = () => {
                     type="text"
                     id="news-title"
                     name="title"
-                    className={`form-control ${errors.title?.type ? "is-invalid" : getValues("name") ? "is-valid" : ""}`}
+                    className={`form-control ${
+                      errors.title?.type
+                        ? "is-invalid"
+                        : getValues("name")
+                        ? "is-valid"
+                        : ""
+                    }`}
                     {...register("title", { required: true, pattern: /.{2,}/ })}
                   />
                 </div>
@@ -121,12 +127,19 @@ const NewNews = () => {
                           onChange={(e) => {
                             field.onChange(e.target.files[0]);
                           }}
-                          className={`form-control ${errors.image?.type ? "is-invalid" : ""}`}
+                          className={`form-control ${
+                            errors.image?.type ? "is-invalid" : ""
+                          }`}
                           aria-invalid={errors.image ? "true" : "false"}
                         />
                       )}
                     />
-                    <button type="button" className="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#newsImageModal">
+                    <button
+                      type="button"
+                      className="btn btn-outline-secondary"
+                      data-bs-toggle="modal"
+                      data-bs-target="#newsImageModal"
+                    >
                       <i className="bi bi-zoom-in"></i>
                     </button>
                   </div>
@@ -150,7 +163,9 @@ const NewNews = () => {
                     type="text"
                     id="subtitle"
                     name="subtitle"
-                    className={`form-control ${errors.subtitle?.type ? "is-invalid" : ""}`}
+                    className={`form-control ${
+                      errors.subtitle?.type ? "is-invalid" : ""
+                    }`}
                     {...register("subtitle", { required: true, pattern: /.{2,}/ })}
                   />
                 </div>
@@ -161,14 +176,23 @@ const NewNews = () => {
                   <select
                     id="category"
                     defaultValue=""
-                    className={`form-select ${errors.gender?.type ? "is-invalid" : getValues("gender") ? "is-valid" : ""}`}
+                    className={`form-select ${
+                      errors.gender?.type
+                        ? "is-invalid"
+                        : getValues("gender")
+                        ? "is-valid"
+                        : ""
+                    }`}
                     {...register("category", { required: true })}
                   >
                     <option value="" disabled>
                       Selecionar
                     </option>
                     {categories.map((category) => (
-                      <option key={`category-${category.category_id}`} value={category.category_name}>
+                      <option
+                        key={`category-${category.category_id}`}
+                        value={category.category_name}
+                      >
                         {category.category_name}
                       </option>
                     ))}
@@ -190,7 +214,7 @@ const NewNews = () => {
                   <Editor
                     value={value}
                     ref={ref}
-                    apiKey={process.env.REACT_APP_REACT_ENV === "production" ? 'c7la9x1bfdh9hbz7m2td5jsqdjhl7alzdzg65kj6crmro9hd' : ""}
+                    apiKey={"c7la9x1bfdh9hbz7m2td5jsqdjhl7alzdzg65kj6crmro9hd"}
                     onEditorChange={(content) => onChange(content)}
                     init={{
                       language: "pt_BR",

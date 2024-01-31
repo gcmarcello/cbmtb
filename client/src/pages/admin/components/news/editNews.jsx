@@ -135,7 +135,13 @@ const EditNews = () => {
                       type="text"
                       id="news-title"
                       name="title"
-                      className={`form-control ${errors.title?.type ? "is-invalid" : getValues("name") ? "is-valid" : ""}`}
+                      className={`form-control ${
+                        errors.title?.type
+                          ? "is-invalid"
+                          : getValues("name")
+                          ? "is-valid"
+                          : ""
+                      }`}
                       {...register("title", { required: true, pattern: /.{2,}/ })}
                     />
                   </div>
@@ -161,29 +167,55 @@ const EditNews = () => {
                               setFileUrl(URL.createObjectURL(e.target.files[0]));
                               setFileSize(e.target.files[0]?.size);
                             }}
-                            className={`form-control ${errors.image?.type ? "is-invalid" : ""}`}
+                            className={`form-control ${
+                              errors.image?.type ? "is-invalid" : ""
+                            }`}
                             aria-invalid={errors.image ? "true" : "false"}
                           />
                         )}
                       />
-                      <button type="button" className="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#newsImageModal">
+                      <button
+                        type="button"
+                        className="btn btn-outline-secondary"
+                        data-bs-toggle="modal"
+                        data-bs-target="#newsImageModal"
+                      >
                         <i className="bi bi-zoom-in"></i>
                       </button>
                     </div>
-                    <div className="modal fade" id="newsImageModal" tabIndex="-1" aria-labelledby="newsImageModalLabel" aria-hidden="true">
+                    <div
+                      className="modal fade"
+                      id="newsImageModal"
+                      tabIndex="-1"
+                      aria-labelledby="newsImageModalLabel"
+                      aria-hidden="true"
+                    >
                       <div className="modal-dialog">
                         <div className="modal-content">
                           <div className="modal-header">
                             <h5 className="modal-title" id="newsImageModalLabel">
                               Imagem da Notícia
                             </h5>
-                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            <button
+                              type="button"
+                              className="btn-close"
+                              data-bs-dismiss="modal"
+                              aria-label="Close"
+                            ></button>
                           </div>
                           <div className="modal-body">
-                            <img src={fileUrl || getValues("imageOld")} className="img-fluid rounded mx-auto d-block my-2" alt="" />
+                            <img
+                              src={fileUrl || getValues("imageOld")}
+                              className="img-fluid rounded mx-auto d-block my-2"
+                              alt=""
+                            />
                           </div>
                           <div className="modal-footer">
-                            <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">
+                            <button
+                              type="button"
+                              className="btn btn-secondary"
+                              data-bs-dismiss="modal"
+                            >
                               Close
                             </button>
                             <button type="button" className="btn btn-primary">
@@ -198,7 +230,8 @@ const EditNews = () => {
                         A resolução indicada é de 1920x1080.
                       </small>
                       <small id="userHelp" className="form-text text-muted">
-                        Tamanho: {/* Math.round(watch("image").size / 1000) ||  */ 0}/2000KB
+                        Tamanho: {/* Math.round(watch("image").size / 1000) ||  */ 0}
+                        /2000KB
                       </small>
                     </div>
                   </div>
@@ -213,7 +246,9 @@ const EditNews = () => {
                       type="text"
                       id="subtitle"
                       name="subtitle"
-                      className={`form-control ${errors.subtitle?.type ? "is-invalid" : ""}`}
+                      className={`form-control ${
+                        errors.subtitle?.type ? "is-invalid" : ""
+                      }`}
                       {...register("subtitle", { required: true, pattern: /.{2,}/ })}
                     />
                   </div>
@@ -230,8 +265,13 @@ const EditNews = () => {
                         type="text"
                         id="link"
                         name="link"
-                        className={`form-control ${errors.link?.type ? "is-invalid" : ""}`}
-                        {...register("link", { required: true, pattern: /^[a-z0-9-]{1,50}$/i })}
+                        className={`form-control ${
+                          errors.link?.type ? "is-invalid" : ""
+                        }`}
+                        {...register("link", {
+                          required: true,
+                          pattern: /^[a-z0-9-]{1,50}$/i,
+                        })}
                       />
                     </div>
                     <small id="userHelp" className="form-text text-muted">
@@ -254,7 +294,7 @@ const EditNews = () => {
                     <Editor
                       value={value}
                       ref={ref}
-                      apiKey={process.env.REACT_APP_REACT_ENV === "production" ? 'c7la9x1bfdh9hbz7m2td5jsqdjhl7alzdzg65kj6crmro9hd' : ""}
+                      apiKey={"c7la9x1bfdh9hbz7m2td5jsqdjhl7alzdzg65kj6crmro9hd"}
                       onEditorChange={(content) => onChange(content)}
                       init={{
                         language: "pt_BR",
