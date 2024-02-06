@@ -81,7 +81,9 @@ const EventInfo = (props) => {
               )}
             </div>
 
-            {/* <label htmlFor="registrationShirt">Tamanho da Camiseta</label>
+            <label className="mt-3" htmlFor="registrationShirt">
+              Tamanho da Camiseta
+            </label>
 
             <select
               type="text"
@@ -100,7 +102,7 @@ const EventInfo = (props) => {
               <option value={"g"}>G</option>
               <option value={"gg"}>GG</option>
               <option value={"exg"}>EXG</option>
-            </select> */}
+            </select>
           </div>
           <div className="col-12 col-lg-6">
             <div className="card">

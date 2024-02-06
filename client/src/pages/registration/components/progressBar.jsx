@@ -79,7 +79,7 @@ const ProgressBar = (props) => {
                     onClick={() => props.setStage(2)}
                     disabled={
                       props.watch("rulesAgreement") &&
-                      /* props.watch("registrationShirt") && */
+                      props.watch("registrationShirt") &&
                       props.watch("category")
                         ? false
                         : true
@@ -106,7 +106,7 @@ const ProgressBar = (props) => {
                 disabled={
                   props.stage === 1
                     ? props.watch("rulesAgreement") &&
-                      /* props.watch("registrationShirt") && */
+                      props.watch("registrationShirt") &&
                       props.watch("category")
                       ? false
                       : true
