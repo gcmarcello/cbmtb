@@ -26,14 +26,14 @@ async function listNextEvents(req, res) {
   let listOfEvents;
   try {
     listOfEvents = await pool.query(
-      "SELECT * FROM events WHERE event_status = $1 ORDER BY event_date_start DESC",
+      "SELECT * FROM events WHERE event_status = $1 ORDER BY event_date_start ASC",
       ["open"]
     );
 
     const checkForAvailability = (registrationStartDate, registrationEndDate) => {
       const registrationStarts = dayjs(registrationStartDate);
       const registrationEnds = dayjs(registrationEndDate);
-      return dayjs().isBetween(registrationStarts, registrationEnds, null, []);
+      return dayjs().isBefore(registrationEnds, null, []);
     };
 
     return res.json(
