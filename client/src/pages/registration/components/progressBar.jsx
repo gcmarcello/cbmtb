@@ -106,7 +106,8 @@ const ProgressBar = (props) => {
                 disabled={
                   props.stage === 1
                     ? props.watch("rulesAgreement") &&
-                      props.watch("registrationShirt") &&
+                      (!props.event.enableshirtsize ||
+                        props.watch("registrationShirt")) &&
                       props.watch("category")
                       ? false
                       : true

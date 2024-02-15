@@ -231,7 +231,7 @@ const Registration = () => {
             backgroundColor: "var(--primary-color)",
           }}
         >
-          <ProgressBar stage={stage} setStage={setStage} watch={watch} />
+          <ProgressBar stage={stage} setStage={setStage} watch={watch} event={event} />
         </div>
       }
     </Fragment>
