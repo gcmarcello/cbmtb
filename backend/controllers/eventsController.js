@@ -256,6 +256,7 @@ async function updateEvent(req, res) {
       flagship,
       showAttendees,
       enableTeamRegistration,
+      enableShirtSize,
     } = req.body;
 
     const image = req.file
@@ -263,7 +264,7 @@ async function updateEvent(req, res) {
       : imageOld;
 
     const updateEvent = await pool.query(
-      `UPDATE events SET event_link = $1, event_owner_id = $2, event_name= $3, event_location = $4, event_image = $5, event_description = $6, event_rules = $7, event_details = $8, event_general_attendees = $9, event_external = $10, event_date_start = $11, event_date_end = $12, event_registrations_start = $13, event_registrations_end = $14, flagship_id = $16, showattendees = $17, enableteamregistration = $18 WHERE event_id = $15`,
+      `UPDATE events SET event_link = $1, event_owner_id = $2, event_name= $3, event_location = $4, event_image = $5, event_description = $6, event_rules = $7, event_details = $8, event_general_attendees = $9, event_external = $10, event_date_start = $11, event_date_end = $12, event_registrations_start = $13, event_registrations_end = $14, flagship_id = $16, showattendees = $17, enableteamregistration = $18, enableshirtsize = $19 WHERE event_id = $15`,
       [
         link,
         req.userId,
@@ -283,6 +284,7 @@ async function updateEvent(req, res) {
         flagship === "null" || !flagship ? null : flagship,
         showAttendees,
         enableTeamRegistration,
+        enableShirtSize,
       ]
     );
 

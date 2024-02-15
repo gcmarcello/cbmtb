@@ -35,6 +35,10 @@ export default function EventAttendees() {
         </div>
       ),
     },
+    {
+      Header: "Equipe",
+      accessor: "registration_group",
+    },
   ];
 
   useEffect(() => {

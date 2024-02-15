@@ -259,6 +259,19 @@ const EditEvent = (props) => {
                   Permitir Inscrição em Equipe
                 </label>
               </div>
+              <div className="form-check ms-3">
+                <input
+                  className="form-check-input"
+                  style={{ transform: "scale(1.5)" }}
+                  type="checkbox"
+                  defaultChecked={props.event?.enableshirtsize}
+                  {...props.register("enableShirtSize")}
+                  id="enableShirtSize"
+                />
+                <label className="form-check-label ms-2" htmlFor="enableShirtSize">
+                  Pedir Tamanho da Camisa
+                </label>
+              </div>
             </div>
           </div>
           <hr />
