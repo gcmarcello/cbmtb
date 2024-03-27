@@ -65,13 +65,13 @@ router.post(
           number,
           apartment,
           "user",
-          false,
+          true,
         ]
       );
 
       const newConfirmation = await pool.query(
         "INSERT INTO email_confirmations (register_date,user_id,confirmation_status) VALUES ($1,$2,$3) RETURNING *",
-        [new Date(), newUser.rows[0].user_id, false]
+        [new Date(), newUser.rows[0].user_id, true]
       );
 
       const sgEmail = new Email([email]);

@@ -26,6 +26,7 @@ const ListRegistrations = (props) => {
     },
     {
       Header: "Categoria",
+      id: "category_name",
       accessor: "category_name",
     },
     {
@@ -124,18 +125,13 @@ const ListRegistrations = (props) => {
         value: column,
       })),
       content: registrationsToExcel
-        .filter(
-          (registration) =>
-            registration.category_name === category.category_name
-        )
+        .filter((registration) => registration.category_name === category.category_name)
         .map(function (registration) {
           let registrationDate = dayjs(registration.registration_date).format(
             "DD/MM/YYYY HH:mm"
           );
           let age = dayjs().diff(dayjs(registration.user_birth_date), "year");
-          let birthDate = dayjs(registration.user_birth_date).format(
-            "DD/MM/YYYY"
-          );
+          let birthDate = dayjs(registration.user_birth_date).format("DD/MM/YYYY");
 
           return {
             ...registration,
@@ -158,9 +154,7 @@ const ListRegistrations = (props) => {
           "DD/MM/YYYY HH:mm"
         );
         let age = dayjs().diff(dayjs(registration.user_birth_date), "year");
-        let birthDate = dayjs(registration.user_birth_date).format(
-          "DD/MM/YYYY"
-        );
+        let birthDate = dayjs(registration.user_birth_date).format("DD/MM/YYYY");
 
         return {
           ...registration,
@@ -172,9 +166,7 @@ const ListRegistrations = (props) => {
     });
 
     const settings = {
-      fileName: `${props.event.event_name} - Inscritos (${dayjs().format(
-        "DD-MM-YYYY"
-      )})`, // Name of the resulting spreadsheet
+      fileName: `${props.event.event_name} - Inscritos (${dayjs().format("DD-MM-YYYY")})`, // Name of the resulting spreadsheet
       extraLength: 3, // A bigger number means that columns will be wider
       writeMode: "writeFile", // The available parameters are 'WriteFile' and 'write'. This setting is optional. Useful in such cases https://docs.sheetjs.com/docs/solutions/output#example-remote-file
       writeOptions: {}, // Style options from https://docs.sheetjs.com/docs/api/write-options
@@ -234,6 +226,7 @@ const ListRegistrations = (props) => {
     <div className="p-lg-3">
       {props.event && (
         <Table
+          sortByColumn={[{ id: "category_name", desc: false }]}
           data={props.event.registrations}
           columns={columns}
           generateXlsx={generateXlsx}
@@ -280,15 +273,11 @@ const ListRegistrations = (props) => {
                   </li>
                   <li className="list-group-item">
                     <strong>Data de Nascimento:</strong>{" "}
-                    {dayjs(getValues("registrationBirthDate")).format(
-                      "DD/MM/YYYY"
-                    )}
+                    {dayjs(getValues("registrationBirthDate")).format("DD/MM/YYYY")}
                   </li>
                   <li className="list-group-item">
                     <strong>Data da Inscrição:</strong>{" "}
-                    {dayjs(getValues("registrationDate")).format(
-                      "DD/MM/YYYY HH:mm"
-                    )}
+                    {dayjs(getValues("registrationDate")).format("DD/MM/YYYY HH:mm")}
                   </li>
                 </ul>
                 <label htmlFor="gender">Categoria</label>
@@ -301,10 +290,7 @@ const ListRegistrations = (props) => {
                   {...register("registrationCategory", { required: true })}
                 >
                   {props.event?.categories.map((category) => (
-                    <option
-                      key={category.category_id}
-                      value={category.category_id}
-                    >
+                    <option key={category.category_id} value={category.category_id}>
                       {category.category_name}
                     </option>
                   ))}
@@ -383,8 +369,8 @@ const ListRegistrations = (props) => {
               ></button>
             </div>
             <div className="modal-body">
-              Tem certeza que deseja cancelar esta inscrição? O inscrito
-              receberá um email com a confirmação do cancelamento.
+              Tem certeza que deseja cancelar esta inscrição? O inscrito receberá um email
+              com a confirmação do cancelamento.
             </div>
             <small className="text-muted mx-3 mb-1">
               ID: {getValues("registrationId")}
@@ -402,9 +388,7 @@ const ListRegistrations = (props) => {
               <button
                 type="button"
                 className="btn btn-danger"
-                onClick={() =>
-                  props.deleteRegistration(watch("registrationId"), true)
-                }
+                onClick={() => props.deleteRegistration(watch("registrationId"), true)}
                 data-bs-dismiss="modal"
               >
                 Cancelar Inscrição

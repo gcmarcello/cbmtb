@@ -1,11 +1,13 @@
 import { Link, useParams } from "react-router-dom";
 import Table from "../admin/components/table";
 import { useEffect, useState } from "react";
+import { set } from "react-hook-form";
 
 export default function EventAttendees() {
   const { id } = useParams();
   const [attendees, setAttendees] = useState([]);
   const [event, setEvent] = useState(null);
+  const [categories, setCategories] = useState([]);
 
   const columns = [
     {
@@ -48,6 +50,10 @@ export default function EventAttendees() {
           method: "GET",
         });
         const parseResponse = await response.json();
+        const uniqueNames = [
+          ...new Set(parseResponse?.attendees.map((attendee) => attendee.category_name)),
+        ];
+        setCategories(uniqueNames);
         setAttendees(parseResponse?.attendees);
         setEvent(parseResponse?.event);
       } catch (err) {
@@ -66,7 +72,16 @@ export default function EventAttendees() {
             Voltar ao Evento
           </Link>
         </div>
-        {<Table data={attendees} columns={columns} />}
+        {categories.sort().map((category) => (
+          <div className="mt-3">
+            <h2>{category}</h2>
+            <Table
+              sortByColumn={[{ id: "category_name", desc: false }]}
+              data={attendees.filter((attendee) => attendee.category_name === category)}
+              columns={columns}
+            />
+          </div>
+        ))}
       </div>
     </div>
   );
