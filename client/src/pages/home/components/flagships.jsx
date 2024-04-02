@@ -30,7 +30,9 @@ const Flagships = () => {
   return (
     <div className="container-fluid shadow" style={{ backgroundColor: "var(--primary-color)" }}>
       <div className="row pb-5 pt-2 justify-content-center align-items-center">
-        <h1 className="text-white">Principais Eventos</h1>
+        <h1  style={{ 
+                  color: 'var(--secondary-color)'
+                }}>Principais Eventos</h1>
         {flagships?.map((flagship) => (
           <div key={flagship.flagship_id} className="col-12 col-lg-4 d-flex mt-5 mt-lg-3 justify-content-center align-items-center">
             <Link to={`/${flagship.flagship_link}`}>

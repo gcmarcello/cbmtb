@@ -34,7 +34,9 @@ const CheckInOffCanvas = ({ registration, setRegistration, getCheckInNumbers }) 
         style={{ backgroundColor: isCheckedIn ? "#bb2d3b" : "var(--primary-color)" }}
       >
         <div className="offcanvas-header">
-          <h5 className="offcanvas-title text-white" id="offcanvasLabel">
+          <h5  style={{ 
+                  color: 'var(--secondary-color)'
+                }} className="offcanvas-title" id="offcanvasLabel">
             Confirmar Inscrição
           </h5>
           <button
@@ -45,7 +47,9 @@ const CheckInOffCanvas = ({ registration, setRegistration, getCheckInNumbers }) 
             onClick={() => setRegistration(null)}
           ></button>
         </div>
-        <div className="offcanvas-body text-white">
+        <div  style={{ 
+                  color: 'var(--secondary-color)'
+                }} className="offcanvas-body">
           <div className="d-flex justify-content-center mb-3">
             <svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" fill="currentColor" className="bi bi-person-circle" viewBox="0 0 16 16">
               <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" />
@@ -56,17 +60,23 @@ const CheckInOffCanvas = ({ registration, setRegistration, getCheckInNumbers }) 
             </svg>
           </div>
           <div>
-            <i className="bi bi-person-fill text-white fs-1"></i>
+            <i  style={{ 
+                  color: 'var(--secondary-color)'
+                }} className="bi bi-person-fill fs-1"></i>
             <span className="fs-3 ms-2">
               {registration.user_first_name} {registration.user_last_name}
             </span>
           </div>
           <div>
-            <i className="bi bi-people-fill text-white fs-1"></i>
+            <i  style={{ 
+                  color: 'var(--secondary-color)'
+                }} className="bi bi-people-fill fs-1"></i>
             <span className="fs-3 ms-2">{registration.category_name}</span>
           </div>
           <div>
-            <i className="bi bi-calendar-fill text-white fs-1"></i>
+            <i  style={{ 
+                  color: 'var(--secondary-color)'
+                }} className="bi bi-calendar-fill fs-1"></i>
             <span className="fs-3 ms-2">{dayjs(registration.user_birth_date).format("DD/MM/YYYY")}</span>
           </div>
           <div className="d-flex justify-content-evenly mt-3">

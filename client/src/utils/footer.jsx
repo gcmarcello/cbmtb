@@ -110,17 +110,24 @@ const Footer = ({ userAuthentication }) => {
             <ul className="list-unstyled d-flex">
               <li className="ms-3">
                 <a className="link-dark" href={config.redes.twitter}>
-                  <i className="bi bi-twitter text-white fs-2"></i>
+                  <i  style={{ 
+                  color: 'var(--secondary-color)'
+                }}
+                className="bi bi-twitter fs-2"></i>
                 </a>
               </li>
               <li className="ms-3">
                 <a className="link-dark" href={config.redes.instagram}>
-                  <i className="bi bi-instagram text-white fs-2"></i>
+                  <i  style={{ 
+                  color: 'var(--secondary-color)'
+                }} className="bi bi-instagram fs-2"></i>
                 </a>
               </li>
               <li className="ms-3">
                 <a className="link-dark" href={config.redes.facebook}>
-                  <i className="bi bi-facebook text-white fs-2"></i>
+                  <i  style={{ 
+                  color: 'var(--secondary-color)'
+                }} className="bi bi-facebook fs-2"></i>
                 </a>
               </li>
             </ul>
