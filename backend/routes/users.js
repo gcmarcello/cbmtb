@@ -246,7 +246,7 @@ router.post("/login", async (req, res) => {
   } else if (!CPFVerification.rows[0].user_confirmed) {
     return res
       .status(400)
-      .json({ message: "Esta conta ainda não foi confirmada. Verifique sua caixa de email.", type: "error" });
+      .json({ message: "Esta conta ainda não foi confirmada. Verifique sua caixa de email (e spam) e encontre seu email de confirmação.", type: "error" });
   }
 
   if (await bcrypt.compare(password, CPFVerification.rows[0].user_password)) {
