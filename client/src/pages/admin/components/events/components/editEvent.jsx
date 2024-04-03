@@ -344,7 +344,7 @@ const EditEvent = (props) => {
                   <Editor
                     value={value}
                     ref={ref}
-                    apiKey={"c7la9x1bfdh9hbz7m2td5jsqdjhl7alzdzg65kj6crmro9hd"}
+                    tinymceScriptSrc={"/tinymce/tinymce.min.js"}
                     onEditorChange={(content) => onChange(content)}
                     init={{
                       language: "pt_BR",
@@ -380,7 +380,7 @@ const EditEvent = (props) => {
                   <Editor
                     value={value}
                     ref={ref}
-                    apiKey={"c7la9x1bfdh9hbz7m2td5jsqdjhl7alzdzg65kj6crmro9hd"}
+                    tinymceScriptSrc={"/tinymce/tinymce.min.js"}
                     onEditorChange={(content) => onChange(content)}
                     init={{
                       language: "pt_BR",
@@ -417,7 +417,7 @@ const EditEvent = (props) => {
                   <Editor
                     value={value}
                     ref={ref}
-                    apiKey={"c7la9x1bfdh9hbz7m2td5jsqdjhl7alzdzg65kj6crmro9hd"}
+                    tinymceScriptSrc={"/tinymce/tinymce.min.js"}
                     onEditorChange={(content) => onChange(content)}
                     init={{
                       language: "pt_BR",
