@@ -1,6 +1,12 @@
 // Library Components
 import React, { useState, useEffect, Fragment } from "react";
-import { useParams, useNavigate, Navigate, Link } from "react-router-dom";
+import {
+  useParams,
+  useNavigate,
+  Navigate,
+  Link,
+  useSearchParams,
+} from "react-router-dom";
 import { toast } from "react-toastify";
 
 // General Components
@@ -25,6 +31,14 @@ const Registration = () => {
   const [event, setEvent] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [stage, setStage] = useState(1);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [isTeam, setIsTeam] = useState(false);
+
+  useEffect(() => {
+    if (searchParams.get("team")) {
+      setIsTeam(true);
+    }
+  }, []);
 
   const {
     getValues,
@@ -38,7 +52,7 @@ const Registration = () => {
     formState: { errors },
   } = useForm({
     mode: "onChange",
-    defaultValues: { paymentMethod: "", order_id: "" },
+    defaultValues: { paymentMethod: "", order_id: "", registration_group: "" },
   });
 
   const fetchEventInfo = async () => {
@@ -104,6 +118,7 @@ const Registration = () => {
   };
 
   const onSubmit = async (data) => {
+    setIsLoading(true);
     if (!data.card) data.card = {};
     const { card, ...rest } = data;
     const myHeaders = new Headers();
@@ -118,9 +133,9 @@ const Registration = () => {
       });
       const parseResponse = await response.json();
 
-      if (parseResponse.type !== "error" && !parseResponse.data) {
+      if ((parseResponse.type !== "error" && !parseResponse.data) || isTeam) {
         toast.success(parseResponse.message, { theme: "colored" });
-        navigate("/usuario");
+        return navigate("/usuario");
       }
 
       if (parseResponse.type !== "error" && parseResponse.data) {
@@ -169,46 +184,12 @@ const Registration = () => {
     return <LoadingScreen />;
   }
 
-  const StepPanel = () => {
-    switch (stage) {
-      case 1:
-        return <EventInfo event={event} user={user} watch={watch} register={register} />;
-      case 2:
-        return (
-          <ConfirmationPayment
-            event={event}
-            user={user}
-            watch={watch}
-            register={register}
-            setValue={setValue}
-            getValues={getValues}
-            handleSubmit={handleSubmit}
-            onSubmit={onSubmit}
-            setIsLoading={setIsLoading}
-            control={control}
-            coupon={coupon}
-          />
-        );
-      default:
-        <UserInfo
-          user={user}
-          setValue={setValue}
-          getValues={getValues}
-          setError={setError}
-          register={register}
-          errors={errors}
-          control={control}
-          setIsLoading={setIsLoading}
-        />;
-    }
-  };
-
   return (
     <Fragment>
       <div className="container inner-page pb-md-5">
         <div className="d-flex flex-column flex-lg-row justify-content-between">
           <h1 className="text-justify text-center">
-            Inscrição - <br className="d-block d-lg-none" />
+            Inscrição {isTeam && "de Equipe"} - <br className="d-block d-lg-none" />
             {event?.event_name}
           </h1>
           <Link to={`/eventos/${id}`} className="btn btn-secondary my-auto w-lg-auto">
@@ -219,7 +200,24 @@ const Registration = () => {
         <hr />
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="mb-5">
-            <StepPanel />
+            <StepPanel
+              control={control}
+              coupon={coupon}
+              errors={errors}
+              event={event}
+              getValues={getValues}
+              handleSubmit={handleSubmit}
+              isTeam={isTeam}
+              onSubmit={onSubmit}
+              register={register}
+              setError={setError}
+              setIsLoading={setIsLoading}
+              isLoading={isLoading}
+              setValue={setValue}
+              stage={stage}
+              user={user}
+              watch={watch}
+            />
           </div>
         </form>
       </div>
@@ -233,20 +231,65 @@ const Registration = () => {
             backgroundColor: "var(--primary-color)",
           }}
         >
-          <ProgressBar stage={stage} setStage={setStage} watch={watch} />
-          <div className="d-flex justify-content-end">
-            <span
-              id="accessibilityWidget"
-              className="btn btn-link text-white mt-3 me-1  mt-lg-2 p-0"
-              tabIndex="0"
-            >
-              Acessibilidade
-            </span>
-          </div>
+          <ProgressBar stage={stage} setStage={setStage} watch={watch} event={event} />
         </div>
       }
     </Fragment>
   );
+};
+
+const StepPanel = ({
+  stage,
+  event,
+  user,
+  watch,
+  register,
+  setValue,
+  getValues,
+  handleSubmit,
+  onSubmit,
+  setIsLoading,
+  control,
+  coupon,
+  isTeam,
+  setError,
+  errors,
+  isLoading,
+}) => {
+  switch (stage) {
+    case 1:
+      return <EventInfo event={event} user={user} watch={watch} register={register} />;
+    case 2:
+      return (
+        <ConfirmationPayment
+          event={event}
+          user={user}
+          watch={watch}
+          register={register}
+          setValue={setValue}
+          getValues={getValues}
+          handleSubmit={handleSubmit}
+          onSubmit={onSubmit}
+          isLoading={isLoading}
+          setIsLoading={setIsLoading}
+          control={control}
+          coupon={coupon}
+          errors={errors}
+          isTeam={isTeam}
+        />
+      );
+    default:
+      <UserInfo
+        user={user}
+        setValue={setValue}
+        getValues={getValues}
+        setError={setError}
+        register={register}
+        errors={errors}
+        control={control}
+        setIsLoading={setIsLoading}
+      />;
+  }
 };
 
 export default Registration;

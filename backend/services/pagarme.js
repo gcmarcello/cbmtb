@@ -46,7 +46,7 @@ async function createOrder(paymentInfo) {
       {
         headers: headers,
       }
-    );
+    ).catch(err => console.log(err))
     return data;
   } catch (error) {
     console.log(error.response.data);

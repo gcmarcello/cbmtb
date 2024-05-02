@@ -25,7 +25,10 @@ const ProgressBar = (props) => {
           <div className="col-2 px-0 d-flex justify-content-center">
             {props.stage !== 1 && (
               <button
-                className="btn me-3 btn-link text-white"
+                style={{ 
+                  color: 'var(--secondary-color)'
+                }}
+                className="btn me-3 btn-link"
                 onClick={(e) => {
                   window.scrollTo(0, 0);
                   e.preventDefault();
@@ -79,7 +82,7 @@ const ProgressBar = (props) => {
                     onClick={() => props.setStage(2)}
                     disabled={
                       props.watch("rulesAgreement") &&
-                      /* props.watch("registrationShirt") && */
+                      props.watch("registrationShirt") &&
                       props.watch("category")
                         ? false
                         : true
@@ -97,7 +100,10 @@ const ProgressBar = (props) => {
           <div className="col-2 px-0 d-flex justify-content-center">
             {props.stage !== 2 && (
               <button
-                className="btn btn-link text-white ms-3"
+                style={{ 
+                  color: 'var(--secondary-color)'
+                }}
+                className="btn btn-link ms-3"
                 onClick={(e) => {
                   window.scrollTo(0, 0);
                   e.preventDefault();
@@ -106,7 +112,8 @@ const ProgressBar = (props) => {
                 disabled={
                   props.stage === 1
                     ? props.watch("rulesAgreement") &&
-                      /* props.watch("registrationShirt") && */
+                      (!props.event.enableshirtsize ||
+                        props.watch("registrationShirt")) &&
                       props.watch("category")
                       ? false
                       : true

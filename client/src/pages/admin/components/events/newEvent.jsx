@@ -285,7 +285,7 @@ const NewEvent = () => {
                         <Editor
                           value={value}
                           ref={ref}
-                          apiKey={process.env.REACT_APP_REACT_ENV === "production" ? process.env.REACT_APP_TINYMCE_KEY : ""}
+                          apiKey={'c7la9x1bfdh9hbz7m2td5jsqdjhl7alzdzg65kj6crmro9hd'}
                           onEditorChange={(content) => onChange(content)}
                           init={{
                             language: "pt_BR",
@@ -321,7 +321,7 @@ const NewEvent = () => {
                         <Editor
                           value={value}
                           ref={ref}
-                          apiKey={process.env.REACT_APP_REACT_ENV === "production" ? process.env.REACT_APP_TINYMCE_KEY : ""}
+                          apiKey={'c7la9x1bfdh9hbz7m2td5jsqdjhl7alzdzg65kj6crmro9hd'}
                           onEditorChange={(content) => onChange(content)}
                           init={{
                             language: "pt_BR",
@@ -357,7 +357,7 @@ const NewEvent = () => {
                         <Editor
                           value={value}
                           ref={ref}
-                          apiKey={process.env.REACT_APP_REACT_ENV === "production" ? process.env.REACT_APP_TINYMCE_KEY : ""}
+                          apiKey={'c7la9x1bfdh9hbz7m2td5jsqdjhl7alzdzg65kj6crmro9hd'}
                           onEditorChange={(content) => onChange(content)}
                           init={{
                             language: "pt_BR",

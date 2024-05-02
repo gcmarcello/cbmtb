@@ -4,7 +4,7 @@ import Tabs from "react-bootstrap/Tabs";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, set, useForm } from "react-hook-form";
 import InputMask from "react-input-mask";
 const relativeTime = require("dayjs/plugin/relativeTime");
 const dayjs = require("dayjs");
@@ -12,6 +12,7 @@ dayjs.extend(relativeTime);
 
 const PaymentModal = ({ registration, userInfo, lockedRegistration }) => {
   const [pagarMeFee, setPagarMeFee] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     setPagarMeFee(Math.floor(registration.category_price / 10, 1));
@@ -19,6 +20,7 @@ const PaymentModal = ({ registration, userInfo, lockedRegistration }) => {
 
   async function generateNewPayment() {
     try {
+      setIsLoading(true);
       const { data: parseResponse } = await axios.put(
         `/api/registrations/${registration.registration_id}/payment`,
         null,
@@ -30,6 +32,8 @@ const PaymentModal = ({ registration, userInfo, lockedRegistration }) => {
       }
     } catch (error) {
       console.log(error);
+    } finally {
+      setIsLoading(false);
     }
   }
 
@@ -149,10 +153,17 @@ const PaymentModal = ({ registration, userInfo, lockedRegistration }) => {
                     ) : (
                       <div className="d-flex-column d-lg-flex-row mt-2 mx-1 align-items-center justify-content-between">
                         <button
+                          disabled={isLoading}
                           onClick={() => generateNewPayment()}
                           className="btn btn-success my-auto w-100"
                         >
-                          <i className="bi bi-lock-fill"></i> Prosseguir para o pagamento
+                          <i className="bi bi-lock-fill"></i> Prosseguir para o pagamento{" "}
+                          {isLoading && (
+                            <div
+                              class="ms-1 spinner-border spinner-border-sm"
+                              role="status"
+                            ></div>
+                          )}
                         </button>
                         <div className="d-flex align-items-end">
                           <span className="me-2 fst-italic text-muted">

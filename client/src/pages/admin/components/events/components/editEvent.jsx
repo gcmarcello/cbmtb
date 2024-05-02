@@ -246,6 +246,32 @@ const EditEvent = (props) => {
                   Exibir Lista de Inscritos
                 </label>
               </div>
+              <div className="form-check ms-3">
+                <input
+                  className="form-check-input"
+                  style={{ transform: "scale(1.5)" }}
+                  type="checkbox"
+                  defaultChecked={props.event?.enableteamregistration}
+                  {...props.register("enableTeamRegistration")}
+                  id="enableTeamRegistration"
+                />
+                <label className="form-check-label ms-2" htmlFor="enableTeamRegistration">
+                  Permitir Inscrição em Equipe
+                </label>
+              </div>
+              <div className="form-check ms-3">
+                <input
+                  className="form-check-input"
+                  style={{ transform: "scale(1.5)" }}
+                  type="checkbox"
+                  defaultChecked={props.event?.enableshirtsize}
+                  {...props.register("enableShirtSize")}
+                  id="enableShirtSize"
+                />
+                <label className="form-check-label ms-2" htmlFor="enableShirtSize">
+                  Pedir Tamanho da Camisa
+                </label>
+              </div>
             </div>
           </div>
           <hr />
@@ -318,11 +344,7 @@ const EditEvent = (props) => {
                   <Editor
                     value={value}
                     ref={ref}
-                    apiKey={
-                      process.env.REACT_APP_REACT_ENV === "production"
-                        ? process.env.REACT_APP_TINYMCE_KEY
-                        : ""
-                    }
+                    tinymceScriptSrc={"/tinymce/tinymce.min.js"}
                     onEditorChange={(content) => onChange(content)}
                     init={{
                       language: "pt_BR",
@@ -358,11 +380,7 @@ const EditEvent = (props) => {
                   <Editor
                     value={value}
                     ref={ref}
-                    apiKey={
-                      process.env.REACT_APP_REACT_ENV === "production"
-                        ? process.env.REACT_APP_TINYMCE_KEY
-                        : ""
-                    }
+                    tinymceScriptSrc={"/tinymce/tinymce.min.js"}
                     onEditorChange={(content) => onChange(content)}
                     init={{
                       language: "pt_BR",
@@ -399,11 +417,7 @@ const EditEvent = (props) => {
                   <Editor
                     value={value}
                     ref={ref}
-                    apiKey={
-                      process.env.REACT_APP_REACT_ENV === "production"
-                        ? process.env.REACT_APP_TINYMCE_KEY
-                        : ""
-                    }
+                    tinymceScriptSrc={"/tinymce/tinymce.min.js"}
                     onEditorChange={(content) => onChange(content)}
                     init={{
                       language: "pt_BR",

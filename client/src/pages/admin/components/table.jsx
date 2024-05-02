@@ -33,7 +33,9 @@ const Pagination = (props) => {
         </li>
         {Array.from(Array(props.pageCount).keys()).map((page, index) => (
           <li
-            className={`d-none ${props.pageCount <= 20 && "d-lg-block"} page-item ${page === props.pageIndex && `disabled`}`}
+            className={`d-none ${props.pageCount <= 20 && "d-lg-block"} page-item ${
+              page === props.pageIndex && `disabled`
+            }`}
             key={`page-${index + 1}`}
           >
             <button
@@ -92,8 +94,14 @@ const Pagination = (props) => {
 };
 
 const Table = ({ data, columns, customPageSize, sortByColumn, generateXlsx }) => {
+  console.log(sortByColumn);
   const memoData = useMemo(() => data, [data]);
-  const memoColumns = useMemo(() => columns || Object.keys(data[0]).map((header) => ({ Header: header, accessor: header })), [columns, data]);
+  const memoColumns = useMemo(
+    () =>
+      columns ||
+      Object.keys(data[0]).map((header) => ({ Header: header, accessor: header })),
+    [columns, data]
+  );
 
   const {
     getTableProps,

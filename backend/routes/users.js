@@ -65,13 +65,13 @@ router.post(
           number,
           apartment,
           "user",
-          false,
+          true,
         ]
       );
 
       const newConfirmation = await pool.query(
         "INSERT INTO email_confirmations (register_date,user_id,confirmation_status) VALUES ($1,$2,$3) RETURNING *",
-        [new Date(), newUser.rows[0].user_id, false]
+        [new Date(), newUser.rows[0].user_id, true]
       );
 
       const sgEmail = new Email([email]);
@@ -246,7 +246,7 @@ router.post("/login", async (req, res) => {
   } else if (!CPFVerification.rows[0].user_confirmed) {
     return res
       .status(400)
-      .json({ message: "Esta conta ainda não foi confirmada.", type: "error" });
+      .json({ message: "Esta conta ainda não foi confirmada. Verifique sua caixa de email (também no spam, lixo ou lixo eletrônico) e encontre seu email de confirmação.", type: "error" });
   }
 
   if (await bcrypt.compare(password, CPFVerification.rows[0].user_password)) {

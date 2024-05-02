@@ -8,14 +8,15 @@ dayjs.extend(relativeTime);
 const EventInfo = (props) => {
   const filterCategories = (user, categories) => {
     const userGender = user?.user_gender === "Masculino" ? "masc" : "fem";
-    const userAge = Number(dayjs(user?.user_birth_date).fromNow().split(" ")[0]);
+    const dobYear = dayjs(user?.user_birth_date).year();
+    const age = dayjs().year() - dobYear;
 
     return categories.filter(
       (category) =>
         (category.category_gender === userGender ||
           category.category_gender === "unisex") &&
-        category.category_maxage >= userAge &&
-        category.category_minage <= userAge
+        category.category_maxage >= age &&
+        category.category_minage <= age
     );
   };
 
@@ -81,26 +82,32 @@ const EventInfo = (props) => {
               )}
             </div>
 
-            {/* <label htmlFor="registrationShirt">Tamanho da Camiseta</label>
+            {props.event.enableshirtsize && (
+              <>
+                <label className="mt-3" htmlFor="registrationShirt">
+                  Tamanho da Camiseta
+                </label>
 
-            <select
-              type="text"
-              id="registrationShirt"
-              name="shirt"
-              defaultValue={""}
-              className="form-select"
-              {...props.register("registrationShirt", { required: true })}
-            >
-              <option value="" disabled={true}>
-                Selecione o Tamanho
-              </option>
-              <option value={"pp"}>PP</option>
-              <option value={"p"}>P</option>
-              <option value={"m"}>M</option>
-              <option value={"g"}>G</option>
-              <option value={"gg"}>GG</option>
-              <option value={"exg"}>EXG</option>
-            </select> */}
+                <select
+                  type="text"
+                  id="registrationShirt"
+                  name="shirt"
+                  defaultValue={""}
+                  className="form-select"
+                  {...props.register("registrationShirt", { required: true })}
+                >
+                  <option value="" disabled={true}>
+                    Selecione o Tamanho
+                  </option>
+                  <option value={"pp"}>PP</option>
+                  <option value={"p"}>P</option>
+                  <option value={"m"}>M</option>
+                  <option value={"g"}>G</option>
+                  <option value={"gg"}>GG</option>
+                  <option value={"exg"}>EXG</option>
+                </select>
+              </>
+            )}
           </div>
           <div className="col-12 col-lg-6">
             <div className="card">

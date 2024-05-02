@@ -143,14 +143,17 @@ const AnswerTicket = () => {
                       <i className="bi bi-telephone-fill"></i> {ticket?.ticket_phone}
                     </li>
                     <li className="list-group-item">
-                      <i className="bi bi-calendar-fill"></i> {dayjs(ticket?.ticket_date).format("DD/MM/YYYY HH:mm")}
+                      <i className="bi bi-calendar-fill"></i>{" "}
+                      {dayjs(ticket?.ticket_date).format("DD/MM/YYYY HH:mm")}
                     </li>
                     <li className="list-group-item">
                       <i className="bi bi-flag-fill"></i>{" "}
                       {ticket?.ticket_status === "pending" ? (
                         <span className="badge bg-danger">Pendente</span>
                       ) : ticket?.ticket_status === "awaiting" ? (
-                        <span className="badge bg-warning text-dark">Aguardando Resposta</span>
+                        <span className="badge bg-warning text-dark">
+                          Aguardando Resposta
+                        </span>
                       ) : (
                         <span className="badge bg-success">Finalizado</span>
                       )}
@@ -174,7 +177,7 @@ const AnswerTicket = () => {
                     <Editor
                       value={value}
                       ref={ref}
-                      apiKey={process.env.REACT_APP_REACT_ENV === "production" ? process.env.REACT_APP_TINYMCE_KEY : ""}
+                      apiKey={"c7la9x1bfdh9hbz7m2td5jsqdjhl7alzdzg65kj6crmro9hd"}
                       onEditorChange={(content) => onChange(content)}
                       init={{
                         language: "pt_BR",
@@ -195,22 +198,41 @@ const AnswerTicket = () => {
                   )}
                 />
                 <div className="d-flex justify-content-between mt-3">
-                  <button className="btn btn-outline-success px-5 py-2 mt-lg-0" data-bs-toggle="modal" data-bs-target="#resolveModal">
+                  <button
+                    className="btn btn-outline-success px-5 py-2 mt-lg-0"
+                    data-bs-toggle="modal"
+                    data-bs-target="#resolveModal"
+                  >
                     Resolvido
                   </button>
 
-                  <div className="modal fade" id="resolveModal" tabindex="-1" aria-labelledby="resolveModalLabel" aria-hidden="true">
+                  <div
+                    className="modal fade"
+                    id="resolveModal"
+                    tabindex="-1"
+                    aria-labelledby="resolveModalLabel"
+                    aria-hidden="true"
+                  >
                     <div className="modal-dialog">
                       <div className="modal-content">
                         <div className="modal-header">
                           <h5 className="modal-title" id="exampleModalLabel">
                             Confirmar Resolução
                           </h5>
-                          <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                          <button
+                            type="button"
+                            className="btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="Close"
+                          ></button>
                         </div>
                         <div className="modal-body">Deseja resolver esse chamado?</div>
                         <div className="modal-footer">
-                          <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">
+                          <button
+                            type="button"
+                            className="btn btn-secondary"
+                            data-bs-dismiss="modal"
+                          >
                             Cancelar
                           </button>
                           <button
@@ -227,16 +249,32 @@ const AnswerTicket = () => {
                       </div>
                     </div>
                   </div>
-                  <input type="submit" className="btn btn-success px-5 py-2" defaultValue="Enviar" disabled={!watch("messageBody")} />
+                  <input
+                    type="submit"
+                    className="btn btn-success px-5 py-2"
+                    defaultValue="Enviar"
+                    disabled={!watch("messageBody")}
+                  />
                 </div>
               </form>
             </div>
 
-            <div className="col-12 col-lg-6 overflow-auto " style={{ maxHeight: "500px" }}>
+            <div
+              className="col-12 col-lg-6 overflow-auto "
+              style={{ maxHeight: "500px" }}
+            >
               <label htmlFor="news-text">Histórico de Mensagens</label>
               {messages?.map((message, index) => (
-                <div key={`message-${index}`} className="card mb-3" style={{ width: "100%" }}>
-                  <div className={`card-header d-flex justify-content-between flex-row${!message.user_id && "-reverse"}`}>
+                <div
+                  key={`message-${index}`}
+                  className="card mb-3"
+                  style={{ width: "100%" }}
+                >
+                  <div
+                    className={`card-header d-flex justify-content-between flex-row${
+                      !message.user_id && "-reverse"
+                    }`}
+                  >
                     <div>
                       <img
                         src={
@@ -249,12 +287,17 @@ const AnswerTicket = () => {
                         width={30}
                         className="rounded-circle me-2"
                       />
-                      {message?.user_id ? _config.entidade.abbreviation : ticket.ticket_name.split(" ")[0]}{" "}
+                      {message?.user_id
+                        ? _config.entidade.abbreviation
+                        : ticket.ticket_name.split(" ")[0]}{" "}
                     </div>
                     <div>{dayjs(message.message_date).format("DD/MM/YYYY HH:mm")}</div>
                   </div>
 
-                  <div className="card-body" dangerouslySetInnerHTML={{ __html: message.message_body }}></div>
+                  <div
+                    className="card-body"
+                    dangerouslySetInnerHTML={{ __html: message.message_body }}
+                  ></div>
                 </div>
               ))}
             </div>
